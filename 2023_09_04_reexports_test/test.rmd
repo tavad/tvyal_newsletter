@@ -1,0 +1,135 @@
+---
+title: "Russia Exports"
+author: "Aghasi Tavadyan"
+date: "2023-09-04"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r libraries, include=FALSE}
+library(tidyverse)
+library(scales)
+library(arrow)
+library(RcppRoll)
+
+theme_set(ggthemes::theme_fivethirtyeight())
+main_palette_colors <- RColorBrewer::brewer.pal(12, name = "Paired")
+update_geom_defaults("rect", list(fill  = main_palette_colors[2], alpha = 0.8)) 
+update_geom_defaults("line", list(color = main_palette_colors[2], alpha = 0.8))
+update_geom_defaults("area", list(fill  = main_palette_colors[2], alpha = 0.8))
+
+caption_main = "Հեղինակ` Աղասի Թավադյան"
+
+doParallel::registerDoParallel(cores = 8)
+
+rm(list = ls()); gc()
+
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+```
+
+```{r}
+comtrade_data <-read_parquet("~/proj/2021 CBA grant/comtrade_data_raw/comtrade_data.parquet")
+
+arm_codes_hs2 <- read_csv("~/proj/2021 CBA grant/data_forecast/names_en_am_ru_short.csv") %>% 
+  transmute(commodity_code = hc2, name_short_arm)
+```
+
+```{r}
+
+```
+
+
+***English summary below.***
+
+Հարգելի գործընկեր,
+
+Հուսով եմ լավ եք:
+Ներկայացնում եմ անցած շաբաթվա վերլուծությունները և աշխատանքները.
+
+1. Հայաստանի վերաարտահանման ճշգրիտ գնահատում
+2. ԶԼՄ հաղորդագրություններ
+3. English summary
+
+
+1. Հայաստանի վերաարտահանման ճշգրիտ գնահատում
+
+2022 թվականի ընթացքում Հայաստանից դեպի ԵԱՏՄ և Միջին Արևելք արտահանումը աճելի է գրեթե 3 անգամ։ Այս արտահանման որոշակի զգալի հատվածը կարելի է բնութագրել որպես վերաարտահանում, որը չի գրանցվում պաշտոնական վիճակագրության կողմից; Առկա է վերաարտահանման իրական ծավալները գնահատելու խնդիր; Վերաարտահանման տվյալները ճշգրիտ հաշվարկելու համար մեր կողմից օգտագործվել է համեմատվել են յուրաքանչյուր արտաքին տնտեսական գործունեության ապրանքային անվանացանկի (ԱՏԳ ԱԱ) վեցանիշ ծածկագրերը ամսական կտրվածքով և եթե նույն ապրանքանիշը նույն ամսվա ընթացքում գրանցել էր համարժեք արտահանման և ներմուծման ցուցանիշներ այն գրանցվել է որպես վերաարտահանում:*
+
+Ստորև ներկայացված է վերաարտահանման գնահատված ցուցանիշները ըստ տարիների:
+
+Գծապատկեր 1. Հայաստանի գնահատված վերաարտահանման մասնաբաժինը ընդհանուր արտահանման մեջ ըստ տարիների
+```{r}
+
+```
+
+
+
+
+Ինչպես երևում է գծապատկերից մեր կողմից մշակված մեթոդաբանությամբ 2022 թվականի արտահանման 27.7% կամ 1.47 մլրդ դրամի արտահանումը գնահատվել է որպես վերաարտահանում: Եթե դիտարկենք միայն զուտ արտահանումը ապա իրական արտահանման աճը 2022 թվականին կազմել է 37%: Հիշեցնենք որ պաշտոնական արտահանման ցուցանիշը 2022 թվականի ընթացքում աճել է 79.0%: Նշենք որ նույնիսկ զուտ արտահանումը գրանցել է ռեկորդային աճ` համեմատած անցած տարիների հետ:
+
+
+Ինչպես երևում է գծապատկեր 2-ից Հայստանի հիմնականում վերաարտահանումը գրանցվել է դեպի ԵԱՏՄ և Միջին Արևելք: Այսպես դեպի ԵԱՏՄ 2022թ. վերաարտահանումը կազմել է արտահանման 41.5% (1 023 մլն 2 464 մլն դոլարից), իսկ 2021թ. արտահանման 10.5% (88 մլն 836 մլն դոլարից): Դեպի Միջին Արևելքի երկրներ վերաարտահանումը 2022թ. կազմել է 40.8% (402 մլն 983 մլն դոլարից), իսկ 2021թ. արտահանման 4.9% (17 մլն 351 մլն դոլարից): Այստեղ վերաարտահանման հիմնական ծավալները գնացել են համապատասխանաբար Ռուսատան և Միացյալ Արաբական Էմիրություններ:
+
+
+2022 թվականին Հայաստանից դեպի Ռուսաստան արտահանման շուրջ 41.5%-ը կարելի է վերաարտահանում համարել։ Ելնելով աղյուսակում ներկայացված թվերից և դեպի Ռուսաստան արտահանման մեր կանխատեսումներից՝ կարող ենք հաշվարկել զուտ արտահանումը և զուտ աճի տեմպերը՝ առանց վերաարտահանման։ 2021 թվականին Հայաստանի զուտ արտահանումը Ռուսաստան կազմել է մոտ 748 մլն դոլար, իսկ 2022 թվականին՝ մոտ 1,441 մլն դոլար։ Փաստացի, դեպի Ռուսաստան արտահանման իրական աճի տեմպը կազմել է մոտավորապես 92%։ Այսինքն Հայաստանից Ռուսատանի զուտ արտահանումը (առանց վերաարտահանման) աճել է գրեթե 2 անգամ, այլ ոչ թե 3 անգամ
+
+Գծապատկեր 2. Հայաստանի գնահատված վերաարտահանման դինամիկան 12 ամսյա կտրվածքով ըստ գործընկեր տարածաշրջանների
+```{r}
+
+```
+
+
+
+Դեպի Ռուսատան հիմնականում վերաարտահանվել է տեխնիկա, մեքենաներ և արդյունաբերական ապրանքներ, որոնց ծագումը հիմնականում Եվրապոկան երկրներն են, Չինաստանը, ԱՄՆ-ին, Ճապոնիան և Հարավային Կորեյան: Սրա հիմնապատճառը Ռուսատանի վրա կիրառվող պատժամիջոցներն են, որը բարդացնում է երրորդ պետություններից նմանատիպ ապրանքների արտահանումը Ռուսատան: Նաև այս հանգամանքով դեպի ԵԱՏՄ արտահանումը 2022 թվականին մեծացավ գրեթե 3 անգամ (194.8% աճ):  
+
+Գծապատկեր 3. Հայաստանի վերաարտահանման տեսակարար կշիռը
+image.png
+```{r}
+
+```
+
+
+
+Դեպի Միացյալ Արաբական Էմիրություններ հիմնականում վերաարտահանվում է թանկարժեք և կիսաթանկարժեք քարեր և մետաղներ` հիմնականում ադամանդ և ոսկի: Այս ապրանքների հիմնական ծագման երկրին է Ռուսաստանը: 2022թ. ընթացքում զգալի քանակությամբ կապիտալ, ինչպես նաև աշխատուժ արտահոսեց Ռուսատանից: Կապիտալի մի մասը դուրս եկավ ոսկու և ադամանդների տեսքով, որը պատճառ հանդիսացավ 2022 թվականի ընթացքում դեպի Միջին Արևելք արտահանման գրեթե 3 անգամ աճին (180.4% աճ):
+Ինչպես երևում է գծապատկեր 8.9.-ից 2022 թվականին վերաարտահանման 64.2%-ը կամ 1 022 մլն դոլարը բաժին է ընկել ԵԱՏՄ-ին, 25.2%-ը կամ 402 մլն դոլարը բաժին է ընկել Միջին Արևելքին և 7.7% կամ 123 մլն դոլարը ԵՄ երկրներին:
+
+*Նշված մեթոդաբանությունը ավելի բարդ է քան այստեղ ներկայացված է; Ես չեմ ուզեցել ծանրաբեռնել այս հաղորդագրությունը հավելյալ մաթեմատիկական բանաձևերով։ Խնդրում եմ գրեք, եթե հետաքրքիր է վերաարտահանման հաշվարկաման մեթեդաբանությունը;
+
+2. ԶԼՄ հաղորդագրություններ
+
+Կարդացեք իմ հարցազրույցը ռուբլու արժեզրկուման մասին և ինչպես դա կազդի Հայաստանի արտահանման ծավալի վրա, ոի 53%-ը այս պահին Ռուսատանի Դաշնությանն է բաժին ընկնում:
+
+image.png
+
+
+3. English Summary
+
+In 2022, Armenia experienced a significant increase in exports to the Eurasian Economic Union (EAEU) and the Middle East, nearly tripling its export figures. A substantial portion of these exports constituted re-exports, which are not officially recorded in statistics. To estimate the true volume of re-exports, a method involving comparing six-digit codes of commodities on a monthly basis was employed. According to this methodology, approximately 27.7% of Armenia's exports in 2022, equivalent to 1.47 billion drams, were considered re-exports. When considering only net exports, there was a 37% increase in real exports, compared to an official export index increase of 79.0% in 2022.
+
+The majority of Armenia's re-exports were directed towards the EAEU and the Middle East, with 41.5% of exports going to the EAEU and 40.8% to the Middle East in 2022. Russia and the United Arab Emirates received the largest volumes of re-exports. Notably, around 41.5% of Armenia's exports to Russia in 2022 were re-exports. Without considering re-exports, the net export to Russia almost doubled, showing a real growth rate of approximately 92%.
+
+The main categories of re-exports included equipment, machinery, and industrial goods sent to Russia, primarily originating from European countries, China, the USA, Japan, and South Korea. This was influenced by sanctions imposed on Russia, making it difficult for third countries to export similar goods to Russia. Additionally, exports to the EAEU increased nearly threefold in 2022.
+
+Armenia also re-exported precious and semi-precious stones and metals, particularly diamonds and gold, to the United Arab Emirates. These products primarily came from Russia. In 2022, a significant outflow of capital and labor from Russia led to increased exports to the Middle East, almost tripling the figures.
+
+
+Եթե հնարավոր է, խնդրում եմ այս նյութը ուղարկել նաև այն մարդկանց, ում այն կարծում եք կարող է հետաքրքրել:
+Սպասեք հաջորդ հաղորդագրությանը մի շաբաթվա ընթացքում:
+
+Հարգանքներով,
+Աղասի Թավադյան
+4.09.2023
+tvyal.com
+tavadyan.com
+
+**Ուշադրություն. Ձեր էլ.փոստը մեյլիսթի մեջ է, որի միջոցով ես կիսվում եմ շաբաթական նյութեր, որոնք հիմնականում ներկայացնում են Հայաստանի տնտեսությանը: Նյութերը ներառում են գծապատկերներ, տվյալների բազաներ, տեսանյութեր, հոդվածներ, առցանց վահանակներ, տնտեսական գործիքներ, կանխատեսումներ և հաշվետվություններ: Եթե ցանկանում եք չեղարկել բաժանորդագրությունը, խնդրում եմ տեղեկացրեք ինձ, և ես կհեռացնեմ ձեր էլ. փոստը ցուցակից: Գրեք նաև եթե ունեք մենկնաբանություններ:**
+
+**Important! Your email is part of the mailing list where I share weekly materials primarily focused on the Armenian economy. These materials encompass charts, databases, videos, articles, online dashboards, economic tools, forecasts, and reports. If you wish to unsubscribe, please let me know, and I will remove your email from the list. Please share your comments as well**
+
+
+
+
+
