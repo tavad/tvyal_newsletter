@@ -1,0 +1,267 @@
+---
+title: "Tvyal Newsletter"
+author: "Aghasi Tavadyan"
+date: "2023-09-18"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r libraries, include=FALSE}
+library(tidyverse)
+library(scales)
+library(readxl)
+
+theme_set(ggthemes::theme_fivethirtyeight())
+main_palette_colors <- RColorBrewer::brewer.pal(12, name = "Paired")
+update_geom_defaults("rect", list(fill  = main_palette_colors[2], alpha = 0.8)) 
+update_geom_defaults("line", list(color = main_palette_colors[2], alpha = 0.8))
+update_geom_defaults("area", list(fill  = main_palette_colors[2], alpha = 0.8))
+
+doParallel::registerDoParallel()
+
+rm(list = ls()); gc()
+
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+
+caption_arm = "Հեղինակ` Աղասի Թավադյան   |   tvyal.com   |   tavadyan.com"
+```
+
+```{r, include=FALSE}
+
+# Տեղամասային ընտրական հանձնաժողովների կազմերը
+# Compositions of precinct election commissions
+commissions_link <- "https://www.elections.am/File/PecMembersToExcel?electionId=27816"
+
+# Քվեարկության արդյունքներն ըստ տեղամասերի
+# Voting results by precincts
+results_link <- "https://res.elections.am/images/forGenerals/Yerevan/06/resultarm17․09․23_18-09-2023.xlsx"
+
+# Քվեարկության արդյունքներն ըստ Երևան քաղաքի վարչական շրջանների
+# Voting results by administrative districts of Yerevan city
+districts_total_link <- "https://res.elections.am/images/forGenerals/Yerevan/06/resultsbyar17.09.23_18-09-2023.xlsx"
+
+# Տեղեկատվություն քվեարկության մասնակցության վերաբերյալ ըստ տեղամասերի
+# Information on voting participation by precincts
+participation_link <- "https://res.elections.am/images/forGenerals/Yerevan/06/resultsbyar17.09.23_18-09-2023.xlsx"
+```
+
+```{r, include=FALSE}
+download_links <- function(link, downlaod_name){
+  system(paste0("curl ", link, " -o ", downlaod_name, ".xlsx"))
+}
+
+# the code below downloads the databases, run this only if the databases are not present
+# download_links(commissions_link, downlaod_name = "commissions")
+# download_links(results_link, downlaod_name = "results")
+# download_links(districts_total_link, downlaod_name = "districts_total")
+# download_links(participation_link, downlaod_name = "participation")
+
+commissions <- read_excel("commissions.xlsx")
+results <- read_excel("results.xlsx", skip = 3)
+districts_total <-  read_excel("districts_total.xlsx")
+participation <- read_excel("participation.xlsx")
+```
+
+```{r, include=FALSE}
+commissions_filtred <- 
+  commissions %>% 
+  set_names(c("marz", "hamaynq", "district", "district_n", "andam", "vkayakan",
+              "role", "position")) %>% 
+  filter(position == "նախագահ") %>% 
+  select(district, district_n, role) %>% 
+  mutate(role = str_remove_all(role, "[\n|\r]"))
+
+# commitions %>% 
+#   set_names(c("marz", "hamaynq", "district", "district_n", "andam", "vkayakan",
+#               "role", "position")) %>% 
+#   filter(district_n == "6/13") %>% view()
+
+
+```
+
+
+
+```{r, include=FALSE}
+election_names <- 
+  c("hamaynq", "district", "district_n", "n_in_lists", "n_additional", 
+    "n_total", "n_participants", "n_stamp", "n_tickets", "n_ticket_tech",
+    "n_ticket_numbered", "n_ticket_total", "n_ticket_unused", "n_stamps_unused",
+    "n_ballot"
+  )
+
+results_clean <- 
+  results %>% 
+  rename(
+    setNames(names(.)[1:15], election_names),
+    errors = names(.)[30]
+  ) %>% 
+  filter(hamaynq != 1, hamaynq != "Ընդամենը") %>% 
+  pivot_longer(
+    -c(election_names, errors), 
+    names_to = "party", values_to = "party_votes"
+  ) %>% 
+  select(-district) %>% 
+  left_join(commissions_filtred, by = join_by(district_n)) %>% 
+  group_by(district_n) %>% 
+  mutate(party_number = 1:14) %>% 
+  ungroup()
+
+
+results_clean %>% 
+  # filter(errors > 10) %>% view()
+  select(-c(party, party_votes, hamaynq, role, district)) %>% 
+  # select(district_n, n_in_list, n_participants)
+  pivot_longer(-district_n) %>% 
+  ggplot(aes(value)) +
+  geom_density() +
+  facet_wrap(~name, scales = "free")
+
+all_votes <- 
+  results_clean %>% 
+  summarise(total_votes = sum(party_votes)) %>% 
+  pull(total_votes)
+
+results_filtered <- 
+  results_clean %>%
+  filter(
+    # grepl("քաղաքացիական պա", tolower(party)),
+    grepl("հանրային ձայն|քաղաքացիական պայմանագիր|ազգային առաջընթաց|հանրապետություն|մայր հայաստան",
+          tolower(party)),
+  ) %>% 
+  mutate(
+    pct_participants = n_participants / n_total,
+    votes_pct = party_votes / n_participants,
+    party = paste0(party_number, ". ", party),
+    party = fct_inorder(party)
+  )
+
+results_table <- 
+  results_filtered %>%
+  group_by(party) %>% 
+  summarise(
+    total_votes = sum(party_votes),
+    vots_pct = total_votes/ all_votes,
+    vots_pct = percent(vots_pct, accuracy = 0.01),
+    total_votes = number(total_votes, accuracy = 1),
+    correl = cor(pct_participants, votes_pct),
+    correl  = number(correl, accuracy = 0.001)
+  )
+
+results_plot <-
+  results_filtered %>%  
+  ggplot(aes(votes_pct, pct_participants)) +
+  geom_point(alpha = 0.4) +
+  facet_wrap(~party, scales = "free_x") +
+  scale_x_continuous(labels = percent_format()) +
+  scale_y_continuous(labels = percent_format()) +
+  labs(
+    x = "Քվեարկողների մեջ տվյալ կուսակցությանը ձայնը տրվածների տոկոսը",
+    y = "Քվեարկության մասնակիցների տոկոսը",
+    caption = paste0(caption_arm, "   |   աղբյուր՝ elections.am")
+  ) +
+  ggthemes::theme_clean() +
+  theme(legend.position = "bottom")
+  
+
+```
+
+
+
+
+***English summary below.***
+
+Հարգելի գործընկեր,
+
+Հուսով եմ լավ եք:
+Ներկայացնում եմ անցած շաբաթվա վերլուծությունները և աշխատանքները:
+
+Այս շաբաթվա վերլուծությունները․
+1. Երևանի ընտրություններ՝ հնարավոր կեղծիքներ և անհամաչափություններ
+2. English summary. Yerevan Elections: Investigating Fraud and Voter Disproportionality
+
+
+## 1. Երևանի ընտրություններ՝ հնարավոր կեղծիքներ և անհամաչափություններ
+
+Երևանի ավագանու ընտրություններում ամփոփվել են բոլոր 475 ընտրատեղամասից ստացած նախնական արդյունքները: Ըստ հրապարակված տվյալների, Երևանի ավագանի ընտրվելու անհրաժեշտ  շեմը հաղթահարել է հինգ ուժ։ 
+
+ՔՊ-ի օգտին քվեարկել է ընդամենը 75463 ընտրող, որը կազմում է քվեարկությանը մասնակցածների 32.57 %,   երկրորդ տեղում է «Ազգային առաջադիմությունը»՝ 18,89 %  (43.765), երրորդ տեղում է «Մայր Հայաստանը»՝ 15,43 %,  (35.739), «Հանրապետություն»՝ 11, 32 % ձայն (26.236), հինգերորդը՝ «Հանրային ձայնն» է, որի օգտին քվեարկել է մասնակիցների 9,68 %-ը (22.431)։
+
+Երևանի ավագանու ընտրությունների քվեարկությանը մասնակցել է 234 553 քաղաքացի կամ ընտրողների 28.46 տոկոսը։
+
+### Կեղծիքի աստիճանի հետազոտություն
+Ուսումնասիրենք ընտրություններում անհամաչափությունները և կեղծիքի հավանականության աստիճանը։
+
+Ընհանուր մեթոդաբանությունը հիմնաված է մասնակիցների թվի և որոշակի թեկնածուին հավաքած ձայների տոկոսի հարաբերության վրա։
+Տվյալների վերցվել են ՀՀ կենտրոնական ընտրական հանձնաժողովի կայքից, որոնք կարող եք ներբեռնել հետևյալ հղումով՝ [ Քվեարկության արդյունքներն ըստ տեղամասերի](https://res.elections.am/images/forGenerals/Yerevan/06/resultarm17․09․23_18-09-2023.xlsx)։ Հաշվարկների և գծապատկերների կոդը զետեղված են այս կայքեջում՝ [github.com](https://github.com/tavad/tvyal_newsletter)։ Այս նյութը նաև առկա է [tvyal.com կայքեջում](https://www.tvyal.com/newsletter/week-34)։
+Ուսումնասիրությունը կատարելու համար հաշվերկվել է 2 հիմնական ցուցանիշ՝ քվեարկողների մեջ տվյալ կուսակցությանը ձայնը տրվածների տոկոսը և քվեարկության մասնակիցների տոկոսը։ Եթե այս 2 ցուցանիշները չունեն կախվածության մակարդակ, ապա ընտրությունները ամենայն հավանականությամբ ազատ ու առանց կեղծիքների են անցել։ Օրինակի համար՝ եթե որևէ ընտրատարածքում ընտրությանը մասնակցել է ընտրողների 95 տոկոսը և որևէ կուսակցությանը ձայները տվել են նույնպես 95 տոկոսը, իսկ ընդհանուր բաշխվածության մեջ այս ցուցանիշները մոտ են 50 տոկոսի, ապա սա հարցեր է առաջացնում։
+
+Սղյուսակում ներկայացված է շեմը հատած 5 թեկնածուները, նրանց ձայների քանակը, տոկոսային կշիռը, ինչպես նաև կոռելացիան։ Վերջին սյունյակը քվեարկողների մեջ տվյալ կուսակցությանը ձայնը տրվածների տոկոսի և քվեարկության մասնակիցների տոկոսի կոռելացիան է։
+
+*Աղյուսակ 1․* Շեմը հատած թեկնածուների ցուցանիշները
+```{r echo = FALSE}
+results_table %>% 
+  set_names("Թեկնածու", "ձայն", "տոկոս", "կորելացիա") %>% 
+  knitr::kable() 
+```
+
+Այստեղ ամենամեծ շեղումը ունեն 2-րդ (ՔՊ) և 14-րդ (ՄՀԿԴ) թեկնածուները, որոնց կոռելացիաները համապատասխանաբար -0.329 և 0.390 են։
+
+Դիտարկենք այս ցուցանիշները գծապատկեր միջոցով։
+
+*Գծապատկեր 1․* Շեմը հատած թեկնածուների բաշխվածությունները
+```{r, echo=FALSE, fig.width = 12, fig.height = 8}
+results_plot
+```
+
+
+2-րդ թեկնածուն գրանցել է կորռելացիայի բացասական հարաբերակցություն՝ -0,329; Սա ցույց է տալիս, որ ինչքան ընտրատարածքում մասնակիցների տոկոսը մեծանում է, այնքն 2-րդ թեկնածուի ձայների տոկոսը նվազում է: Այսինքն այն ընտրատարածքներում, որտեղ ընտրողների տոկոսը ավելի մեծ է, այս թեկնածուն ավելի քիչ ձայներ է հավաքել։ Այսինքն 2-րդ թեկնածուի աջակցությունը նվազում ինչքան ընտրատարածքը ավելի ակտիվ է: 
+
+14-րդ թեկնածուն ունի հակառակ տենդենց, այն գրանցել է դրական կոռելացիա՝ 0,390։ Սա ցույց է տալիս, որ ինչքան ընտրատարածքում մասնակիցների տոկոսը մեծանում է, այնքն այս թեկնաւոծի ձայների տոկոսը նույնպես հակված է աճել: Դա կարող է պայմանավորված լինել ընտրողների ավելի մեծ մասնակցությամբ այն շրջաններում, որտեղ 1-ին կուսակցությունն ավելի մեծ աջակցություն ունի:
+
+7-րդ թեկնածուի մոտ (ԱԱԿ) կոռելացիան ամենամոտն է 0-ի, որը նշանակում է որ քվեարկողների և տվյալ թեկնածուին տրված ձայների հարաբերակցությունը համահունչ է և անկախ։
+
+Նշենք որ 0.4-ին մոտ բացարձակ կոռելացիաները դեռ չի նշանակում որ ընտրություններ ժամանակ տեղի են ունեցել խարդախություններ։ Ընդհանուր բաշխվածությունները ունեն նորմալ տեսք, սիմետրիկ են և ունեն մի հստակ գագաթ, որը վկայում է նրա մասին որ լցոնումներ և խարդախություններ ամենայն հավանականությամբ չեն եղել։
+
+
+## 2. English summary. Yerevan Elections: Investigating Fraud and Voter Disproportionality
+
+The results revealed that five political forces had surpassed the necessary threshold, with the "Civil Contract" party leading the way with 32.57% of the vote. However, the overall voter turnout was only 28.46%, suggesting a significant portion of the electorate did not participate in the elections. To investigate potential fraud and voter disproportionality, the study employed a methodology that examined the relationship between the percentage of voters in each party and the percentage of votes they received.
+
+The analysis revealed notable correlations for some candidates. Candidate 2 (Civil Contract) exhibited a negative correlation of -0.329, indicating that as the number of voters increased, their support decreased. Conversely, Candidate 14 (Mother Armenia Alliance) had a positive correlation of 0.390, suggesting that as the number of participants increased, so did their percentage of votes. However, the overall distribution of votes appeared normal and symmetrical, with distinct peaks, indicating that no significant irregularities or fraud had occurred. In conclusion, while correlations were observed, they did not necessarily point to election rigging, and the study found no strong evidence of electoral manipulation.
+
+   
+                  
+                  
+                  
+
+Եթե հնարավոր է, խնդրում եմ այս նյութը ուղարկել նաև այն մարդկանց, ում այն կարծում եք կարող է հետաքրքրել:
+
+Սպասեք հաջորդ հաղորդագրությանը մի շաբաթվա ընթացքում:        
+
+          
+           
+           
+
+
+Հարգանքներով,            
+Աղասի Թավադյան         
+18.09.2023          
+[tvyal.com](https://www.tvyal.com/)      
+[tavadyan.com](https://www.tavadyan.com/)
+
+       
+              
+               
+
+
+####### **Ուշադրություն. Ձեր էլ.փոստը մեյլիսթի մեջ է, որի միջոցով ես կիսվում եմ շաբաթական նյութեր, որոնք հիմնականում ներկայացնում են Հայաստանի տնտեսությանը: Նյութերը ներառում են գծապատկերներ, [տվյալների բազաներ](https://github.com/tavad/tvyal_newsletter), տեսանյութեր, հոդվածներ, [առցանց վահանակներ](https://www.tvyal.com/projects), տնտեսական գործիքներ, կանխատեսումներ և հաշվետվություններ: Եթե ցանկանում եք չեղարկել բաժանորդագրությունը, խնդրում եմ տեղեկացրեք ինձ, և ես կհեռացնեմ ձեր էլ. փոստը ցուցակից: Գրեք նաև եթե ունեք մենկնաբանություններ:**
+
+####### **Important! Your email is part of the mailing list where I share weekly materials primarily focused on the Armenian economy. These materials encompass charts, [databases](https://github.com/tavad/tvyal_newsletter), videos, articles, [online dashboards](https://www.tvyal.com/projects), economic tools, forecasts, and reports. If you wish to unsubscribe, please let me know, and I will remove your email from the list. Please share your comments as well․**
+
+
+
+
+

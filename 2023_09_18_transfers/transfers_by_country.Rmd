@@ -1,0 +1,131 @@
+---
+title: "Tvyal Newsletter"
+author: "Aghasi Tavadyan"
+date: "2023-09-18"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r libraries & setup, include=FALSE}
+library(tidyverse)
+library(scales)
+library(readxl)
+
+theme_set(ggthemes::theme_fivethirtyeight())
+main_palette_colors <- RColorBrewer::brewer.pal(12, name = "Paired")
+update_geom_defaults("rect", list(fill  = main_palette_colors[2], alpha = 0.8)) 
+update_geom_defaults("line", list(color = main_palette_colors[2], alpha = 0.8))
+update_geom_defaults("area", list(fill  = main_palette_colors[2], alpha = 0.8))
+
+doParallel::registerDoParallel()
+
+rm(list = ls()); gc()
+
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+
+caption_arm = "Հեղինակ` Աղասի Թավադյան   |   tvyal.com   |   tavadyan.com"
+```
+
+```{r get databases, include=FALSE}
+system("curl https://www.cba.am/stat/stat_data_eng/5_Money_transfers_of_individuals_by_countries-eng.xlsx -o transfers_by_countries.xlsx")
+
+transfers_raw <- read_excel("transfers_by_countries.xlsx")
+```
+
+
+```{r data cleaning, include=FALSE}
+
+transfers_clean <- 
+  transfers_raw %>% 
+  t(.) %>% as_tibble() %>% 
+  # row_to_names is the function that gives the warning
+  janitor::row_to_names(row_number = 1) %>%
+  rename(
+    na = 1,
+    year = 2,
+    month = 3,
+    direction = 4
+  ) %>% 
+  select(-na) %>% 
+  mutate(
+    type = case_when(
+      grepl("of which", month) ~ "non-commercial",
+      !grepl("of which", month) & !is.na(month) ~ "total"
+    ),
+    month = ifelse(grepl("of which", month), NA, month)
+  ) %>% 
+  fill(year, month, type, .direction = "down") %>% 
+  pivot_longer(
+    -c(year, month, direction, type), 
+    names_to = "country", values_to = "K_USD"
+  ) %>% 
+  mutate(
+    K_USD = as.numeric(K_USD),
+    month_name = month,
+    month = c(1:12)[match(month_name, month.name)],
+    date = ym(paste(year, month))
+  ) %>% 
+  relocate(date, year, month, month_name, country, direction, type, K_USD)
+  
+```
+
+```{r}
+transfers_clean %>% 
+  filter(
+    direction %in% c("Inflow", "Outflow"),
+    direction == "Outflow",
+    type == "total",
+    country != "Total",
+    year >= 2022
+    ) %>% 
+  mutate(
+    country = fct_lump_n(country, n = 11, w = K_USD,
+                         other_level = "Other_countries")
+  ) %>% 
+  group_by(date, country, direction, type) %>% 
+  summarise(K_USD = sum(K_USD), .groups = "drop") %>% 
+  mutate(country = fct_reorder(country, K_USD)) %>% 
+  ggplot(aes(date, K_USD, color = country)) +
+  geom_line(size = 2) +
+  facet_grid(~direction) +
+  scale_color_brewer(type = "qual", palette = 3)
+```
+
+```{r}
+max_month <- 
+  transfers_clean %>% 
+  filter(date == max(date)) %>% 
+  pull(month) %>% 
+  unique()
+
+transfers_clean %>% 
+  filter(
+    month <= max_month,
+    direction %in% c("Inflow", "Outflow"),
+    type == "total",
+    country != "Total",
+  ) %>% 
+  mutate(
+    country = case_when(
+      grepl("Emirates", country) ~ "UAE",
+      grepl("Kingdom", country) ~ "UK",
+      TRUE ~ country
+    ),
+    country = fct_lump_n(
+      country, n = 11, w = K_USD,
+      other_level = "Others"
+    )
+  ) %>% 
+  group_by(year, country, direction, type) %>% 
+  summarise(K_USD = sum(K_USD), .groups = "drop") %>% 
+  ggplot(aes(year, K_USD, fill = country)) +
+  geom_col() +
+  facet_wrap(~direction) +
+  scale_fill_brewer(type = "qual", palette = 3)
+
+```
+
+
