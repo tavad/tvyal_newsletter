@@ -152,7 +152,7 @@ results_table <-
 
 results_plot <-
   results_filtered %>%  
-  ggplot(aes(votes_pct, pct_participants)) +
+  ggplot(aes(votes_pct, pct_participants, color = party)) +
   geom_point(alpha = 0.4) +
   facet_wrap(~party, scales = "free_x") +
   scale_x_continuous(labels = percent_format()) +
@@ -163,7 +163,7 @@ results_plot <-
     caption = paste0(caption_arm, "   |   աղբյուր՝ elections.am")
   ) +
   ggthemes::theme_clean() +
-  theme(legend.position = "bottom")
+  theme(legend.position = "none")
   
 
 ```
