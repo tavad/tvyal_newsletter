@@ -1,0 +1,222 @@
+---
+title: "Tvyal Newsletter"
+author: "Aghasi Tavadyan"
+date: "2023-10-10"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r libraries, include=FALSE}
+library(tidyverse)
+library(scales)
+library(readxl)
+library(RcppRoll)
+
+theme_set(ggthemes::theme_fivethirtyeight())
+main_palette_colors <- RColorBrewer::brewer.pal(12, name = "Paired")
+update_geom_defaults("rect", list(fill  = main_palette_colors[2], alpha = 0.8)) 
+update_geom_defaults("line", list(color = main_palette_colors[2], alpha = 0.8))
+update_geom_defaults("area", list(fill  = main_palette_colors[2], alpha = 0.8))
+
+doParallel::registerDoParallel()
+
+rm(list = ls()); gc()
+
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+
+caption_arm = "Հեղինակ` Աղասի Թավադյան   |   tvyal.com   |   tavadyan.com"
+```
+
+```{r data, include=FALSE}
+read_FX_csv <- function(file){
+  FX_name <- str_trunc(file, 7, ellipsis = "")
+  
+  FX <- read_csv(file) %>%
+    janitor::clean_names() %>% 
+    mutate(
+      FX = FX_name,
+      date = mdy(date)
+    )
+  
+  return(FX)
+}
+
+USD_AMD <- read_FX_csv("USD_AMD Historical Data.csv")
+EUR_AMD <- read_FX_csv("EUR_AMD Historical Data.csv")
+RUB_AMD <- read_FX_csv("RUB_AMD Historical Data.csv")
+
+FX_AMD <- bind_rows(USD_AMD, EUR_AMD, RUB_AMD)
+
+remove(USD_AMD, EUR_AMD, RUB_AMD)
+```
+
+
+
+```{r charts, include=FALSE}
+chart1 <- 
+  FX_AMD %>% 
+  mutate(diff = (high - low) / low) %>% 
+  filter(
+    date >= as.Date("2020-01-01"),
+    FX != "RUB_AMD"
+  ) %>% 
+  ggplot(aes(date, price, color = FX)) +
+  geom_line() +
+  scale_x_date(
+    # date_breaks = "6 months", date_labels = "%m-%Y",
+    # expand = c(as.Date("2020-01-01"), as.Date("2024-01-01"))
+  ) +
+  scale_color_brewer(type = "qual", palette = 2, labels = c("EUR AMD", "USD AMD")) +
+  labs(
+    color = "Փոխարժեք",
+    title = "Դրամի փոխարժեքը",
+    caption = paste0(caption_arm, "   |    Տվյալների աղբյուր՝ vesting.com")
+  )
+  
+  
+  
+  FX_AMD %>% 
+  mutate(diff = (high - low) / low) %>% 
+  filter(
+    date >= as.Date("2020-01-01"),
+    FX != "RUB_AMD"
+  ) %>% 
+  group_by(FX) %>% 
+  mutate(diff = roll_meanl(diff, 7)) %>% 
+  ggplot(aes(date, diff, color = FX)) +
+  geom_line()
+
+
+  
+  
+
+FX_AMD %>% 
+  filter(
+    date >= as.Date("2020-01-01"),
+    # FX != "RUB_AMD"
+  ) %>% 
+  arrange(FX, date) %>% 
+  group_by(FX) %>% 
+  mutate(
+    artsakh1 = ifelse(date >= dmy("09-10-2020"), 1, 0),
+    artsakh2 = ifelse(date >= dmy("17-09-2023"), 1, 0),
+    artsakh1 = cumsum(artsakh1),
+    artsakh2 = cumsum(artsakh2),
+    artsakh = ifelse(artsakh2 < artsakh1 & artsakh2 != 0, artsakh2, artsakh1),
+    artsakh_depq = case_when(
+      artsakh2 < artsakh1 & artsakh2 != 0 ~ "artsakh2",
+      artsakh1 != 0 ~ "artsakh1"
+    )
+  ) %>% 
+  select(-c(artsakh1, artsakh2)) %>% 
+  filter(artsakh <= 300, artsakh != 0) %>% 
+  group_by(FX, artsakh_depq) %>% 
+  mutate(
+    price = price/first(price)
+  ) %>% 
+  ggplot(aes(artsakh, price, color = FX)) +
+  geom_line() +
+  facet_wrap(~artsakh_depq, nrow = 2)
+
+  
+
+
+```
+
+
+***English summary below.***
+
+Հարգելի գործընկեր,
+
+Հուսով եմ լավ եք: Այսօր նարկայցնեմ ձեզ դրամի դրաման որը տեղի ունեցավ անցած շաբաթվա սկզբին։
+
+# Դրամի Դրամա
+
+10 օր առաջ հայկական դրամը սկսց արժեզրկվել, որի արդյունքում փոխանակման կետերում դոլարի ու եվրոյի պահանջարկն աճեց։ 
+
+Վերջին օրերին դրամն կտրուկ արժեզրկվեց 10–15 տոկոսով և ապա կտրուկ հետ արժևորվեց 10-15 տոկոսով։ Նշենք որ դրամն արժեզրկվեց նաև 2020թ․ 44-օրյա պատերազմից հետո, երբ մեկ դոլարը 480 դրամից հասավ 560 դրամի և մի քանի ամիս անց փոխարժեքի կուրսը կրկին նվազեց։
+
+
+```{r, echo=FALSE}
+chart1
+```
+
+## Հարցազրույցներ
+
+Այս օրերի ընթացքում տվել եմ 5 հարցազրույց տվյալ թեմայի վերաբերյալ։
+
+Հարցազրույցները կտան հետևյալ հարցերի պատասխանները․
+
+- Ի՞նչ է կատարվում փոխարժեքի հետ:
+- Ի՞նչ կապ ունի ՌԴ տնտեսական ճգնաժամը Արցախի հետ:
+- Ի՞նչ նոր շոկեր կարող են սպասել Հայաստանին:
+- Ի՞նչ է մեզ սպասվում:
+- Ի՞նչ անել տնտեսության և պետության ամրապնդման համար:
+
+
+1. [Փոխարժեքի սպեկուլյացիայի և Արցախի կրստի տնտեսական հետևանքնեի մասին հարցազրույց տված Նվեր Մնացականյանին](https://www.youtube.com/watch?v=GEtpB2g827Q)
+
+[![](https://i3.ytimg.com/vi/GEtpB2g827Q/hqdefault.jpg)](https://www.youtube.com/watch?v=GEtpB2g827Q)
+
+2. [Արցախի կորուստը նաև տնտեսական շոկ է, կարող են ավելի մեծ շոկեր լինել](https://www.youtube.com/watch?v=aIbXrVjvvm0): Այս հարցազրույցը տրված է  երկուշաբթի օրը երբ դոլարի փոխարժեքը հասել էր 450 դրամի։ Այս հարցազրույցում ես կանխատեսում եմ, որ արժեզրկումը ընդամենը սպեկուլացիա է և մոտակա օրերը դրամը հետ է ամրանալու։
+
+[![](https://scontent.fevn7-1.fna.fbcdn.net/v/t39.30808-6/386588234_7020027824683344_425668169248470706_n.jpg?ccb=1-7&_nc_sid=49d041&_nc_ohc=ROLZY2xwQ5IAX8eh-Qt&_nc_ht=scontent.fevn7-1.fna&oh=00_AfBNC3FgUwabvbRQlygTTHoxxl1Bo62UKRknCy2FBPaPzA&oe=65296FB6)](https://www.youtube.com/watch?v=aIbXrVjvvm0)
+
+3. [Դրամի 10-15% արժեզրկում` մի քանի օրում․ ի՞նչ է կատարվում փոխարժեքի շուկայում](https://hy.armradio.am/2023/10/04/%d5%ab%d5%9e%d5%b6%d5%b9-%d5%a7-%d5%af%d5%a1%d5%bf%d5%a1%d6%80%d5%be%d5%b8%d6%82%d5%b4-%d6%83%d5%b8%d5%ad%d5%a1%d6%80%d5%aa%d5%a5%d6%84%d5%ab-%d5%b7%d5%b8%d6%82%d5%af%d5%a1%d5%b5%d5%b8%d6%82%d5%b4/): Այս հարցազրույցը տվել եմ Հայաստանի հանրային ռադիոին։
+
+Banks.am պորտալին տվել եմ 2 հարցազրույց.
+
+4. [«Դոլարի փոխարժեքն իջնում է․ պահողները տանուլ են տվել»](https://www.youtube.com/watch?v=qTSSkNtr5sI)
+
+[![](https://i3.ytimg.com/vi/qTSSkNtr5sI/hqdefault.jpg)](https://www.youtube.com/watch?v=qTSSkNtr5sI)
+
+5. [«Գազի գինը կարող է բարձրանալ»](https://www.youtube.com/watch?v=4vvVgNZaUM4)
+
+[![](https://i3.ytimg.com/vi/4vvVgNZaUM4/hqdefault.jpg)](https://www.youtube.com/watch?v=4vvVgNZaUM4)
+
+
+
+
+Նշենք նաև որ փոխարժեքի ամենաբարձր կետին, երբ դոլարը հասել էր 420-450 դրամի, կատարել եմ [կանխատեսում, որ այդ օրվա վերջ դոլարը լինելու է 410-420](https://www.facebook.com/a.tavadyan/posts/7023628730989920): Այդ օրվա վերջ դոլարը 430-450-ից իջավ մինչև 403-418 դրամ։
+
+Մոտակա ամսվա ընթացքում մեր կոզմից կանխատեսվում են որոշակի տնտեսական փոփոխություններ։ Եթե ուզում եք առաջինները տեղեկանալ դրանց մասին, ապա կապ հաստատեք մեզ հետ։
+
+
+##  English Summary
+
+In recent days, the Armenian dram has experienced a 10-15%, leading to increased demand for dollars and euros at exchange points. The Central Bank of Armenia has shifted to intervention in the foreign exchange market to address this situation. After which there was 10-15% revaluation back to previous prices. All of this happened in the span of 3 days.
+We attribute the dram's recent depreciation to expectations and speculation, causing panic in the exchange rate market. Some factors contributing to this include negative expectations about future economic conditions and the accumulation of foreign currency due to lack of confidence in the dram. Despite the recent fluctuations, we do not see serious threats to financial stability in Armenia at the moment.
+
+   
+
+                  
+Այս վերլուծությունը առկա է նաև [մեր կայքեջում](https://www.tvyal.com/newsletter/2023_10_09), այս վերլուծության կոդը դրված է նաև [Github-ում](https://github.com/tavad/tvyal_newsletter)։            
+
+Եթե հնարավոր է, խնդրում եմ այս նյութը ուղարկել նաև այն մարդկանց, ում այն կարծում եք կարող է հետաքրքրել:
+
+Սպասեք հաջորդ հաղորդագրությանը մի շաբաթվա ընթացքում:        
+
+          
+           
+           
+
+
+Հարգանքներով,            
+Աղասի Թավադյան         
+09.10.2023          
+[tvyal.com](https://www.tvyal.com/)      
+[tavadyan.com](https://www.tavadyan.com/)
+
+       
+              
+               
+
+
+####### **Ուշադրություն. Ձեր էլ.փոստը մեյլիսթի մեջ է, որի միջոցով ես կիսվում եմ շաբաթական նյութեր, որոնք հիմնականում ներկայացնում են Հայաստանի տնտեսությանը: Նյութերը ներառում են գծապատկերներ, [տվյալների բազաներ](https://github.com/tavad/tvyal_newsletter), տեսանյութեր, հոդվածներ, [առցանց վահանակներ](https://www.tvyal.com/projects), տնտեսական գործիքներ, կանխատեսումներ և հաշվետվություններ: Եթե ցանկանում եք չեղարկել բաժանորդագրությունը, խնդրում եմ տեղեկացրեք ինձ, և ես կհեռացնեմ ձեր էլ. փոստը ցուցակից: Գրեք նաև եթե ունեք մենկնաբանություններ:**
+
+####### **Important! Your email is part of the mailing list where I share weekly materials primarily focused on the Armenian economy. These materials encompass charts, [databases](https://github.com/tavad/tvyal_newsletter), videos, articles, [online dashboards](https://www.tvyal.com/projects), economic tools, forecasts, and reports. If you wish to unsubscribe, please let me know, and I will remove your email from the list. Please share your comments as well․**
+
+
