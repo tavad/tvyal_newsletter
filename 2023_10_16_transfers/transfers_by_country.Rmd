@@ -71,6 +71,9 @@ transfers_clean <-
     date = ym(paste(year, month))
   ) %>% 
   relocate(date, year, month, month_name, country, direction, type, K_USD)
+
+transfers_clean %>% 
+  write_excel_csv("transfers_by_countries_clean.csv")
   
 ```
 
