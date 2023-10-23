@@ -1,0 +1,503 @@
+---
+title: "Tvyal Newsletter"
+author: "Aghasi Tavadyan"
+date: "2023-10-23"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(scales)
+library(RcppRoll)
+library(rvest)
+library(gridExtra)
+
+rm(list = ls()); gc()
+
+theme_tvyal <- function(base_size = 12, base_family = "sans") 
+{
+  colors <- deframe(ggthemes::ggthemes_data[["fivethirtyeight"]])
+  (ggthemes::theme_foundation(
+    base_size = base_size, base_family = base_family) + 
+      theme(
+        line = element_line(colour = "black"), 
+        rect = element_rect(fill = colors["Light Gray"], linetype = 0, colour = NA), 
+        text = element_text(colour = colors["Dark Gray"]), 
+        # axis.title = element_blank(),
+        # axis.text = element_text(), 
+        axis.ticks = element_blank(),
+        axis.line = element_blank(), 
+        legend.background = element_rect(), 
+        legend.position = "bottom", 
+        legend.direction = "horizontal", 
+        legend.box = "vertical", 
+        panel.grid = element_line(colour = NULL), 
+        panel.grid.major = element_line(colour = colors["Medium Gray"]), 
+        panel.grid.minor = element_blank(), 
+        plot.title = element_text(hjust = 0, size = rel(1.5), face = "bold"),
+        plot.margin = unit(c(1, 1, 1, 1), "lines"), strip.background = element_rect()
+      )
+  )
+}
+
+theme_set(theme_tvyal())
+
+main_palette_colors <- RColorBrewer::brewer.pal(12, name = "Paired")
+update_geom_defaults("rect", list(fill  = main_palette_colors[2], alpha = 0.8)) 
+update_geom_defaults("line", list(color = main_palette_colors[2], alpha = 0.8))
+update_geom_defaults("area", list(fill  = main_palette_colors[2], alpha = 0.8))
+
+caption_arm <-  "Հեղինակ` Աղասի Թավադյան   |   tvyal.com   |   tavadyan.com"
+caption_eng <-  "Author: Aghasi Tavadyan   |   tvyal.com   |   tavadyan.com"
+
+doParallel::registerDoParallel(cores = 8)
+
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+```
+
+```{r data gathering, include=FALSE}
+link <- "https://minfin.gov.ru/en/document?id_4=119253-brief_monthly_information_on_federal_budget_execution_cumulative_from_the_beginning_of_the_year_bln._rub."
+
+russia_budget_clean <- 
+  read_html(link) %>% 
+  html_elements("table") %>% 
+  html_table() %>% 
+  .[[1]] %>%
+  rename(code = 1, indicator = 2) %>%
+  mutate(
+    across(-c(code, indicator), ~as.character(.x)),
+  ) %>% 
+  pivot_longer(-c(code, indicator), names_to = "date", values_to = "B_RUB_year_cum") %>% 
+  mutate(date = str_remove(date, " \\*\\*")) %>% 
+  extract(
+    date, into = c("month", "year"),
+    regex = "(\\w{3})[-\\s]?(\\d{2})?.?", remove = FALSE
+  ) %>% 
+  mutate(year = ifelse(year == "", lag(year), year)) %>%
+  mutate(
+    B_RUB_year_cum = str_remove_all(B_RUB_year_cum, "\\s"),
+    B_RUB_year_cum = parse_number(B_RUB_year_cum),
+    date = ym(paste(year, month)),
+    year = year(date),
+    month = month(date)
+  ) %>% 
+  filter(code != "", !is.na(code)) %>% 
+  arrange(code, date) %>% 
+  group_by(code, year) %>% 
+  mutate(
+    B_RUB = ifelse(
+      month == 1,
+      B_RUB_year_cum,
+      B_RUB_year_cum - lag(B_RUB_year_cum)
+    ),
+  ) %>%
+  ungroup() %>% 
+  group_by(code) %>% 
+  mutate(
+    B_RUB_12 = roll_sumr(B_RUB, n = 12),
+    levels = ceiling(nchar(code)/2)
+  ) %>% 
+  ungroup() %>% 
+  filter(!is.na(B_RUB_year_cum))
+
+usd_rub <- 
+  read_csv("USD_RUB Historical Data.csv") %>% 
+  janitor::clean_names() %>% 
+  mutate(
+    date_long = mdy(date),
+    year = year(date_long),
+    month = month(date_long),
+    date = ym(paste(year, month))
+  )
+
+monthly_ruble_rice <- 
+  usd_rub %>% 
+  group_by(date) %>% 
+  summarise(USD_RUB = mean(price))
+
+russia_budget_clean <- 
+  russia_budget_clean %>% 
+  left_join(monthly_ruble_rice, by = join_by(date)) %>% 
+  mutate(
+    B_USD = B_RUB / USD_RUB,
+    B_USD_12 = roll_sumr(B_USD, n = 12),
+  ) %>% 
+  group_by(code, year) %>% 
+  mutate(
+    B_USD_year_cum = cumsum(B_USD)
+  ) %>% 
+  ungroup()
+```
+
+
+```{r grid plot, include=FALSE}
+usd_rub_plot <- 
+  usd_rub %>% 
+  filter(year >= 2012) %>% 
+  ggplot(aes(date_long, price)) +
+  geom_line() +
+  scale_x_date(
+    breaks = "1 year", date_labels = "%Y",
+    limits = c(as.Date("2012-01-01"), as.Date("2024-01-01"))
+  ) +
+  scale_y_continuous(breaks = seq(0, 140, 20)) +
+  labs(
+    x = NULL,
+    y = "USD RUB exchange rate",
+    subtitle = "United States Dollar to Russian Ruble",
+    title = "The Inverse Correlation between USD/RUB FX and Budget Revenues in USD in Russia"
+  )
+
+# russia_budget_clean %>%
+
+
+budget_revenues_plot <- 
+  russia_budget_clean %>% 
+  filter(
+    levels == 2,
+    grepl("^1", code),
+    year >= 2012
+  ) %>% 
+  ggplot(aes(date, B_USD_12, color = indicator)) +
+  geom_line() +
+  scale_x_date(
+    breaks = "1 year", date_labels = "%Y",
+    limits = c(as.Date("2012-01-01"), as.Date("2024-01-01"))
+  ) +
+  labs(
+    x = NULL,
+    y = "Billion USD, YoY",
+    color = NULL,
+    subtitle = "Federal Budget Revenues in USD",
+    caption = paste0(
+      caption_eng, 
+      "   |   Data Source: Authors Calculations, minfin.gov.ru, investing.com"
+    )
+  )
+```
+
+
+```{r ru_revenues_rub_plot, include=FALSE}
+ru_revenues_rub_plot <- 
+  russia_budget_clean %>% 
+  filter(
+    levels == 2,
+    grepl("^1", code),
+    year >= 2012
+  ) %>% 
+  ggplot(aes(date, B_RUB_12, color = indicator)) +
+  geom_line() +
+  scale_x_date(
+    breaks = "1 year", date_labels = "%Y",
+    limits = c(as.Date("2012-01-01"), as.Date("2024-01-01"))
+  ) +
+  scale_y_continuous(labels = number_format()) +
+  labs(
+    x = NULL,
+    y = NULL,
+    color = NULL,
+    title = "Russian Federal Budget Revenues in RUB",
+    subtitle = "Billion RUB, YoY",
+    caption = paste0(
+      caption_eng, 
+      "   |   Data Source: Authors Calculations, minfin.gov.ru"
+    )
+  )
+```
+
+
+```{r 2021 2023 budget revenues comparation, include=FALSE}
+russia_budget_clean %>% 
+  filter(
+    year %in% 2021:2023,
+    levels == 2,
+    grepl("^1", code)
+  ) %>%
+  mutate(
+    indicator = fct_rev(indicator)
+  ) %>% 
+  ggplot(aes(month, B_RUB_year_cum, color = as.factor(year))) +
+  geom_line() +
+  facet_wrap(~indicator) +
+  scale_x_continuous(breaks = 1:12)
+```
+
+
+```{r russia budget ratio, include=FALSE}
+ru_budget_ratio <- 
+  russia_budget_clean %>% 
+  filter(
+    code %in% c("1", "2"),
+    year >= 2012
+    ) %>% 
+  select(indicator, date, year, month, B_RUB, B_RUB_12) %>% 
+  pivot_wider(names_from = indicator, values_from = c(B_RUB, B_RUB_12)) %>% 
+  janitor::clean_names() %>% 
+  mutate(
+    diff_total = b_rub_total_revenues / b_rub_total_expenditure,
+    diff_total_12 = b_rub_12_total_revenues / b_rub_12_total_expenditure,
+  ) %>% 
+  ggplot(aes(date, diff_total_12)) +
+  geom_hline(yintercept = 1, color = "darkgray", linewidth = 1) +
+    geom_line() +
+  scale_x_date(breaks = "1 year", date_labels = "%Y") +
+  scale_y_log10(breaks = seq(0.7, 1.5, 0.1)) +
+   labs(
+    x = NULL,
+    y = NULL,
+    title = "How Much Does Russia Spend and Earn",
+    subtitle = "Ratio of Revenues to Expenditure (YoY)",
+    caption = paste0(
+      caption_eng, 
+      "   |   Data Source: Authors Calculations, minfin.gov.ru"
+    )
+  )
+  
+```
+
+```{r budget correlation, include=FALSE}
+FX_to_rev_cor <- 
+  russia_budget_clean %>% 
+  filter(
+    # levels == 2,
+    # grepl("^1", code),
+    code == "1",
+    year > 2011
+  ) %>% 
+  summarise(cor = cor(USD_RUB, B_USD_12)) %>% 
+  mutate(cor = number(cor, accuracy = 0.001)) %>% 
+  pull(cor)
+
+ru_budget_cor <- 
+  russia_budget_clean %>% 
+  filter(
+    # levels == 2,
+    # grepl("^1", code),
+    code == "1",
+    year > 2011
+  ) %>% 
+  select(year, date, USD_RUB, B_USD_12) %>% 
+  na.omit() %>% 
+  ggplot(aes(USD_RUB, B_USD_12)) +
+  geom_smooth(
+    method = 'loess',
+    formula = y ~ x
+  ) +
+  geom_point(aes(color = year), size = 3) +
+  geom_path(aes(color = year)) +
+  scale_color_viridis_c(
+    breaks = seq(2012, 2024, 3), 
+    limits = c(2012, 2024)
+  ) +
+  guides(colour=guide_colourbar(barwidth=15,label.position="bottom")) +
+  labs(
+    x = "USD RUB exchange rate",
+    y = "Federal Budget Revenues in USD (YoY)",
+    color = NULL,
+    title = "The Inverse Correlation between USD/RUB FX and Budget Revenues in USD in Russia",
+    subtitle = paste0("Liniar Correlation Coefficient = ", FX_to_rev_cor),
+    caption = paste0(
+      caption_eng, 
+      "   |   Data Source: Authors Calculations, minfin.gov.ru, investing.com"
+    ) 
+  )
+
+
+```
+
+
+```{r budget proportion, include=FALSE}
+ru_budget_proportion <- 
+  russia_budget_clean %>% 
+  filter(
+    code %in% c("1.1.", "1.2.1.", "1.2.2.", "1.2.3."),
+    year > 2012
+  ) %>% 
+  mutate(
+    indicator = ifelse(
+      indicator == "Oil&gas revenues",
+      indicator,
+      paste("Non-oil&gas revenues:", indicator)
+    ),
+    indicator = fct_inorder(indicator)
+  ) %>% 
+  group_by(date) %>% 
+  mutate(pct = B_RUB_12 / sum(B_RUB_12)) %>% 
+  ungroup() %>% 
+  ggplot(aes(date, pct, fill = indicator)) +
+  geom_area() +
+  scale_x_date(
+    breaks = "1 year", date_labels = "%Y",
+    limits = c(as.Date("2013-01-01"), as.Date("2024-01-01"))
+  ) +
+  scale_y_continuous(labels = percent_format()) +
+  scale_fill_brewer(type = "qual", palette = 3) +
+  labs(
+    x = NULL,
+    y = NULL,
+    fill = NULL,
+    title = "Russian Budget Revenue Proportion",
+    caption = paste0(
+      caption_eng, 
+      "   |   Data Source: Authors Calculations, minfin.gov.ru, investing.com"
+    ) 
+  ) +
+  guides(fill=guide_legend(nrow=2,byrow=TRUE))
+
+  
+  
+```
+
+
+
+***English summary below.***
+
+Հարգելի գործընկեր,
+
+Հուսով եմ լավ եք:
+Ներկայացնում եմ անցած շաբաթվա վերլուծությունները և աշխատանքները.
+
+1. Ռուսաստանի Դաշնության բյուջեի կատարումը
+2. ԶԼՄ հաղորդակցություններ, ինչ սպասել
+3. English summary
+
+
+## 1. Ռուսաստանի Դաշնության բյուջեի կատարումը
+
+Այս հաղորդագրությունը մեր կողմից կատարված նախորդ 2 հաղորդագրությունների շարունակությունն է
+
+1. [Ռուսաստանի տնտեսության վիճակը և դրա հնարավոր ազդեցությունը տարածաշրջանի վրա](https://www.tvyal.com/newsletter/2023_10_03), 2023-10-03
+2. [Ռուսական ռուբլին ամրանալու է։ Արտարժույթի հնարավոր հոսքը Ռուսատանից Հայաստան](https://www.tvyal.com/newsletter/2023_10_16), 2023-10-16
+
+
+Ռուսական տնտեսության ուսումնասիրությունը, ինչպես ներկայացված է, կենսական նշանակություն ունի Հայաստանի համար մի քանի պատճառներով: Նախ հայատանի արտահանման մոտ 55 տոկոսը այս պահին գնում է դեպի ՌԴ, ռուբլու պոտենցիալ ամրապնդումը կարող է անրադառնել տնտեսական ակտիվության արտահանման և այլ տնտեսական ցուցանիշների վրա։ Բացի այդ, ռուսական վերջին քաղաքականությունը, որն ուղղված է իր շուկայում արտարժույթի քանակի ավելացմանը, կարող է ռուսական զգալի քանակությամբ կապիտալի ներհոսք ապահովել դեպի Հայաստան։ Սա հնարավոր է խթան հանդիսանալ Հայաստանի տնտեսության և բանկային համակարգի համար, ինչը հատկապես կարևոր է երկրի ներկայիս տնտեսական մարտահրավերների պայմաններում։ Հետևաբար, Ռուսաստանի տնտեսական միտումների հետազոտությունը չափազանց կարևոր է Հայաստանի համար, քանի որ այն ուղղակիորեն ազդում է արտարժույթի հոսքի և այլ տնտեսական ցուցանիշների վրա:  [ Ավելին՝ 2.](https://www.tvyal.com/newsletter/2023_10_16)։
+
+-------------
+
+
+Գծապատկեր 1-ում դիտարկվում է ՌԴ բյուջեի ռուբլիով եկամուտների շարունակական աճը: Մինչև 2015 թվականը Ռուսաստանի համար եկամտի հիմնական աղբյուրը գազի և նավթամթերքի վաճառքն էր։ Այնուամենայնիվ, 2015 թվականին նավթի համաշխարհային գների անկմամբ երկրի եկամուտների պրոֆիլը սկսեց դիվերսիֆիկացվել, որը պայմանավորված է ոչ նավթային եկամուտների աճող մասնաբաժնով: Հատկանշական է, որ նավթից և գազից ստացվող եկամուտները դրսևորում են ցիկլային բնույթ, որն արտացոլում է գազի գների տատանումները: 2020-ի անկումը հիմնականում պայմանավորված էր COVID-19 համաճարակի հետևանքով, իսկ 2022-ին եկամուտներն էլ ավելի անկում ապրեցին Ռուսաստանի դեմ կիրառված պատժամիջոցների պատճառով:
+
+
+*Գծապատկեր 1.* Ռուսաստանի բյուջեի եկամուտների դինամիկան (մլրդ ռուբլի, տարեկան ցուցանիշ)
+
+```{r, echo=FALSE, fig.width = 12, fig.height = 8}
+ru_revenues_rub_plot
+```
+
+
+Երկրորդ գծապատկերում ներկայացված է համեմատություն դոլարով եկամտի և ռուբլու փոխարժեքի միջև, որը լույս է սփռում որոշ հարցերի շուրջ: Այստեղ ամսական եկամտը ռուբլով բաժանվել են համապատասխան ամսվա միջին փոխարժեքի վրա, ստացված ցուցանիշը գումարվել է նախորդ 12 ամսվա կտրվածքով արդյունքում:
+
+Գծապատկերի վերևի հատվածում ցուցադրված էԱՄՆ դոլար / ՌԴ ռուբլի փոխարժեքը, իսկ ներքևի Ռուսաստանի Դաշնության բյուջեի եկամուտները՝ տարեկան կտրվածքով և արտահայտված դոլարով: Եկամուտների տվյալները բաժանված են երկու մասի՝ նավթամթերքից և գազից ստացված եկամուտ և ոչ նավթային ապրանքներից եկամուտ: Այս գծապատկերից երևում է ինչպես զգայուն ազդեցություն ունի ռուսական ռուբլու փոխարժեքը, մասնավորապես, նավթամթերքի արտահանումից ստացվող եկամուտներց:
+
+Այսպիսով, երբ դոլարի եկամուտները նվազում են, ռուբլին հակված է արժեզրկման, ինչը հանգեցնում է ռուսական բյուջեի ընդհանուր աճին ռուբլով, և հակառակը, երբ նավթամթերքի գինը բարձրանում է, ռուբլին հակված է արժևորվել: Մինչև 2015 թվականը փոխարժեքը տատանվում էր 1 ԱՄՆ դոլարի շուրջ՝ կազմելով մոտ 35 ռուբլի։ Այս ժամանակահատվածում դոլարային եկամուտները զգալիորեն բարձր են եղել նավթի և գազի վաճառքից։ 2014-ին մեկ բարել նավթը կազմում էր մոտ 120 դոլար, սակայն 2016-ին այն իջավ մոտ 50 դոլարի, ինչը հանգեցրեց Ռուսաստանի դոլարային եկամուտների կտրուկ անկմանը և ռուբլու համապատասխան արժեզրկմանը: 2020 թվականը, որը նշանավորվել է COVID-19 համաճարակով, էական ազդեցություն չի ունեցել ռուբլու փոխարժեքի վրա։ Այնուամենայնիվ, 2023 թվականին նավթի գինը բարձրացավ «ՕՊԵԿ+»-ի կողմից սահմանված պահանջարկի արհեստական սահմանափակումների պատճառով, մինչդեռ Ռուսաստանի դեմ պատժամիջոցները հանգեցրին նավթի արդյունահանման եկամուտների կտրուկ կրճատման՝ առաջացնելով փոխարժեքի զգալի անկում։
+
+
+
+*Գծապատկեր 2.* Ռուբլու փոխարժեքի դինամիկան և ՌԴ բյուջեի եկամուտները (մլրդ ԱՄՆ դոլար տարեկան ցուցանիշ)։
+
+```{r, echo=FALSE, fig.width = 12, fig.height = 8}
+grid.arrange(
+    grobs = list(usd_rub_plot, budget_revenues_plot),
+    nrow=2
+  )
+```
+
+
+Երրորդ գծապատկերը ցույց է տալիս զգալի հակադարձ հարաբերակցությունը ԱՄՆ դոլար / ռուբլի փոխարժեքի և ԱՄՆ դոլարով արտահայտված ՌԴ բյուջեի եկամուտների միջև: Այստեղ գծային կորելացիայի գործակիցը կազմում է -0,515, ինչը ցույց է տալիս ուժեղ բացասական հարաբերություն: Ներկայումս Ռուսաստանը նպատակ ունի ամրապնդել ռուբլու փոխարժեքը, որպեսզի հասնի 90 ռուբլու փոխարժեքի 1 ԱՄՆ դոլարի դիմաց՝ միաժամանակ ավելացնելով բյուջեի եկամուտները։ Այս նպատակները զգալի մարտահրավեր է ներկայացնում Ռուսատանի համար, քանի որ այս երկու նպատակները հակադարձ փոխկապակցված են, ինչպես պատկերված է գծապատկերում:
+
+
+*Գծապատկեր 3.* Ռուսական ռուբլու րտարժույթի և ԱՄՆ դոլարով բյուջետային եկամուտների միջև հակադարձ կորելացիան
+
+```{r, echo=FALSE, fig.width = 12, fig.height = 8}
+ru_budget_cor
+```
+
+
+4-րդ գծապատկերում ցույց է տրված Ռուսաստանի եկամուտների և ծախսերի 12 ամսվա հարաբերակցությունը: Ներկայումս ակնհայտ է, որ Ռուսաստանն ավելի շատ է ծախսում, քան ստանում եկամուտ։ Այնուամենայնիվ, 2023թ սեպտեմբերի կտրվածքով այս հարաբերակցությունը արդեն ունի աճի միտում, ինչը կարող է վկայել մոտ ապագայում ֆինանսական հաշվեկշռի հնարավոր բարելավման մասին:
+
+*Գծապատկեր 4.*  Ռուսաստանի բյուջետային եկամուտների և ծախսերի հարաբերակցությունը։
+
+
+```{r, echo=FALSE, fig.width = 12, fig.height = 8}
+ru_budget_ratio
+```
+
+
+
+Գծապատկեր 5-ը արտացոլում է Ռուսաստանի բյուջեի եկամուտների հարաբերակցությունը՝ տարբերակելով նավթագազային ապրանքներից ստացված եկամուտները և ոչ նավթային և գազային արտադրանքները: Մինչև 2015 թվականը եկամուտների մոտավորապես 50%-ը ստացվում էր նավթի և գազի աղբյուրներից, մինչդեռ 2023 թվականի սեպտեմբերին այդ համամասնությունը նվազել է մինչև 35%: Կարևոր է նշել, որ այս օրինաչափությունը դրսևորում է ցիկլայինություն, և 2023 թվականի կեսերից այն կարող է մոտենալ ցիկլային գագաթնակետին:
+
+*Գծապատկեր 5.*  Ռուսաստանի բյուջեի եկամուտների հարաբերակցությունը։
+
+
+```{r, echo=FALSE, fig.width = 12, fig.height = 8}
+ru_budget_proportion
+```
+
+Հաշվի առնելով այս ցիկլայինությունը և Ռուսաստանի Դաշնության երկակի իրարամերժ նպատակները, որնք են ռուբլու արժևորմանը և միաժամանակ բենզինի վաճառքից ստացվող եկամուտների ավելացմանը՝ հավանական է, որ հաջորդ տարվա ընթացքում Ռուսաստանը կարող է հաստատվել նոր շուկաներում, որը կարող է բերել նավթամթերքի և ազի վաճառքից ստացվող երկամուտնեի աճին։
+
+
+## 2. ԶԼՄ հաղորդակցություններ, ինչ սպասել
+
+Այս շաբաթ տվել եմ հարցազրույց 1in.am-ին ռուսական ռուբլու փոխարժեքի կանխատեսման և Հայաստանում տնտեսական հնարավոր փոփոխությունների մաիսն։
+
+Հարցազրույցները կտան հետևյալ հարցերի պատասխանները․
+
+- Ռուսական ռուբլին ամրանալու է։ Արտարժույթի հնարավոր հոսքը Ռուսատանից Հայաստան։
+- Հայաստանից Միջազգային դրամական փոխանցումների վերլուծություն:
+- Ի՞նչ կապ ունի ՌԴ տնտեսական ճգնաժամը Արցախի հետ:
+- Ի՞նչ նոր շոկեր և դրական ազդակներ կարող են սպասել Հայաստանին:
+- Ի՞նչ է մեզ սպասվում:
+- Ի՞նչ անել տնտեսության և պետության ամրապնդման համար:
+
+
+[Այս խնդրի մասին ավելին տեղեկանալու համար դիտեք հարցազրույցը](https://www.youtube.com/watch?v=9w7Sfg73fxI)
+
+[![](https://i3.ytimg.com/vi/9w7Sfg73fxI/maxresdefault.jpg)](https://www.youtube.com/watch?v=9w7Sfg73fxI)
+
+
+
+
+## 3. English Summary
+
+this we we analized the financial dynamics of Russia's budget, where we delve into a series of compelling charts. In "Chart 1," we explore the fascinating evolution of Russian budget revenues, highlighting the transition from heavy reliance on oil and gas income to the emergence of non-oil revenues. The impact of global oil prices, the COVID-19 pandemic, and sanctions on Russia is clearly illustrated. "Chart 2" takes us on a journey through the interplay between exchange rates and Russian budget income in USD, revealing the critical role the ruble's exchange rate plays in shaping the nation's finances.
+
+Our investigation goes a step further in "Chart 3," which unveils the remarkable inverse correlation between the USD/RUB foreign exchange rate and budget revenues in USD. With a high negative correlation coefficient, this chart vividly portrays the challenges Russia faces in its pursuit to strengthen the ruble and boost budget revenues. In "Chart 4," we analyze the 12-month ratio of Russia's income and expenditure, showcasing the current trend where expenses surpass income but hinting at a positive outlook. Lastly, "Chart 5" dissects the ever-shifting proportions of Russian budget revenues, emphasizing the cyclical nature of income sources and the potential for a transformation in the oil and gas sector.
+
+    
+    
+
+Այս վերլուծությունը առկա է նաև [մեր կայքեջում](https://www.tvyal.com/newsletter/2023_10_23), այս վերլուծության կոդը դրված է նաև [Github-ում](https://github.com/tavad/tvyal_newsletter)։                        
+                  
+
+Եթե հնարավոր է, խնդրում եմ այս նյութը ուղարկել նաև այն մարդկանց, ում այն կարծում եք կարող է հետաքրքրել:
+
+Սպասեք հաջորդ հաղորդագրությանը մի շաբաթվա ընթացքում:        
+
+          
+           
+           
+
+
+Հարգանքներով,            
+Աղասի Թավադյան         
+23.10.2023          
+[tvyal.com](https://www.tvyal.com/)      
+[tavadyan.com](https://www.tavadyan.com/)
+
+       
+              
+               
+
+
+####### **Ուշադրություն. Ձեր էլ.փոստը մեյլիսթի մեջ է, որի միջոցով ես կիսվում եմ շաբաթական նյութեր, որոնք հիմնականում ներկայացնում են Հայաստանի տնտեսությանը: Նյութերը ներառում են գծապատկերներ, [տվյալների բազաներ](https://github.com/tavad/tvyal_newsletter), տեսանյութեր, հոդվածներ, [առցանց վահանակներ](https://www.tvyal.com/projects), տնտեսական գործիքներ, կանխատեսումներ և հաշվետվություններ: Եթե ցանկանում եք չեղարկել բաժանորդագրությունը, խնդրում եմ տեղեկացրեք ինձ, և ես կհեռացնեմ ձեր էլ. փոստը ցուցակից: Գրեք նաև եթե ունեք մենկնաբանություններ:**
+
+####### **Important! Your email is part of the mailing list where I share weekly materials primarily focused on the Armenian economy. These materials encompass charts, [databases](https://github.com/tavad/tvyal_newsletter), videos, articles, [online dashboards](https://www.tvyal.com/projects), economic tools, forecasts, and reports. If you wish to unsubscribe, please let me know, and I will remove your email from the list. Please share your comments as well․**
+
+
+
+
+
+
+
