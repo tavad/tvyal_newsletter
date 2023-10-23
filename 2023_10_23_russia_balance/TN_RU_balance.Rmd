@@ -129,6 +129,9 @@ russia_budget_clean <-
     B_USD_year_cum = cumsum(B_USD)
   ) %>% 
   ungroup()
+
+russia_budget_clean %>% 
+  write_csv("russia_ budget_execution_tidy.csv")
 ```
 
 
