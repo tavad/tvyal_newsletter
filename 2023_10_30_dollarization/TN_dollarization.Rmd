@@ -1,0 +1,454 @@
+---
+title: "Tvyal Newsletter"
+author: "Aghasi Tavadyan"
+date: "2023-10-30"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(scales)
+library(RcppRoll)
+library(readxl)
+
+rm(list = ls()); gc()
+
+theme_tvyal <- function(base_size = 12, base_family = "sans") 
+{
+  colors <- deframe(ggthemes::ggthemes_data[["fivethirtyeight"]])
+  (ggthemes::theme_foundation(
+    base_size = base_size, base_family = base_family) + 
+      theme(
+        line = element_line(colour = "black"), 
+        rect = element_rect(fill = colors["Light Gray"], linetype = 0, colour = NA), 
+        text = element_text(colour = colors["Dark Gray"]), 
+        # axis.title = element_blank(),
+        # axis.text = element_text(), 
+        axis.ticks = element_blank(),
+        axis.line = element_blank(), 
+        legend.background = element_rect(), 
+        legend.position = "bottom", 
+        legend.direction = "horizontal", 
+        legend.box = "vertical", 
+        panel.grid = element_line(colour = NULL), 
+        panel.grid.major = element_line(colour = colors["Medium Gray"]), 
+        panel.grid.minor = element_blank(), 
+        plot.title = element_text(hjust = 0, size = rel(1.5), face = "bold"),
+        plot.margin = unit(c(1, 1, 1, 1), "lines"), strip.background = element_rect()
+      )
+  )
+}
+
+theme_set(theme_tvyal())
+
+main_palette_colors <- RColorBrewer::brewer.pal(12, name = "Paired")
+update_geom_defaults("rect", list(fill  = main_palette_colors[2], alpha = 0.8)) 
+update_geom_defaults("line", list(color = main_palette_colors[2], alpha = 0.8))
+update_geom_defaults("area", list(fill  = main_palette_colors[2], alpha = 0.8))
+
+caption_arm <-  "Հեղինակ` Աղասի Թավադյան   |   tvyal.com   |   tavadyan.com"
+caption_eng <-  "Author: Aghasi Tavadyan   |   tvyal.com   |   tavadyan.com"
+
+doParallel::registerDoParallel(cores = 8)
+
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+```
+
+```{r data download function, include=FALSE}
+# does not work fully
+
+downlad_read_curl <- 
+  function(link, ...){
+    file_name = 
+      str_replace(link, "^http.+\\/([\\d\\wԱ-Ֆա-ֆ_ ]+)\\.([\\w]+)$", "\\1")
+    file_extention = 
+      str_replace(link, "^http.+\\/([\\d\\wԱ-Ֆա-ֆ_ ]+)\\.([\\w]+)$", "\\2")
+    
+    system(
+      paste0("curl ", link, " -o ", file_name, "\\.", file_extention)
+    )
+    
+    file =
+      readxl::read_excel(
+        paste(file_name, file_extention, sep = "."), ...
+      )
+    
+    return(file)
+  }
+```
+
+
+```{r data download, include=FALSE}
+########### part 1 Dollarization
+
+link_doll <-
+  "https://www.cba.am/stat/stat_data_eng/16_Dollarization_overall_eng.xlsx"
+
+dollarization <- downlad_read_curl(link_doll, skip = 2)
+
+dollarization_dict <- 
+  tibble(
+    code = paste0("D", 1:5),
+    desc_eng = c(
+      "Foreign currency deposits and loans to the money supply",
+      "Foreign currency deposits and loans to the total",
+      "Foreign currency demand deposits and loans in the total demand deposits",
+      "Foreign currency demand deposits and loans in the total time deposits",
+      "Foreign currency loans to residents to total loans"
+    ),
+    desc_arm = c(
+      "Արտարժութային ավանդների և փոխառությունների հարաբերակցությունն է փողի զանգվածին",
+      "Արտարժութային ավանդների և փոխառությունների հարաբերակցությունն է ընդհանուրին",
+      "Արտարժույթով ցպահանջ ավանդների և փոխառությունների կշիռն է ընդհանուր ցպահանջ ավանդներում և փոխառություններում",
+      "Արտարժույթով ցպահանջ ավանդների և փոխառությունների կշիռն է ընդհանուր ժամկետային ավանդներում և փոխառություններում",
+      "Արտարժույթով տրամադրված վարկերի հարաբերակցությունն է ընդհանուր վարկերին"
+    )
+  )
+
+dollarization_clean <- 
+  dollarization %>% 
+  filter(!is.na(D1)) %>% 
+  rename(date = 1) %>% 
+  mutate(
+    date = as.numeric(date),
+    date = as.Date(date, origin = "1899-12-30")
+  ) %>% 
+  pivot_longer(matches("^D\\d"), names_to = "code", values_to = "pct") %>%
+  mutate(pct = pct / 100)
+
+
+########### part 2 Aggregates
+
+# in million drams
+
+link_agg <- 
+  "https://www.cba.am/stat/stat_data_eng/4_Aggregates_eng.xlsx"
+
+aggregates <- downlad_read_curl(link_agg, skip = 2)
+
+
+agg_colnames <- 
+  c("date", "circulation", "demand_deposits", "M1",
+    "time_deposits", "M2", "foreign_deposits", "M2X")
+
+aggregates_clean <- 
+  aggregates %>% 
+  set_names(agg_colnames) %>% 
+  filter(!is.na(circulation)) %>% 
+  mutate(
+    date = as.numeric(date),
+    date = as.Date(date, origin = "1899-12-30"),
+    date = date + months(1) - days(1),
+    year = year(date),
+    month = month(date)
+  ) %>% 
+  relocate(date, year, month)
+
+```
+
+```{r data GDP, include=FALSE}
+# no sideload
+# in million drams
+
+GDP_expenditure <-read_csv("GDP_expenditure.csv")
+
+gdp_yoy <- 
+  GDP_expenditure %>% 
+  filter(abb_code == "gdp") %>% 
+  transmute(
+    date, 
+    gdp_yoy = value_yoy
+  ) %>% 
+  na.omit()
+
+```
+
+```{r expanding doll database, include=FALSE}
+
+dollarization_before_2012 <- 
+  aggregates_clean %>% 
+  filter(date <= as.Date("2011-12-31")) %>% 
+  mutate(
+    dram_deposits = demand_deposits + time_deposits,
+    D1 = foreign_deposits / M2X,
+    D2 = foreign_deposits / (dram_deposits + foreign_deposits)
+  ) %>% 
+  select(date, matches("^D\\d")) %>% 
+  pivot_longer(matches("^D\\d"), names_to = "code", values_to = "pct")
+
+
+dollarization_clean <-
+  dollarization_clean %>% 
+  bind_rows(dollarization_before_2012) %>% 
+  left_join(dollarization_dict, by = join_by(code)) %>%  
+  mutate(
+    desc_eng = paste0(code, ". ", desc_eng),
+  )
+  
+```
+
+
+```{r plots dollarization, include=FALSE}
+
+dollarization_chart1 <- 
+  dollarization_clean %>% 
+  filter(code %in% c("D1", "D2")) %>% 
+  ggplot(aes(date, pct, color = desc_eng)) +
+  geom_line(size = 1.5) +
+  scale_x_date(date_breaks = "2 years", date_labels = "%Y") +
+  scale_y_continuous(breaks = seq(0, 1, 0.1), labels = percent_format()) +
+  scale_color_brewer(type = "qual", palette = 3) +
+  guides(color = guide_legend(nrow = 2, byrow = TRUE)) +
+  labs(
+    x = NULL,
+    y = NULL,
+    color = NULL,
+    title = "Dollarization in Armenia",
+    subtitle = "Calculated using money supply",
+    caption = paste0(
+      caption_eng, 
+      "   |   Data Source: cba.am"
+    )
+  )
+
+dollarization_chart2 <- 
+  dollarization_clean %>% 
+  filter(code %in% c("D3", "D4", "D5")) %>% 
+  ggplot(aes(date, pct, color = desc_eng)) +
+  geom_line(size = 1.5) +
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+  scale_y_continuous(labels = percent_format()) +
+  scale_color_brewer(type = "qual", palette = 3) +
+  guides(color = guide_legend(nrow = 3, byrow = TRUE)) +
+  labs(
+    x = NULL,
+    y = NULL,
+    color = NULL,
+    title = "Dollarization in Armenia",
+    subtitle = "Calculated using currency demand deposits and loans",
+    caption = paste0(
+      caption_eng, 
+      "   |   Data Source: cba.am"
+    )
+  )
+
+```
+
+
+
+```{r plots monitization, include=FALSE}
+
+aggregates_clean %>% 
+  mutate(dram_deposits = demand_deposits + time_deposits) %>% 
+  select(date, dram_deposits, foreign_deposits) %>% 
+  pivot_longer(contains("deposits")) %>% 
+  ggplot(aes(date, value / 1e6, color = name)) +
+  geom_line()
+
+deposites_chart_2 <- 
+  aggregates_clean %>% 
+  mutate(dram_deposits = demand_deposits + time_deposits) %>% 
+  select(date, dram_deposits, foreign_deposits) %>% 
+  pivot_longer(contains("deposits")) %>% 
+  inner_join(gdp_yoy, by = join_by(date)) %>% 
+  mutate(
+    gdp_pct = value / gdp_yoy
+  ) %>% 
+  ggplot(aes(date, gdp_pct, color = name)) +
+  geom_line(size = 1.5) +
+  scale_x_date(date_breaks = "2 years", date_labels = "%Y") +
+  scale_y_continuous(breaks = seq(0,1,0.05), labels = percent_format()) +
+  scale_color_brewer(
+    type = "qual", palette = 3, 
+    labels = c("Deposits in Armenian Drams to GDP", "Deposits in Foreign Currency to GDP")
+  ) +
+  labs(
+    x = NULL,
+    y = NULL,
+    color = NULL,
+    title = "Deposites to GDP",
+    subtitle = "The ratio between resident deposits and GDP",
+    caption = paste0(
+      caption_eng, 
+      "   |   Data Source: cba.am"
+    )
+  )
+
+
+monetization_chart <- 
+  aggregates_clean %>%
+  inner_join(gdp_yoy, by = join_by(date)) %>% 
+  mutate(
+    across(-c(date, year, month, gdp_yoy), ~.x / gdp_yoy)
+  ) %>% 
+  select(-gdp_yoy) %>% 
+  pivot_longer(-c(date, year, month)) %>% 
+  filter(grepl("^M2", name)) %>% 
+  ggplot(aes(date, value, color = name)) +
+  geom_line(size = 1.5) +
+  scale_x_date(date_breaks = "2 years", date_labels = "%Y") +
+  scale_y_continuous(labels = percent_format()) +
+  scale_color_brewer(
+    type = "qual", palette = 3, 
+    labels = c("M2 (broad money in AMD) to GDP", "M2X (broad money including FX) to GDP")
+  ) +
+  labs(
+    x = NULL,
+    y = NULL,
+    color = NULL,
+    title = "Economic monetization",
+    subtitle = "Money supply to GDP",
+    caption = paste0(
+      caption_eng, 
+      "   |   Data Source: cba.am"
+    )
+  )
+
+
+```
+
+
+
+***English summary below.***
+
+Հարգելի գործընկեր,
+
+Հուսով եմ լավ եք:
+Ներկայացնում եմ անցած շաբաթվա վերլուծությունները և աշխատանքները.
+
+1. Դոլարայնացման և մոնետիզացիայի մակարդակը Հայաստանում
+2. ԶԼՄ հաղորդակցություններ
+3. English summary
+
+
+## 1. Դոլարայնացման և մոնետիզացիայի մակարդակը Հայաստանում
+
+    Ես ձեզ պիտի խոստովանեմ, ինձ ավելի հեշտ է գծապատկերներ գծել,
+    տվյալները հետազոտել, համեմատաբար բարդ մեքենայական ուսուցման
+    մոդելներ կառոցել և կոդ գրել քան տեքստ գրել։ 
+    Տեքստ գրելը բարդ է։ 
+    Այս պահին ես գտնվում եմ տրանզիտով օտարերկրյա օդանավակայանում և սպասում եմ հաջորդ թռիչքիս։ 
+    Այսօրվա տեքստը քիչ է լինելու, բայց հուսով եմ ձեզ համար օգտակար կլինեն գծապատկերները։
+    
+    -Աղասի
+    
+  
+
+Ընդհանուր առմամբ դոլարացման մակարդակը տարբեր եղանականերով փորձում է գնահատել թե տնտեսությունում գտնվող փողի որ տոկոսն է կազմում արտարժույթ։ Ինչքան այս ցուցանիշը բարձր է այնքան ավելի ցածր է հավատը դեպի տնտեսություն և բանկային համակարգ։
+
+
+
+Առաջին դիագրամը ցույց է տալիս Հայաստանում դոլարիզացիայի մակարդակը։ Գծապատկերում ավելի խոսուն է D2-ը ցուցանիշը, որը ռեզիդենտների արտարժութային ավանդների և վարկերի հարաբերակցությունն է ռեզիդենտների ընդհանուր ավանդներին և վարկերին։ Որքան փոքր է այս ցուցանիշը, այնքան մեծ է հավատը Հայաստանի բանկային համակարգի նկատմամբ։ Ըստ այդ ցուցանիշի՝ 2023 թվականի սեպտեմբերին դոլարի մակարդակը կազմում է 41 տոկոս։ Այս ցուցանիշը սկսել է նվազել 2016 թվականից՝ 2010 թվականից մինչ այդ այդ ցուցանիշը 60 տոկոսից բարձր էր։
+
+
+**Գծապատկեր 1.** Դոլարայնացման մակարդակը Հայաստանում ըստ փողի զանգվածի
+
+```{r, echo=FALSE, fig.width = 12, fig.height = 8}
+dollarization_chart1
+```
+
+
+Երկրորդ գծապատկերում ներկայացված է դոլարիզացիայի մակարդակն ըստ ցպահանջ ավանդների և արտարժույթով վարկերի։ Հետաքրքիրն այստեղ այն է, որ արտարժույթի ծավալը ավանդների մեջ  (D4) և արտարժույթի ծավալը վարկերի մեջ (D5) մինչև 2022 թվականի մարտ ամիսը գրեթե նույն դինամիկան է ունեցել և շարժվել է նույն ուղղությամբ։ 2022 թվականի ապրիլից այս ցուցանիշներն ունեցել են հակառակ միտումներ։ Կտրուկ կրճատվել են արտարժույթով ավանդները, ավելացել է վարկերի տոկոսը։ Դա պայմանավորված էր 2022 թվականին Հայաստան արտարժույթի բավականին զգալի ներհոսքով (ավելին՝ [Tvyal Newsletter. Միջազգային դրամական փոխանցումների վերլուծություն](https://www.tvyal.com/newsletter/2023_10_16)): 2022 թվականին մեծ քանակությամբ արտարժույթի ներհոսքը ամրապնդեց դրամը, ինչի արդյունքում ավելացավ դրամով վերցված վարկերի և արտարժույթով ներդրված ավանդների տոկոսը, քանի որ համակարգում դոլարի չափը մեծ էր, և շատերը նախընտրեցին ավանդադրել այն։
+
+
+
+
+**Գծապատկեր 2.** Դոլարայնացման մակարդակը Հայաստանում ըստ արտարժույթով ցպահանջ ավանդների և վարկերի
+
+```{r, echo=FALSE, fig.width = 12, fig.height = 8}
+dollarization_chart2
+```
+
+
+Երրորդ գծապատկերը ցույց է տալիս ՀՀ դրամով և արտաժույթով ավանդների հարաբերությունը ՀՆԱ-ին։ ՀՀ դրամով ավանդների մեջ են մտնում ցպահանջ և Ժամկետային ավանդները։ Տվյալները հարաբերած են ՀՆԱ-ի 12-ամսյա գումարային ցուցանիշին, որպեսզի փոփոխության դինամիկան ավելի հստակ երևա։ 2019 թվականի երկրոր կեսից դրամային ավանդների կշիռը սկսեց գրազանցել դոլարային ավանդների կշռին։ 2018 թվականից դոլարային ավանդների կշիռը սկսեց ընկնել։ 2023 թվականի սեպտեմբերի դրությամբ ընդհանուր դրամական ավանդները կազմում են մոտ 2.4 տրլն դրամ կամ ՀՆԱ-ի 26 տոկոսը, իսկ դոլարային ավանդները մոտ 1.7 տրիլիոն դրամ, կամ ՀՆԱ-ի մոտ 18 տոկոսը։
+
+
+**Գծապատկեր 3.** ՀՀ դրամով և արտաժույթով ավանդների հարաբերությունը ՀՆԱ-ին
+
+```{r, echo=FALSE, fig.width = 12, fig.height = 8}
+deposites_chart_2
+```
+
+Գծապատկեր 4-ում ներկայացված է դրամայնացման կամ մոնետիզացիայի մակարդակը Հայաստանում, որը փողի զանգվածի և ՀՆԱ-ի հարաբերակցությունն է։ Տնտեսության դրամայնացումը ազգային տնտեսության չափիչ է, որն արտացոլում է նրա հագեցվածությունը իրացվելի ակտիվներով: Դրամայնացման մակարդակը որոշվում է ինչպես ազգային ֆինանսական համակարգի, այնպես էլ ողջ տնտեսության զարգացմամբ։ Տնտեսության դրամայնացումը պայմանավորում է նաև կապիտալի շարժի ազատությունը։ Այստեղ հիմնական ցուցանիշը M2 դրամայնացումն է, որը ներկայումս կազմում է 33 տոկոս։ Ընդհանուր ՀՆԱ-ն հակված է փոփոխության գծային ձևով, մինչդեռ փողի զանգվածը կարող է փոխվել էքսպոնենցիալ: Դրա շնորհիվ դրամայնացման մակարդակը վկայում է տնտեսական զարգացման մասին։ Բոլոր զարգացած տնտեսություններում այս ցուցանիշը կազմում է ավելի քան 60 տոկոս։
+
+
+**Գծապատկեր 4.**  Մոնետիզացիայի մակարդակը Հայաստանում
+
+
+```{r, echo=FALSE, fig.width = 12, fig.height = 8}
+monetization_chart
+```
+
+
+
+
+## 2. ԶԼՄ հաղորդակցություններ
+
+
+
+Այս շաբաթ տվել եմ հարցազրույց hetq.am-ին Հայաստանից ավտոմեքենաների բումի և տրենդի մարման մասին։
+
+Հարցազրույցները կտան հետևյալ հարցերի պատասխանները․
+
+հատված նյութից՝ 
+
+    «Ինչպես ավտոմեքենաների, այնպես էլ մյուս ապրանքների վերաարատահանումը 
+    Հայաստանի տնտեսության վրա կարճաժամկետ դրական ազդեցություն է թողնում։
+    Դրանք, եթե ավելի պարզ ասենք, վերավաճառքներ են, որոնց ընթացքում արտահանողները
+    եկամուտ ու շահույթ են ստանում։ Հիմա Ռուսաստանը «սոված» շուկա է և արագորեն
+    կլանում է Հայաստանից վերաարատահանվող ապրանքները։ Բայց եթե մի օր արգելքները
+    հանվեն Ռուսաստանի վրայից, հայկական կողմի վերաարատահանողները միանգամից կտուժեն,
+    կտուժի նաև ամբողջ հայկական տնտեսությունը։ Սակայն, եթե միայն ավտոմեքենաները
+    դիտարկենք, գուցե ազդեցությունը այդքան մեծ չլինի»:
+
+
+[Ավելին՝ կարդացեք նյութը](https://hetq.am/hy/article/161508)
+
+[![](https://hetq.am/static/articles/16/15/08/l-PSID3O6Z9S.jpg)](https://hetq.am/hy/article/161508)
+
+
+
+
+## 3. English Summary
+
+**Dollarization and economy monetization in Armenia.**
+
+I am in international transit, amid airports, no summary in English this time, although the charts speak for themselves.
+    
+    
+
+Այս վերլուծությունը առկա է նաև [մեր կայքեջում](https://www.tvyal.com/newsletter/2023_10_30), այս վերլուծության կոդը դրված է նաև [Github-ում](https://github.com/tavad/tvyal_newsletter)։                        
+                  
+
+Եթե հնարավոր է, խնդրում եմ այս նյութը ուղարկել նաև այն մարդկանց, ում այն կարծում եք կարող է հետաքրքրել:
+
+Սպասեք հաջորդ հաղորդագրությանը մի շաբաթվա ընթացքում:        
+
+          
+           
+           
+
+
+Հարգանքներով,            
+Աղասի Թավադյան         
+30.10.2023          
+[tvyal.com](https://www.tvyal.com/)      
+[tavadyan.com](https://www.tavadyan.com/)
+
+       
+              
+               
+
+
+####### **Ուշադրություն. Ձեր էլ.փոստը մեյլիսթի մեջ է, որի միջոցով ես կիսվում եմ շաբաթական նյութեր, որոնք հիմնականում ներկայացնում են Հայաստանի տնտեսությանը: Նյութերը ներառում են գծապատկերներ, [տվյալների բազաներ](https://github.com/tavad/tvyal_newsletter), տեսանյութեր, հոդվածներ, [առցանց վահանակներ](https://www.tvyal.com/projects), տնտեսական գործիքներ, կանխատեսումներ և հաշվետվություններ: Եթե ցանկանում եք չեղարկել բաժանորդագրությունը, խնդրում եմ տեղեկացրեք ինձ, և ես կհեռացնեմ ձեր էլ. փոստը ցուցակից: Գրեք նաև եթե ունեք մենկնաբանություններ:**
+
+####### **Important! Your email is part of the mailing list where I share weekly materials primarily focused on the Armenian economy. These materials encompass charts, [databases](https://github.com/tavad/tvyal_newsletter), videos, articles, [online dashboards](https://www.tvyal.com/projects), economic tools, forecasts, and reports. If you wish to unsubscribe, please let me know, and I will remove your email from the list. Please share your comments as well․**
+
+
+
+
+
+
+
