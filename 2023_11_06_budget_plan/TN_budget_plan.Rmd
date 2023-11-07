@@ -1,0 +1,373 @@
+---
+title: "Tvyal Newsletter"
+author: "Aghasi Tavadyan"
+date: "2023-11-07"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(scales)
+library(RcppRoll)
+library(readxl)
+
+rm(list = ls()); gc()
+
+theme_tvyal <- function(base_size = 12, base_family = "sans") 
+{
+  colors <- deframe(ggthemes::ggthemes_data[["fivethirtyeight"]])
+  (ggthemes::theme_foundation(
+    base_size = base_size, base_family = base_family) + 
+      theme(
+        line = element_line(colour = "black"), 
+        rect = element_rect(fill = colors["Light Gray"], linetype = 0, colour = NA), 
+        text = element_text(colour = colors["Dark Gray"]), 
+        # axis.title = element_blank(),
+        # axis.text = element_text(), 
+        axis.ticks = element_blank(),
+        axis.line = element_blank(), 
+        legend.background = element_rect(), 
+        legend.position = "bottom", 
+        legend.direction = "horizontal", 
+        legend.box = "vertical", 
+        panel.grid = element_line(colour = NULL), 
+        panel.grid.major = element_line(colour = colors["Medium Gray"]), 
+        panel.grid.minor = element_blank(), 
+        plot.title = element_text(hjust = 0, size = rel(1.5), face = "bold"),
+        plot.margin = unit(c(1, 1, 1, 1), "lines"), strip.background = element_rect()
+      )
+  )
+}
+
+theme_set(theme_tvyal())
+
+main_palette_colors <- RColorBrewer::brewer.pal(12, name = "Paired")
+update_geom_defaults("rect", list(fill  = main_palette_colors[2], alpha = 0.8)) 
+update_geom_defaults("line", list(color = main_palette_colors[2], alpha = 0.8))
+update_geom_defaults("area", list(fill  = main_palette_colors[2], alpha = 0.8))
+
+caption_arm <-  "Հեղինակ` Աղասի Թավադյան   |   tvyal.com   |   tavadyan.com"
+caption_eng <-  "Author: Aghasi Tavadyan   |   tvyal.com   |   tavadyan.com"
+
+doParallel::registerDoParallel(cores = 8)
+
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+```
+
+```{r data read, include=FALSE}
+budget_plan <- read_csv("budget_spending_plan.csv")
+```
+
+```{r budget plan growth plot, include=FALSE}
+plot_1 <- 
+  budget_plan %>% 
+  filter(code == "Ընդամենը") %>%
+  mutate(
+    pct_growth_text = ifelse(is.na(pct_growth_text), "12.5%", pct_growth_text),
+    text = K_AMD / 1e9,
+    text = number(text, accuracy = 0.01),
+    text = paste0(text, " մլրդ\n", pct_growth_text)
+  ) %>% 
+  ggplot(aes(as.factor(year), K_AMD / 1e9, label = text)) +
+  geom_col() +
+  geom_text(aes(y = 0.2)) +
+  labs(
+    x = NULL,
+    y = NULL,
+    title = "2019-2024 պետական բյուջեի ծախսերի ծրագրի դինամիկան",
+    subtitle = "Մլրդ դրամ, տոկոս աճ",
+    caption = paste0(
+      caption_arm, 
+      "   |  Աղբյուր: minfin.am"
+    )
+  )
+
+  
+```
+
+
+```{r meain budget expenditures, include=FALSE}
+
+main_expance_codes <- 
+  budget_plan %>% 
+  filter(code != "Ընդամենը") %>% 
+  slice_max(pct_part, n = 55)  %>% 
+  pull(code) %>% 
+  unique()
+
+names_dict <- 
+  budget_plan %>% 
+  filter(
+    year == max(year)
+  ) %>% 
+  select(code, name)
+
+plot_2 <- 
+  budget_plan %>% 
+  filter(code %in% main_expance_codes) %>% 
+  rename(name2 = name) %>% 
+  left_join(names_dict, by = join_by(code)) %>%
+  mutate(
+    name = ifelse(is.na(name), name2, name),
+    name = str_trunc(name, 47),
+    name = fct_reorder(name, pct_part)
+  ) %>%
+  ggplot(aes(K_AMD / 1e6, name, label = pct_part_text)) +
+  geom_col() +
+  geom_text(aes(x = 60)) +
+  facet_wrap(~year) +
+  scale_x_continuous(breaks = seq(0, 500, 100)) +
+  labs(
+    x = NULL,
+    y = NULL,
+    title = "2019-2024 պետական բյուջեի ամենախոշոր ծախսերը",
+    subtitle = "Մլրդ դրամ, կշիռ",
+    caption = paste0(
+      caption_arm, 
+      "   |  Աղբյուր: minfin.am"
+    )
+  )
+
+
+names_eng_dict <-
+  tibble(
+    code = c(
+      "1004", "1006", "1011", "1014", "1049", "1068", "1102", "1138",
+      "1139", "1146", "1157", "1158", "1169", "1205", "1212", "1234", "1236"
+    ),
+    name_eng = c(
+      "Rehabilitating the irrigation system",
+      "Public debt management",
+      "Support for disadvantaged social groups",
+      "Ensuring public safety",
+      "Road network improvement",
+      "Improving the demographic situation",
+      "Pension security",
+      "National Security",
+      "RA government reserve fund",
+      "General education program",
+      "Urban development",
+      "Policy development, management, centralized measures, monitoring and control of the police sector",
+      "Ensuring the protection of the Republic of Armenia",
+      "Social Security",
+      "Territorial development",
+      "Ministry of Interior sector policy development, management, centralized measures, monitoring and control",
+      "Establishment, construction, improvement of public and preschool institutions"
+    )
+  )
+
+budget_plan %>% 
+  filter(code %in% main_expance_codes) %>% 
+  rename(name2 = name) %>% 
+  left_join(names_dict, by = join_by(code)) %>% 
+  left_join(names_eng_dict, by = join_by(code)) %>% 
+  mutate(
+    name = ifelse(is.na(name), name2, name),
+    name = fct_reorder(name, pct_part)
+  ) %>% 
+  select(year, code, name_eng, pct_part_text) %>% 
+  pivot_wider(names_from = "year", values_from = pct_part_text)
+
+
+  
+
+
+
+# library(treemapify)
+# 
+# budget_plan %>% 
+#   filter(code != "Ընդամենը", year == 2024) %>%
+#   ggplot(aes(area = K_AMD, fill = name,
+#              label = paste(name, pct_part_text, sep = "\n"))) +
+#   geom_treemap() +
+#   geom_treemap_text(colour = "white",
+#                     place = "centre",
+#                     size = 15) +
+#   theme(legend.position = "none")
+
+
+
+```
+
+```{r 2004 biggest changes table, include=FALSE}
+table_1 <- 
+  budget_plan %>% 
+  filter(
+    pct_part >= 0.001,
+    year == 2024,
+    pct_growth > 0.2
+  ) %>% 
+  arrange(desc(K_AMD)) %>% 
+  mutate(
+    pct_growth_text = ifelse(
+      pct_growth > 1,
+      paste(number(pct_growth + 1, accuracy = 0.1), "անգամ"),
+      pct_growth_text          
+    )
+  ) %>% 
+  transmute(
+    code, name, B_AMD = number(K_AMD / 1e6, accuracy = 0.1), 
+    pct_growth = pct_growth_text, pct_part = pct_part_text,
+  ) %>% 
+  knitr::kable(
+    align = c('l','l','r','r','r'),
+    col.names = c("Դասիչը", "Ծրագրի անվանումը", "Մլրդ դրամ", 
+                  "Աճը", "Կշիռը"),
+    # label = "label bhjbjhbhjbh",
+    caption = paste0(
+      caption_arm, 
+      "   |  Աղբյուր: minfin.am"
+    )
+  )
+
+
+```
+
+
+```{r include=FALSE}
+budget_plan %>% 
+  filter(grepl("արտաքին", tolower(name))) %>% 
+  view()
+```
+
+
+***English summary below.***
+
+Հարգելի գործընկեր,
+
+Հուսով եմ լավ եք:
+Ներկայացնում եմ անցած շաբաթվա վերլուծությունները և աշխատանքները.
+
+1. 2024թ․ պետական բյուջեի ուսումնասիրություն
+2. English summary
+
+
+## 1. 2024թ․ պետական բյուջեի ուսումնասիրություն
+
+### 1.1. Բյուջեի ծախսերի ընդհանուր փոփոխությունը
+                                                                                                             
+Դիտարկենք Հայաստանի [2024 թվականի պետական բյուջեի նախագիծը և ծրագրային փոփոխությունները](https://www.minfin.am/hy/page/petakan_byuje_2024t)։     
+
+Ընդհանուր առմամբ բյուջեն 2018 թվականից ի վեր աճել է 2 անգամ։ 2018 թվականին պետական բյուջեի նախատեսվող ծախսերը կազմել են 1.46 տրիլիոն դրամ, իսկ 2024 թվականեն արդեն 3.02 տրիլիոն դրամ։ ՀՀ 2024 թ. պետական բյուջեի դեֆիցիտը կկազմի 340 մլրդ դրամ կամ ՀՆԱ–ի 3.2 տոկոսը, որի հետևանքով պարտք / ՀՆԱ հարաբերակցությունը 2024 թ. տարեվերջին կարող է կազմել 48.4 տոկոս։
+
+Նշենք, որ 2018 թվականի կտրվածքով դեպի ՌԴ արտահանումը կազմել էր 667 մլն դոլար և ֆիզիկական անձանց կողմից կատարված բանկային փոխանցումները կազմել էին 1,049 մլն դոլար։ Համեմատած 2023 թվականի սեպտեմբերին 12 ամսվա կտրվածքով դեպի ՌԴ արտահանումը կազմել է 2,965 մլն դոլար, իսկ բանկային փոխանցումները 4,282 մլն դոլար։ Այս 6 տարիների ընթացքում բյուջետային ծախսերը աճել են 2 անգամ, իսկ դեպի Ռուսատան արտահանումը աճել է 4.4 անգամ և ֆիզիկական անձանց կողմից բանկային փոխանցումները 4 անգամ (Ավելին՝ [Միջազգային դրամական փոխանցումների վերլուծություն](https://www.tvyal.com/newsletter/2023_10_16))։ 
+
+Ավելի մանրամասն անդրադառնանք Հայաստանի բյուջեի ծրագրի աճին վերջին վեց տարիների ընթացքում (տես Գծապատկեր 1): Հայաստանի բյուջեի պլանը առանցքային դեր է խաղում հայաստանի զարգացման գործում և նախանշում է զարգացման ուղվածությունը։
+
+2018 թվականից սկսած 1,465 մլրդ դրամի չափով բյուջեի ծախսերը հետևողական աճ են ցույց տվել։
+2019 թվականին գրանցվել է 12.5% աճ՝ բյուջետային ծախսերը կազմել են 1,648 մլրդ դրամ։
+2020 թվականին բյուջեի նախատեսված ծախսերը դրական աճը շարունակվել է 12,6%՝ հասնելով 1,856 մլրդ դրամի։
+2021 թվականը այս երկնիշ աճի շխղաթյի մեջ բացառություն է եղել՝ -0,3% աճ, կազմելով 1,851 մլրդ դրամ։ Սա պայմանավորված է նախորդ տարվա խոշոր մարտահրավերներով՝ համաճարակով պայմանավորված տնտեսական խթաննորեվ և 2020 թվականի 44-օրյա պատերազմով։
+2022 թվականը գրանցել է տպավորիչ՝ 18,0% աճ, որի արդյունքում պլանավորված ծախսերը կազմել են 2,184 մլրդ դրամ։
+2023 թվականին բյուջեի ծախսերի աճը կազմել էր 18,6 տոկոս` հասնելով 2,591 մլրդ դրամի։
+Նույնքան լավատեսական է 2024-ի պետական բյուջեի նախագիծը՝ 16,5 տոկոս աճով, բյուջեի ծախսերը սահմանվել են 3,017 մլրդ դրամ։
+     
+     
+**Գծապատկեր 1.** Դոլարայնացման մակարդակը Հայաստանում ըստ փողի զանգվածի
+
+```{r, echo=FALSE, fig.width = 12, fig.height = 8}
+plot_1
+
+```
+
+### 1.2. Ամենախոշոր բյուջետային ծախսերի փոփոխությունը 2019-2024 թվականներին
+
+Այս բաժնում մենք ուսումնասիրում ենք 2019-ից 2024 թվականներին Հայաստանի բյուջեի ամենակարևոր բյուջետային ծախսերի և ուշագրավ փոփոխությունների վրա: Այս թվերը ոչ միայն արտացոլում են երկրի զարգացող առաջնահերթությունները, այլև նրա արձագանքը տնտեսական, քաղաքական և հասարակական մարտահրավերներին:
+
+1. Կենսաթոշակային ապահովություն և ազգային անվտանգություն։
+
+Աղյուսակից երևում է, որ 2019 թվականին բյուջեի ամենախոշոր հոդվածը կենսաթոշակային ապահովությունն էր՝ բյուջեի 18.9%-ով (312 մլորդ դրամ) և երկրորդը՝ ազգային անվտանգությունը՝ բյուջեի 18.2%-ով (301 մլորդ դրամ): Իսկ 2024 թվականին առաջին տեղում ազգային անվտանգությունն է՝ ընդհանուր բյուջեի 18.2%-ով (550 մլորդ դրամ), երկրորդ տեղում՝ կենսաթոշակային ապահովությունը՝ 15.6%-ով (471 մլորդ դրամ)։ Ընդհանուր առմամաբ Ազգային անվտանգության ծախսերը այս 6 տարիների ընթացքում նույնպես աճել են 2 անգամ։
+
+2. Նոր առաջացած բյուջետային գերակայությունները 2024 թվականին։
+
+2024 թվականի բյուջեի երկու նոր խոշոր հոդվածները արժանի են ուշադրության: Առաջացել են 2 նոր հոդված, որոնք գերակշիռ մասն են կազմում 2024 թվականի բյուջեի պլանի մեջ։ Նախ, «Ներքին գործերի նախարարության ոլորտի քաղաքականության մշակում, կառավարության, կենտրոնացված միջոցառումներ, մոնիտորինգ և վերահսկողություն» հոդվածը կազմել է բյուջեի 2.9%: Ինչպես նաև առաջացել է «Հանրակրթական և նախադպրոցական հաստատությունների հիմնում, կառուցում, բարելավում» հոդվածը, որը կազմել է բյուջեի 3.2%-ը: Ընդհանուր առմամաբ այս 2 հոդվածները ուղված են ներքին տնտեսական զարգացման և քաղաքականության մշակման վրա։
+
+Այս փոփոխությունները ցույց են տալիս Հայաստանի արձագանքը նոր մարտահրավերներին ու հնարավորություններին: Նշեք որ «Արտաքին գործերի ոլորտում Կառավարության քաղաքականության մշակում և իրականացում» հոդվածը այս տարի աճել է 22.7 տոկոսով և կազմում է ընդհոնւր բյուջի նախագծի 0.1 տոկոսը, սա համահունչ է այս տարվա ընդհանուր աճի հետ։ Ըստ մեզ, այս պահին ավելի արդիական է զարգացնել Հայաստանի արտաքին տնտեսական և քաղաքական շահերը, քան ներքին գործերի նախարարության ոլորտի քաղաքականություն մշակել և դրա վրա տրամադրել ընդհանուր բյուջեի 2.9 տոկոսը։
+
+
+**Գծապատկեր 2.** Դոլարայնացման մակարդակը Հայաստանում ըստ արտարժույթով ցպահանջ ավանդների և վարկերի
+
+```{r, echo=FALSE, fig.width = 12, fig.height = 8}
+plot_2
+```
+
+
+### 1.3. Հիմնական բյուջետային փոփոխությունները 2024 թվականին
+
+Դիտարկենք նաև այն ծախսային հոդվածները որոնք 2024 թվականի բյուջեում ունեն զգալի կշիռ և գրանցել են ամենամեծ աճը (տես Աղյուսակ 1)։
+
+
+**Աղյուսակ 1.** ՀՀ դրամով և արտաժույթով ավանդների հարաբերությունը ՀՆԱ-ին
+
+```{r, echo=FALSE, fig.width = 12, fig.height = 8}
+table_1
+```
+
+Այստեղ ամեաուշագրավը «Ռազմաարդյունաբերական համալիրի զարգացում» հոդվածի 41 անգամ աճն է նախորդ տարվա համեմատ։ 5.8 մլրդ դրամ տրամադրվելու է այս ուղղությամբ և այս հոդվածը կազմելու է բյուջեի 0.2 տոկոսը։ Մեծացել է պահուսատային ֆոնդը, նախորդ տարվա համեմատ 2.6 անգամ, կազմելով բյուջեի 3.1 տոկոսը, այսինքն 94 մլրդ դրամ։ Գյուղատնտեսական արդիակականացումը և գիտելիքահենք, նորարարական տնտեսությանը (փոքր և միջին ձեռնարկություններ) հոդվածների ծախսերը աճել են 2.1 անգամ 2023 թվականի համեմատ։ Այս 2 հոդվածը համապատասխանաբար կազմում են բյուջեի 0.8 և 0.7 տոկոսը։ Զբոսաշրջության զարգացումը աճել է 75.7 տոկոսով, կազմելով՝ 13.2 մլրդ դրամ։ Ներդրումներ և արտահանման խթանման ծրագիրը աճել է 48.6 տոկոսով, կազմելով՝ 7.7 մլրդ դրամ։
+
+«Քաղաքաշինության և ճարտարապետության բնագավառում պետական քաղաքականության իրականացում և կանոնակարգում» հոդվածը աճել է 2.2 անգամ։ Արցախի կորստից հետո 2.1 անգամ աճել է նաև «Միջազգային դատարաններում, միջազգային արբիտրաժներում և այլ միջազգային ատյաններում ՀՀ շահերի ներկայացում և պաշտպանություն , դրանց կողմից ընդունված վճիռների և որոշումների կատարման ապահովում» հոդվածը։
+
+### 1.4. Այս թեմայի մասին քննարկումը ԶԼՄ-ներում
+
+Նոյեմբերի 2-ին այս թեմայով ելույթ եմ ունեցել [1in.am հարթակով](https://www.1in.am/3344541.html), որտեղ ավելի մանրամասն քնարկել եմ այս և այլ տնտեսական հարցեր։
+
+Դիտեք հարցազրույցը՝
+
+
+[![](https://i3.ytimg.com/vi/F-ZR7jpfve8/maxresdefault.jpg)](https://youtu.be/F-ZR7jpfve8)
+
+
+
+
+<!-- ## 2. ԶԼՄ հաղորդակցություններ -->
+
+<!-- Ստորև կցում եմ իմ կողմից տրված մի քանի հարցազրույցներ և ԶԼՄ նյութեր, որոնք չեն արծարծվել նախորդ հաղորդագրություններում։ -->
+
+
+
+
+## 2. English Summary
+
+**Armenia's Budget Evolution: From 2018 to 2024"**
+
+The 2024 draft state budget for Armenia reflects significant growth, with planned expenditures more than doubling since 2018, reaching 3.02 trillion drams. The budget projects a deficit of 340 billion drams, equivalent to 3.2% of the GDP, leading to a potential debt-GDP ratio of 48.4% at the end of 2024. Key changes over the past six years in budget expenditures highlight Armenia's financial growth, and two new budget priorities for 2024 emphasize domestic economic development and policy-making, demonstrating the country's adaptability in response to evolving challenges.
+
+In 2019, the largest portions of the budget were allocated to pension security and national security. However, in 2024, national security takes the lead with a notable increase in funding. Additionally, two new budget articles focusing on policy development, management, and educational institutions signify Armenia's commitment to addressing emerging challenges and opportunities. The 2024 budget also shows remarkable growth in areas like the military-industrial complex, reserve fund, agricultural modernization, and knowledge-building, reflecting Armenia's strategic response to evolving financial and societal demands. The full analysis is available in the linked interview for a more in-depth discussion of these economic issues.
+    
+    
+
+Այս վերլուծությունը առկա է նաև [մեր կայքեջում](https://www.tvyal.com/newsletter/2023_11_06), այս վերլուծության կոդը և տվյալները դրված է նաև [Github-ում](https://github.com/tavad/tvyal_newsletter)։                        
+                  
+
+Եթե հնարավոր է, խնդրում եմ այս նյութը ուղարկել նաև այն մարդկանց, ում այն կարծում եք կարող է հետաքրքրել:
+
+Սպասեք հաջորդ հաղորդագրությանը մի շաբաթվա ընթացքում:        
+
+          
+           
+           
+
+
+Հարգանքներով,            
+Աղասի Թավադյան         
+07.11.2023          
+[tvyal.com](https://www.tvyal.com/)      
+[tavadyan.com](https://www.tavadyan.com/)
+
+       
+              
+               
+
+
+####### **Ուշադրություն. Ձեր էլ.փոստը մեյլիսթի մեջ է, որի միջոցով ես կիսվում եմ շաբաթական նյութեր, որոնք հիմնականում ներկայացնում են Հայաստանի տնտեսությանը: Նյութերը ներառում են գծապատկերներ, [տվյալների բազաներ](https://github.com/tavad/tvyal_newsletter), տեսանյութեր, հոդվածներ, [առցանց վահանակներ](https://www.tvyal.com/projects), տնտեսական գործիքներ, կանխատեսումներ և հաշվետվություններ: Եթե ցանկանում եք չեղարկել բաժանորդագրությունը, խնդրում եմ տեղեկացրեք ինձ, և ես կհեռացնեմ ձեր էլ. փոստը ցուցակից: Գրեք նաև եթե ունեք մենկնաբանություններ:**
+
+####### **Important! Your email is part of the mailing list where I share weekly materials primarily focused on the Armenian economy. These materials encompass charts, [databases](https://github.com/tavad/tvyal_newsletter), videos, articles, [online dashboards](https://www.tvyal.com/projects), economic tools, forecasts, and reports. If you wish to unsubscribe, please let me know, and I will remove your email from the list. Please share your comments as well․**
+
+
+
+
+
+
+
