@@ -14,6 +14,8 @@ library(readxl)
 library(hpfilter)
 library(RcppRoll)
 
+rm(list = ls()); gc()
+
 theme_set(ggthemes::theme_fivethirtyeight())
 main_palette_colors <- RColorBrewer::brewer.pal(12, name = "Paired")
 update_geom_defaults("rect", list(fill  = main_palette_colors[2], alpha = 0.8)) 
@@ -21,8 +23,6 @@ update_geom_defaults("line", list(color = main_palette_colors[2], alpha = 0.8))
 update_geom_defaults("area", list(fill  = main_palette_colors[2], alpha = 0.8))
 
 doParallel::registerDoParallel()
-
-rm(list = ls()); gc()
 
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 

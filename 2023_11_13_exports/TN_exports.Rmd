@@ -1,0 +1,322 @@
+---
+title: "Tvyal Newsletter"
+author: "Aghasi Tavadyan"
+date: "2023-11-13"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(scales)
+library(RcppRoll)
+library(readxl)
+library(WDI)
+
+# rm(list = ls()); gc()
+
+theme_tvyal <- function(base_size = 12, base_family = "sans") 
+{
+  colors <- deframe(ggthemes::ggthemes_data[["fivethirtyeight"]])
+  (ggthemes::theme_foundation(
+    base_size = base_size, base_family = base_family) + 
+      theme(
+        line = element_line(colour = "black"), 
+        rect = element_rect(fill = colors["Light Gray"], linetype = 0, colour = NA), 
+        text = element_text(colour = colors["Dark Gray"]), 
+        # axis.title = element_blank(),
+        # axis.text = element_text(), 
+        axis.ticks = element_blank(),
+        axis.line = element_blank(), 
+        legend.background = element_rect(), 
+        legend.position = "bottom", 
+        legend.direction = "horizontal", 
+        legend.box = "vertical", 
+        panel.grid = element_line(colour = NULL), 
+        panel.grid.major = element_line(colour = colors["Medium Gray"]), 
+        panel.grid.minor = element_blank(), 
+        plot.title = element_text(hjust = 0, size = rel(1.5), face = "bold"),
+        plot.margin = unit(c(1, 1, 1, 1), "lines"), strip.background = element_rect()
+      )
+  )
+}
+
+theme_set(theme_tvyal())
+
+main_palette_colors <- RColorBrewer::brewer.pal(12, name = "Paired")
+update_geom_defaults("rect", list(fill  = main_palette_colors[2], alpha = 0.8)) 
+update_geom_defaults("line", list(color = main_palette_colors[2], alpha = 0.8))
+update_geom_defaults("area", list(fill  = main_palette_colors[2], alpha = 0.8))
+
+caption_arm <-  "Հեղինակ` Աղասի Թավադյան   |   tvyal.com   |   tavadyan.com"
+caption_eng <-  "Author: Aghasi Tavadyan   |   tvyal.com   |   tavadyan.com"
+
+doParallel::registerDoParallel(cores = 8)
+
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+```
+
+
+```{r Russia trade forecast, include=FALSE}
+trade_forecast <- read_csv("am_trade_region_forecast.csv")
+
+russia_trade_forecast_plot <- 
+  trade_forecast %>% 
+  filter(
+    country_region %in% "Russian Federation",
+    direction != "import_origin",
+    index >= as.Date("2016-01-01"),
+    period == "YoY",
+    !grepl("auto.arima", model_name)
+  ) %>%
+  mutate(
+    across(contains(c("ribbon", "value")), ~.x/1e6)
+  ) %>% 
+  ggplot(aes(index, value, color = direction, lty = model_name)) +
+  geom_line(linewidth = 1.5) +
+  geom_ribbon(aes(ymin = ribbon_low, ymax = ribbon_high), alpha = .2) +
+  expand_limits(y = 0) +
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+  scale_y_continuous(breaks = 0:10, labels = number_format()) +
+  scale_color_manual(
+    values = main_palette_colors[c(6,2)],
+    labels = c("Exports", "Imports")
+  ) +
+  # scale_color_brewer(type = "qual", palette = 3) +
+  labs(
+    x = NULL, 
+    y = NULL,
+    color = NULL,
+    linetype = "Model Name",
+    title = "Armenia's Exports and Imports to Russia",
+    subtitle = "Million USD, Year over Year", 
+    caption = "The projection is the 12 month cumsum forecast of monthly data with 0.5 interval\n\nAuthor: Aghasi Tavadyan   |   tvyal.com    |    tavadyan.com    |   Data Source: Comtrade"
+  )
+
+# trade_forecast %>% 
+#   filter(
+#     country_region %in% "Russian Federation",
+#     model_name == "Actual Data",
+#     # index >= as.Date("2016-01-01"),
+#     period == "YoY",
+#   ) %>% 
+#   filter(index == max(index))
+
+```
+
+```{r partners plot, include=FALSE}
+plot_comtrade_data <-  read_csv("plot_comtrade_data.csv")
+
+codes_dict <- read_csv("codes_dict.csv")
+
+trade_partners_plot <- 
+  plot_comtrade_data %>% 
+  left_join(codes_dict, by = "commodity_code_group") %>% 
+  mutate(
+    year = year(year),
+    partner = fct_relevel(partner, "EAEU", "EU", "Middle East", "Greater China"),
+    commodity_code_names = fct_rev(commodity_code_names)
+  ) %>% 
+  ggplot() +
+  geom_col(aes(year, trade_value_us / 1e6, fill = commodity_code_names)) +
+  facet_grid(~partner, switch = "x") +
+  scale_y_continuous(n.breaks = 10, labels = dollar_format()) +
+  ggthemes::scale_fill_stata() +
+  labs(
+    x = NULL,
+    y = "Trade Value, Million USD",
+    fill = NULL,
+    title = "Who are Armenia's Trade Partners?",
+    subtitle = "Structure of Armenia's Exports by Trade Regions and Goods in 2010-2023*", 
+    caption = "\n* Data for 2023 is avalable till June and is the cumulative sum of the past 12 months\n\nAuthor: Aghasi Tavadyan   |   tvyal.com    |    tavadyan.com    |   Data Source: Comtrade"
+  ) +
+  guides(fill = guide_legend(ncol = 1)) +
+  theme(
+    legend.position = c(0.81, 0.725),
+    legend.box = "horizontal",
+    legend.title = element_blank(),
+    # axis.text.x = element_text(angle = 90),
+    strip.text.x = element_text(size = 12),
+    plot.title = element_text(size = 20, face = 'bold'),
+    plot.subtitle = element_text(size = 14),
+    plot.caption = element_text(size = 12)
+  )
+```
+
+
+```{r GDP plot, include=FALSE}
+# run to update the data, ideally once a year
+# WDI::WDI(
+#   country = "all",
+#   indicator = c("NY.GDP.MKTP.CD", "NY.GDP.MKTP.PP.CD",
+#                 "NY.GDP.PCAP.CD", "NY.GDP.PCAP.PP.CD"),
+#   start = 1990,
+#   extra = TRUE
+# ) %>%
+#   as_tibble() %>%
+#   write_excel_csv("GDP_data.scv")
+
+GDP_data <- read_csv("GDP_data.scv")
+
+GDP_dict <- 
+  WDI::WDIsearch("GDP") %>% 
+  as_tibble()
+
+GDP_plot <- 
+  GDP_data %>% 
+  filter(
+    iso3c %in% c("ARM", "GEO", "AZE")
+  ) %>%
+  pivot_longer(contains("GDP"), names_to = "indicator") %>%
+  left_join(GDP_dict, by = join_by(indicator)) %>% 
+  mutate(
+    value = ifelse(
+      grepl("NY.GDP.MKTP", indicator),
+      value / 1e9,
+      value
+    ),
+    name = ifelse(
+      grepl("NY.GDP.MKTP", indicator),
+      str_replace(name, "\\$", "$, Billion"),
+      name
+    ),
+    name = fct_inorder(name),
+  ) %>% 
+  ggplot(aes(year, value, color = country)) +
+  geom_line(size = 2) +
+  facet_wrap(~name, scales = "free_y") +
+  scale_x_continuous(breaks = seq(1990, 2030, 5)) +
+  scale_y_continuous(labels = dollar_format()) +
+  scale_color_brewer(type = "qual", palette = 3) +
+  ggthemes::theme_fivethirtyeight() +
+  labs(
+    color = NULL,
+    title = "GDP Comparison in South Caucasus Countries",
+    subtitle = "from 1990 to 2022",
+    caption = "Author: Aghasi Tavadyan   |   tvyal.com   |   tavadyan.com   |   Data Source: World Bank"
+  )
+
+```
+
+
+***English summary below.***
+
+Հարգելի գործընկեր,
+
+Հուսով եմ լավ եք:
+Ներկայացնում եմ անցած շաբաթվա վերլուծությունները և աշխատանքները.
+
+1. ՀՀ առևտրաշրջանառության վերլուծություն
+2. ՀՆԱ-ի հարաբերությունը Հարավային Կովկասի տնտեսություններում
+2. English summary
+
+
+## 1. ՀՀ առևտրաշրջանառության վերլուծություն
+
+Այս շաբաթվա նյուզլեթերի նպատակն է լուսաբանել Հայաստանի առևտրաշրջանառության ուղղությունները։ Այս նյութի նպատակն է լուսաբանել, թե որտեղ և ինչ ենք արտահանում և ինչ պետենցիալ ունի մար պատրաստի, բարձր ավելացված արժեք ունեցող արտադրանքը արտասահմանում։
+
+Այս, ինչպես նաև մեր կողմից հրապարակվող այլ նյութերի վիճակագրական տվյալները և կոդը հասանելի են, նայիր գիթաբի հղումը ներքևում։
+                                                                                                
+
+### 1.1. Հայաստանի առևտուրը Ռուսաստանի հետ մի քանի խոսքով
+
+2023 թվականի սեպտեմբերի դրությամբ Հայաստանը 24 տոկոսով ավելի շատ ապրանք է արտահանում Ռուսաստան, քան ներմուծում է։  2023 թվականի սեպտեմբերին նախորդ 12 ամիսների կտրվածքով արտահանվել է 3.68 մլրդ դոլարի ապրանք, իսկ ներմուծվել 2.97 մլրդ դոլարի ապրանք։ Ընդհանուր արտահանման ավելի քան 52 տոկոսը (կեսից ավելին) արտահանվում է Ռուսաստան և դա հիմնականում բարձր ավելացված արժեք ունեցող վերջնական արտադրանք է, տես՝ գծապատկեր 1։
+
+Հաշվի առնելով այս հանգամենքը, կարելի է պնդել, որ այս պահին Ռուսաստանի տնտեսությունը Հայաստանից ինչ որ տեղ ավելի շատ է կախված։
+
+2021 թվականին տարեկան արտահանումը կազմում էր 841 մլն դոլար, իսկ ներմուծումը մոտ 2 անգամ ավել էր՝ 1,79 մլրդ դոլար։ Այս պահին հարաբերությունը հակառակն է։ վերջին 2 տարվա ընթացքում արտահանումը աճեց ավելի քան 4 անգամ։
+
+Մեր գնահատականով վերաարտահանումը արտահանման մեջ կազմել է 43 տոկոս։ Ինչպես երևում է գծապատկերից 2023 թվականի կեսերին արտահանումը հասել է իր գագաթնային կետին և այս պահին արտահանման ցուցանիշները դեպի Ռուսաստան ամենայն հավանականությամբ անկման տենդենց ունեն։ (Վերաարտահանման մասին ավելի մանրամասն՝ [Tvyal Newsletter - 2023-09-11](https://www.tvyal.com/newsletter/week-32))։
+     
+**Գծապատկեր 1.** Հայաստանի արևտրաշրջանառությունը Ռուսատանի հետ և կանխատեսումը
+
+```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
+russia_trade_forecast_plot
+
+```
+
+### 1.2. Որո՞նք են Հայաստանի հիմնական առևտրային գործընկերները և ուր է գնում պատրաստի արտադրանքը։
+
+Գծապատկեր 2-ում ցույց տված ցուցանիշներ մեջ դեպի ԵԱՏՄ 84 արտաքին տնտեսական գործունեության հոդվածից վերև գրեթե բոլոր ապրանքները վերաարտահանում են, ինչպես նաև դեպի Միջին Արևելք 71-րդ հոդվածը (թանկարժեք քարեր և մետաղներ) նույնպես վերաարտահանում է։
+
+Դեպի ԵԱՏՄ այս պահին գնում է ընդհանուր արտահանման 55.6 տոկոսը, մոտ 3.8 մլրդ դոլար, դեպի Միջին արևելք արտահանման մոտ 18․8 տոկոսը, 1․3 մլրդ դոլար։ Այսինքն Դեպի ԵԱՏՄ արտահանվում է ապրանքի կեսից ավելին։
+
+Դեպի Չինաստան առյուծի բաժինը պղնձի հանքաքարն է (25-րդ հոդված), այս ուղությունը կազմում է արտահանման 6.1 տոկոսը։
+
+Դեպի Եվրամիություն արտահանման հիմնականում հանքաքարն է և մետաղները (76 տոկոս), բացառություն է կազմում 2013-ից զարգացում ապրած թեթև արդյունաբերությունը, որը այս պահին դեպի ԵՄ արտահանման 18 տոկոսն է։ ԵՄ-ն կազմում է ընդհանուր արտահանման 10.7 տոկոսը 0.73 մլրդ դոլարով։
+
+Դեպի ԵԱՏՄ, հիմնականում Ռուսատան, արտահանումը ունի ամենադիվերսիֆիկացված տեսքը, արտահանվում է բերձր ավելացված արժեք ունեցող վերջնական արտադրանք։ Իհարկե պետք է հանենք վերաարտահանումը, որը այս պահին այդ ուղղությամբ արտահանման կեսից ավելին է (տես 84 բարձր հոդվածները։ Սակայն նույնիսկ եթե հանենք այդ հոդվածները գծապատկերից (մուգ կապույտ և մուգ կարմիր), ապա աճը այստեղ նույնպես զգալի է, գրեթե 2 անգամ։
+
+Պետք է նշել որ վերաարտահանման մեջ Հայաստանի տնտեսության համար կարևոր հոդված է մեքենաների արտահանումը, որը նույնպես որոշակի խթան հանդիսացավ տնտեսության զարգացման համար։
+
+* Հաշվարկները 2023 համար արված են հուլիս ամսվանից վերջին 12 ամիսների կտրվածքով։
+
+
+**Գծապատկեր 2.** Հայաստանի արտահանման կառուցվածքը ըստ գործընկեր տարածաշրջանների և ապրանքնատեսակների (2010-2023)
+
+```{r, echo=FALSE, fig.width = 12, fig.height = 8}
+trade_partners_plot
+```
+
+
+## 2. ՀՆԱ-ի հարաբերությունը Հարավային Կովկասի տնտեսություններում
+
+Ներկա քաղաքա-տնտեսակական զարգացումների համատեքսում կարիք կա նաև ուսումնասիրել Հարավային Կովկասի 3 պետությունների ՀՆԱ-ի դինամիկան, որը թույլ է տալիս ավելի հստակ պատկերացում կազմել պատմական իրողությունների վերաբերյալ։
+
+Գծապատկեր 3-ում զետեղված ամենակարևոր ցուցանիշը գնողունակության համարժեքությամբ հաշվարկված ՀՆԱ-ն է (GDP PPP), որը ցույց է տալիս թե որքան համարժեք ապրանք (նաև զենք, զինամթերք) իր փողով կարող է պետությունը գնել։ 2022 թվականին GDP PPP Հայաստանի համար կազմել է 52.7, Վրաստանի՝ 74.7, իսկ Ադրբեջանի համար 180.8 մլրդ դոլար։
+
+Մինչ 2004 թիվը Հարավային Կովկասի պետությունների ՀՆԱ-ի ցուցանիշները համարժեք էին։
+Մեկ շնչի հաշվով Հարավային Կովկասի պետությունները համարժեք են։ Գնողունակության համարժեքությամբ հաշվարկված մեկ շնչով ՀՆԱ-ի ցուցանիշը (GDP per capita, PPP) ցույց է տալիս թե տվյալ պետությունում միջին անհատի հարստության մակարդակը։
+
+
+**Գծապատկեր 3.** ՀՆԱ-ի համեմատությունը Հարավային Կովկասի պետություններում
+
+```{r, echo=FALSE, fig.width = 12, fig.height = 8}
+GDP_plot
+```
+
+
+## 3. English Summary
+
+**Armenia's Budget Evolution: From 2018 to 2024"**
+
+This week's newsletter delves into Armenia's trade dynamics, particularly focusing on its relationship with Russia. As of September 2023, Armenia's exports to Russia have surged by 24%, surpassing imports. Notably, more than half of Armenia's total exports, primarily comprising high-value-added final products, are directed to Russia. This trend signifies a certain economic dependence of Russia on Armenia, a shift from the trade balance in 2021 where Armenia's imports from Russia exceeded exports. The newsletter also sheds light on Armenia's diverse trade partners, revealing that over 55% of its exports head to the Eurasian Economic Union (EAEU). The export structure, as illustrated in Figure 2, demonstrates the significance of re-exports and the notable growth in the export of final products to EAEU countries, especially Russia.
+
+In addition to trade insights, the newsletter provides a glimpse into the GDP relationships among South Caucasus economies. Figure 3 emphasizes the GDP calculated by purchasing power parity (PPP), showcasing the disparity between Armenia, Georgia, and Azerbaijan. While their GDPs were equivalent before 2004, the current figures reveal significant differences, with Azerbaijan leading in GDP PPP. The analysis extends to per capita GDP, indicating the wealth levels of individuals in each country. Understanding these economic dynamics is crucial amidst current political and economic developments in the region, providing a comprehensive view of historical realities and potential future trends.
+    
+    
+
+Այս վերլուծությունը առկա է նաև [մեր կայքեջում](https://www.tvyal.com/newsletter/2023_11_13), այս վերլուծության կոդը և տվյալները դրված է նաև [Github-ում](https://github.com/tavad/tvyal_newsletter)։                        
+                  
+
+Եթե հնարավոր է, խնդրում եմ այս նյութը ուղարկել նաև այն մարդկանց, ում այն կարծում եք կարող է հետաքրքրել:
+
+Սպասեք հաջորդ հաղորդագրությանը մի շաբաթվա ընթացքում:        
+
+          
+           
+           
+
+
+Հարգանքներով,            
+Աղասի Թավադյան         
+13.11.2023          
+[tvyal.com](https://www.tvyal.com/)      
+[tavadyan.com](https://www.tavadyan.com/)
+
+       
+              
+               
+
+
+####### **Ուշադրություն. Ձեր էլ.փոստը մեյլիսթի մեջ է, որի միջոցով ես կիսվում եմ շաբաթական նյութեր, որոնք հիմնականում ներկայացնում են Հայաստանի տնտեսությանը: Նյութերը ներառում են գծապատկերներ, [տվյալների բազաներ](https://github.com/tavad/tvyal_newsletter), տեսանյութեր, հոդվածներ, [առցանց վահանակներ](https://www.tvyal.com/projects), տնտեսական գործիքներ, կանխատեսումներ և հաշվետվություններ: Եթե ցանկանում եք չեղարկել բաժանորդագրությունը, խնդրում եմ տեղեկացրեք ինձ, և ես կհեռացնեմ ձեր էլ. փոստը ցուցակից: Գրեք նաև եթե ունեք մենկնաբանություններ:**
+
+####### **Important! Your email is part of the mailing list where I share weekly materials primarily focused on the Armenian economy. These materials encompass charts, [databases](https://github.com/tavad/tvyal_newsletter), videos, articles, [online dashboards](https://www.tvyal.com/projects), economic tools, forecasts, and reports. If you wish to unsubscribe, please let me know, and I will remove your email from the list. Please share your comments as well․**
+
+
+
+
+
+
+
