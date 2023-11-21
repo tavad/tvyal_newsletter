@@ -414,7 +414,6 @@ fuel_price_plot_7 <-
 #   geom_line()
 
 
-
 ```
 
 
