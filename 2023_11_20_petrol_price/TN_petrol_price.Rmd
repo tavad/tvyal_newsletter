@@ -111,7 +111,7 @@ labs(
   y = NULL,
   title = "Fuel Prices in Countries near Armenia: A Comparative Analysis",
   subtitle = "Comparison of petrol prices in countries predominantly importing fuel,\nArmenian Drams for 1 Liter. Data as of November 20, 2023.",
-  caption = paste0(caption_arm, "   |   Data Source: oilpricez.com")
+  caption = paste0(caption_eng, "   |   Data Source: oilpricez.com")
 )
 
 # save_last_plot("petrol_price_in_the_region")
@@ -144,7 +144,7 @@ fuel_price_plot_1 <-
     color = NULL,
     title = "Petrol and Disel Price in Armenia",
     subtitle = "Armenian Drams for 1 Liter",
-    caption = "Author: Aghasi Tavadyan    |    tvyal.com    |    tavadyan.com    |    Data source: 1in.am"
+    caption = paste0(caption_eng, "   |    Data source: 1in.am")
   )
 
 # save_last_plot("Petrol_and_Disel_Price_in_Armenia")
@@ -171,7 +171,7 @@ fuel_price_plot_2 <-
     color = NULL,
     title = "Liquefied Gas Price in Armenia",
     subtitle = "Armenian Drams for 1 Liter",
-    caption = "Author: Aghasi Tavadyan    |    tvyal.com    |    tavadyan.com    |    Data source: 1in.am"
+    caption = paste0(caption_eng, "   |    Data source: 1in.am")
   )
 
 # save_last_plot("Լiquefied Gas Price in Armenia")
@@ -226,7 +226,8 @@ fuel_price_plot_3 <-
     x = NULL,
     y = NULL,
     title = "The annual imports of Petrolium fuel to Armenia",
-    subtitle = "Million litters"
+    subtitle = "Million litters",
+    caption = paste0(caption_eng, "   |    Data source: Comtrade")
   )
 
 fuel_price_plot_4 <- 
@@ -251,7 +252,7 @@ fuel_price_plot_4 <-
     fill = NULL,
     title = "The Annual Imports of Petroleum Fuel to Armenia",
     subtitle = "Million kilograms",
-    caption = "Author: Aghasi Tavadyan    |    tvyal.com    |    tavadyan.com    |    Data source: Comtrade"
+    caption = paste0(caption_eng, "   |    Data source: Comtrade")
   )
 
 # save_last_plot("The annual imports of Petrolium fuel to Armenia.png")
@@ -337,7 +338,8 @@ fuel_price_plot_6 <-
     y = NULL,
     fill = NULL,
     title = "The Annual Imports of Petrolium Fuel to Armenia by Country",
-    subtitle = "Million Kilograms"
+    subtitle = "Million Kilograms",
+    caption = paste0(caption_eng, "   |    Data source: Comtrade")
   )
 
 # save_last_plot("The Annual Imports of Petrolium Fuel to Armenia by country")
@@ -371,6 +373,7 @@ fuel_price_plot_7 <-
   labs(
     x = NULL,
     y = NULL,
+    caption = paste0(caption_eng, "   |    Data source: Comtrade")
   )
 ```
 
