@@ -1,7 +1,7 @@
 ---
 title: "Tvyal Newsletter"
 author: "Aghasi Tavadyan"
-date: "2023-11-20"
+date: "2023-11-21"
 output: html_document
 ---
 
@@ -90,7 +90,8 @@ petrol_price[[4]] |>
   ) |> 
   write_csv("petrol_price_world.csv")
 
-read_csv("petrol_price_world.csv") |> 
+fuel_price_plot_0 <- 
+  read_csv("petrol_price_world.csv") |> 
   mutate(
     iso3c = countrycode(country, origin = 'country.name', destination = 'iso3c'),
     price_in_usd = parse_number(price_in_usd),
@@ -103,9 +104,17 @@ read_csv("petrol_price_world.csv") |>
   filter(iso3c %in% c("TUR", "GEO", "BLR", "KGZ", "ARM", "UZB", "MDA")) |> 
   ggplot(aes(price_in_amd, country)) +
   geom_col(alpha = 0.8) +
-  geom_text(aes(x = 40, label = price_amd_text), color = "white")
+  geom_text(aes(x = 40, label = price_amd_text), color = "white") +
+  scale_x_continuous(breaks = seq(0,600,100)) +
+labs(
+  x = NULL,
+  y = NULL,
+  title = "Fuel Prices in Countries near Armenia: A Comparative Analysis",
+  subtitle = "Comparison of petrol prices in countries predominantly importing fuel,\nArmenian Drams for 1 Liter. Data as of November 20, 2023.",
+  caption = paste0(caption_arm, "   |   Data Source: oilpricez.com")
+)
 
-save_last_plot("petrol_price_in_the_region")
+# save_last_plot("petrol_price_in_the_region")
 ```
 
 
@@ -134,11 +143,11 @@ fuel_price_plot_1 <-
     y = NULL,
     color = NULL,
     title = "Petrol and Disel Price in Armenia",
-    subtitle = "Armenian Dram",
+    subtitle = "Armenian Drams for 1 Liter",
     caption = "Author: Aghasi Tavadyan    |    tvyal.com    |    tavadyan.com    |    Data source: 1in.am"
   )
 
-save_last_plot("Petrol_and_Disel_Price_in_Armenia")
+# save_last_plot("Petrol_and_Disel_Price_in_Armenia")
 
 fuel_price_plot_2 <- 
   fuel_price |> 
@@ -161,11 +170,11 @@ fuel_price_plot_2 <-
     y = NULL,
     color = NULL,
     title = "Liquefied Gas Price in Armenia",
-    subtitle = "Armenian Dram",
+    subtitle = "Armenian Drams for 1 Liter",
     caption = "Author: Aghasi Tavadyan    |    tvyal.com    |    tavadyan.com    |    Data source: 1in.am"
   )
 
-save_last_plot("iquefied Gas Price in Armenia")
+# save_last_plot("Լiquefied Gas Price in Armenia")
 
 ```
 
@@ -220,8 +229,6 @@ fuel_price_plot_3 <-
     subtitle = "Million litters"
   )
 
-save_last_plot("The annual imports of Petrolium fuel to Armenia.png")
-
 fuel_price_plot_4 <- 
   plot_petrolium_imports_1 |>
   filter(commodity_code %in% c(271012, 271019)) |> 
@@ -242,10 +249,12 @@ fuel_price_plot_4 <-
     x = NULL,
     y = NULL,
     fill = NULL,
-    title = "The annual imports of Petroleum fuel to Armenia",
-    subtitle = "Million liters",
+    title = "The Annual Imports of Petroleum Fuel to Armenia",
+    subtitle = "Million kilograms",
     caption = "Author: Aghasi Tavadyan    |    tvyal.com    |    tavadyan.com    |    Data source: Comtrade"
   )
+
+# save_last_plot("The annual imports of Petrolium fuel to Armenia.png")
 ```
 
 
@@ -283,10 +292,11 @@ fuel_price_plot_5 <-
     y = NULL,
     color = NULL,
     title = "Import Price of Pertol and Diesel Fuils into Armenia",
-    subtitle = "Liters to Armenian Drams",
+    subtitle = "Armenian Drams for 1 Liter",
     caption = "The import price is calculated using the formula: (trade value in USD) / (nerweight in kg) / (dencity l/kg) * USD_AMD\nPetrol density = 0.737, Diesel density = 0.885\n\nAuthor: Aghasi Tavadyan    |    tvyal.com    |    tavadyan.com    |    Data source: Comtrade"
   )
 
+# save_last_plot("Import Price of Pertol and Diesel Fuils into Armenia")
 ```
 
 
@@ -325,9 +335,12 @@ fuel_price_plot_6 <-
   labs(
     x = NULL,
     y = NULL,
-    title = "The annual imports of Petrolium fuel to Armenia",
-    subtitle = "Million litters"
+    fill = NULL,
+    title = "The Annual Imports of Petrolium Fuel to Armenia by Country",
+    subtitle = "Million Kilograms"
   )
+
+# save_last_plot("The Annual Imports of Petrolium Fuel to Armenia by country")
 
 fuel_price_plot_7 <- 
   fuil_imports |> 
@@ -410,7 +423,7 @@ petrol_imports_price_long <-
   rename(Date = period) |> 
   select(Date, name_short_eng, liter_price) |> 
   pivot_wider(names_from = name_short_eng, values_from = liter_price) |> 
-  filter(Date >= as.Date("2018-12-01")) |> 
+  filter(Date >= as.Date("2016-12-01")) |> 
   pivot_longer(-Date) |> 
   mutate(market = "Import Price")
 
@@ -477,7 +490,7 @@ fuel_price_plot_8 <-
     caption = "Author: Aghasi Tavadyan    |    tvyal.com    |    tavadyan.com"
   )
 
-save_last_plot("Petroleum Imports and the Domestic Price")
+# save_last_plot("Petroleum Imports and the Domestic Price")
   
 
 ```
@@ -491,72 +504,119 @@ save_last_plot("Petroleum Imports and the Domestic Price")
 Ներկայացնում եմ անցած շաբաթվա վերլուծությունները և աշխատանքները.
 
 1. Բենզինի գնի թանկացման պատճառները
-2. ԶԼՄ հաղորդագրություններ բենզինի գնի վերաբերյալ
-3. English summary
+2. ԶԼՄ հաղորդագրություններ
+3. Սպասում եմ ձեզ իմ սթրիմին
+4. English summary
 
 
 ## 1. Բենզինի գնի թանկացման պատճառները
 
-Բենզինը թանկանում է հունիսից սկսած։ Վիճակագրական կոմիտեի տվյալներով՝ 2023թ. հուլիսին, հունիսի համեմատ, Հանրապետությունում գրանցվել է բենզինի 11.1% գնաճ, իսկ հունիսին, մայիսի համեմատ, այն թանկացել է 10.5%-ով։
+Այս շաբաթվա հետազոտությունը անելու համար օգտվել ենք հետևյալ աղբյուրներից․
 
-Նախ ուսումնասիրենք բենզինի գինը ԵԱՏՄ երկրներում, մեր հարևան երկրներում և մի շարք այլ երկրներում: Ինչպես երևում է առաջին գծապատկերից այն Հայաստանում հեմամատած մեր հարևանների և ԵԱՏՄ երկրների ամենաբարձրն է: Իրանում բենզինի ներքին շուկայական գնիը 11 դրամ է լիտրի համար, որը աշխարի ամենացածր գներից է: Սակայն սահմանին Իրանը մեզ բենզինը վաճառում է 400-ից 500 դրամով:
+* Բենզինի և դիզելային վառելիքի գնի օրական տվյալների, ձևավորված [1in.am Յութուբյան ալիքի տեսանյութերի նկարներից](https://img.youtube.com/vi/tV15O3Ilrc8/maxresdefault.jpg)
+* Վառելիքի թանկացման ամսական տվյալների բազան ըստ [ՍԳԻ սկսած 2017թ․](https://www.armstat.am/am/?nid=82&id=2611)
+* վառելիքի ներմուծման ամսական տվյալների բազան ըստ 6-նիշ արտաքին տնտեսական գործունեության ծածկագրերի և պետությունների
+
+բոլոր տվյալների բազաները և գծապատկերների կոդը առկա է իմ [Github-ում](https://github.com/tavad/tvyal_newsletter)
+
+------------------
+
+Նախ ուսումնասիրենք բենզինի գինը տարածաշրջանի այն երկրներում, որոնք հիմնականում համարվում են նավթամթերք ներմուծող պետություն։ Նշեմ, որ Հայաստանում համեմատած մեր հարևանների և ԵԱՏՄ երկրների բենզինի գինը ամենաբարձրն է։ Սակայն սրա պատճառները հիմնականում տրանսպորտային ծախսերն են և այն հանգամանքը, որ Հայաստանը նավթամթերք արտադրող պետություն չէ։ ՀՀ դրամով հաշվարկված այս պահին, Վրաստանում բենզինի գինը կազմում է մոտ 500 դրամ։
      
-**Գծապատկեր 1.** Բենզինի միջին գնիը Հայաստանում և մի շարք այլ պետություններում
+**Գծապատկեր 1.** Բենզինի միջին գնիը Հայաստանում և տարածաշրջանի բանզին ներմուծող այլ պետություններում
 
 ```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
-fuel_price_plot_1
-
+fuel_price_plot_0
 ```
 
-Գծապատկեր 2-ում ներկայացված է բենզինի ընդհանուր քանակության ներմուծումը միլիոն լիտրով: Ինչպես երևում է գծապատկերից նավթամթերքի ներմուծման ծավալները 2010-ից 2017թ. սկիզբը եղել են գրեթե անփոփոխ: 2017 թվականից սկսած գրանցվել է նավթամթերիքի ներմուծման շարունակական և կայուն աճ: 2016թ. ներմուծվել է համապատասխանաբար 170 և 100 մլն լիտր դիզվառելիք և բենզին, իսկ 2022թ արդեն 600 և 450 հազար լիտր: Նավթամթերքը էներգիայի կարևոր աղբյուր է, որն ապահովում է տրանսպորտը և արդյունաբերական գործունեությունը: Երբ երկիրն ավելի շատ բենզին է ներկրում, դա ընդհանուր առմամբ նշանակում է, որ էներգիայի ներքին պահանջարկը մեծանում է: Սա կարող է լինել աճող տնտեսության ցուցանիշ, որը վկայում է սպառողական ծախսերի, ձեռնարկատիրական գործունեության և արդյունաբերական արտադրության աճի վերաբերյալ:
+Գծապատկեր 2-ում ներկայացված է բենզինի ընդհանուր քանակության ներմուծումը միլիոն կիլոգրամով: Ինչպես երևում է գծապատկերից նավթամթերքի ներմուծման ծավալները 2010-ից 2019թ. սկիզբը եղել են գրեթե անփոփոխ: 2019 թվականից սկսած գրանցվել է նավթամթերիքի ներմուծման շարունակական և կայուն աճ: 2017թ. ներմուծվել է համապատասխանաբար 200 և 140 մլն կիլոգրամ դիզվառելիք և բենզին, իսկ 2022թ արդեն 300 և 225 հազար կիլոգրամ: Ընդհանուր նավթամթերի ներկրումը վերջին 5 տարիների ընթացքում աճել է 1.5 անգամ։ Նավթամթերքը էներգիայի կարևոր աղբյուր է, որն ապահովում է տրանսպորտային և արդյունաբերական գործունեությունը: Երբ երկիրն ավելի շատ բենզին է ներկրում, դա ընդհանուր առմամբ նշանակում է, որ էներգիայի ներքին պահանջարկը մեծանում է։ Սա կարող է լինել աճող տնտեսության ցուցանիշ, որը վկայում է սպառողական ծախսերի, ձեռնարկատիրական գործունեության և արդյունաբերական արտադրության աճի վերաբերյալ:
 
 
 **Գծապատկեր 2.** Բենզինի և դիզվառելիքի Հայաստան ներմուծման տարեկան ծավալները
+
+```{r, echo=FALSE, fig.width = 12, fig.height = 8}
+fuel_price_plot_4
+```
+
+
+Գծապատկեր 3-ում ներկայացված է բենզինի գնի փոփոխությունը, ըստ 1in.am լրատվամիջոցի օրական հրապարակումների: Այս տվյալները ստացվել են քերելով 1in.am Յութուբյան ալիքի բենզինի գների վերաբերյալ տեսանյութերի նկարները (thumbnails): Ինչպես երևում է գծապատկերից բենզինի գինը մինչև 2023 թվականին գրանցված աճը, ամենաբարձրն է եղել 2022 թվականի ապրիլին, երբ 1 լիտր պրեմիում դասի բենզինը արժեր 540 դրամ: 2022թ. վերջին պրեմիում դասի բենզինի գինը նվազեց մինչև 350 դրամ 1 լիտրի համար, որը գրանցվել էր 2023 թվականի փետրվարին: 2023 թվականին շարունակաբար գրանցվեց վառելիքի գնի բարձրացում: Թե ինչո՞վ էր պայմանավորված այդ բարձրացումը կքննարկենք հաջորդիվ: 
+
+
+**Գծապատկեր 3.** Բենզինի և դիզելային վառելիքի գինը Հայաստանում (ՀՀ դրամ)
+
+```{r, echo=FALSE, fig.width = 12, fig.height = 8}
+fuel_price_plot_1
+```
+
+Հաջորդ գծապատկերում տրված է հողուկ գազի լիտրի գինը ներքին շուկայում։
+
+**Գծապատկեր 4.** Հեղուկ գազի Հայաստանում (ՀՀ դրամ)
 
 ```{r, echo=FALSE, fig.width = 12, fig.height = 8}
 fuel_price_plot_2
 ```
 
 
-Գծապատկեր 3-ում ներկայացված է բենզինի գնի փոփոխությունը, ըստ 1in.am լրատվամիջոցի օրական հրապարակումների: Այս տվյալները ստացվել են քերելով 1in.am Յութուբյան ալիքի տեսանյութերի նկարները (thumbnails) բենզինի գների մասին: Ինչպես երևում է գծապատկերից բենզինի գինը վերջին շրջանում ամենաբարձրն է եղել 2022 թվականի ապրիլին, երբ 1 լիտր պրեմիում դասի բենզինը արժեր 540 դրամ: 2022թ. վերջին պրեմիում դասի բենզինի գինը նվազեց մինչև 380 դրամ 1 լիտրի համար: 2023 թվականին շարունակաբար գրանցվեց վառելիքի գնի բարձրացում: Թե ինչո՞վ էր պայմանավորված այդ բարձրացումը կքննարկենք հաջորդ գծապատկերներում: 
+Ստորև ներկայացված է բենզինի և դիզելային վառելիքի ներմուծման գինը: Այն հաշվարկվել է բաժանելով տվյալ ամսվա ներմուծման արժեքային և բնեղեն տվյալները, որից ստացվել է բենզինի գնի կիլոգրամի ներմուծման արժեքը ԱՄՆ դլորով: Ստացված ցուցանիշը բաժանվել է բենզինի և դիզելի խտության վրա և բազմապատկվել տվյալ ամսվա միջին ԱՄՆ դոլար դրամ փոխարժեքով: Իհարկե ստացված ցուցանիշը ոնի որոշակի ճշգրտության խնդիր, քանի որ նավթամթերքի խտությունը ըստ ջերմաստիճանի կարող է փոխվել ինչպես նաև պետք է հաշվի առնել դոլարի վաճառքի գինը ներքին շուկայում։ Սակայն այս ցուցանիշի դինամիկան հստակ պատկերացում կարող է տալ թե ինչքանով է տարբերվում նավթամթերքի գինը սահմանին, որը ձեռք են բերում մեր տնտեսվարողները և բենզինի գինը ներքին շուկայում։
 
 
-**Գծապատկեր 3.** Բենզինի գինը Հայաստանում (ՀՀ դրամ)
-
-```{r, echo=FALSE, fig.width = 12, fig.height = 8}
-fuel_price_plot_4
-```
-
-Ստորև ներկայացված է բենզինի և դիզելային վառելիքի ներմուծման գինը: Այն հաշվարկվել է բաժանելով տվյալ ամսվա ներմուծման արժեքային և բնեղեն տվյալները, որից ստացվել է բենզինի գնի կիլոգրամի ներմուծումը ԱՄՆ դլորով: Ստացված ցուցանիշը բաժանվել է բենզինի և դիզելի խտության վրա և բազմապատկվել տվյալ ամսվա միջին ԱՄՆ դոլար դրամ փոխարժեքով: Դիզելային վառելիքը 76 տոկոսը ներմուծվում է Ռուսաստանից, 10.2 տոկոսը Իրանից: Հետաքրքիրն այն է որ ճիշտ է Իրանի ներքին շուկայում բենզինի լիտրը վաճառվում է 11 դրամով, այն Հայաստան ներմուծվում է գրեթե նույն գնով, ինչ Ռուսաստանից: Սա կարող է քաղաքական պատճառներ ունենալ, քանի որ Ռուսաստանից եկող նավթամթերքի գնիը թանկ է, քանի որ բարձր են տրանսպորտային ծախսերը, իսկ Իրանի հետ մենք ունենք ուղիղ սահման:
-
-
-**Գծապատկեր 4.** Բենզինի և դեզվառելիքի ներմուծման գինը
+**Գծապատկեր 5.** Բենզինի և դեզվառելիքի ներմուծման գինը
 
 ```{r, echo=FALSE, fig.width = 12, fig.height = 8}
 fuel_price_plot_5
+```
+
+Դիտարկենք նաև նավթամթերքի ներմուծումը ըստ պետությունների։ Դիզելային վառելիքը 76 տոկոսը ներմուծվում է Ռուսաստանից, 10.2 տոկոսը Իրանից: Հետաքրքիրն այն է որ ճիշտ է Իրանի ներքին շուկայում բենզինի լիտրը շատ ցածր գին ունի, այն Հայաստան ներմուծվում է գրեթե նույն գնով, ինչ Ռուսաստանից: Սա կարող է քաղաքական պատճառներ ունենալ, քանի որ Ռուսաստանից եկող նավթամթերքի գնիը թանկ է, քանի որ բարձր են տրանսպորտային ծախսերը, իսկ Իրանի հետ մենք ունենք ուղիղ սահման:
+
+
+**Գծապատկեր 6.** Բենզինի և դեզվառելիքի ներմուծման ծավալները ըստ ծագման երկրի
+
+```{r, echo=FALSE, fig.width = 12, fig.height = 8}
 fuel_price_plot_6
 ```
 
-Վերջին գծապատկերում ներկայացված է բենզինի ներմուծման գնի և շուկայական գնի դինամիկան դիզելային վեռելիքի և բենզինի համար: Ինչպես երևում է ներմուծման գինը և շուկայական գինը ունեն կախվածության մեծ աստիճան: Շուկան մրցունակ է և արագ արձագանքում է սահմանին բենզինի գների փոփոխությանը: Բենզինի գինը կարգավորելու և այն իջեցնելու համար առաջին հերթին այն պիտի կարգավորվի սահմանին: Ինչպես ցույց էր տված 1-ին գծապատկերում, ԵԱՏՄ երկրների և մեր հարևան երկների համեմատ Հայաստանում բենզինի գինը ամենաբարձրն է: Մենք գտնվում ենք ԵԱՏՄ ընդհանուր շուկայում և ըստ ԵԱՏՄ համաձայնագրի պետք է գործի ընդհանուր էներգառեսուրսների շուկա: Բենզինի գնի համեմատաբար բարձր լինելը հիմնականում պայմանավորված է տրանսպորտային ծախսերով և պետք է քայլել ձեռներկել այն ապագայում իջեցնելու համար:
+Վերջին գծապատկերում ներկայացված է բենզինի ներմուծման գնի և շուկայական գնի դինամիկան դիզելային վեռելիքի և բենզինի համար: Ինչպես երևում է ներմուծման գինը և շուկայական գինը ունեն կախվածության մեծ աստիճան: Այսինքն Հայաստանի ներքին շուկան բավականին մրցունակ է և չի կարող թելադրել ներքին գինը։ Այն գինը ինչ սահմանին տնտեսվարողը գնում է նավթամթերը համեմատելի է այն գնին ինչ վճարում է սովորական քաղաքացուն։ 
 
-**Գծապատկեր 5.** Նավթամթերքի ներմուծաման և շուկայական գնի տարբերությունը
+Այստեղ ներքին շուկայի գինը հաշվարկվել է ըստ սպառողական գների ինդեքսի տվյալների բազայի, որը բազմապատկվել է 2023թ․ հոկտեմբերի վերջին գրանցված ներքին շուկայի նավթամթերքի գներով։ Գծապատկերում ներկայացված երկու ցուցանիշն էլ՝ գինը սհամանին և ներքին շուկայում, ունեն սխալի աստիճան։ Սա է պատճառը որ որոշ դեպքերում բոնզինի գինը ներքին շուկայում ավելի ցածր է քան սահմանին։ Անկախ դրանից գծապատկերը հստակ ցույց է տալիս որ նավթամթերքի գինը սահմանին ձևավորում է գինը ներքին շուկայում։
+
+Շուկան մրցունակ է և արագ արձագանքում է սահմանին բենզինի գների փոփոխությանը: Բենզինի գինը կարգավորելու և այն իջեցնելու համար առաջին հերթին այն պիտի կարգավորվի սահմանին: Հայաստանը գտնվում է ԵԱՏՄ ընդհանուր շուկայում և ըստ ԵԱՏՄ համաձայնագրի պետք է գործի ընդհանուր էներգառեսուրսների շուկա: Բենզինի գնի համեմատաբար բարձր լինելը հիմնականում պայմանավորված է տրանսպորտային ծախսերով: Հնարավոր է բենզինի ներմուծումը դիվերսիֆիկացնել և այն ներմուծել Իրանից, որտեղից տրանսպորտային ծախսերը ավելի քիչ կլինեն, սակայն սա արդեն քաղաքատնտեսական և ներ ենթակառուցվածքների ձևավովորման հարց է։
+
+**Գծապատկեր 7.** Նավթամթերքի ներմուծաման և շուկայական գնի տարբերությունը
 
 ```{r, echo=FALSE, fig.width = 12, fig.height = 8}
 fuel_price_plot_8
 ```
 
+## 2. ԶԼՄ հաղորդագրություններ
 
-## 3. English Summary
+[Factor.tv](https://www.youtube.com/watch?v=59NRXzTdMqY) լրատվամիջոցով խոսել եմ նրա մասին թե ի՞նչ ազդեցություն ունի Ռուսաստանը Հայաստանի տնտեսության վրա։ Հարցազրույցը ռուսերենով է:
 
-**Armenia's Budget Evolution: From 2018 to 2024"**
+[![](https://i3.ytimg.com/vi/59NRXzTdMqY/maxresdefault.jpg)](https://www.youtube.com/watch?v=59NRXzTdMqY)
 
-This week's newsletter delves into Armenia's trade dynamics, particularly focusing on its relationship with Russia. As of September 2023, Armenia's exports to Russia have surged by 24%, surpassing imports. Notably, more than half of Armenia's total exports, primarily comprising high-value-added final products, are directed to Russia. This trend signifies a certain economic dependence of Russia on Armenia, a shift from the trade balance in 2021 where Armenia's imports from Russia exceeded exports. The newsletter also sheds light on Armenia's diverse trade partners, revealing that over 55% of its exports head to the Eurasian Economic Union (EAEU). The export structure, as illustrated in Figure 2, demonstrates the significance of re-exports and the notable growth in the export of final products to EAEU countries, especially Russia.
+[Panorama](https://www.panorama.am/am/news/2023/11/17/%D4%B1%D5%B2%D5%A1%D5%BD%D5%AB-%D4%B9%D5%A1%D5%BE%D5%A1%D5%A4%D5%B5%D5%A1%D5%B6/2927178) լրատվամիջոցին տվել եմ հարցազրույց բենզինի գնի մասին, թե ինչպես է այն ձևավորվում մեր շուկայում։
 
-In addition to trade insights, the newsletter provides a glimpse into the GDP relationships among South Caucasus economies. Figure 3 emphasizes the GDP calculated by purchasing power parity (PPP), showcasing the disparity between Armenia, Georgia, and Azerbaijan. While their GDPs were equivalent before 2004, the current figures reveal significant differences, with Azerbaijan leading in GDP PPP. The analysis extends to per capita GDP, indicating the wealth levels of individuals in each country. Understanding these economic dynamics is crucial amidst current political and economic developments in the region, providing a comprehensive view of historical realities and potential future trends.
+[![](https://i3.ytimg.com/vi/zwQu5vD5yCg/maxresdefault.jpg)](https://www.youtube.com/watch?v=zwQu5vD5yCg)
+
+## 3. Սպասում եմ ձեզ իմ սթրիմին
+
+Եթե ձեզ հետաքրքիր է լսել իմ մեկնաբանությունները և տեսնել թե ոնց եմ ես կատարում իմ հետազոտությունները, կարող եք մասնակցել իմ սթրիմին։
+
+
+[](https://www.facebook.com/events/1125123785538008/)
+
+Ես նպաստակադրված եմ այն ամենը ինչ անում եմ ներկայացնել և բացատրել սթրիմի կամ վլոգի ձևաչափով:
+Սա նախնական և փորձնական է լինելու, որը հոսով եմ շարունակական կլինի։
+
+
+## 4. English Summary
+
+**Exploring Gasoline Prices – What's Behind the Recent Spike?**
+
+This week's newsletter delves into the factors influencing the recent surge in gasoline prices in Armenia. It analyzes various data sources, including daily petrol and diesel price data, monthly fuel price databases, and fuel import statistics. Highlighting Armenia's position as a significant gasoline-importing country, the analysis explores the impact of transportation costs and Armenia's non-oil-producing status on fuel prices. It notes the steady increase in petroleum product imports since 2019 and discusses the correlation between gasoline prices, import volumes, and domestic demand for energy. The newsletter emphasizes the competitive nature of Armenia's domestic oil market and suggests that regulating prices at the border is crucial for effectively managing and lowering gasoline prices in the country. The potential to diversify gasoline imports from Iran as a means of reducing transportation costs is also explored as a possible solution. The comprehensive data visualizations accompanying the analysis provide a detailed overview of the key trends and dynamics driving gasoline prices in Armenia.
+
     
-    
 
-Այս վերլուծությունը առկա է նաև [մեր կայքեջում](https://www.tvyal.com/newsletter/2023_11_20), այս վերլուծության կոդը և տվյալները դրված են նաև [Github-ում](https://github.com/tavad/tvyal_newsletter)։                        
+Այս վերլուծությունը առկա է նաև [մեր կայքէջում](https://www.tvyal.com/newsletter/2023_11_20), այս վերլուծության կոդը և տվյալները դրված են նաև [Github-ում](https://github.com/tavad/tvyal_newsletter)։                        
                   
 
 Եթե հնարավոր է, խնդրում եմ այս նյութը ուղարկել նաև այն մարդկանց, ում այն կարծում եք կարող է հետաքրքրել:
@@ -570,7 +630,7 @@ In addition to trade insights, the newsletter provides a glimpse into the GDP re
 
 Հարգանքներով,            
 Աղասի Թավադյան         
-20.11.2023          
+21.11.2023          
 [tvyal.com](https://www.tvyal.com/)      
 [tavadyan.com](https://www.tavadyan.com/)
 
