@@ -378,7 +378,6 @@ fuel_price_plot_7 <-
     subtitle = "Dollars for a liter",
     caption = "The import price is calculated using the formula: (trade value in USD) / (nerweight in kg) / (dencity l/kg)\nPetrol density = 0.737, Diesel density = 0.885\n\nAuthor: Aghasi Tavadyan    |    tvyal.com    |    tavadyan.com    |    Data source: Comtrade"
   )
-
 ```
 
 
