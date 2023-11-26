@@ -152,7 +152,7 @@ arm_fuel_price <-
   add_row(
     tibble(date = as.Date("2023-11-18") + 0:9)
   ) |> 
-  fill(-date, .direction = "down")
+  fill(-date, .direction = "down") 
 ```
 
 
