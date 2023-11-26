@@ -13,6 +13,7 @@ library(scales)
 library(readxl)
 library(priceR)
 library(Quandl)
+library(rvest)
 
 
 rm(list = ls()); gc()
@@ -95,7 +96,7 @@ get_api_key <-
 Sys.setenv("EXCHANGERATEHOST_ACCESS_KEY" = get_api_key("priceR"))
 
 #Set your api_key with Quandl.api_key function. For instructions on finding your api key go to https://www.quandl.com/account/profile.
-Quandl.api_key(get_api_key("Qundl_1"))
+Quandl.api_key(get_api_key("Quandl_1"))
 ```
 
 
@@ -214,26 +215,27 @@ usa_fuel_price_filtered |>
 ```
 
 ```{r combine fuel data in Armeania and USA, include=FALSE}
-arm_fuel_price <- 
-  read_csv("../2023_11_20_petrol_price/fuel_price_2023_11_17.csv") |> 
-  add_row(
-    tibble(date = as.Date("2023-11-18") + 0:9)
-  ) |> 
-  fill(-date, .direction = "down")
-
 usd_amd <- 
   exchanges |> 
   filter(name == "USD_AMD") |> 
   transmute(date, usd_amd = exchange)
 
-combined_data <- 
-  arm_fuel_price |> 
+arm_fuel_price <- 
+  read_csv("../2023_11_20_petrol_price/fuel_price_2023_11_17.csv") |> 
+  add_row(
+    tibble(date = as.Date("2023-11-18") + 0:9)
+  ) |> 
+  fill(-date, .direction = "down") |> 
   pivot_longer(-date, names_to = "description") |> 
-  filter(!description %in% c("liquefied_gas_price", "petrol_premium")) |> 
-  mutate(place = "Armenia") |> 
   left_join(usd_amd, join_by(date)) |> 
   fill(usd_amd, .direction = "down") |> 
-  mutate(value = value / usd_amd) |> 
+  mutate(value = value / usd_amd)
+
+
+combined_data <- 
+  arm_fuel_price |> 
+  filter(!description %in% c("liquefied_gas_price", "petrol_premium")) |> 
+  mutate(place = "Armenia") |> 
   select(-usd_amd) |> 
   bind_rows(
     usa_fuel_price_filtered |> 
@@ -275,6 +277,103 @@ fuel_plot_1 <-
   )
 ```
 
+```{r crude oil & petrol price in Armenia comparation, include=FALSE}
+crude_oil_opec <- 
+  Quandl.datatable("QDL/OPEC") |> 
+  as_tibble()
+
+crude_oil_amd_petrol_plot <- 
+  arm_fuel_price |> 
+  mutate(type = "Armenia") |> 
+  rename(name = description) |> 
+  filter(grepl("petrol_reg", name)) |> 
+  select(-usd_amd) |> 
+  bind_rows(
+    crude_oil_opec |> 
+      mutate(type = "opec_oil", name = "crude_oil")
+  )|> 
+  mutate(
+    value = ifelse(type == "opec_oil", value / 80, value)
+  ) |> 
+  filter(date >= as.Date("2022-02-01")) |> 
+  ggplot(aes(date, value, color = name)) +
+  geom_line(linewidth = 1.1, alpha = 0.8) +
+  scale_x_date(date_breaks = "2 months", date_labels = "%m-%Y") +
+  scale_y_continuous(
+    breaks = seq(0.8, 1.6, 0.1),
+    labels = dollar_format(),
+    name = "Regular petrol price, USD per liter",
+    sec.axis = sec_axis(
+      ~ .*80,
+      breaks = seq(64, 128, 8),
+      labels = dollar_format(),
+      name = "OPEC Crude oil price"
+    )
+  ) +
+  ggthemes::scale_color_wsj() +
+  labs(
+    x = NULL,
+    color = NULL,
+    title = "Comparation between Crude Oil Price & Petrol Price in Armenia ",
+    subtitle = "OPEC crude pil price",
+    caption = "Author: Aghasi Tavadyan    |    tvyal.com    |    tavadyan.com"
+  )
+```
+
+```{r exchange comparation from Oct 1, 2023, include=FALSE, warning=FALSE}
+exchange_names <- 
+  read_html("https://en.wikipedia.org/wiki/ISO_4217") |> 
+  html_elements("table") |> 
+  html_table()
+
+exchange_names <- 
+  exchange_names[[2]] |> 
+  transmute(name = paste0("USD_", Code), currency = Currency)
+
+exchanges_plot <- 
+  exchanges |> 
+  filter(
+    !grepl("TRY|AMD|GEL|MXN|CNY|JPY", name),
+    date >= as.Date("2023-10-01")
+  ) |> 
+  left_join(exchange_names, join_by(name)) |> 
+  group_by(name) |> 
+  mutate(
+    FX_pct = exchange / first(exchange),
+    last_price = formatC(exchange, digits = 3),
+    last_price = 
+      ifelse(
+        date == max(date), 
+        paste0(
+          str_remove(name, "USD_"), ": ", last(last_price), "; ", 
+          number(FX_pct, accuracy = 0.01)
+        ),
+        NA
+      ),
+  ) |> 
+  ungroup() |> 
+  ggplot(aes(date, FX_pct)) +
+  geom_line(aes(color = currency), size = 1) +
+  geom_text(aes(x = date + 4, label = last_price)) +
+  scale_x_date(expand = c(0, 0, 0, 7)) +
+  scale_y_continuous(breaks = seq(0.8, 1.2, 0.02)) +
+   ggthemes::scale_color_wsj() +
+  # scale_color_brewer(type = "qual", palette = 3) +
+  # ggthemes::theme_pander() +
+  theme(
+    legend.position = "bottom",
+  ) +
+  labs(
+    x = NULL,
+    y = NULL,
+    color = "Exhanges",
+    title = "Dollar is Depreciating: The Exchanges of Some Major Currencies",
+    subtitle = "October 1, 2023 = 100%",
+    caption = "The information at the end shows the exchange code, the price as of the last date and the change rate since that beginning.\n\nAuthor: Aghasi Tavadyan    |    tvyal.com    |    tavadyan.com"
+  )
+
+```
+
 
 ***English summary below.***
 
@@ -289,69 +388,90 @@ fuel_plot_1 <-
 4. English summary
 
 
-## 1. Բենզինի գնի թանկացման պատճառները
+## 1. Բենզինի գնy իջնելու է մինչև 400
 
-Այս շաբաթվա հետազոտությունը անելու համար օգտվել ենք հետևյալ աղբյուրներից․
+Սա նախորդ վերլուծության շարունակություննը`
+[բենզինի գնի վերլուծությունը](https://www.tvyal.com/newsletter/2023_11_20)
 
-* Բենզինի և դիզելային վառելիքի գնի օրական տվյալների, ձևավորված [1in.am Յութուբյան ալիքի տեսանյութերի նկարներից](https://img.youtube.com/vi/tV15O3Ilrc8/maxresdefault.jpg)
-* Վառելիքի թանկացման ամսական տվյալների բազան ըստ [ՍԳԻ սկսած 2017թ․](https://www.armstat.am/am/?nid=82&id=2611)
-* վառելիքի ներմուծման ամսական տվյալների բազան ըստ 6-նիշ արտաքին տնտեսական գործունեության ծածկագրերի և պետությունների
+2. Տվյալների բազաները բենզինի գնի, համաշխարհային նավթի և բանզինի գնարի, փոխարժեքի, բենզինի ներմուծման գնի վերաբերյալ կարող եք գտնել ստորև․
 
-բոլոր տվյալների բազաները և գծապատկերների կոդը առկա է իմ [Github-ում](https://github.com/tavad/tvyal_newsletter)
+* [Petrol Price, Github](https://github.com/tavad/tvyal_newsletter/tree/main/2023_11_20_petrol_price)
+* [Petrol Price Forecast, Github](https://github.com/tavad/tvyal_newsletter/tree/main/2023_11_20_petrol_price_forecast)
 
-------------------
 
-Նախ ուսումնասիրենք բենզինի գինը տարածաշրջանի այն երկրներում, որոնք հիմնականում համարվում են նավթամթերք ներմուծող պետություն։ Նշեմ, որ Հայաստանում համեմատած մեր հարևանների և ԵԱՏՄ երկրների բենզինի գինը ամենաբարձրն է։ Սակայն սրա պատճառները հիմնականում տրանսպորտային ծախսերն են և այն հանգամանքը, որ Հայաստանը նավթամթերք արտադրող պետություն չէ։ ՀՀ դրամով հաշվարկված այս պահին, Վրաստանում բենզինի գինը կազմում է մոտ 500 դրամ։
-     
+➡️Բենզինի գինը մոտակա 2 ամիսը կարող է իջնել՝ 400 դրամ
+
+Հայաստանի ու ԱՄՆ բենզինի գնի համեմատությունը։ 
+(Տես գծապատկերը)
+
+Նշեմ որ ճիշտ չէ ուղիղ համեմատել բենզինի գինը Հայաստանում և ԱՄՆ-ում, քանի որ ԱՄՆ-ն նավթ արտադրող և սպառող ամենախոշոր պետությունն է, որը OPEC+ երկրներից արդեն գրեթե նավթ չի ներմուծում։ Հայաստանը նավթի պաշարներ չունի և բենզինի ներմուծում է Ռուսաստանից։ Սակայն համաշխարհային նավթի գները ազդում են բենզինի գնի վրա և՛ ԱՄՆ-ում և՛ Հայաստանի շուկայում, որը երևում է գծապատկերից։ Բենզինի գինը նույն աճի ու նվազման տենդենցները ունի գրեթե բոլոր պետություններում։
+
+Այս պահին բենզինի գինը Հայաստանում ռեկորդային բարձր է։ Ուշադրություն դարձրեք, որ սեպտեմբերի 8-ից բենզինի գինը Հայաստանում գրեթե չի փոխվել է՝ 1.32 դոլար և հոկտեմբերի 4-ին գրանցված ռեգուլյար բենզինի գնի բարձրացումը 540-ից 570 դրամ հիմնականում պայմանավորված էր դրամի արժեզրկումից՝ 380-ից 402 դրամ։ Դոլարով ներմուծման գինը չի փոխվել։
+
+➡️Իջնելո՞ւ է արդյոք բենզինի գինը։
+
+Քննարկենք այն հնարավոր նախապայմանները որոնք կարող են իջեցնել բենզինի գինը։
+
+1. ԱՄՆ բենզինի գների իջեցում։ Բենզինի գինը ԱՄՆ Կալիֆորնիա նահանգում սեպտեմբերի 30-ին էջել է 1.03 դոլարից մինչև 0.69 ցենտ։ Նորից նշեմ՝ ԱՄՆ և Հայաստանի բենզինի գները տարբեր շուկայական մեխանիզմենրով են ձևավորվում, բայց երկուսի վրա էլ ազդում են համաշխարհային նավթի գները։
+
+2. Համաշխարհային նավթի գների իջեցում։ Ռուսական Urals նավթի գինը սեպտեմբերի 30-ին պիկային կետին 80 դոլարի էր բարելի համար, այս պահին 65 դոլար է մեկ բարելի համար, գինը իջել է մոտ 20 տոկոսով։ Նույն ժամանակահատվածում իջել են նաև այլ նավթի նիշերը։
+
+3. Դրամի հնարավոր արժևորում 402-ից 380 դրամ։ 
+Վերջին ժամանակահատվածում գրեթե բոլոր զարգացող պետությունների արժույթները արժևորվել են։ Ռուբլին արժևորվել է 8 տոկոսով, Ղազախական տենգեն` 4 տոկոսով, Լեհական զլոտին 4.7 տոկոսով, մեքսիկական պեսոն 5.6 տոկոսով: Այս տենդենցը դեռ շարունակվում է։ Սա ճնշում է գործադրում մեր շուկայի վրա, հատկապես հաշվի առնելով այն հանգամանքը որ դոլարի ծավալը վերջին շրջանում Հայաստանի շուկայում մեծացել է։
+
+➡️Ինչքանո՞վ կարող է նվազել բենզինի գինը մեր շուկայում։
+
+Նավթի գնի իջացումը բենզինի գինը կարող է իջեցնել 20 տոկոսով, իսկ դրամի արժևորումը 402-ից 380՝ 5 տոկոսով։ Այդ դեպքում գումարային մոտ 25 տոկոսով կարող է բենզինի գինը իջնել մոտակա 2 ամսում։
+
+Դառնալով՝
+Ռեգուլյարը 400 դրամ
+Պրեմիումը 430 դրամ
+
+* Նշումներ՝ ՀՀ շուկայական գինը փոխանակվել է դոլարի օրվա միջազգային փոխարժեքով։
+
 **Գծապատկեր 1.** Բենզինի միջին գնիը Հայաստանում և տարածաշրջանի բանզին ներմուծող այլ պետություններում
 
 ```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
 fuel_plot_1
 ```
 
-Գծապատկեր 2-ում ներկայացված է բենզինի ընդհանուր քանակության ներմուծումը միլիոն կիլոգրամով: Ինչպես երևում է գծապատկերից նավթամթերքի ներմուծման ծավալները 2010-ից 2019թ. սկիզբը եղել են գրեթե անփոփոխ: 2019 թվականից սկսած գրանցվել է նավթամթերիքի ներմուծման շարունակական և կայուն աճ: 2017թ. ներմուծվել է համապատասխանաբար 200 և 140 մլն կիլոգրամ դիզվառելիք և բենզին, իսկ 2022թ արդեն 300 և 225 հազար կիլոգրամ: Ընդհանուր նավթամթերի ներկրումը վերջին 5 տարիների ընթացքում աճել է 1.5 անգամ։ Նավթամթերքը էներգիայի կարևոր աղբյուր է, որն ապահովում է տրանսպորտային և արդյունաբերական գործունեությունը: Երբ երկիրն ավելի շատ բենզին է ներկրում, դա ընդհանուր առմամբ նշանակում է, որ էներգիայի ներքին պահանջարկը մեծանում է։ Սա կարող է լինել աճող տնտեսության ցուցանիշ, որը վկայում է սպառողական ծախսերի, ձեռնարկատիրական գործունեության և արդյունաբերական արտադրության աճի վերաբերյալ:
-
 
 **Գծապատկեր 2.** Բենզինի և դիզվառելիքի Հայաստան ներմուծման տարեկան ծավալները
 
-```{r, echo=FALSE, fig.width = 12, fig.height = 8}
-
+```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
+crude_oil_amd_petrol_plot
 ```
 
 
-Գծապատկեր 3-ում ներկայացված է բենզինի գնի փոփոխությունը, ըստ 1in.am լրատվամիջոցի օրական հրապարակումների: Այս տվյալները ստացվել են քերելով 1in.am Յութուբյան ալիքի բենզինի գների վերաբերյալ տեսանյութերի նկարները (thumbnails): Ինչպես երևում է գծապատկերից բենզինի գինը մինչև 2023 թվականին գրանցված աճը, ամենաբարձրն է եղել 2022 թվականի ապրիլին, երբ 1 լիտր պրեմիում դասի բենզինը արժեր 540 դրամ: 2022թ. վերջին պրեմիում դասի բենզինի գինը նվազեց մինչև 350 դրամ 1 լիտրի համար, որը գրանցվել էր 2023 թվականի փետրվարին: 2023 թվականին շարունակաբար գրանցվեց վառելիքի գնի բարձրացում: Թե ինչո՞վ էր պայմանավորված այդ բարձրացումը կքննարկենք հաջորդիվ: 
+Դոլարը արժեզրկվում է։ Սա որոշակի ճնշում է նաև գործադրում Հայաստանի շուկայի վրա։ Մեծ է հավանականությունը որ դոլարը դառնա 380։
+Կարծում եմ արտարժույթ պահելը նպատակահարմար չէ։
 
 
 **Գծապատկեր 3.** Բենզինի և դիզելային վառելիքի գինը Հայաստանում (ՀՀ դրամ)
 
 ```{r, echo=FALSE, fig.width = 12, fig.height = 8}
-
-```
-
-Հաջորդ գծապատկերում տրված է հողուկ գազի լիտրի գինը ներքին շուկայում։
-
-**Գծապատկեր 4.** Հեղուկ գազի Հայաստանում (ՀՀ դրամ)
-
-```{r, echo=FALSE, fig.width = 12, fig.height = 8}
-
+exchanges_plot
 ```
 
 
-Ստորև ներկայացված է բենզինի և դիզելային վառելիքի ներմուծման գինը: Այն հաշվարկվել է բաժանելով տվյալ ամսվա ներմուծման արժեքային և բնեղեն տվյալները, որից ստացվել է բենզինի գնի կիլոգրամի ներմուծման արժեքը ԱՄՆ դլորով: Ստացված ցուցանիշը բաժանվել է բենզինի և դիզելի խտության վրա և բազմապատկվել տվյալ ամսվա միջին ԱՄՆ դոլար դրամ փոխարժեքով: Իհարկե ստացված ցուցանիշը ոնի որոշակի ճշգրտության խնդիր, քանի որ նավթամթերքի խտությունը ըստ ջերմաստիճանի կարող է փոխվել ինչպես նաև պետք է հաշվի առնել դոլարի վաճառքի գինը ներքին շուկայում։ Սակայն այս ցուցանիշի դինամիկան հստակ պատկերացում կարող է տալ թե ինչքանով է տարբերվում նավթամթերքի գինը սահմանին, որը ձեռք են բերում մեր տնտեսվարողները և բենզինի գինը ներքին շուկայում։
+Հավելյալ՝
 
 
+3. Հավելյալ տեղեկատվություն՝
+
+* [OPEC+ postpones policy meeting to Nov 30, oil falls](https://www.reuters.com/business/energy/opec-postpones-policy-meeting-nov-30-oil-falls-2023-11-22/), 22/11/2023
+* [Дизель и бензин на бирже подешевели — мазут и керосин подорожали](https://oilcapital.ru/news/2023-11-22/dizel-i-benzin-na-birzhe-podesheveli-mazut-i-kerosin-podorozhali-3107078), 22/11/2023, 13:46
+* [Запрет на экспорт летнего дизельного топлива отменен](https://oilcapital.ru/news/2023-11-22/zapret-na-eksport-letnego-dizelnogo-topliva-otmenen-3107276), 22/11/2023
+* [Правительство отменило временный запрет на экспорт бензина](https://www.rbc.ru/business/17/11/2023/655790e59a7947bd46054cbc), 7/11/2023
+* [Оптовые цены на бензин в России рухнули до минимума](https://lenta.ru/news/2023/09/21/benz/), 21/09/2023
 
 
+## 2. ԶԼՄ հաղորդագրություններ բենզինի գնի մասին
 
-## 2. ԶԼՄ հաղորդագրություններ
+Դիտեք իմ հարցազրույցը տված [1in.am](https://youtu.be/TVdZ1qmq4uI?t=10) լրատվամիջոցոին, թե ինչու բենզինի գինը կարող է դառնալ 400 դրամ:
 
-[Factor.tv](https://www.youtube.com/watch?v=59NRXzTdMqY) լրատվամիջոցով խոսել եմ նրա մասին թե ի՞նչ ազդեցություն ունի Ռուսաստանը Հայաստանի տնտեսության վրա։ Հարցազրույցը ռուսերենով է:
+[![](https://i3.ytimg.com/vi/TVdZ1qmq4uI/maxresdefault.jpg)](https://youtu.be/TVdZ1qmq4uI?t=10)
 
-[![](https://i3.ytimg.com/vi/59NRXzTdMqY/maxresdefault.jpg)](https://www.youtube.com/watch?v=59NRXzTdMqY)
-
-[Panorama](https://www.panorama.am/am/news/2023/11/17/%D4%B1%D5%B2%D5%A1%D5%BD%D5%AB-%D4%B9%D5%A1%D5%BE%D5%A1%D5%A4%D5%B5%D5%A1%D5%B6/2927178) լրատվամիջոցին տվել եմ հարցազրույց բենզինի գնի մասին, թե ինչպես է այն ձևավորվում մեր շուկայում։
-
-[![](https://i3.ytimg.com/vi/zwQu5vD5yCg/maxresdefault.jpg)](https://www.youtube.com/watch?v=zwQu5vD5yCg)
 
 ## 3. Սպասում եմ ձեզ իմ սթրիմին
 
@@ -368,11 +488,11 @@ fuel_plot_1
 
 **Exploring Gasoline Prices – What's Behind the Recent Spike?**
 
-This week's newsletter delves into the factors influencing the recent surge in gasoline prices in Armenia. It analyzes various data sources, including daily petrol and diesel price data, monthly fuel price databases, and fuel import statistics. Highlighting Armenia's position as a significant gasoline-importing country, the analysis explores the impact of transportation costs and Armenia's non-oil-producing status on fuel prices. It notes the steady increase in petroleum product imports since 2019 and discusses the correlation between gasoline prices, import volumes, and domestic demand for energy. The newsletter emphasizes the competitive nature of Armenia's domestic oil market and suggests that regulating prices at the border is crucial for effectively managing and lowering gasoline prices in the country. The potential to diversify gasoline imports from Iran as a means of reducing transportation costs is also explored as a possible solution. The comprehensive data visualizations accompanying the analysis provide a detailed overview of the key trends and dynamics driving gasoline prices in Armenia.
+
 
     
 
-Այս վերլուծությունը առկա է նաև [մեր կայքէջում](https://www.tvyal.com/newsletter/2023_11_20), այս վերլուծության կոդը և տվյալները դրված են նաև [Github-ում](https://github.com/tavad/tvyal_newsletter)։                        
+Այս վերլուծությունը առկա է նաև [մեր կայքէջում](https://www.tvyal.com/newsletter/2023_11_27), այս վերլուծության կոդը և տվյալները դրված են նաև [Github-ում](https://github.com/tavad/tvyal_newsletter)։                        
                   
 
 Եթե հնարավոր է, խնդրում եմ այս նյութը ուղարկել նաև այն մարդկանց, ում այն կարծում եք կարող է հետաքրքրել:
