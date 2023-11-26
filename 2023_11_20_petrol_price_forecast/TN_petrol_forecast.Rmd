@@ -438,7 +438,7 @@ fuel_plot_1
 
 **Գծապատկեր 2.** Բենզինի և դիզվառելիքի Հայաստան ներմուծման տարեկան ծավալները
 
-```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
+```{r, echo=FALSE, fig.width = 12, fig.height = 8}
 crude_oil_amd_petrol_plot
 ```
 
@@ -449,21 +449,20 @@ crude_oil_amd_petrol_plot
 
 **Գծապատկեր 3.** Բենզինի և դիզելային վառելիքի գինը Հայաստանում (ՀՀ դրամ)
 
-```{r, echo=FALSE, fig.width = 12, fig.height = 8}
+```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
 exchanges_plot
 ```
 
 
-Հավելյալ՝
-
-
-3. Հավելյալ տեղեկատվություն՝
+**Հավելյալ տեղեկատվություն.**
 
 * [OPEC+ postpones policy meeting to Nov 30, oil falls](https://www.reuters.com/business/energy/opec-postpones-policy-meeting-nov-30-oil-falls-2023-11-22/), 22/11/2023
 * [Дизель и бензин на бирже подешевели — мазут и керосин подорожали](https://oilcapital.ru/news/2023-11-22/dizel-i-benzin-na-birzhe-podesheveli-mazut-i-kerosin-podorozhali-3107078), 22/11/2023, 13:46
 * [Запрет на экспорт летнего дизельного топлива отменен](https://oilcapital.ru/news/2023-11-22/zapret-na-eksport-letnego-dizelnogo-topliva-otmenen-3107276), 22/11/2023
 * [Правительство отменило временный запрет на экспорт бензина](https://www.rbc.ru/business/17/11/2023/655790e59a7947bd46054cbc), 7/11/2023
 * [Оптовые цены на бензин в России рухнули до минимума](https://lenta.ru/news/2023/09/21/benz/), 21/09/2023
+* [Crude Oil WTI Futures](https://www.investing.com/commodities/crude-oil-technical)
+
 
 
 ## 2. ԶԼՄ հաղորդագրություններ բենզինի գնի մասին
