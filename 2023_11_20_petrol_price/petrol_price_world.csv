@@ -2,162 +2,162 @@ country,price_in_usd
 Venezuela,0.020 USD
 Libya,0.031 USD
 Lebanon,0.090 USD
-Kuwait,0.341 USD
+Kuwait,0.342 USD
 Algeria,0.342 USD
 Iran,0.355 USD
 Angola,0.361 USD
 Egypt,0.405 USD
 Turkmenistan,0.427 USD
 Malaysia,0.438 USD
-Kazakhstan,0.471 USD
-Bahrain,0.529 USD
-Bolivia,0.542 USD
-Iraq,0.573 USD
-Qatar,0.577 USD
+Kazakhstan,0.472 USD
+Bahrain,0.532 USD
+Bolivia,0.543 USD
+Iraq,0.574 USD
+Qatar,0.578 USD
 Azerbaijan,0.588 USD
 Russia,0.616 USD
 Saudi Arabia,0.621 USD
-Oman,0.621 USD
+Oman,0.623 USD
 Ecuador,0.634 USD
-Nigeria,0.771 USD
+Nigeria,0.782 USD
 United Arab Emirates,0.795 USD
-Kyrgyzstan,0.802 USD
+Kyrgyzstan,0.804 USD
 Tunisia,0.813 USD
 Chad,0.864 USD
 Bhutan,0.890 USD
-Paraguay,0.915 USD
+Paraguay,0.917 USD
 Indonesia,0.928 USD
-Argentina,0.931 USD
+Argentina,0.936 USD
 USA,0.947 USD
-Colombia,0.949 USD
+Colombia,0.948 USD
 Maldives,0.958 USD
 Panama,0.975 USD
 Taiwan,0.979 USD
-Pakistan,0.985 USD
 Puerto Rico,0.990 USD
+Gabon,0.992 USD
 Vietnam,0.993 USD
-Gabon,0.993 USD
+Pakistan,1.001 USD
 Liberia,1.023 USD
-Guyana,1.028 USD
+Guyana,1.031 USD
 Suriname,1.044 USD
-Guatemala,1.047 USD
 Sudan,1.048 USD
-Afghanistan,1.050 USD
+Guatemala,1.050 USD
 El Salvador,1.051 USD
-Ghana,1.056 USD
+Ghana,1.058 USD
+Afghanistan,1.069 USD
 Mongolia,1.075 USD
-Honduras,1.096 USD
-Burma,1.116 USD
-Swaziland,1.117 USD
-Haiti,1.118 USD
-Benin,1.135 USD
-Bangladesh,1.135 USD
-Lesotho,1.136 USD
-Trinidad&Tobago,1.142 USD
+Honduras,1.102 USD
+Swaziland,1.106 USD
+Burma,1.119 USD
+Haiti,1.121 USD
+Lesotho,1.125 USD
+Benin,1.134 USD
+Bangladesh,1.138 USD
+Trinidad&Tobago,1.145 USD
 Brazil,1.148 USD
 Japan,1.161 USD
 Cuba,1.165 USD
-Uzbekistan,1.167 USD
-Togo,1.168 USD
-Turkey,1.197 USD
-Cambodia,1.200 USD
-DR Congo,1.212 USD
-Botswana,1.212 USD
-Namibia,1.229 USD
-Georgia,1.234 USD
+Togo,1.167 USD
+Uzbekistan,1.172 USD
+Turkey,1.196 USD
+Cambodia,1.207 USD
+Namibia,1.215 USD
+Botswana,1.215 USD
+Georgia,1.231 USD
 China,1.240 USD
-Thailand,1.250 USD
+South Africa,1.250 USD
 India,1.250 USD
-South Africa,1.253 USD
-Canada,1.254 USD
-Zambia,1.281 USD
-Sri Lanka,1.288 USD
-Nepal,1.290 USD
-South Korea,1.293 USD
-Philippines,1.296 USD
-Tanzania,1.301 USD
-Madagascar,1.311 USD
-Australia,1.316 USD
+Thailand,1.253 USD
+Canada,1.255 USD
+Zambia,1.277 USD
+Philippines,1.288 USD
+South Korea,1.290 USD
+Sri Lanka,1.292 USD
+Nepal,1.294 USD
+DR Congo,1.304 USD
+Tanzania,1.305 USD
+Madagascar,1.305 USD
+Australia,1.317 USD
 Moldova,1.326 USD
-Nicaragua,1.332 USD
+Nicaragua,1.343 USD
 Saint Lucia,1.343 USD
 Mozambique,1.350 USD
-Dominican Republic,1.354 USD
+Dominican Republic,1.366 USD
 Dominica,1.371 USD
 Grenada,1.372 USD
 Aruba,1.381 USD
-Jamaica,1.382 USD
-Guinea,1.395 USD
-Ethiopia,1.395 USD
-Cape Verde,1.402 USD
-Peru,1.412 USD
-Bosnia & Herz.,1.416 USD
-Northern Macedonia,1.417 USD
-Mexico,1.417 USD
-Burkina Faso,1.418 USD
+Jamaica,1.386 USD
+Ethiopia,1.387 USD
+Guinea,1.402 USD
+Cape Verde,1.410 USD
+Peru,1.414 USD
+Mexico,1.416 USD
+Burkina Faso,1.417 USD
+Bosnia & Herz.,1.419 USD
+Northern Macedonia,1.422 USD
 Sierra Leone,1.431 USD
-Kenya,1.432 USD
-Uganda,1.437 USD
-Mali,1.445 USD
-Romania,1.458 USD
-Ivory Coast,1.460 USD
-Rwanda,1.467 USD
-Malta,1.467 USD
-Laos,1.471 USD
-Malawi,1.502 USD
-Chile,1.512 USD
-Bulgaria,1.519 USD
-Cayman Islands,1.519 USD
-Costa Rica,1.521 USD
-Morocco,1.533 USD
-Mauritius,1.559 USD
-Cyprus,1.563 USD
-Andorra,1.570 USD
-Ukraine,1.575 USD
-Lithuania,1.575 USD
-Burundi,1.596 USD
+Uganda,1.441 USD
+Kenya,1.443 USD
+Mali,1.444 USD
+Romania,1.456 USD
+Ivory Coast,1.459 USD
+Malta,1.466 USD
+Laos,1.476 USD
+Rwanda,1.479 USD
+Malawi,1.508 USD
+Chile,1.517 USD
+Bulgaria,1.523 USD
+Cayman Islands,1.523 USD
+Costa Rica,1.525 USD
+Morocco,1.537 USD
+Cyprus,1.562 USD
+Mauritius,1.563 USD
+Andorra,1.569 USD
+Lithuania,1.574 USD
+Ukraine,1.579 USD
 Bahamas,1.602 USD
-Seychelles,1.628 USD
-Poland,1.639 USD
+Burundi,1.606 USD
+Seychelles,1.618 USD
+Poland,1.640 USD
 Jordan,1.642 USD
-Slovenia,1.649 USD
-Senegal,1.652 USD
-Luxembourg,1.656 USD
-Croatia,1.664 USD
-Serbia,1.678 USD
-Hungary,1.688 USD
-Austria,1.703 USD
+Slovenia,1.647 USD
+Senegal,1.651 USD
+Luxembourg,1.655 USD
+Croatia,1.663 USD
+Serbia,1.682 USD
+Hungary,1.689 USD
+Austria,1.702 USD
 Czech Republic,1.720 USD
-Spain,1.734 USD
-Slovakia,1.737 USD
-Latvia,1.747 USD
-Belgium,1.811 USD
-Sweden,1.825 USD
-Estonia,1.832 USD
-Central African Rep.,1.836 USD
-Portugal,1.864 USD
-United Kingdom,1.897 USD
-Belize,1.913 USD
-Germany,1.923 USD
-New Zealand,1.926 USD
+Spain,1.733 USD
+Slovakia,1.736 USD
+Latvia,1.746 USD
+Belgium,1.809 USD
+Sweden,1.823 USD
+Estonia,1.831 USD
+Central African Rep.,1.834 USD
+Portugal,1.863 USD
+United Kingdom,1.896 USD
+Belize,1.918 USD
+Germany,1.922 USD
+New Zealand,1.928 USD
 Uruguay,1.972 USD
-Italy,1.987 USD
-France,1.991 USD
-Mayotte,1.992 USD
-Ireland,1.992 USD
-Singapore,2.013 USD
-Norway,2.038 USD
+Italy,1.985 USD
+France,1.990 USD
+Mayotte,1.991 USD
+Ireland,1.991 USD
+Singapore,2.014 USD
+Norway,2.037 USD
 Barbados,2.040 USD
-Greece,2.046 USD
+Greece,2.044 USD
 Denmark,2.049 USD
-Liechtenstein,2.062 USD
-Switzerland,2.079 USD
-Finland,2.085 USD
-Albania,2.102 USD
-Netherlands,2.182 USD
-Iceland,2.286 USD
-Monaco,2.332 USD
+Liechtenstein,2.063 USD
+Switzerland,2.080 USD
+Finland,2.084 USD
+Albania,2.108 USD
+Netherlands,2.180 USD
+Iceland,2.287 USD
+Monaco,2.330 USD
 Yemen,2.557 USD
-Hong Kong,3.103 USD
+Hong Kong,3.104 USD
 Syria,5.075 USD
 Armenia,1.35467980295567

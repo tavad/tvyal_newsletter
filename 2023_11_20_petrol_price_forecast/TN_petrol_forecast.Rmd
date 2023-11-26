@@ -357,7 +357,7 @@ exchanges_plot <-
   geom_text(aes(x = date + 4, label = last_price)) +
   scale_x_date(expand = c(0, 0, 0, 7)) +
   scale_y_continuous(breaks = seq(0.8, 1.2, 0.02)) +
-   ggthemes::scale_color_wsj() +
+  ggthemes::scale_color_wsj() +
   # scale_color_brewer(type = "qual", palette = 3) +
   # ggthemes::theme_pander() +
   theme(
@@ -373,6 +373,8 @@ exchanges_plot <-
   )
 
 ```
+
+
 
 
 ***English summary below.***
