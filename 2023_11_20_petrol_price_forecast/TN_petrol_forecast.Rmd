@@ -393,7 +393,7 @@ exchanges_plot <-
 Սա նախորդ վերլուծության շարունակություննը`
 [բենզինի գնի վերլուծությունը](https://www.tvyal.com/newsletter/2023_11_20)
 
-2. Տվյալների բազաները բենզինի գնի, համաշխարհային նավթի և բանզինի գնարի, փոխարժեքի, բենզինի ներմուծման գնի վերաբերյալ կարող եք գտնել ստորև․
+Տվյալների բազաները բենզինի գնի, համաշխարհային նավթի և բանզինի գնարի, փոխարժեքի, բենզինի ներմուծման գնի վերաբերյալ կարող եք գտնել ստորև․
 
 * [Petrol Price, Github](https://github.com/tavad/tvyal_newsletter/tree/main/2023_11_20_petrol_price)
 * [Petrol Price Forecast, Github](https://github.com/tavad/tvyal_newsletter/tree/main/2023_11_20_petrol_price_forecast)
