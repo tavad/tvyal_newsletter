@@ -1,7 +1,7 @@
 ---
 title: "Tvyal Newsletter"
 author: "Aghasi Tavadyan"
-date: "2023-11-21"
+date: "2023-11-27"
 output: html_document
 ---
 
@@ -10,6 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 library(tidyverse)
 library(scales)
+library(readxl)
 library(priceR)
 library(Quandl)
 
@@ -97,8 +98,74 @@ Sys.setenv("EXCHANGERATEHOST_ACCESS_KEY" = get_api_key("priceR"))
 Quandl.api_key(get_api_key("Qundl_1"))
 ```
 
+
+```{r get FX data, include=FALSE}
+# this function works only if the priceR api key is present
+get_exchanges <- 
+  function() {
+    
+    exchanges <- read_csv("exchanges.csv")
+    
+    last_update <- 
+      exchanges |>  
+      filter(date == max(date)) |> 
+      pull(date) |> 
+      unique()
+    
+    if (last_update == today()) {
+      return(exchanges)
+      break
+    }
+    
+    currencies = c("AMD", "GEL", "RUB", "KZT", "PLN", "HUF",
+                   "BRL", "MXN", "TRY", "EUR", "CNY", "JPY")
+    
+    exchanges = NULL
+    
+    for (i in 1:length(currencies)) {
+      
+      FX_name = paste0("USD_", currencies[i])
+      
+      temp_exchange <- 
+        priceR::historical_exchange_rates(
+          from = "USD", to = currencies[i],
+          start_date = "2020-01-01", end_date = today()
+        ) |> 
+        as_tibble() |> 
+        rename(exchange = 2) |> 
+        mutate(
+          date = ymd(date),
+          name = FX_name
+        )
+      
+      exchanges = bind_rows(exchanges, temp_exchange)
+    }
+    
+    exchanges |> write_csv("exchanges.csv")
+    return(exchanges)
+  }
+
+exchanges <- get_exchanges()
+```
+
+
 ```{r fuel praces in usa,  include=FALSE}
-system("curl 'https://www.eia.gov/dnav/pet/xls/PET_PRI_SPT_S1_D.xls' -o 'usa_fuel_prices.xls'")
+update_usa_fuel_data <- 
+  function(variables) {
+    last_update <- 
+      read_excel("usa_fuel_prices.xls", sheet = 1, skip = 6) |> 
+      rename(data = 1, info = 2) |> 
+      filter(grepl("Next", data)) |> 
+      mutate(info = mdy(info)) |> 
+      pull(info)
+    
+    if (last_update < today()) {
+      # find more USA petrol data here: https://www.eia.gov/petroleum/gasdiesel/
+      system("curl 'https://www.eia.gov/dnav/pet/xls/PET_PRI_SPT_S1_D.xls' -o 'usa_fuel_prices.xls'")
+    }
+  }
+
+update_usa_fuel_data()
 
 sheets <- excel_sheets("usa_fuel_prices.xls")
 
@@ -106,7 +173,7 @@ usa_fuel_price_dict <-
   read_excel("usa_fuel_prices.xls", sheet = 1, skip = 5) |> 
   janitor::clean_names() |> 
   filter(!is.na(number_of_series))
-  
+
 usa_fuel_price <- NULL
 
 for (i in 2:length(sheets)) {
@@ -123,7 +190,7 @@ usa_fuel_price |>
 
 usa_fuel_price_filtered <- 
   usa_fuel_price |> 
-  left_join(world_price_dict, join_by(worksheet_name)) |> 
+  left_join(usa_fuel_price_dict, join_by(worksheet_name)) |> 
   filter(!is.na(value)) |> 
   filter(
     grepl("Gasoline|Diesel", description),
@@ -146,15 +213,67 @@ usa_fuel_price_filtered |>
   scale_x_datetime(date_breaks = "1 year", date_labels = "%Y")
 ```
 
-```{r}
+```{r combine fuel data in Armeania and USA, include=FALSE}
 arm_fuel_price <- 
   read_csv("../2023_11_20_petrol_price/fuel_price_2023_11_17.csv") |> 
   add_row(
     tibble(date = as.Date("2023-11-18") + 0:9)
   ) |> 
-  fill(-date, .direction = "down") 
+  fill(-date, .direction = "down")
+
+usd_amd <- 
+  exchanges |> 
+  filter(name == "USD_AMD") |> 
+  transmute(date, usd_amd = exchange)
+
+combined_data <- 
+  arm_fuel_price |> 
+  pivot_longer(-date, names_to = "description") |> 
+  filter(!description %in% c("liquefied_gas_price", "petrol_premium")) |> 
+  mutate(place = "Armenia") |> 
+  left_join(usd_amd, join_by(date)) |> 
+  fill(usd_amd, .direction = "down") |> 
+  mutate(value = value / usd_amd) |> 
+  select(-usd_amd) |> 
+  bind_rows(
+    usa_fuel_price_filtered |> 
+      rename(date = Date) |> 
+      select(date, description, value, place)
+  ) |> 
+  rename(type = description) |> 
+  mutate(
+    type = case_when(
+      grepl("disel|diesel", tolower(type)) ~ "Diesel",
+      grepl("petrol|gas", tolower(type)) ~ "Petrol, Regular",
+      TRUE ~ type
+    ),
+    type = fct_rev(type)
+  ) |> 
+  filter(
+    date >= as.Date("2022-02-01"),
+    !grepl("Gulf Coast", place)
+  )
 ```
 
+```{r USA & Armenia fuel plot, include=FALSE}
+fuel_plot_1 <- 
+  combined_data |> 
+  ggplot(aes(date, value, color = place, linetype = type)) +
+  geom_line(linewidth = 1.1, alpha = 0.8) +
+  scale_x_datetime(date_breaks = "2 months", date_labels = "%m-%Y") +
+  scale_y_continuous(labels = dollar_format()) +
+  ggthemes::scale_color_wsj() +
+  ggthemes::theme_fivethirtyeight() +
+  labs(
+    x = NULL,
+    y = NULL,
+    color = NULL,
+    linetype = NULL,
+    title = "Petrol and Diesel prices in Armenia and USA",
+    subtitle = "Dollars per Liter",
+    caption = "Author: Aghasi Tavadyan    |    tvyal.com    |    tavadyan.com"
+  )
+```
 
 
 ***English summary below.***
@@ -187,7 +306,7 @@ arm_fuel_price <-
 **Գծապատկեր 1.** Բենզինի միջին գնիը Հայաստանում և տարածաշրջանի բանզին ներմուծող այլ պետություններում
 
 ```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
-fuel_price_plot_0
+fuel_plot_1
 ```
 
 Գծապատկեր 2-ում ներկայացված է բենզինի ընդհանուր քանակության ներմուծումը միլիոն կիլոգրամով: Ինչպես երևում է գծապատկերից նավթամթերքի ներմուծման ծավալները 2010-ից 2019թ. սկիզբը եղել են գրեթե անփոփոխ: 2019 թվականից սկսած գրանցվել է նավթամթերիքի ներմուծման շարունակական և կայուն աճ: 2017թ. ներմուծվել է համապատասխանաբար 200 և 140 մլն կիլոգրամ դիզվառելիք և բենզին, իսկ 2022թ արդեն 300 և 225 հազար կիլոգրամ: Ընդհանուր նավթամթերի ներկրումը վերջին 5 տարիների ընթացքում աճել է 1.5 անգամ։ Նավթամթերքը էներգիայի կարևոր աղբյուր է, որն ապահովում է տրանսպորտային և արդյունաբերական գործունեությունը: Երբ երկիրն ավելի շատ բենզին է ներկրում, դա ընդհանուր առմամբ նշանակում է, որ էներգիայի ներքին պահանջարկը մեծանում է։ Սա կարող է լինել աճող տնտեսության ցուցանիշ, որը վկայում է սպառողական ծախսերի, ձեռնարկատիրական գործունեության և արդյունաբերական արտադրության աճի վերաբերյալ:
@@ -196,7 +315,7 @@ fuel_price_plot_0
 **Գծապատկեր 2.** Բենզինի և դիզվառելիքի Հայաստան ներմուծման տարեկան ծավալները
 
 ```{r, echo=FALSE, fig.width = 12, fig.height = 8}
-fuel_price_plot_4
+
 ```
 
 
@@ -206,7 +325,7 @@ fuel_price_plot_4
 **Գծապատկեր 3.** Բենզինի և դիզելային վառելիքի գինը Հայաստանում (ՀՀ դրամ)
 
 ```{r, echo=FALSE, fig.width = 12, fig.height = 8}
-fuel_price_plot_1
+
 ```
 
 Հաջորդ գծապատկերում տրված է հողուկ գազի լիտրի գինը ներքին շուկայում։
@@ -214,39 +333,15 @@ fuel_price_plot_1
 **Գծապատկեր 4.** Հեղուկ գազի Հայաստանում (ՀՀ դրամ)
 
 ```{r, echo=FALSE, fig.width = 12, fig.height = 8}
-fuel_price_plot_2
+
 ```
 
 
 Ստորև ներկայացված է բենզինի և դիզելային վառելիքի ներմուծման գինը: Այն հաշվարկվել է բաժանելով տվյալ ամսվա ներմուծման արժեքային և բնեղեն տվյալները, որից ստացվել է բենզինի գնի կիլոգրամի ներմուծման արժեքը ԱՄՆ դլորով: Ստացված ցուցանիշը բաժանվել է բենզինի և դիզելի խտության վրա և բազմապատկվել տվյալ ամսվա միջին ԱՄՆ դոլար դրամ փոխարժեքով: Իհարկե ստացված ցուցանիշը ոնի որոշակի ճշգրտության խնդիր, քանի որ նավթամթերքի խտությունը ըստ ջերմաստիճանի կարող է փոխվել ինչպես նաև պետք է հաշվի առնել դոլարի վաճառքի գինը ներքին շուկայում։ Սակայն այս ցուցանիշի դինամիկան հստակ պատկերացում կարող է տալ թե ինչքանով է տարբերվում նավթամթերքի գինը սահմանին, որը ձեռք են բերում մեր տնտեսվարողները և բենզինի գինը ներքին շուկայում։
 
 
-**Գծապատկեր 5.** Բենզինի և դեզվառելիքի ներմուծման գինը
-
-```{r, echo=FALSE, fig.width = 12, fig.height = 8}
-fuel_price_plot_5
-```
-
-Դիտարկենք նաև նավթամթերքի ներմուծումը ըստ պետությունների։ Դիզելային վառելիքը 76 տոկոսը ներմուծվում է Ռուսաստանից, 10.2 տոկոսը Իրանից: Հետաքրքիրն այն է որ ճիշտ է Իրանի ներքին շուկայում բենզինի լիտրը շատ ցածր գին ունի, այն Հայաստան ներմուծվում է գրեթե նույն գնով, ինչ Ռուսաստանից: Սա կարող է քաղաքական պատճառներ ունենալ, քանի որ Ռուսաստանից եկող նավթամթերքի գնիը թանկ է, քանի որ բարձր են տրանսպորտային ծախսերը, իսկ Իրանի հետ մենք ունենք ուղիղ սահման:
 
 
-**Գծապատկեր 6.** Բենզինի և դեզվառելիքի ներմուծման ծավալները ըստ ծագման երկրի
-
-```{r, echo=FALSE, fig.width = 12, fig.height = 8}
-fuel_price_plot_6
-```
-
-Վերջին գծապատկերում ներկայացված է բենզինի ներմուծման գնի և շուկայական գնի դինամիկան դիզելային վեռելիքի և բենզինի համար: Ինչպես երևում է ներմուծման գինը և շուկայական գինը ունեն կախվածության մեծ աստիճան: Այսինքն Հայաստանի ներքին շուկան բավականին մրցունակ է և չի կարող թելադրել ներքին գինը։ Այն գինը ինչ սահմանին տնտեսվարողը գնում է նավթամթերը համեմատելի է այն գնին ինչ վճարում է սովորական քաղաքացուն։ 
-
-Այստեղ ներքին շուկայի գինը հաշվարկվել է ըստ սպառողական գների ինդեքսի տվյալների բազայի, որը բազմապատկվել է 2023թ․ հոկտեմբերի վերջին գրանցված ներքին շուկայի նավթամթերքի գներով։ Գծապատկերում ներկայացված երկու ցուցանիշն էլ՝ գինը սհամանին և ներքին շուկայում, ունեն սխալի աստիճան։ Սա է պատճառը որ որոշ դեպքերում բոնզինի գինը ներքին շուկայում ավելի ցածր է քան սահմանին։ Անկախ դրանից գծապատկերը հստակ ցույց է տալիս որ նավթամթերքի գինը սահմանին ձևավորում է գինը ներքին շուկայում։
-
-Շուկան մրցունակ է և արագ արձագանքում է սահմանին բենզինի գների փոփոխությանը: Բենզինի գինը կարգավորելու և այն իջեցնելու համար առաջին հերթին այն պիտի կարգավորվի սահմանին: Հայաստանը գտնվում է ԵԱՏՄ ընդհանուր շուկայում և ըստ ԵԱՏՄ համաձայնագրի պետք է գործի ընդհանուր էներգառեսուրսների շուկա: Բենզինի գնի համեմատաբար բարձր լինելը հիմնականում պայմանավորված է տրանսպորտային ծախսերով: Հնարավոր է բենզինի ներմուծումը դիվերսիֆիկացնել և այն ներմուծել Իրանից, որտեղից տրանսպորտային ծախսերը ավելի քիչ կլինեն, սակայն սա արդեն քաղաքատնտեսական և ներ ենթակառուցվածքների ձևավովորման հարց է։
-
-**Գծապատկեր 7.** Նավթամթերքի ներմուծաման և շուկայական գնի տարբերությունը
-
-```{r, echo=FALSE, fig.width = 12, fig.height = 8}
-fuel_price_plot_8
-```
 
 ## 2. ԶԼՄ հաղորդագրություններ
 
@@ -291,7 +386,7 @@ This week's newsletter delves into the factors influencing the recent surge in g
 
 Հարգանքներով,            
 Աղասի Թավադյան         
-21.11.2023          
+27.11.2023          
 [tvyal.com](https://www.tvyal.com/)      
 [tavadyan.com](https://www.tavadyan.com/)
 
