@@ -10,9 +10,9 @@ knitr::opts_chunk$set(echo = TRUE)
 
 library(tidyverse)
 library(scales)
-library(RcppRoll)
-library(rvest)
-library(countrycode)
+library(priceR)
+library(Quandl)
+
 
 rm(list = ls()); gc()
 
@@ -76,430 +76,85 @@ doParallel::registerDoParallel(cores = 8)
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 ```
 
+```{r get api keys, include=FALSE}
+# the function below retries the api keys from my local machine
+get_api_key <- 
+  function(api_key_issuer) {
+    
+    key <- 
+      read_csv("/etc/R/api_keys.csv") |> 
+      filter(issuer == api_key_issuer) |> 
+      pull(keys)
+    
+  return(key)
+  }
 
-```{r petrol price in the world, include=FALSE}
-petrol_price <- 
-  read_html("https://oilpricez.com/us/usa-gasoline-price") |> 
-  html_elements("table") |> 
-  html_table()
+# to get your personal api key: https://exchangerate.host/
+# replace `get_api_key("priceR")` with your own key
+Sys.setenv("EXCHANGERATEHOST_ACCESS_KEY" = get_api_key("priceR"))
 
-petrol_price[[4]] |> 
+#Set your api_key with Quandl.api_key function. For instructions on finding your api key go to https://www.quandl.com/account/profile.
+Quandl.api_key(get_api_key("Qundl_1"))
+```
+
+```{r fuel praces in usa,  include=FALSE}
+system("curl 'https://www.eia.gov/dnav/pet/xls/PET_PRI_SPT_S1_D.xls' -o 'usa_fuel_prices.xls'")
+
+sheets <- excel_sheets("usa_fuel_prices.xls")
+
+usa_fuel_price_dict <- 
+  read_excel("usa_fuel_prices.xls", sheet = 1, skip = 5) |> 
   janitor::clean_names() |> 
-  bind_rows(
-    tibble(country = "Armenia", price_in_usd = as.character(550/406))
-  ) |> 
-  write_csv("petrol_price_world.csv")
-
-fuel_price_plot_0 <- 
-  read_csv("petrol_price_world.csv") |> 
-  mutate(
-    iso3c = countrycode(country, origin = 'country.name', destination = 'iso3c'),
-    price_in_usd = parse_number(price_in_usd),
-    price_in_amd = price_in_usd*406,
-    country = fct_reorder(country, price_in_usd),
-    country = fct_rev(country),
-    price_amd_text = number(price_in_amd, accuracy = 0.1)
-  ) |> 
-  # filter(iso3c %in% c("GEO", "AZE", "RUS", "IRN", "KAZ", "BLR", "KGZ", "USA", "POL", "ARM", "UZB")) |> 
-  filter(iso3c %in% c("TUR", "GEO", "BLR", "KGZ", "ARM", "UZB", "MDA")) |> 
-  ggplot(aes(price_in_amd, country)) +
-  geom_col(alpha = 0.8) +
-  geom_text(aes(x = 40, label = price_amd_text), color = "white") +
-  scale_x_continuous(breaks = seq(0,600,100)) +
-labs(
-  x = NULL,
-  y = NULL,
-  title = "Fuel Prices in Countries near Armenia: A Comparative Analysis",
-  subtitle = "Comparison of petrol prices in countries predominantly importing fuel,\nArmenian Drams for 1 Liter. Data as of November 20, 2023.",
-  caption = paste0(caption_eng, "   |   Data Source: oilpricez.com")
-)
-
-# save_last_plot("petrol_price_in_the_region")
-```
-
-
-```{r fuel price in Armenia, include=FALSE}
-fuel_price <- read_csv("fuel_price_2023_11_17.csv")
-
+  filter(!is.na(number_of_series))
   
-fuel_price_plot_1 <- 
-  fuel_price |> 
-  pivot_longer(-date) |> 
-  filter(name != "liquefied_gas_price") |> 
-  mutate(
-    name = str_replace_all(name, "_", " "),
-    name = str_to_title(name)
-  ) |> 
-  ggplot(aes(date, value, color = name)) +
-  geom_line(linewidth = 1.5) +
-  scale_x_date(
-    date_breaks = "2 month", date_labels = "%m-%Y", 
-    limits = c(as.Date("2021-12-31"), as.Date("2023-12-01"))
-  ) +
-  scale_y_continuous(breaks = seq(0, 1000, 50)) +
-  scale_color_brewer(type = "qual", palette = 3) +
-  labs(
-    x = NULL,
-    y = NULL,
-    color = NULL,
-    title = "Petrol and Disel Price in Armenia",
-    subtitle = "Armenian Drams for 1 Liter",
-    caption = paste0(caption_eng, "   |    Data source: 1in.am")
-  )
+usa_fuel_price <- NULL
 
-# save_last_plot("Petrol_and_Disel_Price_in_Armenia")
-
-fuel_price_plot_2 <- 
-  fuel_price |> 
-  pivot_longer(-date) |> 
-  filter(name == "liquefied_gas_price") |> 
-  mutate(
-    name = str_replace_all(name, "_", " "),
-    name = str_to_title(name)
-  ) |> 
-  ggplot(aes(date, value)) +
-  geom_line(linewidth = 1.5) +
-  scale_x_date(
-    date_breaks = "2 month", date_labels = "%m-%Y", 
-    limits = c(as.Date("2021-12-31"), as.Date("2023-12-01"))
-  ) +
-  scale_y_continuous(breaks = seq(0, 1000, 50)) +
-  scale_color_brewer(type = "qual", palette = 3) +
-  labs(
-    x = NULL,
-    y = NULL,
-    color = NULL,
-    title = "Liquefied Gas Price in Armenia",
-    subtitle = "Armenian Drams for 1 Liter",
-    caption = paste0(caption_eng, "   |    Data source: 1in.am")
-  )
-
-# save_last_plot("Լiquefied Gas Price in Armenia")
-
-```
-
-
-```{r Petrol Imports, include=FALSE}
-usd_amd_monthly <- 
-  read_csv("USD_AMD_Historical Data.csv") |> 
-  transmute(period = mdy(Date), usd_amd = Price)
-
-petrol_dict <- 
-  tibble(
-    commodity_code = c(271012, 271019, 271113, 271121),
-    name_short_eng = c("Petrol (light petroleum)", "Diesel (non-light petroleum)",
-                       "Butanes", "Natural gas (in gaseous state)"),
-    name_short_arm = c("Բենզին (թեթև նավթամերք)", "Դիզել (ոչ թեթև նավթամերք)",
-                       "Հեղուկ գազ (բութան)", "բնական գազ"),
-    density = c(0.737, 0.885, NA, NA) # kg/m3
-  )
-
-fuil_imports <- 
-  read_csv("fuel_imports.csv") |> 
-  mutate(year = year(period)) |> 
-  left_join(petrol_dict, join_by(commodity_code))
-
-plot_petrolium_imports_1 <- 
-  fuil_imports |> 
-  group_by(period, commodity_code, name_short_eng, name_short_arm) |> 
-  summarise(
-    trade_value_us = sum(trade_value_us, na.rm = TRUE),
-    netweight_kg = sum(netweight_kg, na.rm = TRUE),
-    .groups = "drop"
-  ) |> 
-  arrange(commodity_code, period) |> 
-  group_by(commodity_code) |> 
-  mutate(
-    netweight_kg = roll_sumr(netweight_kg, 12)
-  ) |> 
-  na.omit()
-
-fuel_price_plot_3 <- 
-  plot_petrolium_imports_1 |>
-  filter(commodity_code %in% c(271012, 271019)) |> 
-  ggplot(aes(period, netweight_kg / 1e6, fill = name_short_eng)) +
-  geom_area(alpha = 0.8) +
-  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
-  scale_y_continuous(labels = number_format(accuracy = 1)) +
-  scale_fill_brewer(type = "qual", palette = 3) +
-  labs(
-    x = NULL,
-    y = NULL,
-    title = "The annual imports of Petrolium fuel to Armenia",
-    subtitle = "Million litters",
-    caption = paste0(caption_eng, "   |    Data source: Comtrade")
-  )
-
-fuel_price_plot_4 <- 
-  plot_petrolium_imports_1 |>
-  filter(commodity_code %in% c(271012, 271019)) |> 
-  mutate(
-    netweight_kg = ifelse(commodity_code == 271019, -netweight_kg, netweight_kg),
-    period = year(period) + (month(period) - 1)/12
-  ) |> 
-  ggplot(aes(period, netweight_kg / 1e6, fill = name_short_eng)) +
-  geom_area(alpha = 0.8) +
-  scale_x_reverse(breaks = 2011:2023) +
-  scale_y_continuous(
-    breaks = seq(-600, 600, 100),
-    labels = function(x) ifelse(x < 0, abs(x), x)
-  ) +
-  scale_fill_brewer(type = "qual", palette = 3) +
-  coord_flip() +
-  labs(
-    x = NULL,
-    y = NULL,
-    fill = NULL,
-    title = "The Annual Imports of Petroleum Fuel to Armenia",
-    subtitle = "Million kilograms",
-    caption = paste0(caption_eng, "   |    Data source: Comtrade")
-  )
-
-# save_last_plot("The annual imports of Petrolium fuel to Armenia.png")
-```
-
-
-```{r import price of petrol, include=FALSE}
-petrol_imports_price <- 
-  fuil_imports |> 
-  filter(
-    commodity_code %in% c(271012, 271019),
-    year >= 2014,
-  ) |> 
-  left_join(usd_amd_monthly, by = join_by(period)) |> 
-  group_by(period, usd_amd, commodity_code, name_short_eng, name_short_arm) |> 
-  summarise(
-    trade_value_us = sum(trade_value_us, na.rm = TRUE),
-    netweight_kg = sum(netweight_kg, na.rm = TRUE),
-    density = mean(density),
-    .groups = "drop"
-  ) |>
-  mutate(
-    liter_price = trade_value_us / netweight_kg / density,
-    liter_price = ifelse(liter_price == Inf, NA, liter_price),
-    liter_price = liter_price * usd_amd
-  ) |> 
-  filter(liter_price <= 10 * usd_amd)
-
-fuel_price_plot_5 <- 
-  petrol_imports_price |> 
-  ggplot(aes(period, liter_price, color = name_short_eng)) +
-  geom_line(linewidth = 1.5) +
-  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
-  # scale_y_continuous(breaks = seq(0.4, 1.6, 0.2), labels = dollar_format()) +
-  scale_color_brewer(type = "qual", palette = 3) +
-  labs(
-    x = NULL,
-    y = NULL,
-    color = NULL,
-    title = "Import Price of Pertol and Diesel Fuils into Armenia",
-    subtitle = "Armenian Drams for 1 Liter",
-    caption = "The import price is calculated using the formula: (trade value in USD) / (nerweight in kg) / (dencity l/kg) * USD_AMD\nPetrol density = 0.737, Diesel density = 0.885\n\nAuthor: Aghasi Tavadyan    |    tvyal.com    |    tavadyan.com    |    Data source: Comtrade"
-  )
-
-# save_last_plot("Import Price of Pertol and Diesel Fuils into Armenia")
-```
-
-
-
-```{r petrol import regional analysys, include=FALSE}
-# What's the price and quantity from different regions?
-
-fuel_price_plot_6 <- 
-  fuil_imports |> 
-  filter(
-    commodity_code %in% c(271012, 271019),
-    year >= 2014
-  ) |> 
-  mutate(partner = fct_lump_n(partner, 7, w = trade_value_us, 
-                              other_level = "Other countris")) |> 
-  group_by(period, commodity_code, name_short_eng, name_short_arm, partner) |> 
-  summarise(
-    trade_value_us = sum(trade_value_us, na.rm = TRUE),
-    netweight_kg = sum(netweight_kg, na.rm = TRUE),
-    density = mean(density),
-    .groups = "drop"
-  ) |> 
-  arrange(commodity_code, partner, period) |> 
-  group_by(commodity_code, partner) |> 
-  mutate( 
-    trade_value_us = roll_sumr(trade_value_us, 12),
-    netweight_kg = roll_sumr(netweight_kg, 12)
-  ) |> 
-  na.omit() |> 
-  ggplot(aes(period, netweight_kg / 1e6, fill = partner)) +
-  geom_area(alpha = 0.8) +
-  facet_wrap(~name_short_eng) +
-  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
-  scale_y_continuous(labels = number_format(accuracy = 1)) +
-  scale_fill_brewer(type = "qual", palette = 3) +
-  labs(
-    x = NULL,
-    y = NULL,
-    fill = NULL,
-    title = "The Annual Imports of Petrolium Fuel to Armenia by Country",
-    subtitle = "Million Kilograms",
-    caption = paste0(caption_eng, "   |    Data source: Comtrade")
-  )
-
-# save_last_plot("The Annual Imports of Petrolium Fuel to Armenia by country")
-
-fuel_price_plot_7 <- 
-  fuil_imports |> 
-  filter(
-    commodity_code %in% c(271012, 271019),
-    year >= 2014,
-  ) |>
-  mutate(partner = fct_lump_n(partner, 2, w = trade_value_us, 
-                              other_level = "Other countris")) |> 
-  group_by(period, commodity_code, name_short_eng, name_short_arm, partner) |> 
-  summarise(
-    trade_value_us = sum(trade_value_us, na.rm = TRUE),
-    netweight_kg = sum(netweight_kg, na.rm = TRUE),
-    density = mean(density),
-    .groups = "drop"
-  ) |> 
-  mutate(
-    liter_price = trade_value_us / netweight_kg / density,
-    liter_price = ifelse(liter_price == Inf, NA, liter_price),
-  ) |>
-  filter(partner!= "Other countris") |> 
-  ggplot(aes(period, liter_price, color = partner)) +
-  geom_line(linewidth = 1.5) +
-  facet_wrap(~name_short_eng, scales = "free_y") +
-  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
-  scale_y_continuous(labels = dollar_format()) +
-  scale_color_brewer(type = "qual", palette = 3) |> 
-  labs(
-    x = NULL,
-    y = NULL,
-    color = NULL,
-    title = "Petrol and Diesel import price fom Russia and Iran",
-    subtitle = "Dollars for a liter",
-    caption = "The import price is calculated using the formula: (trade value in USD) / (nerweight in kg) / (dencity l/kg)\nPetrol density = 0.737, Diesel density = 0.885\n\nAuthor: Aghasi Tavadyan    |    tvyal.com    |    tavadyan.com    |    Data source: Comtrade"
-  )
-```
-
-
-```{r butane import price, include=FALSE}
-# fuil_imports |> 
-#   filter(
-#     commodity_code == 271113,
-#     year >= 2022
-#   ) |> 
-#   left_join(usd_amd_monthly, by = join_by(period)) |> 
-#   group_by(period, usd_amd, commodity_code, name_short_eng, name_short_arm) |> 
-#   summarise(
-#     trade_value_us = sum(trade_value_us, na.rm = TRUE),
-#     netweight_kg = sum(netweight_kg, na.rm = TRUE),
-#     # density = mean(density),
-#     .groups = "drop"
-#   ) |> 
-#   mutate(
-#     liter_price = trade_value_us / netweight_kg * 540 
-#     #  I do not know what's the density here, it seems it should be around 540 at 50 °C
-#     # see for more info the link below
-#     # https://www.engineeringtoolbox.com/butane-density-specific-weight-temperature-pressure-d_2080.html
-#     # / density,
-#   #   liter_price = ifelse(liter_price == Inf, NA, liter_price),
-#   #   liter_price = liter_price * usd_amd
-#   ) |>
-#   # filter(liter_price <= 10 * usd_amd)
-#   rename(Date = period) |> 
-#   select(Date, name_short_eng, liter_price) |> 
-#   transmute(Date, value = liter_price, market = "import price") |> 
-#   filter(Date >= as.Date("2018-12-01")) |> 
-#   bind_rows(
-#     fuel_price |> 
-#       transmute(Date = date, value = liquefied_gas_price, market = "1in am data")
-#   ) |> 
-#   ggplot(aes(Date, value, color = market)) +
-#   geom_line()
-
-
-```
-
-
-```{r petrol import price, include=FALSE}
-fuel_inflation <- 
-  read_csv("fuil_inflation_in_arm.csv")
-
-petrol_imports_price_long <- 
-  petrol_imports_price |> 
-  rename(Date = period) |> 
-  select(Date, name_short_eng, liter_price) |> 
-  pivot_wider(names_from = name_short_eng, values_from = liter_price) |> 
-  filter(Date >= as.Date("2016-12-01")) |> 
-  pivot_longer(-Date) |> 
-  mutate(market = "Import Price")
-
-last_inflation_month <- 
-  fuel_inflation |> 
-  na.omit() |> 
-  filter(date == max(date)) |> 
-  pull(date) |> 
-  unique()
+for (i in 2:length(sheets)) {
+  temp_price <- 
+    read_excel("usa_fuel_prices.xls", sheet = i, skip = 2) |> 
+    mutate(worksheet_name = sheets[i]) |> 
+    pivot_longer(-c(Date, worksheet_name), names_to = "place")
   
-fuel_price_month <- 
-  fuel_price |> 
-  mutate(date = ym(paste(year(date), month(date)))) |> 
-  group_by(date) |> 
-  slice_tail(n = 1) |> 
-  ungroup()
+  usa_fuel_price <- bind_rows(usa_fuel_price, temp_price)
+}
 
+usa_fuel_price |> 
+  write_csv("usa_fuel_price.csv")
 
-last_month_petrol_price <- 
-  fuel_price_month |> 
-  filter(date == last_inflation_month)
+usa_fuel_price_filtered <- 
+  usa_fuel_price |> 
+  left_join(world_price_dict, join_by(worksheet_name)) |> 
+  filter(!is.na(value)) |> 
+  filter(
+    grepl("Gasoline|Diesel", description),
+    Date >= as.Date("2019-01-01")
+  ) |> 
+  mutate(
+    value = value / 3.78541178, # gallon to liter conversion
+    place = case_when(
+      grepl("New York", place) ~ "New York Harbor",
+      grepl("Gulf Coast", place) ~ "U.S. Gulf Coast",
+      grepl("Los Angeles", place) ~ "Los Angeles"
+    )
+  ) |> 
+  filter(round(value, digits = 5) != 0.26417)
 
-fuel_price_plot_8 <- 
-  fuel_inflation |> 
-  filter(code != "07.2.2.4") |> 
-  arrange(code, date) |> 
-  group_by(code) |> 
-  mutate(
-    cpi_cumprod = cumprod(cpi_month)
-  ) |> 
-  select(date, cpi_cumprod, code) |> 
-  pivot_wider(names_from = code, values_from = cpi_cumprod) |> 
-  set_names(c("Date", "burn", "disel", "petrol", "other")) |> 
-  mutate(
-    across(-Date, ~.x / last(.x))
-  ) |> 
-  select(Date, disel, petrol) |>
-  mutate(
-    disel = disel * last_month_petrol_price$disel,
-    petrol_premium = petrol * last_month_petrol_price$petrol_premium,
-    petrol_regular = petrol * last_month_petrol_price$petrol_regular
-  ) |> 
-  select(-petrol) |>
-  pivot_longer(-Date) |> 
-  mutate(
-    name = str_replace(name, "_", " "),
-    name = str_to_title(name),
-    name = paste(name, "(Market Price)"),
-    market = "Market price, (data from CPI)"
-  ) |> 
-  bind_rows(petrol_imports_price_long) |> 
-  mutate(
-    type = ifelse(!grepl("disel|diesel", tolower(name)), "Petrol", "Diesel"),
-  ) |> 
-  ggplot(aes(Date, value, color = market, group = name)) +
-  geom_line(size = 1.5) +
-  facet_wrap(~type) +
-  labs(
-    x = NULL,
-    y = NULL,
-    color = NULL,
-    title = "Petroleum Imports and the Domestic Price",
-    subtitle = "Armenian Drams",
-    caption = "Author: Aghasi Tavadyan    |    tvyal.com    |    tavadyan.com"
-  )
-
-# save_last_plot("Petroleum Imports and the Domestic Price")
-  
-
+usa_fuel_price_filtered |> 
+  # filter(!c(grepl("Gulf Coast", place) & grepl("Diesel", description))) |> 
+  ggplot(aes(Date, value, color = place, lty = description)) +
+  geom_line() +
+  scale_x_datetime(date_breaks = "1 year", date_labels = "%Y")
 ```
+
+```{r}
+arm_fuel_price <- 
+  read_csv("../2023_11_20_petrol_price/fuel_price_2023_11_17.csv") |> 
+  add_row(
+    tibble(date = as.Date("2023-11-18") + 0:9)
+  ) |> 
+  fill(-date, .direction = "down")
+```
+
 
 
 ***English summary below.***
