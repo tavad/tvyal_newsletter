@@ -146,8 +146,7 @@ get_exchanges <-
     return(exchanges)
   }
 
-exchanges <- get_exchanges()
-
+exchanges <- get_exchanges() 
 ```
 
 
