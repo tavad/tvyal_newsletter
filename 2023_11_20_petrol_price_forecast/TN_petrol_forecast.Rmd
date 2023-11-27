@@ -14,6 +14,7 @@ library(readxl)
 library(priceR)
 library(Quandl)
 library(rvest)
+library(plotly)
 
 
 rm(list = ls()); gc()
@@ -277,51 +278,6 @@ fuel_plot_1 <-
   )
 ```
 
-```{r crude oil & petrol price in Armenia comparation, include=FALSE}
-crude_oil_opec <- 
-  Quandl.datatable("QDL/OPEC") |> 
-  as_tibble()
-
-crude_oil_opec |> write_csv("opec_crude_oil_price.csv")
-
-crude_oil_amd_petrol_plot <- 
-  arm_fuel_price |> 
-  mutate(type = "Armenia") |> 
-  rename(name = description) |> 
-  filter(grepl("petrol_reg", name)) |> 
-  select(-usd_amd) |> 
-  bind_rows(
-    crude_oil_opec |> 
-      mutate(type = "opec_oil", name = "crude_oil")
-  )|> 
-  mutate(
-    value = ifelse(type == "opec_oil", value / 80, value)
-  ) |> 
-  filter(date >= as.Date("2022-02-01")) |> 
-  ggplot(aes(date, value, color = name)) +
-  geom_line(linewidth = 1.1, alpha = 0.8) +
-  scale_x_date(date_breaks = "2 months", date_labels = "%m-%Y") +
-  scale_y_continuous(
-    breaks = seq(0.8, 1.6, 0.1),
-    labels = dollar_format(),
-    name = "Regular petrol price, USD per liter",
-    sec.axis = sec_axis(
-      ~ .*80,
-      breaks = seq(64, 128, 8),
-      labels = dollar_format(),
-      name = "OPEC Crude oil price"
-    )
-  ) +
-  ggthemes::scale_color_wsj() +
-  labs(
-    x = NULL,
-    color = NULL,
-    title = "Comparation between Crude Oil Price & Petrol Price in Armenia ",
-    subtitle = "OPEC crude pil price",
-    caption = "Author: Aghasi Tavadyan    |    tvyal.com    |    tavadyan.com"
-  )
-```
-
 ```{r exchange comparation from Oct 1, 2023, include=FALSE, warning=FALSE}
 exchange_names <- 
   read_html("https://en.wikipedia.org/wiki/ISO_4217") |> 
@@ -374,6 +330,91 @@ exchanges_plot <-
     caption = "The information at the end shows the exchange code, the price as of the last date and the change rate since that beginning.\n\nAuthor: Aghasi Tavadyan    |    tvyal.com    |    tavadyan.com"
   )
 
+```
+
+```{r crude oil & petrol price in Armenia comparation, include=FALSE}
+crude_oil_opec <- 
+  Quandl.datatable("QDL/OPEC") |> 
+  as_tibble()
+
+crude_oil_opec |> write_csv("opec_crude_oil_price.csv")
+
+crude_oil_amd_petrol_plot <- 
+  arm_fuel_price |> 
+  mutate(type = "Armenia") |> 
+  rename(name = description) |> 
+  filter(grepl("petrol_reg", name)) |> 
+  select(-usd_amd) |> 
+  bind_rows(
+    crude_oil_opec |> 
+      mutate(type = "opec_oil", name = "crude_oil")
+  )|> 
+  mutate(
+    value = ifelse(type == "opec_oil", value / 80, value)
+  ) |> 
+  filter(date >= as.Date("2022-02-01")) |> 
+  ggplot(aes(date, value, color = name)) +
+  geom_line(linewidth = 1.1, alpha = 0.8) +
+  scale_x_date(date_breaks = "2 months", date_labels = "%m-%Y") +
+  scale_y_continuous(
+    breaks = seq(0.8, 1.6, 0.1),
+    labels = dollar_format(),
+    name = "Regular petrol price, USD per liter",
+    sec.axis = sec_axis(
+      ~ .*80,
+      breaks = seq(64, 128, 8),
+      labels = dollar_format(),
+      name = "OPEC Crude oil price"
+    )
+  ) +
+  ggthemes::scale_color_wsj() +
+  labs(
+    x = NULL,
+    color = NULL,
+    title = "Comparation between Crude Oil Price & Petrol Price in Armenia ",
+    subtitle = "OPEC crude pil price",
+    caption = "Author: Aghasi Tavadyan    |    tvyal.com    |    tavadyan.com"
+  )
+```
+
+```{r machine learning models, include=FALSE}
+# the modeling can be found in the file petrol_forecast_test.R, but this file is quick and dirthy
+
+model_info <- 
+  read_csv("model_accuracy.scv") |> 
+  select(-.type) |> 
+  mutate(
+    across(!contains("model"), ~number(.x, acuracy = 0.0001))
+  ) |> 
+  knitr::kable()
+
+model_plot <- 
+  read_rds("model_plot.RDS") |> 
+  layout(
+    title = "Forecast of Regular Petrol Price in Armenia using Different Models",
+    yaxis = list(title = "Price per liter in USD"),
+    annotations = list(
+      list(
+        x = 0, y = 0.97,
+        text = "Models use the international crude oil price with a lag of 30 days as a bases",
+        showarrow = FALSE,
+        xref = "paper",
+        yref = "paper",
+        xanchor = "left",
+        yanchor = "left",
+        font = list(size = 18)
+      ),
+       list(
+        x = 0.5, y = 0.02, 
+        text = "Author: Aghasi Tavadyan    |    tvyal.com    |    tavadyan.com",
+        showarrow = FALSE,
+        xref = "paper",
+        yref = "paper",
+        xanchor = "left",
+        yanchor = "left"
+      )
+    )
+  )
 ```
 
 
@@ -456,6 +497,19 @@ crude_oil_amd_petrol_plot
 ```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
 exchanges_plot
 ```
+
+
+```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
+model_info
+```
+
+
+**Գծապատկեր 4.** Բենզինի և դիզելային վառելիքի գինը Հայաստանում (ՀՀ դրամ)
+
+```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
+model_plot
+```
+
 
 
 **Հավելյալ տեղեկատվություն.**

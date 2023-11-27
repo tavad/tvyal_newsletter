@@ -148,7 +148,7 @@ fuel_data_for_forecast <-
   select(date, value) |> 
   left_join(crude_oil_opec, by = join_by(date)) |> 
   fill(crude_oil_price, .direction = "down")
-
+nnnn
 
 set.seed(123)
 
@@ -180,7 +180,7 @@ activity_time_roll <-
   )
 
 rec_activity_time_train <- 
-  recipe(value ~ ., data = activity_time_train) %>%
+  recipe(value ~ ., data = fuel_data_for_forecast) %>%
   step_log(!contains(c("date", "value")), offset = 30) %>% 
   step_normalize(-c("date", "value"))
 
@@ -299,10 +299,10 @@ temporal_hierarchy_thief_spec_3 <-
 model_tbl <- modeltime_table(
   # final_model(linear_reg_spec, time_series_model = FALSE),
   final_model(arima_spec),
-  # final_model(auto_arima_spec),
-  final_model(adam_reg_adam_spec),
+  final_model(auto_arima_spec),
+  # final_model(adam_reg_adam_spec),
   # final_model(adam_reg_auto_adam_spec),
-  # final_model(arima_boost_arima_xgboost_spec),
+  final_model(arima_boost_arima_xgboost_spec),
   # final_model(arima_boost_auto_arima_xgboost_spec),
   final_model(prophet_reg),
   # final_model(exp_smoothing_ets_spec),
@@ -313,3 +313,34 @@ model_tbl <- modeltime_table(
 )
 
 
+#################
+
+calib_tbl <- model_tbl %>%
+  modeltime_calibrate(activity_time_test)
+
+# * Accuracy ----
+calib_tbl %>% modeltime_accuracy() |> 
+  write_csv("model_accuracy.scv")
+# arrange(rmse)
+# mutate(rsq = percent(rsq, accuracy = 0.1))
+
+# write_excel_csv("Aghasi_Tavadyan_Report3/autoreg_models")
+
+
+
+# * Test Set Visualization ----
+calib_tbl %>%
+  modeltime_forecast(
+    new_data = 
+      fuel_data_for_forecast |> 
+      mutate(date = date + days(30)) |> 
+      slice_tail(n = 30) |> 
+      select(-value),
+    actual_data = fuel_data_for_forecast
+  ) %>%
+  plot_modeltime_forecast() |> 
+  saveRDS("model_plot.RDS")
+
+
+
+  
