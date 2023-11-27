@@ -2,7 +2,7 @@
 title: "Tvyal Newsletter"
 author: "Aghasi Tavadyan"
 date: "2023-11-13"
-output: html_document
+output: wor_document
 ---
 
 ```{r setup, include=FALSE}

@@ -77,6 +77,17 @@ transfers_clean %>%
   
 ```
 
+```{r}
+transfers_clean %>% 
+  filter(
+    direction == "Inflow",
+    country == "Russian Federation",
+    type == "total"
+  ) %>% 
+  mutate(yay = roll_sumr(K_USD, 12)) %>% 
+  view()
+```
+
 
 
 ```{r chart_1, include=FALSE}

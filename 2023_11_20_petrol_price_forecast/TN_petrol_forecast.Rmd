@@ -282,6 +282,8 @@ crude_oil_opec <-
   Quandl.datatable("QDL/OPEC") |> 
   as_tibble()
 
+crude_oil_opec |> write_csv("opec_crude_oil_price.csv")
+
 crude_oil_amd_petrol_plot <- 
   arm_fuel_price |> 
   mutate(type = "Armenia") |> 
