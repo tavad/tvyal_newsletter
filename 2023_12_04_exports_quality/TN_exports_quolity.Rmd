@@ -1,0 +1,584 @@
+---
+title: "Tvyal Newsletter"
+author: "Aghasi Tavadyan"
+date: "2023-11-27"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(scales)
+library(readxl)
+library(priceR)
+library(Quandl)
+library(rvest)
+library(plotly)
+
+
+rm(list = ls()); gc()
+
+theme_tvyal <- function(base_size = 12, base_family = "sans") 
+{
+  colors <- deframe(ggthemes::ggthemes_data[["fivethirtyeight"]])
+  (ggthemes::theme_foundation(
+    base_size = base_size, base_family = base_family) + 
+      theme(
+        line = element_line(colour = "black"), 
+        rect = element_rect(fill = colors["Light Gray"], linetype = 0, colour = NA), 
+        text = element_text(colour = colors["Dark Gray"]), 
+        # axis.title = element_blank(),
+        # axis.text = element_text(), 
+        axis.ticks = element_blank(),
+        axis.line = element_blank(), 
+        legend.background = element_rect(), 
+        legend.position = "bottom", 
+        legend.direction = "horizontal", 
+        legend.box = "vertical", 
+        panel.grid = element_line(colour = NULL), 
+        panel.grid.major = element_line(colour = colors["Medium Gray"]), 
+        panel.grid.minor = element_blank(), 
+        plot.title = element_text(hjust = 0, size = rel(1.5), face = "bold"),
+        plot.margin = unit(c(1, 1, 1, 1), "lines"), strip.background = element_rect()
+      )
+  )
+}
+
+theme_set(theme_tvyal())
+
+save_last_plot <- 
+  function(filename, extension = "png", width = 1920, height = 1080) {
+    
+    filename <- str_replace_all(filename, " ", "_")
+    last_plot <- recordPlot()
+    
+    if (extension == "png") {
+      png(paste0(filename, ".", extension), width = width, height = height)
+    } else if (extension == "pdf") {
+      pdf(paste0(filename, ".", extension), width = width, height = height)
+    } else {
+      stop("Unsupported file extension. Use 'png' or 'pdf'.")
+    }
+    
+    replayPlot(last_plot)
+    dev.off()
+    paste0(filename, ".", extension)
+  }
+
+main_palette_colors <- RColorBrewer::brewer.pal(12, name = "Paired")
+update_geom_defaults("rect", list(fill  = main_palette_colors[2], alpha = 0.8)) 
+update_geom_defaults("line", list(color = main_palette_colors[2], alpha = 0.8))
+update_geom_defaults("area", list(fill  = main_palette_colors[2], alpha = 0.8))
+
+caption_arm <-  "Հեղինակ` Աղասի Թավադյան   |   tvyal.com   |   tavadyan.com"
+caption_eng <-  "Author: Aghasi Tavadyan   |   tvyal.com   |   tavadyan.com"
+
+doParallel::registerDoParallel(cores = 8)
+
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+```
+
+```{r get api keys, include=FALSE}
+# the function below retries the api keys from my local machine
+get_api_key <- 
+  function(api_key_issuer) {
+    
+    key <- 
+      read_csv("/etc/R/api_keys.csv") |> 
+      filter(issuer == api_key_issuer) |> 
+      pull(keys)
+    
+  return(key)
+  }
+
+# to get your personal api key: https://exchangerate.host/
+# replace `get_api_key("priceR")` with your own key
+Sys.setenv("EXCHANGERATEHOST_ACCESS_KEY" = get_api_key("priceR"))
+
+#Set your api_key with Quandl.api_key function. For instructions on finding your api key go to https://www.quandl.com/account/profile.
+Quandl.api_key(get_api_key("Quandl_1"))
+```
+
+
+```{r get FX data, include=FALSE}
+# this function works only if the priceR api key is present
+get_exchanges <- 
+  function() {
+    
+    exchanges <- read_csv("exchanges.csv")
+    
+    last_update <- 
+      exchanges |>  
+      filter(date == max(date)) |> 
+      pull(date) |> 
+      unique()
+    
+    if (last_update == today()) {
+      return(exchanges)
+      break
+    }
+    
+    currencies = c("AMD", "GEL", "RUB", "KZT", "PLN", "HUF",
+                   "BRL", "MXN", "TRY", "EUR", "CNY", "JPY")
+    
+    exchanges = NULL
+    
+    for (i in 1:length(currencies)) {
+      
+      FX_name = paste0("USD_", currencies[i])
+      
+      temp_exchange <- 
+        priceR::historical_exchange_rates(
+          from = "USD", to = currencies[i],
+          start_date = "2020-01-01", end_date = today()
+        ) |> 
+        as_tibble() |> 
+        rename(exchange = 2) |> 
+        mutate(
+          date = ymd(date),
+          name = FX_name
+        )
+      
+      exchanges = bind_rows(exchanges, temp_exchange)
+    }
+    
+    exchanges |> write_csv("exchanges.csv")
+    return(exchanges)
+  }
+
+exchanges <- get_exchanges() 
+```
+
+
+```{r fuel praces in usa,  include=FALSE}
+update_usa_fuel_data <- 
+  function(variables) {
+    last_update <- 
+      read_excel("usa_fuel_prices.xls", sheet = 1, skip = 6) |> 
+      rename(data = 1, info = 2) |> 
+      filter(grepl("Next", data)) |> 
+      mutate(info = mdy(info)) |> 
+      pull(info)
+    
+    if (last_update < today()) {
+      # find more USA petrol data here: https://www.eia.gov/petroleum/gasdiesel/
+      system("curl 'https://www.eia.gov/dnav/pet/xls/PET_PRI_SPT_S1_D.xls' -o 'usa_fuel_prices.xls'")
+    }
+  }
+
+update_usa_fuel_data()
+
+sheets <- excel_sheets("usa_fuel_prices.xls")
+
+usa_fuel_price_dict <- 
+  read_excel("usa_fuel_prices.xls", sheet = 1, skip = 5) |> 
+  janitor::clean_names() |> 
+  filter(!is.na(number_of_series))
+
+usa_fuel_price <- NULL
+
+for (i in 2:length(sheets)) {
+  temp_price <- 
+    read_excel("usa_fuel_prices.xls", sheet = i, skip = 2) |> 
+    mutate(worksheet_name = sheets[i]) |> 
+    pivot_longer(-c(Date, worksheet_name), names_to = "place")
+  
+  usa_fuel_price <- bind_rows(usa_fuel_price, temp_price)
+}
+
+usa_fuel_price |> 
+  write_csv("usa_fuel_price.csv")
+
+usa_fuel_price_filtered <- 
+  usa_fuel_price |> 
+  left_join(usa_fuel_price_dict, join_by(worksheet_name)) |> 
+  filter(!is.na(value)) |> 
+  filter(
+    grepl("Gasoline|Diesel", description),
+    Date >= as.Date("2019-01-01")
+  ) |> 
+  mutate(
+    value = value / 3.78541178, # gallon to liter conversion
+    place = case_when(
+      grepl("New York", place) ~ "New York Harbor",
+      grepl("Gulf Coast", place) ~ "U.S. Gulf Coast",
+      grepl("Los Angeles", place) ~ "Los Angeles"
+    )
+  ) |> 
+  filter(round(value, digits = 5) != 0.26417)
+
+usa_fuel_price_filtered |> 
+  # filter(!c(grepl("Gulf Coast", place) & grepl("Diesel", description))) |> 
+  ggplot(aes(Date, value, color = place, lty = description)) +
+  geom_line() +
+  scale_x_datetime(date_breaks = "1 year", date_labels = "%Y")
+```
+
+```{r combine fuel data in Armeania and USA, include=FALSE}
+usd_amd <- 
+  exchanges |> 
+  filter(name == "USD_AMD") |> 
+  transmute(date, usd_amd = exchange)
+
+arm_fuel_price <- 
+  read_csv("../2023_11_20_petrol_price/fuel_price_2023_11_17.csv") |> 
+  add_row(
+    tibble(date = as.Date("2023-11-18") + 0:9)
+  ) |> 
+  fill(-date, .direction = "down") |> 
+  pivot_longer(-date, names_to = "description") |> 
+  left_join(usd_amd, join_by(date)) |> 
+  fill(usd_amd, .direction = "down") |> 
+  mutate(value = value / usd_amd)
+
+
+combined_data <- 
+  arm_fuel_price |> 
+  filter(!description %in% c("liquefied_gas_price", "petrol_premium")) |> 
+  mutate(place = "Armenia") |> 
+  select(-usd_amd) |> 
+  bind_rows(
+    usa_fuel_price_filtered |> 
+      rename(date = Date) |> 
+      select(date, description, value, place)
+  ) |> 
+  rename(type = description) |> 
+  mutate(
+    type = case_when(
+      grepl("disel|diesel", tolower(type)) ~ "Diesel",
+      grepl("petrol|gas", tolower(type)) ~ "Petrol, Regular",
+      TRUE ~ type
+    ),
+    type = fct_rev(type)
+  ) |> 
+  filter(
+    date >= as.Date("2022-02-01"),
+    !grepl("Gulf Coast", place)
+  )
+```
+
+```{r USA & Armenia fuel plot, include=FALSE}
+fuel_plot_1 <- 
+  combined_data |> 
+  ggplot(aes(date, value, color = place, linetype = type)) +
+  geom_line(linewidth = 1.1, alpha = 0.8) +
+  scale_x_datetime(date_breaks = "2 months", date_labels = "%m-%Y") +
+  scale_y_continuous(labels = dollar_format()) +
+  ggthemes::scale_color_wsj() +
+  ggthemes::theme_fivethirtyeight() +
+  labs(
+    x = NULL,
+    y = NULL,
+    color = NULL,
+    linetype = NULL,
+    title = "Petrol and Diesel prices in Armenia and USA",
+    subtitle = "Dollars per Liter",
+    caption = "Author: Aghasi Tavadyan    |    tvyal.com    |    tavadyan.com"
+  )
+```
+
+```{r exchange comparation from Oct 1, 2023, include=FALSE, warning=FALSE}
+exchange_names <- 
+  read_html("https://en.wikipedia.org/wiki/ISO_4217") |> 
+  html_elements("table") |> 
+  html_table()
+
+exchange_names <- 
+  exchange_names[[2]] |> 
+  transmute(name = paste0("USD_", Code), currency = Currency)
+
+exchanges_plot <- 
+  exchanges |> 
+  filter(
+    !grepl("TRY|AMD|GEL|MXN|CNY|JPY", name),
+    date >= as.Date("2023-10-01")
+  ) |> 
+  left_join(exchange_names, join_by(name)) |> 
+  group_by(name) |> 
+  mutate(
+    FX_pct = exchange / first(exchange),
+    last_price = formatC(exchange, digits = 3),
+    last_price = 
+      ifelse(
+        date == max(date), 
+        paste0(
+          str_remove(name, "USD_"), ": ", last(last_price), "; ", 
+          number(FX_pct, accuracy = 0.01)
+        ),
+        NA
+      ),
+  ) |> 
+  ungroup() |> 
+  ggplot(aes(date, FX_pct)) +
+  geom_line(aes(color = currency), size = 1) +
+  geom_text(aes(x = date + 4, label = last_price)) +
+  scale_x_date(expand = c(0, 0, 0, 7)) +
+  scale_y_continuous(breaks = seq(0.8, 1.2, 0.02)) +
+  ggthemes::scale_color_wsj() +
+  # scale_color_brewer(type = "qual", palette = 3) +
+  # ggthemes::theme_pander() +
+  theme(
+    legend.position = "bottom",
+  ) +
+  labs(
+    x = NULL,
+    y = NULL,
+    color = "Exhanges",
+    title = "Dollar is Depreciating: The Exchanges of Some Major Currencies",
+    subtitle = "October 1, 2023 = 100%",
+    caption = "The information at the end shows the exchange code, the price as of the last date and the change rate since that beginning.\n\nAuthor: Aghasi Tavadyan    |    tvyal.com    |    tavadyan.com"
+  )
+
+```
+
+```{r crude oil & petrol price in Armenia comparation, include=FALSE}
+crude_oil_opec <- 
+  Quandl.datatable("QDL/OPEC") |> 
+  as_tibble()
+
+crude_oil_opec |> write_csv("opec_crude_oil_price.csv")
+
+crude_oil_amd_petrol_plot <- 
+  arm_fuel_price |> 
+  mutate(type = "Armenia") |> 
+  rename(name = description) |> 
+  filter(grepl("petrol_reg", name)) |> 
+  select(-usd_amd) |> 
+  bind_rows(
+    crude_oil_opec |> 
+      mutate(type = "opec_oil", name = "crude_oil")
+  )|> 
+  mutate(
+    value = ifelse(type == "opec_oil", value / 80, value)
+  ) |> 
+  filter(date >= as.Date("2022-02-01")) |> 
+  ggplot(aes(date, value, color = name)) +
+  geom_line(linewidth = 1.1, alpha = 0.8) +
+  scale_x_date(date_breaks = "2 months", date_labels = "%m-%Y") +
+  scale_y_continuous(
+    breaks = seq(0.8, 1.6, 0.1),
+    labels = dollar_format(),
+    name = "Regular petrol price, USD per liter",
+    sec.axis = sec_axis(
+      ~ .*80,
+      breaks = seq(64, 128, 8),
+      labels = dollar_format(),
+      name = "OPEC Crude oil price"
+    )
+  ) +
+  ggthemes::scale_color_wsj() +
+  labs(
+    x = NULL,
+    color = NULL,
+    title = "Comparation between Crude Oil Price & Petrol Price in Armenia ",
+    subtitle = "OPEC crude pil price",
+    caption = "Author: Aghasi Tavadyan    |    tvyal.com    |    tavadyan.com"
+  )
+```
+
+```{r machine learning models, include=FALSE}
+# the modeling can be found in the file petrol_forecast_test.R, but this file is quick and dirthy
+
+model_info <- 
+  read_csv("model_accuracy.scv") |> 
+  select(-.type) |> 
+  mutate(
+    across(!contains("model"), ~number(.x, acuracy = 0.0001))
+  ) |> 
+  knitr::kable()
+
+model_plot <- 
+  read_rds("model_plot.RDS") |> 
+  layout(
+    title = "Forecast of Regular Petrol Price in Armenia using Different Models",
+    yaxis = list(title = "Price per liter in USD"),
+    annotations = list(
+      list(
+        x = 0, y = 0.97,
+        text = "Models use the international crude oil price with a lag of 30 days as a bases",
+        showarrow = FALSE,
+        xref = "paper",
+        yref = "paper",
+        xanchor = "left",
+        yanchor = "left",
+        font = list(size = 18)
+      ),
+       list(
+        x = 0.5, y = 0.02, 
+        text = "Author: Aghasi Tavadyan    |    tvyal.com    |    tavadyan.com",
+        showarrow = FALSE,
+        xref = "paper",
+        yref = "paper",
+        xanchor = "left",
+        yanchor = "left"
+      )
+    ),
+    legend = list(orientation = "h", x = 0, y = 0)
+  )
+
+```
+
+
+
+
+***English summary below.***
+
+Հարգելի գործընկեր,
+
+Հուսով եմ լավ եք:
+Ներկայացնում եմ անցած շաբաթվա վերլուծությունները և աշխատանքները.
+
+1. Բենզինի գնը իջնելու է մինչև 400
+2. Բենզինի գնի կանխատեսում մեքենայական ուսուցման մոդելների միջոցով
+3. ԶԼՄ հաղորդագրություններ բենզինի գնի մասին
+4. Սպասում եմ ձեզ իմ սթրիմին
+5. English summary
+
+
+## 1. Բենզինի գնը իջնելու է մինչև 400
+
+➡️Բենզինի գինը մոտակա 2 ամիսը կարող է իջնել՝ 400 դրամ
+
+Հայաստանի ու ԱՄՆ բենզինի գնի համեմատությունը (Տես առաջին գծապատկերը)։ 
+
+Նշեմ որ ճիշտ չէ ուղիղ համեմատել բենզինի գինը Հայաստանում և ԱՄՆ-ում, քանի որ ԱՄՆ-ն նավթ արտադրող և սպառող ամենախոշոր պետությունն է, որը OPEC+ երկրներից արդեն գրեթե նավթ չի ներմուծում։ Հայաստանը նավթի պաշարներ չունի և բենզինի ներմուծում է Ռուսաստանից։ Սակայն համաշխարհային նավթի գները ազդում են բենզինի գնի վրա և՛ ԱՄՆ-ում և՛ Հայաստանի շուկայում, որը երևում է գծապատկերից։ Բենզինի գինը նույն աճի ու նվազման տենդենցները ունի գրեթե բոլոր պետություններում։
+
+Այս պահին բենզինի գինը Հայաստանում ռեկորդային բարձր է։ Ուշադրություն դարձրեք, որ սեպտեմբերի 8-ից բենզինի գինը Հայաստանում գրեթե չի փոխվել է՝ 1.32 դոլար և հոկտեմբերի 4-ին գրանցված ռեգուլյար բենզինի գնի բարձրացումը 540-ից 570 դրամ հիմնականում պայմանավորված էր դրամի արժեզրկումից՝ 380-ից 402 դրամ։ Դոլարով ներմուծման գինը չի փոխվել։
+
+**Գծապատկեր 1.** Բենզինի և դեզելային վառելիքի գների համեմատություն Հայաստանում և ԱՄՆ-ում
+
+```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
+fuel_plot_1
+```
+* Նշումներ՝ ՀՀ շուկայական գինը փոխանակվել է դոլարի օրվա միջազգային փոխարժեքով։
+
+➡️Իջնելո՞ւ է արդյոք բենզինի գինը։
+
+Քննարկենք այն հնարավոր նախապայմանները որոնք կարող են իջեցնել բենզինի գինը։
+
+1. ԱՄՆ բենզինի գների իջեցում։ Բենզինի գինը ԱՄՆ Կալիֆորնիա նահանգում սեպտեմբերի 30-ին էջել է 1.03 դոլարից մինչև 0.69 ցենտ։ Նորից նշեմ՝ ԱՄՆ և Հայաստանի բենզինի գները տարբեր շուկայական մեխանիզմենրով են ձևավորվում, բայց երկուսի վրա էլ ազդում են համաշխարհային նավթի գները։
+
+2. Համաշխարհային նավթի գների իջեցում։ Ռուսական Urals նավթի գինը սեպտեմբերի 30-ին պիկային կետին 80 դոլարի էր բարելի համար, այս պահին 65 դոլար է մեկ բարելի համար, գինը իջել է մոտ 20 տոկոսով։ Նույն ժամանակահատվածում իջել են նաև այլ նավթի նիշերը (տես գծապատկեր 2)։
+
+3. Ռուսական բենզինի արտահանման արգելիքի դադարում։ Ռուսաստանը սեպտեմբերի 21-ին ժամանակավոր արգելք էր դրել բենզինի և դիզելային վառելիքի արտահանմանը, բացառությամբ ԵԱՏՄ երկրներ։ Այս քայլի նպատակն էր հագեցնել Ռուսաստանի շուկան վառելիքով և իջեցնել ներքին շուկայում դրա գինը։ Այս քայլը նույնպես սահմանափակեց համաշխարհային բենզինի առաջարկը։ Բենզինի և դիզելային վառելիքի արտահանման սահմանափակումները արդեն հանվել են՝ համապատասխանաբար հոկտեմբերի 7-ին և 22-ին։ Սա հետ մեծացրեց արտաքին շուկայում վառելիքի առաջարկը։
+
+4. Դրամի հնարավոր արժևորում 402-ից 380 դրամ։ 
+Վերջին ժամանակահատվածում գրեթե բոլոր զարգացող պետությունների արժույթները արժևորվել են։ Ռուբլին արժևորվել է 9 տոկոսով, Ղազախական տենգեն` 4 տոկոսով, Լեհական զլոտին 9 տոկոսով, եվրոն՝ 4 տոկոսով, ղազախական տենգեն 4 տոկոսով (տես գծապատկեր 3): Այս տենդենցը դեռ շարունակվում է։ Սա ճնշում է գործադրում նաև մեր շուկայի վրա, հատկապես հաշվի առնելով այն հանգամանքը որ դոլարի ծավալը վերջին 2 ամսում Հայաստանի շուկայում որոշակիորեն մեծացել է։
+
+➡️Ինչքանո՞վ կարող է նվազել բենզինի գինը մեր շուկայում։
+
+Նավթի գնի իջացումը բենզինի գինը կարող է իջեցնել 20 տոկոսով, իսկ դրամի արժևորումը 402-ից 380՝ 5 տոկոսով։ Այդ դեպքում գումարային մոտ 25 տոկոսով կարող է բենզինի գինը իջնել մոտակա 2-3 ամսում։
+Դառնալով՝ ռեգուլյարը 400 դրամ, պրեմիում բենզինը՝ 430 դրամ։
+
+
+**Գծապատկեր 2.** Համաշխարհային նավթի գների և Հայաստանի բենզինի գնի համեմատություն
+
+```{r, echo=FALSE, fig.width = 12, fig.height = 8}
+crude_oil_amd_petrol_plot
+```
+
+
+* [Թե ինչպե՞ս և ո՞վ է ձևավորում բենզինի գինը ներքին շուկայում, կարդացեք նախորդ վերլուծությունը](https://www.tvyal.com/newsletter/2023_11_20)
+* [Իմ նախկին կանխատեսումներից որոնք իրականացել են. ռուբլին արժևորվելու է մինչև 88-82 ռուբլի 1 դոլարի համար](https://www.tvyal.com/newsletter/2023_10_16)
+Այս կանխատեսումը իրականացրել եմ 2 ամիս առաջ՝ այն կետին երբ 1 դոլարը 98 ռոբլի էր։
+
+
+**Գծապատկեր 3.** Դոլարի արժեզրկում։ Տարածաշրջանի մի շարք փոխարժեքների դինամիկան (01-11-2023 = 100%)
+
+```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
+exchanges_plot
+```
+
+## 2. Բենզինի գնի կանխատեսում մեքենայական ուսուցման մոդելների միջոցով
+
+Այս հատվածը ունի տեխնիկական բնույթ․
+
+Մեր կողմից կառուցվել է նաև մի շարք մոդելներ (նաև մեքենայական ուսուցման), որոնք կանխատեսում են բենզինի գինը ներքին շուկայում՝ օգտագործելով միջազգային նավթի գինը 30 օրվա լագով։ Սա թույլ է տալիս կանխատեսել բենզինի գինը հաջորդ 30 օրվա համար՝ հաշվի առնելով նավթի գնի վերջին փոփոխությունները։
+
+Օգտագործված մոդելներն են՝ arima, auto_arima, arima_with_xgboost, [prophet](https://facebook.github.io/prophet/), seasonal_reg_stlm: Մոդելների ցուցանիշները տրված են ստորև․
+
+```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
+model_info
+```
+
+Ներքևում նշված գծապատկերը [ինտերակտիվ է (կարդացեք այս նյութը մեր կայքում դրա համար)](https://www.tvyal.com/newsletter/2023_11_27)։ Այն ցույց է տալիս բենզինի գների կանխատեսումը ըստ նշված 5 մոդելների հաջորդ 30 օրվա համար։ Ըստ 12-օրյա seasonal_reg_stlm և auto_arima մոդելների բենզինի գնի փոփոխություն մոտակա ամիսը չի սպասվում։ Սակայն auto, arima_with_xgboost, prophet մոդելները կանխատեսում են որ 1 ամիս հետո բենզինի գնի ամենահավանական արժեքները Հայաստանի շուկայում 1.05, 1 և 1.2 դոլար են լինելու համապաստախանաբար։ 
+
+**Գծապատկեր 4.** Բենզինի գնի կանխատեսումը Հայաստանի շուկայում
+
+```{r, echo=FALSE, warning=FALSE, fig.width = 9, fig.height = 8}
+model_plot
+```
+
+<!-- ![](https://raw.githubusercontent.com/tavad/tvyal_newsletter/main/2023_11_20_petrol_price_forecast/plots/pic-selected-231128-0735-17.png) -->
+
+Նորից նշեմ այս կանխատեսման, գծապատկերների կոդը ինչպես նաև տվյալների բազաները հասանելի են մեր [Github-ում](https://github.com/tavad/tvyal_newsletter): Տվյալների բազաները ներառում են՝ բենզինի գնը Հայաստանում, համաշխարհային նավթի և բանզինի գները, մի շարք փոխարժեքների բազաները, բենզինի ներմուծման գնի վերաբերյալ և ներքին շուկայում վառելիքի գնաճի տվյալների բազաները։
+
+**Հավելյալ տեղեկատվություն.**
+
+* [OPEC+ postpones policy meeting to Nov 30, oil falls](https://www.reuters.com/business/energy/opec-postpones-policy-meeting-nov-30-oil-falls-2023-11-22/), 22/11/2023
+* [Запрет на экспорт летнего дизельного топлива отменен](https://oilcapital.ru/news/2023-11-22/zapret-na-eksport-letnego-dizelnogo-topliva-otmenen-3107276), 22/11/2023
+* [Правительство отменило временный запрет на экспорт бензина](https://www.rbc.ru/business/17/11/2023/655790e59a7947bd46054cbc), 7/11/2023
+* [Оптовые цены на бензин в России рухнули до минимума](https://lenta.ru/news/2023/09/21/benz/), 21/09/2023
+
+
+## 3. ԶԼՄ հաղորդագրություններ բենզինի գնի մասին
+
+Դիտեք իմ հարցազրույցը տված [1in.am](https://youtu.be/TVdZ1qmq4uI?t=10) լրատվամիջոցոին, թե ինչու բենզինի գինը կարող է դառնալ 400 դրամ: Այս հարցազրույցը լրացնում է այս վերլուծությունը և ավելի դյուրին կերպով մատուցում շուկայական թրենդները։
+
+[![](https://i3.ytimg.com/vi/TVdZ1qmq4uI/maxresdefault.jpg)](https://youtu.be/TVdZ1qmq4uI?t=10)
+
+
+## 4. Սպասում եմ ձեզ իմ սթրիմին
+
+Եթե ձեզ հետաքրքիր է լսել իմ մեկնաբանությունները և տեսնել թե ոնց եմ ես կատարում իմ հետազոտությունները, կարող եք [մասնակցել իմ սթրիմին](https://www.facebook.com/events/1061901551905269/):
+
+Ես նպաստակադրված եմ այն ամենը ինչ անում եմ ներկայացնել և բացատրել սթրիմի կամ վլոգի ձևաչափով:
+Սա նախնական և փորձնական է լինելու, որը հոսով եմ շարունակական կլինի։
+
+
+## 5. English Summary
+
+**Exploring Gasoline Prices – What's Behind the Recent Spike?**
+
+The current newsletter highlights the potential decrease in gasoline prices in Armenia over the next two months. The analysis compares the price of gasoline in Armenia with that in the USA, emphasizing the impact of global oil prices on both markets. Notably, the price of gasoline in Armenia is currently at a record high of $1.32 since September 8, with minimal fluctuations, primarily attributed to dram devaluation. The newsletter explores various factors that could contribute to a decline in gasoline prices, including the reduction of US gasoline prices, global oil price drops, the lifting of Russia's export restrictions, and a possible dram devaluation.
+
+The article predicts that a combination of a 20% decrease in oil prices and a 5% dram devaluation could lead to a 25% reduction in gasoline prices in the Armenian market over the next 2-3 months. Consequently, regular gasoline costs may decrease by 400 drams, and premium gasoline by 430 drams. The analysis also touches on the recent appreciation of currencies in developing countries, putting pressure on the Armenian market.
+
+The newsletter concludes by mentioning the use of machine learning models for gasoline price forecasting based on international oil prices. The interactive chart on their website shows predictions for the next 30 days, with some models forecasting stable prices, while others anticipate potential fluctuations, with probable values ranging from 1.05 to 1.2 dollars after one month. For more detailed information, readers are encouraged to visit the website.
+
+    
+
+Այս վերլուծությունը առկա է նաև [մեր կայքէջում](https://www.tvyal.com/newsletter/2023_11_27), այս վերլուծության կոդը և տվյալները դրված են նաև [Github-ում](https://github.com/tavad/tvyal_newsletter)։                        
+                  
+
+Եթե հնարավոր է, խնդրում եմ այս նյութը ուղարկել նաև այն մարդկանց, ում այն կարծում եք կարող է հետաքրքրել:
+
+Սպասեք հաջորդ հաղորդագրությանը մի շաբաթվա ընթացքում:        
+
+          
+           
+           
+
+
+Հարգանքներով,            
+Աղասի Թավադյան         
+27.11.2023          
+[tvyal.com](https://www.tvyal.com/)      
+[tavadyan.com](https://www.tavadyan.com/)
+
+       
+              
+               
+
+
+####### **Ուշադրություն. Ձեր էլ.փոստը մեյլիսթի մեջ է, որի միջոցով ես կիսվում եմ շաբաթական նյութեր, որոնք հիմնականում ներկայացնում են Հայաստանի տնտեսությանը: Նյութերը ներառում են գծապատկերներ, [տվյալների բազաներ](https://github.com/tavad/tvyal_newsletter), տեսանյութեր, հոդվածներ, [առցանց վահանակներ](https://www.tvyal.com/projects), տնտեսական գործիքներ, կանխատեսումներ և հաշվետվություններ: Եթե ցանկանում եք չեղարկել բաժանորդագրությունը, խնդրում եմ տեղեկացրեք ինձ, և ես կհեռացնեմ ձեր էլ. փոստը ցուցակից: Գրեք նաև եթե ունեք մենկնաբանություններ:**
+
+####### **Important! Your email is part of the mailing list where I share weekly materials primarily focused on the Armenian economy. These materials encompass charts, [databases](https://github.com/tavad/tvyal_newsletter), videos, articles, [online dashboards](https://www.tvyal.com/projects), economic tools, forecasts, and reports. If you wish to unsubscribe, please let me know, and I will remove your email from the list. Please share your comments as well․**
+
+
+
+
+
+
+
