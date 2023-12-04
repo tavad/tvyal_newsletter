@@ -82,7 +82,25 @@ setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 
 
 ```{r get FX data, include=FALSE}
-# this function works only if the priceR api key is present
+partner_eports_year %>% 
+  left_join(partners_dic, by = "partner_region") %>% 
+  # filter(year <= year_select) %>% 
+  ggplot(aes(year, exp_year_region/ 1e6,
+             color = partner_region_arm,
+             linetype = partner_region_arm
+             )) +
+  geom_line(size = 1.5) +
+  scale_y_continuous(labels = dollar_format()) +
+  scale_x_continuous(breaks = 2010:2023) +
+  scale_color_brewer(type = "qual", palette = 3) +
+  labs(x = "",
+       y = "մլն. ԱՄՆ դոլար",
+       title = "Հայաստանի արտահանումը դեպի գործընկեր տարածաշրջաններ") +
+  # labs(x = "",
+  #      y = "Million USD",
+  #      title = "Exports of Armenia to partner regions by year") +
+  theme(legend.position = "bottom",
+        legend.title = element_blank())
 ```
 
 
