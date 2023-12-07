@@ -1,0 +1,162 @@
+---
+title: "three"
+author: "Aghasi Tavadyan"
+date: "2023-11-29"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+```
+
+```{r}
+scale_factor = 15
+
+colors_three = c("#D2E7BA", "#A8D185", "#04905E",
+                 "#3D9618", "#8AD378", "#3FD485", "#089E79",
+                 "#079094", "#2F9B61")
+
+bauble_colours = c("#e5d08f", "#e3d4b6",
+                   "#cacbce", "#9c9c9c", "#e1dfdf",
+                   "#c94c4c", "#8d1414")
+
+
+bubbles <- 
+  crossing(
+    x = 1:(scale_factor*2),
+    y = 1:scale_factor
+  ) |> 
+  filter(
+    x %% 2 != y %% 2,
+    y <= x,
+    y <= -x + max(x)
+  ) %>%
+  mutate(
+    x = x / 2.5,
+    shp = sample(1:7, nrow(.), replace = T),
+    sz = sample(seq(.5,1,by=.1), nrow(.), replace = T),
+    col1 = sample(bauble_colours, nrow(.), replace = T),
+  )
+
+
+crossing(
+  x = 1:(scale_factor*2),
+  y = 1:scale_factor,
+  x_prime = seq(-1, 1 , 0.01)
+) |> 
+  filter(
+    x %% 2 != y %% 2,
+    y <= x,
+    y <= -x + max(x)
+  ) %>%
+  mutate(
+      col1 = sample(colors_three, nrow(.), replace = TRUE)
+  ) %>% 
+  bind_rows(
+    tibble(
+      x = scale_factor, 
+      y = scale_factor + 1,   
+      x_prime = seq(-1, 1 , 0.01),
+      col1 = "red"
+    )
+  ) %>% 
+  mutate(
+    y_prime = sqrt(1 - x_prime^2),
+    y_prime2 = ifelse(x_prime >= 0, x_prime - 1, x_prime + 1),
+    y_prime2 = sqrt(1 - (y_prime2)^2)-1,
+    x_prime = x_prime + x,
+    y_prime = y_prime + y,
+    y_prime2 = y_prime2 + y,
+    x_prime = x_prime / 2.5,
+    x = x / 2.5,
+    # nrow = nrow(x = _),
+  ) |> 
+  pivot_longer(contains("y_prime"), values_to = "y_prime") |> 
+  filter(y_prime >= 1) |> 
+  ggplot(aes(x_prime, y_prime, group = paste(x, y))) +
+  geom_path() +
+  geom_polygon(aes(fill = I(col1), color = I(col1))) +
+  geom_point(
+    data = bubbles, 
+    aes(x = x, y = y + 0.4, shape = factor(shp), size=sz, color = I(col1)), 
+    show.legend = F
+  ) +
+  geom_tile(aes(x = 6, y = 0, width = 2, height = 2), fill = "brown4") +
+  scale_shape_manual(values = c(20:25,8)) +
+  theme_void() + 
+  theme(plot.background = element_rect(fill="#0E4732"), title = element_text(colour="white")) 
+
+
+tibble(
+  x = seq(0, 20, 0.001)
+) |> 
+  mutate(
+    x_floor = floor(x),
+  ) |> 
+  na.omit() |> 
+  left_join(
+    tibble(
+      x_floor = 1:20
+    ) |>
+      mutate(
+        y_floor = sample(c(-1, 0, 1), size = 20, replace = TRUE),
+        # y_floor = case_when(
+        #   (x_floor + y_floor) %% 2 == 0 ~ 0,
+        #   TRUE ~ y_floor
+        # ),
+        y_floor2 = ifelse(
+          abs(y_floor + lag(y_floor)) == 0,
+          0,
+          y_floor
+          ),
+        y_floor2 = ifelse(is.na(y_floor2), y_floor, y_floor2),
+        y_floor = cumsum(y_floor2)
+      ) |> 
+      select(-y_floor2)
+  ) |> 
+  mutate(
+    
+    y = case_when(
+      (x_floor + y_floor) %% 2 == 0 ~ sqrt(1 - (x %% x_floor)^2),
+      (x_floor + y_floor) %% 2 == 1 ~ sqrt(1 - (x %% x_floor - 1)^2)
+    ),
+    
+    y = y + y_floor) |> 
+  ggplot() +
+  geom_line(aes(x,y)) +
+  geom_line(aes(x_floor, y_floor), color = "red") +
+  scale_y_continuous(breaks = -10:10) +
+  scale_x_continuous(breaks = 0:50)
+
+
+
+
+# crossing(
+#   x = seq(-1, 1, 0.01),
+#   y = seq(-1, 1, 0.01)
+# ) |> 
+#   filter(
+#     x^2 + y^2 < 1,
+#     asin(y) < pi / 4 & acos(x) > pi / 3
+#     ) %>%
+#   mutate(
+#     x = x / 2.5,
+#     shp = sample(1:7, nrow(.), replace = T),
+#     sz = sample(seq(.5,1,by=.1), nrow(.), replace = T),
+#     col1 = sample(bauble_colours, nrow(.), replace = T),
+#   ) |> 
+#   na.omit() |> 
+#   ggplot() +
+#   geom_point(
+#     aes(x = x, y = y + 0.4, shape = factor(shp), size=sz, color = I(col1)), 
+#     show.legend = F
+#   )
+# 
+# # tibble()
+# seq(0, 2*pi, length = 6)
+
+
+```
+
