@@ -40,8 +40,8 @@ bubbles <-
     col1 = sample(bauble_colours, nrow(.), replace = T),
   )
 
-
-crossing(
+main_tree <- 
+  crossing(
   x = 1:(scale_factor*2),
   y = 1:scale_factor,
   x_prime = seq(-1, 1 , 0.01)
@@ -74,26 +74,17 @@ crossing(
     # nrow = nrow(x = _),
   ) |> 
   pivot_longer(contains("y_prime"), values_to = "y_prime") |> 
-  filter(y_prime >= 1) |> 
-  ggplot(aes(x_prime, y_prime, group = paste(x, y))) +
-  geom_path() +
-  geom_polygon(aes(fill = I(col1), color = I(col1))) +
-  geom_point(
-    data = bubbles, 
-    aes(x = x, y = y + 0.4, shape = factor(shp), size=sz, color = I(col1)), 
-    show.legend = F
-  ) +
-  geom_tile(aes(x = 6, y = 0, width = 2, height = 2), fill = "brown4") +
-  scale_shape_manual(values = c(20:25,8)) +
-  theme_void() + 
-  theme(plot.background = element_rect(fill="#0E4732"), title = element_text(colour="white")) 
+  filter(y_prime >= 1)
+
+
+
 
 
 
 
 
 gerlyanda <-
-  function(len = 20, resalution = 500) {
+  function(len = 30, resalution = 500) {
     j = NULL
     j[1] = 0
     
@@ -115,13 +106,12 @@ gerlyanda <-
       ) |> 
       crossing(x = seq(0, 1 - 1/resalution, 1/resalution)) |> 
       mutate(
-        
         x = x_floor + x,
         y = case_when(
           (x_floor + y_floor) %% 2 == 0 ~ sqrt(1 - (x %% x_floor)^2),
           (x_floor + y_floor) %% 2 == 1 ~ sqrt(1 - (x %% x_floor - 1)^2),
         ),
-        y = y + y_floor,
+        y = y + y_floor
       ) |> 
       select(x,y)
     
@@ -130,7 +120,73 @@ gerlyanda <-
 
 
 
-gerlyanda() |> 
+gerlyanda_multiplayer <- function(count = 7) {
+  
+  reds <- c("#ff0000", "#ffa07a", "#f08080", "#fa8072", "#e9967a",
+    "#ff6347", "#cd5c5c", "#ff4500", "#dc143c", "#b22222")
+  
+  data <- NULL
+  
+  for (i in 1:count) {
+    data <- 
+      gerlyanda(resalution = 70) |> 
+      mutate(
+        group = paste0("count", i), 
+        hight = sample(seq(1, 19, 2), 1),
+        color = sample(reds, 1)
+      ) |> 
+      bind_rows(data)
+  }
+  
+  data |> 
+    arrange(group) |> 
+    mutate(
+      y = y + hight
+    ) |> 
+    filter(
+      y >= 1,
+      floor(y) <= floor(x),
+      floor(y) <= -floor(x) + max(x) - 1
+    ) |> 
+    mutate(x = x /2.5)
+}
+
+
+gerlyanda_multiplayer()
+
+iris |> 
+  ggplot()
+
+
+
+
+
+
+main_tree |> 
+  ggplot(aes(x_prime, y_prime, group = paste(x, y))) +
+  geom_path() +
+  geom_polygon(aes(fill = I(col1), color = I(col1))) +
+  geom_line(
+    data = gerlyanda_multiplayer(20),
+    mapping = aes(x, y, group = group, color = I(color), linetype = group),
+    size = 1.5
+  ) +
+  geom_point(
+    data = bubbles, 
+    aes(x = x, y = y + 0.4, shape = factor(shp), size=sz, color = I(col1)), 
+    show.legend = F
+  ) +
+  geom_tile(aes(x = 6, y = 0, width = 2, height = 2), fill = "brown4") +
+  scale_shape_manual(values = c(20:25,8)) +
+  labs(
+    linetype = NULL
+  ) +
+  theme_void() + 
+  theme(plot.background = element_rect(fill="#0E4732"), title = element_text(colour="white")) 
+
+
+
+
  
 
 
