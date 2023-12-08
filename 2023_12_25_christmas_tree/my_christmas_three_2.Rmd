@@ -14,14 +14,20 @@ library(tidyverse)
 ```{r}
 scale_factor = 15
 
-colors_three = c("#D2E7BA", "#A8D185", "#04905E",
+colors_three = c("#A8D185", "#04905E", "#9acd32",
                  "#3D9618", "#8AD378", "#3FD485", "#089E79",
-                 "#079094", "#2F9B61")
+                 "#079094", "#2F9B61", "#50C878", "#008000", "#008000")
 
 bauble_colours = c("#e5d08f", "#e3d4b6",
                    "#cacbce", "#9c9c9c", "#e1dfdf",
                    "#c94c4c", "#8d1414")
 
+bauble_colours = c(
+"#646F75", "#949399", "#8C9EAA", "#C3C4C6", "#9CC6D4", "#7FA490", "#CD936D", "#DB7076", "#E04C52")
+
+
+ reds <- c("#ff0000", "#ffa07a", "#f08080", "#fa8072", "#e9967a",
+    "#ff6347", "#cd5c5c", "#ff4500", "#dc143c", "#b22222")
 
 bubbles <- 
   crossing(
@@ -122,9 +128,6 @@ gerlyanda <-
 
 gerlyanda_multiplayer <- function(count = 7) {
   
-  reds <- c("#ff0000", "#ffa07a", "#f08080", "#fa8072", "#e9967a",
-    "#ff6347", "#cd5c5c", "#ff4500", "#dc143c", "#b22222")
-  
   data <- NULL
   
   for (i in 1:count) {
@@ -152,22 +155,40 @@ gerlyanda_multiplayer <- function(count = 7) {
 }
 
 
+gerlyanda_multiplayer <-
+  function(count = 7) {
+  
+    gerlyanda(resalution = 70) |> 
+      crossing(nesting(
+        group = paste0("count", 1:count), 
+        hight = sample(seq(-5, 19, 2), count),
+        color = sample(reds, count)
+      )) |> 
+      arrange(group) |> 
+      mutate(
+        y = y + hight
+      ) |> 
+      filter(
+        y >= 1,
+        floor(y) <= floor(x),
+        floor(y) <= -floor(x) + max(x) - 1
+      ) |> 
+      mutate(x = x /2.5)
+  }
+
+
 gerlyanda_multiplayer()
-
-iris |> 
-  ggplot()
-
-
 
 
 
 
 main_tree |> 
   ggplot(aes(x_prime, y_prime, group = paste(x, y))) +
+  geom_tile(aes(x = 6, y = 0, width = 2, height = 2), fill = "brown4") +
   geom_path() +
   geom_polygon(aes(fill = I(col1), color = I(col1))) +
   geom_line(
-    data = gerlyanda_multiplayer(20),
+    data = gerlyanda_multiplayer(10),
     mapping = aes(x, y, group = group, color = I(color), linetype = group),
     size = 1.5
   ) +
@@ -176,13 +197,13 @@ main_tree |>
     aes(x = x, y = y + 0.4, shape = factor(shp), size=sz, color = I(col1)), 
     show.legend = F
   ) +
-  geom_tile(aes(x = 6, y = 0, width = 2, height = 2), fill = "brown4") +
   scale_shape_manual(values = c(20:25,8)) +
-  labs(
-    linetype = NULL
-  ) +
   theme_void() + 
-  theme(plot.background = element_rect(fill="#0E4732"), title = element_text(colour="white")) 
+  theme(
+    plot.background = element_rect(fill="#0E4732"), 
+    title = element_text(colour="white"),
+    legend.position = "drop"
+  ) 
 
 
 
