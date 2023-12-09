@@ -116,8 +116,6 @@ electricity <-
 count(info) |> 
   view()
 
-  
-  
 
 # արտադրության ծավալներն ըստ տնտեսական գործունեության տեսակների
 # արտադրությունն ըստ ՀՀ մարզերի և ք. Երևանի
@@ -146,12 +144,112 @@ electricity <-
   compact_data() |> 
   select_if(~any(!is.na(.)))
 
+library(RcppRoll)
 
-electricity %>%
+electricity_cleaned <- 
+  electricity %>%
   select(-c(sheets, info, check)) |> 
-  view()
+  rename(
+    year_cumsum = 3, year_prev_cumsum = 4, pct_change = 5, na = 6
+  ) |> 
+  mutate(
+    across(-c(date), ~str_trim(.x))
+  ) |> 
+  filter(
+    !grepl("\\d{4}", x1)
+  ) |> 
+  select(-na, -pct_change) |> 
+  mutate(
+    year_cumsum = parse_number(year_cumsum),
+    year_prev_cumsum = parse_number(year_prev_cumsum),
+    x1 = case_when(
+      grepl("արևային", tolower(x1)) ~ "Արևային էլեկտրակայաններ",
+      grepl("հողմային", tolower(x1)) ~ "Հողմային էլեկտրակայաններ",
+      TRUE ~ x1
+    )
+  ) %>%
+  full_join(
+    select(., -year_cumsum) |> 
+      rename(year_prev_cumsum2 = year_prev_cumsum) |> 
+      mutate(date = date - years(1)),
+    by = join_by(date, x1)
+  ) |> 
+  select(-year_prev_cumsum) |> 
+  mutate(year_cumsum = ifelse(is.na(year_cumsum), year_prev_cumsum2, year_cumsum)) |> 
+  select(-year_prev_cumsum2) |> 
+  complete(date, x1) |>
+  arrange(x1, date) |> 
+  group_by(x1) |> 
+  mutate(
+    year_cumsum = zoo::na.approx(year_cumsum, x = date, na.rm = FALSE),
+    month_value = ifelse(month(date) == 1, year_cumsum, year_cumsum - lag(year_cumsum)),
+    YoY_value = roll_sumr(month_value, 12)
+  ) |> 
+  ungroup()
+
+electricity_cleaned |> 
+  filter(!x1 %in% c("Ջերմային էներգիա, հազ. ԳՋ", "Այլ աղբյուրներ")) |> 
+  ggplot(aes(date, month_value)) +
+  geom_line() +
+  facet_wrap(~x1, scales = "free_y") +
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+  ggthemes::theme_fivethirtyeight() +
+  labs(
+    title = "Ամսական արտադրություն"
+  )
+
+library(scales)
+
+electricity_cleaned |> 
+  mutate(year = year(date)) |> 
+  filter(
+    year >= 2022,
+    !grepl("ընդամենը|Այլ|ԳՋ|Հողմային", x1),
+  ) |> 
+  arrange(date) |> 
+  group_by(date) |> 
+  mutate(
+    pct_month = month_value/sum(month_value),
+    text = ifelse(pct_month <= 0.01, NA, pct_month),
+    text = percent(text, accuracy = 0.1)
+  ) |> 
+  ggplot(aes(date, month_value, fill = x1, label = text)) +
+  geom_col(alpha = 0.7) +
+  geom_text(position = position_stack(vjust = 0.5)) +
+  scale_x_date(date_breaks = "2 months", date_labels = "%m-%Y") +
+  # scale_y_continuous(breaks = seq(0, 1, 0.1), labels = percent_format()) +
+  scale_fill_brewer(type = "qual", palette = 3) +
+  ggthemes::theme_fivethirtyeight()
   
-  summarise(across(everything(), ~mean(is.na(.)) * 100, .names = "{.col}"))
+
+electricity_cleaned |> 
+  filter(
+    !grepl("ընդամենը|Այլ|ԳՋ|Հողմային", x1),
+    !is.na(YoY_value)
+    ) |> 
+  arrange(date) |> 
+  group_by(date) |> 
+  mutate(
+    pct_YoY = YoY_value/sum(YoY_value),
+    year = year(date)
+  ) |> 
+  group_by(year) |> 
+  mutate(
+    text = ifelse(date == max(date) | date == as.Date("2016-02-01"), pct_YoY, NA),
+    text = ifelse(text <= 0.01, NA, text),
+    text = percent(text, accuracy = 0.1)
+  ) |> 
+  ungroup() |> 
+  ggplot(aes(date, pct_YoY, fill = x1, label = text)) +
+  geom_area(alpha = 0.6) +
+  geom_text(position = position_stack(vjust = 0.5)) +
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+  scale_y_continuous(breaks = seq(0, 1, 0.1), labels = percent_format()) +
+  scale_fill_brewer(type = "qual", palette = 3) +
+  ggthemes::theme_fivethirtyeight()
+  
+  
+  # summarise(across(everything(), ~mean(is.na(.)) * 100, .names = "{.col}"))
   
 
 
