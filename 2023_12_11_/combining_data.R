@@ -203,7 +203,7 @@ library(scales)
 electricity_cleaned |> 
   mutate(year = year(date)) |> 
   filter(
-    year >= 2022,
+    year >= 2023,
     !grepl("ընդամենը|Այլ|ԳՋ|Հողմային", x1),
   ) |> 
   arrange(date) |> 
@@ -216,10 +216,16 @@ electricity_cleaned |>
   ggplot(aes(date, month_value, fill = x1, label = text)) +
   geom_col(alpha = 0.7) +
   geom_text(position = position_stack(vjust = 0.5)) +
-  scale_x_date(date_breaks = "2 months", date_labels = "%m-%Y") +
+  scale_x_date(date_breaks = "1 months", date_labels = "%m-%Y") +
   # scale_y_continuous(breaks = seq(0, 1, 0.1), labels = percent_format()) +
   scale_fill_brewer(type = "qual", palette = 3) +
-  ggthemes::theme_fivethirtyeight()
+  ggthemes::theme_fivethirtyeight() +
+  labs(
+    fill = NULL,
+    title = "Արևայինը ապահովել է ընդհանուր էլ. արտադրության 30.1%-ը (2023թ. հուլիսին)",
+    subtitle = "Հայաստանի էլեկտրաէներգիայի արտադրության ծավալները\nԱմսական կտրվածքով, մլն. կՎտ. ժամ",
+    caption = "Հեղինակ` Աղասի Թավադյան   |   tvyal.com   |   tavadyan.com    |    Տվյալների աղբյուր` psrc.am"
+  )
   
 
 electricity_cleaned |> 
