@@ -88,7 +88,7 @@ test |>
     )
   ) 
 
-electricity <- 
+test <- 
   test %>%
   rename(x1 = 3) |> 
   filter(
@@ -108,7 +108,30 @@ electricity <-
     check = ifelse(info == lag(info), TRUE, FALSE)
   ) |> 
   relocate(date, sheets, info, check) |> 
-  filter(check) |> 
+  filter(check)
+
+test2 <- 
+  test |> 
+  mutate(
+    info_short = case_when(
+      grepl("ծավալներն ըստ տնտեսական", info) ~ "արտադրության ծավալներն ըստ գործունեության տեսակների", # արտադրության ծավալներն ըստ տնտեսական գործունեության տեսակների
+      grepl("արտադրությունն ըստ ՀՀ", info) ~ "արտադրությունն ըստ ՀՀ մարզերի և ք. Երևանի",# արտադրությունն ըստ ՀՀ մարզերի և ք. Երևանի
+      grepl("արտադրանքի ծավալը", info) ~ "արտադրանքի ծավալը և ինդեքսները",# արտադրանքի ծավալը և արտադրության ինդեքսները
+      grepl("Էլեկտրաէներգիայի", info) ~ "Էլեկտրաէներգիա",# Արդյունաբերությամբ զբաղվող տնտեսավարող սուբյեկտների արտադրանքի  արտադրության և իրացման ծավալներն ըստ աշխատողների թվաքանակով որոշվող չափերի
+      grepl("Էլեկտրաէներգիայի", info) ~ "Էլեկտրաէներգիա",# Էլեկտրաէներգիայի և ջերմաէներգիայի
+      grepl("Հանքագործ", info) ~ "Հանքագործական արդյունաբերություն",# Հանքագործական արդյունաբերութ
+      grepl("Էլեկտրաէներգիայի", info) ~ "Էլեկտրաէներգիա",# Հիմնային  մետաղների  արտադրությամբ
+      grepl("Էլեկտրաէներգիայի", info) ~ "Էլեկտրաէներգիա",# Հիմնային քիմիական նյութերի, քիմիական արտադրանքների,
+      grepl("Էլեկտրաէներգիայի", info) ~ "Էլեկտրաէներգիա",# Մանածագործական արտադրատեսակների 
+      grepl("Էլեկտրաէներգիայի", info) ~ "Էլեկտրաէներգիա",# Մանածագործական և հագուստի  արտադրությամբ զբաղվող կազմակերպությունների
+      grepl("Էլեկտրաէներգիայի", info) ~ "Էլեկտրաէներգիա",# Մետաղական արտադրատեսակների 
+      grepl("Էլեկտրաէներգիայի", info) ~ "Էլեկտրաէներգիա",# Պատրաստի մետաղե արտադրատեսակների, համակարգիչների, էլեկտրոնային
+      grepl("Էլեկտրաէներգիայի", info) ~ "Էլեկտրաէներգիա"
+    )
+  )
+
+electricity <- 
+  test |> 
   filter(grepl("Էլեկտրաէներգիայի", info))
   
   
@@ -117,18 +140,8 @@ count(info) |>
   view()
 
 
-# արտադրության ծավալներն ըստ տնտեսական գործունեության տեսակների
-# արտադրությունն ըստ ՀՀ մարզերի և ք. Երևանի
-# արտադրանքի ծավալը և արտադրության ինդեքսները
-# Արդյունաբերությամբ զբաղվող տնտեսավարող սուբյեկտների արտադրանքի  արտադրության և իրացման ծավալներն ըստ աշխատողների թվաքանակով որոշվող չափերի
-# Էլեկտրաէներգիայի և ջերմաէներգիայի
-# Հանքագործական արդյունաբերութ
-# Հիմնային  մետաղների  արտադրությամբ
-# Հիմնային քիմիական նյութերի, քիմիական արտադրանքների,
-# Մանածագործական արտադրատեսակների 
-# Մանածագործական և հագուստի  արտադրությամբ զբաղվող կազմակերպությունների
-# Մետաղական արտադրատեսակների 
-# Պատրաստի մետաղե արտադրատեսակների, համակարգիչների, էլեկտրոնային
+######## below is a super function. I like this function, it is optimized
+##### all non-NA values are shifted to the left and the remaining cells are filled with NA
 
 compact_data <- function(data) {
   for (row in 1:nrow(data)) {
@@ -276,3 +289,100 @@ electricity_cleaned |>
 #   compact_data_result <- compact_data(your_data)
 #   print(compact_data_result)
 #   
+
+
+#########################################
+
+hanqaardyunaberutyun <- 
+  test2 |> 
+  relocate(date, sheets, info, info_short, x1) |> 
+  select(-check) |> 
+  filter(info_short == "Հանքագործական արդյունաբերություն") |> 
+  compact_data() |> 
+  select_if(~any(!is.na(.)))
+  
+
+hanqaardyunaberutyun %>%
+  select(-c(sheets, info, info_short)) |> 
+  rename(
+    year_cumsum = 3, year_prev_cumsum = 4, pct_change = 5, na = 6
+  ) |> 
+  mutate(
+    across(-c(date), ~str_trim(.x))
+  ) |> 
+  filter(
+    !grepl("\\d{4}", x1)
+  ) |> 
+  select(-na, -pct_change) |> 
+  mutate(
+    year_cumsum = parse_number(year_cumsum),
+    year_prev_cumsum = parse_number(year_prev_cumsum),
+    x1 = str_trim(x1),
+    x1 = str_replace_all(x1, "  ", " "),
+    x1 = case_when(
+      grepl("ապրանքային բետոն", tolower(x1)) ~ "Ապրանքային բետոն, հազ. տոննա ",
+      grepl("այլ միներալներ", tolower(x1)) ~ "Այլ միներալներ (ծակոտկեն լցանյութեր), տոննա",
+      grepl("ապրանքային  բետոն", tolower(x1)) ~ "Ապրանքային  բետոն, հազ. տոննա?",
+      grepl("գաջ", tolower(x1)) ~ "Գիպս և գաջ, տոննա",
+      grepl("խտանյութեր պղնձ", tolower(x1)) ~ "Խտանյութեր պղնձի, տոննա",
+      grepl("կիր չմարած", tolower(x1)) ~ "կիր մարած և կիր հիդրավլիկական, տոննա",
+      grepl("հավաքովի պատրաստի", tolower(x1)) ~ "Հավաքովի պատրաստի կոնստրուկցիաներ և շենքերի ու կառույցների համար այլ արտադրատեսակներ ցեմենտից",
+      grepl("շշեր, բանկաներ", tolower(x1)) ~ "Շշեր, բանկաներ ~ Շշեր, բանկաներ, սրվակներ և այլ տարաներ ապակուց, բացի դեղասրվակներից. խցաններ, կափարիչներ և այլ խցանման միջոցներ ապակուց, հազ. հատ",
+      TRUE ~ x1
+    )
+  ) |> 
+  filter(!grepl("\\d{2}|Ճալաքար", x1)) |> 
+  arrange(x1, date) %>%
+  full_join(
+    select(., -year_cumsum) |> 
+      rename(year_prev_cumsum2 = year_prev_cumsum) |> 
+      mutate(date = date - years(1)),
+    by = join_by(date, x1)
+  ) |> 
+  select(-year_prev_cumsum) |> 
+  mutate(year_cumsum = ifelse(is.na(year_cumsum), year_prev_cumsum2, year_cumsum)) |> 
+  select(-year_prev_cumsum2) |> 
+  complete(date, x1) |>
+  arrange(x1, date) |> 
+  group_by(x1) |> 
+  mutate(
+    year_cumsum = zoo::na.approx(year_cumsum, x = date, na.rm = FALSE),
+    month_value = ifelse(month(date) == 1, year_cumsum, year_cumsum - lag(year_cumsum)),
+    YoY_value = roll_sumr(month_value, 12)
+  ) |> 
+  ungroup() |> 
+  ggplot(aes(date, month_value)) +
+  geom_line() +
+  facet_wrap(~x1, scales = "free_y") +
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+  ggthemes::theme_fivethirtyeight() +
+  labs(
+    title = "Ամսական արտադրություն"
+  )
+
+
+#########################################################
+
+gorcuneutyan_tesaki <- 
+  test2 |> 
+  relocate(date, sheets, info, info_short, x1) |> 
+  select(-check) |> 
+  filter(grepl("գործունեության տեսակ", info)) |> 
+  compact_data() |> 
+  select_if(~any(!is.na(.)))
+
+gorcuneutyan_tesaki <- 
+  gorcuneutyan_tesaki |> 
+  select(-c(sheets, -info)) |> 
+  mutate(info_short = str_trim(info_short)) |> 
+  filter(
+    !grepl("^\\d{4}|ՏԳՏԴ", info_short), # Ծածկագիրն ըստ ՏԳՏԴ խմբ. 2
+  ) |> 
+  mutate(
+    info_short = case_when(
+      grepl("^29", info_short) ~ "29",
+      grepl("^\\d{2}", info_short) ~ str_trunc(info_short, 4, ellipsis = ""),
+      TRUE ~ info_short
+    )
+  ) |> 
+  rename(code = info_sheet, name = x1, month_)
