@@ -84,7 +84,15 @@ expand_type <-
           type == "ՀԱԷԿ" ~ "Հայկական ատոմային էլեկտրակայան (ՀԱԷԿ)",
           type == "ՀԷԿ" ~ "Հիդրոէլեկտրակայան (ՀԷԿ)",
           TRUE ~ type
-        )
+        ),
+        across(
+          contains(c("value", "ribbon")),
+          ~ifelse(
+            grepl("Արևային", type),
+            .x * 2.06514253980007,
+            .x
+          )
+        )  
       )
     return(tbl)
   }
