@@ -80,42 +80,75 @@ data2_1 |>
 
 ################################################
 
-
 data2_2 <- read_excel("loans_7_eng.xlsx", sheet = 2, skip = 3)
 
-data2_2_clean <- 
-  data2_2 |> 
-  rename(indicator = 1) |> 
-  filter(!is.na(indicator)) |> 
-  extract(
-    indicator, into = c("code", "indicator"),
-    regex = ("([A-Z]\\.|\\([\\d\\.\\+\\-/ ]+\\))? ?(.+)")
-  ) |> 
-  mutate(
-    code = str_remove(code, "\\.$"),
-    main_code = case_when(
-      code %in% LETTERS  ~ code,
-      grepl("including", indicator) & code == "" ~ indicator
-    ),
-    code = ifelse(is.na(main_code), code, "Total")
-  ) |> 
-  relocate(main_code) |> 
-  fill(main_code, .direction = "down") |> 
-  pivot_longer(
-    -c(main_code, code, indicator),
-    names_to = "date", values_to = "K_AMD"
-  ) |> 
-  filter(!is.na(K_AMD)) |> 
-  mutate(
-    type = ifelse(grepl("\\.{3}", date), "FX", "AMD"),
-    date = ifelse(grepl("\\.{3}", date), NA, date),
-    date = as.numeric(date),
-    date = as.Date(date, origin = "1899-12-30"),
-    K_AMD = parse_number(K_AMD)
-  ) |> 
-  fill(date, .direction = "down")
+data2_3 <- read_excel("loans_7_eng.xlsx", sheet = 3, skip = 3)
 
-data2_2_clean |> 
+cba_data_7_2_amd_7_3_cleaner <- function(tbl, main_colname){
+  tbl <- 
+    tbl |> 
+    rename(indicator = 1) |> 
+    filter(!is.na(indicator)) |> 
+    mutate(
+      indicator = str_replace(indicator, "[A-Z]\\.(\\d\\.)(.*)", "\\1\\2")
+    ) |> 
+    extract(
+      indicator, into = c("code", "indicator"),
+      regex = ("([A-Z]\\.|\\([\\d\\.\\+\\-/ ]+\\))? ?(.+)")
+    ) |> 
+    mutate(
+      code = str_remove(code, "\\.$"),
+      main_code = case_when(
+        code %in% LETTERS  ~ code,
+        grepl("including", indicator) & code == "" ~ indicator
+      ),
+      code = ifelse(is.na(main_code), code, "Total")
+    ) |> 
+    relocate(main_code) |> 
+    fill(main_code, .direction = "down") |> 
+    pivot_longer(
+      -c(main_code, code, indicator),
+      names_to = "date",
+    ) |> 
+    filter(!is.na(value)) |> 
+    mutate(
+      type = ifelse(grepl("\\.{3}", date), "FX", "AMD"),
+      date = ifelse(grepl("\\.{3}", date), NA, date),
+      date = as.numeric(date),
+      date = as.Date(date, origin = "1899-12-30"),
+      value = parse_number(value)
+    ) |> 
+    fill(date, .direction = "down") |> 
+    rename(!!{{main_colname}} := value)
+  
+  return(tbl)
+}
+
+
+inner_join(
+  cba_data_7_2_amd_7_3_cleaner(data2_2, "commercial_banks"),
+  cba_data_7_2_amd_7_3_cleaner(data2_3, "credit_organisation"),
+  by = join_by(main_code, code, indicator, date, type)
+) |> 
+  filter(
+    code == "Total",
+    type == "AMD",
+    main_code %in% LETTERS
+  ) |> 
+  mutate(
+    diff = commercial_banks/credit_organisation,
+    indicator = fct_inorder(indicator)
+  ) |> 
+  ggplot(aes(date, diff, color = main_code)) +
+  geom_line() +
+  facet_wrap(~indicator, scales = "free_y")
+
+  
+  filter(is.na(credit_organisation))
+
+
+
+data2_3_clean |> 
   filter(
     code == "Total",
     type == "AMD",
