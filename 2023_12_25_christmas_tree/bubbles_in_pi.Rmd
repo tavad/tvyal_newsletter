@@ -11,11 +11,13 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 ```
 
+This was recrated inspired by this image fom data-to-art.com:
+https://www.data-to-art.com/img/SIZE400/MV_geom_M_Volz-1024x1024.png
 
 ```{r}
 number_of_circules = 8
 diameter = 2
-dencity = 1e6
+dencity = 1e6 # decreasse dencity to 1e4 or 1e3 if your pc is slow
 
 
 tibble(
