@@ -2,6 +2,7 @@
 
 library(tidyverse)
 library(readxl)
+library(scales)
 
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 
@@ -144,11 +145,11 @@ inner_join(
   facet_wrap(~indicator, scales = "free_y")
 
   
-  filter(is.na(credit_organisation))
 
 
 
-data2_3_clean |> 
+
+cba_data_7_2_amd_7_3_cleaner(data2_2, "K_AMD") |> 
   filter(
     code == "Total",
     type == "AMD",
@@ -159,3 +160,5 @@ data2_3_clean |>
   facet_wrap(~main_code, scales = "free_y") +
   scale_y_log10()
   
+
+cba_data_7_2_amd_7_3_cleaner(data2_2, "commercial_banks")
