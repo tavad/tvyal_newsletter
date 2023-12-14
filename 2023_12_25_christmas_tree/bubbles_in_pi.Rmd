@@ -1,0 +1,47 @@
+---
+title: "bubbles in a pi"
+author: "Aghasi Tavadyan"
+date: "2023-12-14"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+```
+
+
+```{r}
+number_of_circules = 8
+diameter = 2
+dencity = 1e6
+
+
+tibble(
+    circle = seq(0, 2*pi, length = number_of_circules + 1)
+  ) |> 
+  mutate(
+    x_position = round(sin(circle), digits = 5) * diameter,
+    y_position = round(cos(circle), digits = 5) * diameter
+  ) |> 
+  select(-circle) |> 
+  unique() |> 
+  crossing(
+    nesting(
+      x = runif(dencity, -1, 1),
+      y = runif(dencity, -1, 1)
+    )
+  ) |> 
+  filter(x^2 + y^2 < 1) |> 
+  mutate(
+    x_final = x_position + x,
+    y_final = y_position + y
+  ) |> 
+  ggplot(aes(x_final, y_final)) +
+  geom_point(alpha = 0.01, shape = 19, fill = "black") +
+  theme_void()
+  
+
+```
+
