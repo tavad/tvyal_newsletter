@@ -160,5 +160,67 @@ cba_data_7_2_amd_7_3_cleaner(data2_2, "K_AMD") |>
   facet_wrap(~main_code, scales = "free_y") +
   scale_y_log10()
   
+data2_2_clean <- 
+  cba_data_7_2_amd_7_3_cleaner(data2_2, "commercial_banks")
 
-cba_data_7_2_amd_7_3_cleaner(data2_2, "commercial_banks")
+data2_2_clean |> 
+  filter(
+    main_code == "J",
+    code != "Total"
+  ) |> 
+  ggplot(aes(date, commercial_banks / 1e3, color = type)) +
+  geom_line() +
+  facet_wrap(~indicator, scales = "free_y") +
+  scale_x_date(date_breaks = "2 years", date_labels = "%Y") +
+  ggthemes::theme_fivethirtyeight()
+
+
+
+inner_join(
+  cba_data_7_2_amd_7_3_cleaner(data2_2, "commercial_banks"),
+  cba_data_7_2_amd_7_3_cleaner(data2_3, "credit_organisation"),
+  by = join_by(main_code, code, indicator, date, type)
+) |> 
+  pivot_longer(c(commercial_banks, credit_organisation), values_to = "K_AMD") |> 
+  filter(grepl("computer programming", indicator)) |> 
+  ggplot(aes(date, K_AMD, color = paste(name, type))) +
+  geom_line()
+
+
+
+
+
+
+sankey_data <- 
+data2_2_clean |> 
+  mutate(year = year(date)) |> 
+  filter(year %in% c(2013, 2018, 2023)) |> 
+  group_by(year) |> 
+  filter(
+    date == max(date),
+    code == "Total",
+    type == "AMD",
+    grepl("^[A-E]$", main_code)
+  ) |> 
+  group_by(year) |> 
+  mutate(pct = commercial_banks / sum(commercial_banks)) |> 
+  ungroup() |> 
+  select(year, main_code, pct) |> 
+  mutate(year = paste0("x", year)) |> 
+  pivot_wider(names_from = year, values_from = pct) 
+
+
+# install.packages("ggalluvial")
+library(ggalluvial)
+
+sankey_data |> 
+  ggplot(aes(axis1 = x2013, axis2 = x2018, y = x2023)) +
+  geom_alluvium(aes(fill = main_code)) +
+  geom_stratum() +
+  geom_text(stat = "stratum",
+            aes(label = main_code)) +
+  scale_x_discrete(limits = c("Survey", "Response"),
+                   expand = c(0.15, 0.05))
+
+
+  theme_void()
