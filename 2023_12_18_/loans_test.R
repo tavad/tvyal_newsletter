@@ -106,24 +106,32 @@ cba_data_7_2_amd_7_3_cleaner <- function(tbl, main_colname){
       code = ifelse(is.na(main_code), code, "Total")
     ) |> 
     relocate(main_code) |> 
-    fill(main_code, .direction = "down") |> 
-    pivot_longer(
-      -c(main_code, code, indicator),
-      names_to = "date",
-    ) |> 
-    filter(!is.na(value)) |> 
-    mutate(
-      type = ifelse(grepl("\\.{3}", date), "FX", "AMD"),
-      date = ifelse(grepl("\\.{3}", date), NA, date),
-      date = as.numeric(date),
-      date = as.Date(date, origin = "1899-12-30"),
-      value = parse_number(value)
-    ) |> 
-    fill(date, .direction = "down") |> 
-    rename(!!{{main_colname}} := value)
+    fill(main_code, .direction = "down")
+    # pivot_longer(
+    #   -c(main_code, code, indicator),
+    #   names_to = "date",
+    # ) |> 
+    # filter(!is.na(value)) |> 
+    # slice_tail(n = 20) |> 
+    # mutate(
+    #   type = ifelse(grepl("\\.{3}", date), "FX", "AMD"),
+    #   date = str_replace(date, "([A-Z\\d-]) .*", "\\1"),
+    #   date = case_when(
+    #     grepl("^\\d+$", date) ~ as.Date(as.numeric(date), origin = "1899-12-30"),
+    #     grepl("^[A-Z]", date) ~ my(date),
+    #     grepl("^\\.{3}", date) ~ NA
+    #   ),
+    #   value = parse_number(value)
+    # ) |> 
+    # fill(date, .direction = "down") |>
+    # rename(!!{{main_colname}} := value)
   
   return(tbl)
 }
+
+cba_data_7_2_amd_7_3_cleaner(data2_2, "commercial_banks") |> 
+   view()
+
 
 
 inner_join(
