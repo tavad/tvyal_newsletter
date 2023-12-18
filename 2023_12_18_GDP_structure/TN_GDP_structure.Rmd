@@ -178,7 +178,7 @@ segments <-
   ) |>  
   ungroup()
 
-main_GDP_plot <- 
+GDP_main_plot <- 
   main_GDP_plot_data |> 
   ggplot(aes(date, value_yoy)) +
   geom_segment(
@@ -235,7 +235,7 @@ main_GDP_plot <-
 
 
 ```{r gas imports, include=FALSE}
-GDP_Change_plot <- 
+GDP_change_plot <- 
   GDP_services |> 
   filter(!is.na(code)) |> 
   mutate(
@@ -279,8 +279,6 @@ GDP_Change_plot <-
 
 
 
-
-
 ***English summary below.***
 
 Հարգելի գործընկեր,
@@ -288,10 +286,11 @@ GDP_Change_plot <-
 Հուսով եմ լավ եք:
 Ներկայացնում եմ անցած շաբաթվա վերլուծությունները և աշխատանքները.
 
-1. Արևային էլեկտրակայանները կազմելու են 2023թ. արտադրության 12 տոկոսը
-2. Հեղուկ գազի գինը սահմանին
+1. Գյուղատնտեսությունից արդյունաբերություն անցումը
+2. Սխալների ուղղում
 3. ԶԼՄ հաղորդագրություններ
 4. English summary
+5. Նվեր Ամանորի նախորեին / A little gift before Christmas
 
 
 ## 1. Գյուղատնտեսությունից արդյունաբերություն անցումը
@@ -311,7 +310,7 @@ GDP_Change_plot <-
 **Գծապատկեր 1.**  ՀՆԱ մեջ ապրանքների և ծառայությունների թողարկումն փոփոխությունը
 
 ```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
-main_GDP_plot
+GDP_main_plot
 ```
 
 
@@ -319,7 +318,7 @@ main_GDP_plot
 **Գծապատկեր 2.** ՀՆԱ կառուցվածքի 2013-ից մինչև 2023 աճի համեմատություն
 
 ```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
-GDP_Change_plot
+GDP_change_plot
 ```
 
 
@@ -337,10 +336,8 @@ GDP_Change_plot
 
 **Գծապատկեր 3.** Էլեկտրաէներգիայի արտադրության տարեկան ծավալները և կանխատեսումը
 
+
 ![](../2023_12_11_electricity_forecast/plots/electricity_forecast_plot2.png)
-
-
-
 
 
 ## 3. ԶԼՄ հաղորդագրություններ
@@ -350,8 +347,9 @@ GDP_Change_plot
 Սա ըստ իս դեռևս իմ ամենաանմիջական զրույցներից է:
 Պետք է հասկանալ, թե 2023 թ.-ին ինչու չունեցանք 2022 թ-ի չափ բարձր տնտեսական աճ:
 
-[![](https://i3.ytimg.com/vi/FV0NqHOHfY4/maxresdefault.jpg)](https://www.youtube.com/watch?v=FV0NqHOHfY4)
-
+<a href="https://www.youtube.com/watch?v=FV0NqHOHfY4">
+  <img src="https://i3.ytimg.com/vi/FV0NqHOHfY4/maxresdefault.jpg" alt="YouTube Video" style="width:60%;">
+</a>
 
 
 
@@ -360,8 +358,18 @@ GDP_Change_plot
 
 
 
+## 5. Նվեր Ամանորի նախորեին / A little gift beforе Christmas
 
-    
+Ձեզ եմ ընծայում իմ կողմից կոդով ստեղսված նկարը:
+
+Անվանումը` Թռչուններ և խխունջներ
+
+Title: Birds & Snails
+
+![](plots/birds_and_snails.png)
+
+Սպասեք ավելի շատ նվարներ հաջորդ նյուզլեթերին, որը լինելու է մեր կողմից պատրաստած այս տարվա վերջին հաղորդագրությունը:
+
 
 ---
 
