@@ -233,7 +233,6 @@ GDP_main_plot <-
 
 
 
-
 ```{r gas imports, include=FALSE}
 GDP_change_plot <- 
   GDP_services |> 
@@ -267,7 +266,7 @@ GDP_change_plot <-
   geom_text(aes(x = middle_year, y = eng, label = pct_10y_change), vjust = 0) +
   scale_x_log10(labels = number_format()) +
   labs(
-    x = NULL,
+    x = "Billion AMD",
     y = NULL,
     title = "From 2013 to 2023, what area had the biggest growth in GDP?",
     subtitle = "The numbers show the growth rate",
