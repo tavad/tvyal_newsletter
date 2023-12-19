@@ -232,3 +232,44 @@ sankey_data |>
 
 
   theme_void()
+
+  
+  
+  data2_2_clean |> 
+    filter(
+      main_code %in% LETTERS,
+      code == "Total",
+      type == "AMD"
+    ) |>
+    rename(value = commercial_banks) |>
+    mutate(year = year(date)) |> 
+    arrange(main_code, date) |> 
+    group_by(main_code) |> 
+    mutate(value_yoy = roll_sumr(value, 12)) |> 
+    group_by(date) |> 
+    na.omit() |> 
+    mutate(
+      pct = value_yoy/ sum(value_yoy),
+      # eng = str_trunc(eng, 35),
+      # eng = fct_reorder(eng, value_yoy)
+      main_code = fct_reorder(main_code, value_yoy),
+      indicator = paste(main_code, indicator),
+      indicator = fct_reorder(indicator, value_yoy)
+    ) |> 
+    group_by(year) |> 
+    mutate(
+      pct_text = ifelse(pct >= 0.02, pct, NA),
+      pct_text = ifelse(date == max(date), percent(pct_text, accuracy = 0.1), NA)
+    ) |> 
+    ungroup() |> 
+    ggplot(aes(date, pct, fill = indicator, label = pct_text)) +
+    geom_area(alpha = 0.8) +
+    geom_text(
+      position = position_stack(vjust = 0.5)
+    ) +
+    scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+    scale_y_continuous(labels = percent_format()) +
+    # scale_fill_brewer(type = "div", palette = 8) +
+    scale_fill_manual(values = paletteer::paletteer_d("colorBlindness::SteppedSequential5Steps")) +
+    guides(fill = guide_legend(nrow = 5)) +
+    ggthemes::theme_fivethirtyeight()

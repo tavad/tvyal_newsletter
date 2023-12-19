@@ -299,7 +299,7 @@ GDP_change_plot <-
 2. Սխալների ուղղում
 3. ԶԼՄ հաղորդագրություններ
 4. English summary
-5. Նվեր Ամանորի նախորեին / A little gift before Christmas
+5. Նվեր Ամանորի նախօրեին / A little gift before Christmas
 
 
 ## 1. Գյուղատնտեսությունից արդյունաբերություն անցումը
@@ -379,7 +379,7 @@ In the past decade, Armenia has undergone a transformative shift from an agricul
 Examining the growth trajectory of various sectors reveals a stark contrast. While almost all industries recorded a 2-fold or more growth, agriculture remained stagnant, registering minimal positive growth even when adjusted for inflation. Branches like Accommodation and Catering, as well as Culture, Entertainment, and Recreation, stood out with growth rates exceeding 4.7 and 4 times, signaling a burgeoning tourism industry in Armenia. Financial and insurance activities also experienced significant expansion, increasing more than 3.6 times. This dynamic shift underscores Armenia's evolving economic landscape and the rising prominence of diverse sectors beyond traditional agriculture.
 
 
-## 5. Նվեր Ամանորի նախորեին / A little gift beforе Christmas
+## 5. Նվեր Ամանորի նախօրեին / A little gift beforе Christmas
 
 Ձեզ եմ ընծայում իմ կողմից կոդով ստեղսված նկարը:
 

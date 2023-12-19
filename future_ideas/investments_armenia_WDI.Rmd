@@ -1,0 +1,72 @@
+---
+title: "Investments into Armenia"
+author: "Aghasi Tavadyan"
+date: "2023-10-09"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(rio)
+library(WDI)
+```
+
+```{r}
+investments_codes <- 
+  WDI::WDIsearch("investment") %>%
+  filter(
+    grepl("GDP", name),
+    !grepl("coastal", name)
+  ) %>%
+  pull(indicator)
+
+
+investments_world <-
+  WDI::WDI(indicator = investments_codes, start = 1990, extra = TRUE) %>% 
+  as_tibble()
+
+
+
+  
+  view()
+
+investments_world %>% view()
+
+```
+
+
+```{r}
+link_investments <- "https://www.cba.am/stat/stat_data_arm/IIP_arm_for_site_BPM6_rev.xls"
+
+
+investments_raw <-
+  rio::import(link_investments, skip = 2) %>% 
+  as_tibble()
+
+investments_clean_initial <- 
+  investments_raw %>% 
+  rename(index = 1) %>% 
+  pivot_longer(-index, names_to = "date") %>% 
+  mutate(date = yq(date) + months(3) - days(1))
+
+investments_clean_initial %>% 
+  filter(grepl("ԱԿՏԻՎՆԵՐ|ՊԱՐՏԱՎՈՐՈՒԹՅՈՒՆՆԵՐ", index)) %>% 
+  pivot_wider(names_from = index, values_from = value) %>% 
+  rename(actives = 2, pasives = 3) %>% 
+  mutate(pct = actives / pasives) %>% 
+  ggplot(aes(date, pct)) +
+  geom_line() +
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+  ggthemes::theme_fivethirtyeight()
+
+
+  ggplot(aes(date, value, color = index)) +
+  geom_line()
+  
+  
+```
+
