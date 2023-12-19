@@ -108,7 +108,7 @@ GDP_services_links <-
 
 GDP_services <-
   read_excel("GDP_services.xls", skip = 4) |> 
-  rename(code = 1, arm = 2, rus = 3, eng = 4) |> 
+  rename(code = 1, arm = 2, eng = 3, rus = 4) |> 
   pivot_longer(matches("\\d{4}"), names_to = "date")
 
 GDP_services |> write_excel_csv("GDP_services_tidy.csv")
@@ -119,7 +119,7 @@ GDP_services |> write_excel_csv("GDP_services_tidy.csv")
 
 main_GDP_plot_data <- 
   GDP_services |> 
-  filter(!is.na(code)) |>
+  filter(!is.na(code)) |> 
   mutate(
     date = yq(date) + months(3) - days(1),
     year = year(date),
@@ -155,14 +155,23 @@ main_GDP_plot_data <-
     ),
     value_yoy = value_yoy / 1e6
   ) |> 
-  ungroup() |> 
+  ungroup()
+
+factoring_levels <- 
+  main_GDP_plot_data |> 
+  filter(date == max(date)) |> 
   mutate(
     eng = fct_reorder(eng, value_yoy),
     eng = fct_relevel(eng, "Other", after = 0),
     eng = fct_rev(eng)
-  )
+  ) |> 
+  count(eng) |> 
+  pull(eng)
 
-main_GDP_plot_data |> count(eng)
+main_GDP_plot_data <- 
+  main_GDP_plot_data %>%
+  mutate(eng = factor(eng, levels = factoring_levels))
+         
 
 segments <- 
   main_GDP_plot_data |> 
@@ -177,6 +186,7 @@ segments <-
     value_yoy = value_yoy + 1
   ) |>  
   ungroup()
+
 
 GDP_main_plot <- 
   main_GDP_plot_data |> 

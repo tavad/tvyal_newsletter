@@ -19,14 +19,14 @@ national_account_urls <-
   mutate(
     text = str_trim(text),
     url = str_replace(url, "^\\.\\.", "https://www.armstat.am")
-    ) |> 
+  ) |> 
   filter(text != "")
 
 togharkum_urls <- 
   national_account_urls |> 
-  filter(grepl("ծառայությունների թողարկում", text)) |> 
+  filter(grepl("???????????????????????????????? ??????????????????", text)) |> 
   view()
-  pull(url)
+pull(url)
 
 data <-   
   rio::import("https://www.armstat.am/file/doc/99541893.xls", skip = 4) |> 
@@ -63,14 +63,14 @@ main_data <-
     pct_text = ifelse(
       eng != "Other" & date == max(date) & year %in% c(2013, 2023), 
       paste0(
-        "֏ ", number(value_yoy/1e6, accuracy = 0.01), "T (",
-        percent(pct, accuracy = 0.1), ")", " "
-        ),
+        "?? ", number(value_yoy/1e6, accuracy = 0.01), "T (",
+        percent(pct, accuracy = 0.1), ")", "???"
+      ),
       NA
     ),
     pct_text = ifelse(
       year == 2023 & eng != "Other",
-      paste0(" ", eng,  " ", pct_text),
+      paste0("???", eng,  " ", pct_text),
       pct_text
     ),
     value_yoy = value_yoy / 1e6
@@ -199,13 +199,13 @@ data |>
     subtitle = "The numbers show the growth rate",
     captions = paste0(caption_eng, "    |    Data Source: armstat.am")
   )
-  
+
 
 
 select_pal = 
-
-
-library(treemapify)
+  
+  
+  library(treemapify)
 
 data |> 
   rename(code = 1, arm = 2, rus = 3, eng = 4) |> 
@@ -235,4 +235,4 @@ data |>
   facet_wrap(~year)
 
 
-  
+
