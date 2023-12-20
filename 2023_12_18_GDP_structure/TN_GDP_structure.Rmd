@@ -242,7 +242,6 @@ GDP_main_plot <-
 ```
 
 
-
 ```{r gas imports, include=FALSE}
 GDP_change_plot <- 
   GDP_services |> 
@@ -269,11 +268,15 @@ GDP_change_plot <-
   ggplot() +
   geom_segment(
     aes(x = min_year, xend = max_year, y = fct_reorder(eng, max_year), yend = eng),
-    color=new_palette_colors[1]
+    color = new_palette_colors[1]
   ) +
-  geom_point(aes(x=min_year, y=eng), color=new_palette_colors[3], size=3) +
-  geom_point(aes(x=max_year, y=eng), color=new_palette_colors[4], size=3) +
+  geom_point(aes(x = min_year, y = eng), color = new_palette_colors[3], size = 3) +
+  geom_point(aes(x = max_year, y = eng), color = new_palette_colors[4], size = 3) +
   geom_text(aes(x = middle_year, y = eng, label = pct_10y_change), vjust = 0) +
+  geom_point(aes(x = 450, y = 2.5), color = new_palette_colors[3], size = 3) +
+  geom_point(aes(x = 450, y = 1.5), color = new_palette_colors[4], size = 3) +
+  geom_text(aes(x = 600, y = 2.5, label = 2013)) +
+  geom_text(aes(x = 600, y = 1.5, label = 2023)) +
   scale_x_log10(labels = number_format()) +
   labs(
     x = "Billion AMD",
