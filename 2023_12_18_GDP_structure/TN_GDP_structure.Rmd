@@ -300,13 +300,32 @@ GDP_change_plot <-
 
 
 ```{r, include=FALSE}
-# GDP_services |> 
+# GDP_services |>
+#    # filter(!is.na(code) | grepl("Domestic product .gross", eng)) |>
+#   filter(grepl("Domestic product .gross", eng)) |> 
+
+
 #   mutate(
 #     date = yq(date) + months(3) - days(1),
 #     year = year(date),
-#     eng = str_trunc(eng, 40),
-#     eng = paste0(code, ". ", eng),
-#   ) 
+#     # eng = str_trunc(eng, 40),
+#     # eng = paste0(code, ". ", eng),
+#   ) |> 
+#   group_by(code, eng) |> 
+#   mutate(
+#     production_yoy = roll_sumr(production_month, 4) / 1e3,
+#     vol_pct_2 = production_yoy / lag(production_yoy, n = 4)
+#   ) |>
+#   ungroup() |> 
+#   slice_head(n = 20) |> 
+#   select(-code, -arm, -rus)
+#   view()
+#   
+#   ggplot(aes(date, vol_YoY_pct, color = eng)) +
+#   geom_line()
+# 
+# plotly::ggplotly(pp)
+  
 ```
 
 
