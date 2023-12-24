@@ -20,16 +20,14 @@ colors_three = c("#A8D185", "#04905E", "#9acd32",
 
 # colors_three = as.character(paletteer::paletteer_d("ggsci::light_green_material"))
 
-bauble_colours = c("#e5d08f", "#e3d4b6",
-                   "#cacbce", "#9c9c9c", "#e1dfdf",
-                   "#c94c4c", "#8d1414")
-
 bauble_colours = c(
 "#646F75", "#949399", "#8C9EAA", "#C3C4C6", "#9CC6D4", "#7FA490", "#CD936D", "#DB7076", "#E04C52")
 
 
  reds <- c("#ff0000", "#ffa07a", "#f08080", "#fa8072", "#e9967a",
     "#ff6347", "#cd5c5c", "#ff4500", "#dc143c", "#b22222")
+ 
+set.seed(1234)
 
 bubbles <- 
   crossing(
@@ -48,6 +46,26 @@ bubbles <-
     col1 = sample(bauble_colours, nrow(.), replace = T),
   )
 
+main_shape_contour <- function(tbl) {
+  tbl <- 
+    tbl |> 
+    mutate(
+      y_prime = sqrt(1 - x_prime^2),
+      y_prime2 = ifelse(x_prime >= 0, x_prime - 1, x_prime + 1),
+      y_prime2 = sqrt(1 - (y_prime2)^2)-1,
+      x_prime = x_prime + x,
+      y_prime = y_prime + y,
+      y_prime2 = y_prime2 + y,
+      x_prime = x_prime / 2,
+      x = x / 2,
+      # nrow = nrow(x = _),
+    ) |> 
+    pivot_longer(contains("y_prime"), values_to = "y_prime") |> 
+    filter(y_prime >= 1)
+  
+  return(tbl)
+}
+
 main_tree <- 
   crossing(
   x = 1:(scale_factor*2),
@@ -62,36 +80,27 @@ main_tree <-
   mutate(
       col1 = sample(colors_three, nrow(.), replace = TRUE)
   ) %>% 
-  bind_rows(
-    tibble(
-      x = scale_factor, 
-      y = scale_factor + 1,   
-      x_prime = seq(-1, 1 , 0.01),
-      col1 = "red"
-    )
-  ) %>% 
-  mutate(
-    y_prime = sqrt(1 - x_prime^2),
-    y_prime2 = ifelse(x_prime >= 0, x_prime - 1, x_prime + 1),
-    y_prime2 = sqrt(1 - (y_prime2)^2)-1,
-    x_prime = x_prime + x,
-    y_prime = y_prime + y,
-    y_prime2 = y_prime2 + y,
-    x_prime = x_prime / 2,
-    x = x / 2,
-    # nrow = nrow(x = _),
+  main_shape_contour()
+
+treetopper_data <- 
+  tibble(
+    x = scale_factor, 
+    y = scale_factor + 1,   
+    x_prime = seq(-1, 1 , 0.01)
   ) |> 
-  pivot_longer(contains("y_prime"), values_to = "y_prime") |> 
-  filter(y_prime >= 1)
+  main_shape_contour() |> 
+  crossing(
+    nesting(
+      linetype = paste0("count", 1:8), 
+      color = sample(reds, 8)
+    )
+  )
 
 
 
 
 
-
-
-
-gerlyanda <-
+garland <-
   function(len = 30, resalution = 500) {
     j = NULL
     j[1] = 0
@@ -128,13 +137,13 @@ gerlyanda <-
 
 
 
-gerlyanda_multiplayer <- function(count = 7) {
+garland_multiplayer <- function(count = 7) {
   
   data <- NULL
   
   for (i in 1:count) {
     data <- 
-      gerlyanda(resalution = 70) |> 
+      garland(resalution = 70) |> 
       mutate(
         group = paste0("count", i), 
         hight = sample(seq(1, 19, 2), 1),
@@ -157,10 +166,10 @@ gerlyanda_multiplayer <- function(count = 7) {
 }
 
 
-gerlyanda_multiplayer <-
+garland_multiplayer <-
   function() {
   
-    gerlyanda(resalution = 70) |> 
+    garland(resalution = 70) |> 
       crossing(
         nesting(
           linetype = paste0("count", 1:8), 
@@ -183,7 +192,7 @@ gerlyanda_multiplayer <-
   }
 
 
-gerlyanda_multiplayer()
+garland_multiplayer()
 
 snow <- 
   tibble(
@@ -205,19 +214,26 @@ snow <-
   unnest() 
 
 
+green_shades <- tibble(
+  x = seq(0, 15, by = 1),
+  y = 8.5,
+  fill = colorRampPalette(c("#013220", "darkgreen"))(16)
+)
 
 library(gganimate)
 library(transformr)
 
-
-
-main_tree |> 
+christmas_tree_animation <- 
+  main_tree |> 
   ggplot(aes(x_prime, y_prime, group = paste(x, y))) +
-  geom_tile(aes(x = scale_factor/2, y = 0, width = 2, height = 2), fill = "brown4") +
-  geom_path() +
+  geom_tile(
+    data = green_shades, 
+    aes(x, y, width = 1, height = 19, fill = I(fill))
+  ) +
+  geom_tile(aes(x = scale_factor/2, y = 0, width = 2, height = 2), fill = "#b22222") +
   geom_polygon(aes(fill = I(col1), color = I(col1))) +
   geom_line(
-    data = gerlyanda_multiplayer(),
+    data = garland_multiplayer(),
     aes(x, y, linetype = as.factor(linetype), group = hight, color = I(color)),
     size = 1.8
   ) +
@@ -226,16 +242,25 @@ main_tree |>
     aes(x = x, y = y + 0.4, shape = factor(shp), size=sz, color = I(col1)), 
     show.legend = F
   ) +
+  geom_line(
+    data = treetopper_data,
+    aes(x_prime, y_prime, linetype = as.factor(linetype), 
+        group = paste(x, y), color = I(color)),
+    size = 1
+  ) +
   # geom_jitter(data=snow, aes(x,y,group=x), colour="white", shape=8, size=1) +
   scale_shape_manual(values = c(20:25,8)) +
   theme_void() + 
   coord_fixed() +
   theme(
-    plot.background = element_rect(fill="#0E4732"), 
+    plot.background = element_rect(fill="#013220"), 
     title = element_text(colour="white"),
+    plot.title = element_text(size = 30, hjust = 0.5),
+    plot.caption = element_text(size = 14, hjust = 0.5),
     legend.position = "drop"
   ) +
   labs(
+    title = "Merry Christmas & Happy New Year",
     caption = "tvyal.com"
   ) +
   transition_states(linetype, transition_length = 2, state_length = 1) +
@@ -243,11 +268,18 @@ main_tree |>
   enter_fade() +
   exit_fade()
 
+christmas_tree_animation
 
-  transition_time(time) + 
-  ease_aes('sine-in-out')
-    
-  
+
+animate(
+  christmas_tree_animation,
+  nframes = 16,
+  width = 627,
+  height = 800
+)
+
+gganimate::anim_save("christmas_tree_animation_3.gif")
+
 
 
 
