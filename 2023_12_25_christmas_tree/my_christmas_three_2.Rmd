@@ -158,15 +158,19 @@ gerlyanda_multiplayer <- function(count = 7) {
 
 
 gerlyanda_multiplayer <-
-  function(count = 7) {
+  function() {
   
     gerlyanda(resalution = 70) |> 
-      crossing(nesting(
-        group = paste0("count", 1:count), 
-        hight = sample(seq(-5, 19, 2), count),
-        color = sample(reds, count)
-      )) |> 
-      arrange(group) |> 
+      crossing(
+        nesting(
+          linetype = paste0("count", 1:8), 
+          color = sample(reds, 8)
+        ),
+        nesting(
+          hight = seq(-5, 33, 2),
+        )
+      ) |> 
+      arrange(hight) |> 
       mutate(
         y = y + hight
       ) |> 
@@ -181,6 +185,29 @@ gerlyanda_multiplayer <-
 
 gerlyanda_multiplayer()
 
+snow <- 
+  tibble(
+    x = sample(seq(1, max(cone$x)+1, by=.01), 100, replace = F),
+    y = sample(seq(1, max(cone$y)+1, by=.01), 100, replace = F)
+  ) %>% 
+  group_by(x) %>% 
+  nest() %>% 
+  mutate(
+    data =  map(
+      data, 
+      ~data.frame(
+        y=seq(.$y, .$y-sample(seq(.5,1,by=.01),1), length.out = 100)
+      ) %>% 
+        mutate(time = sample(seq(0.5,.9, .01), 1)) %>% 
+        mutate(time = seq(unique(time), unique(time)+.02, length.out = nrow(.)))
+    )
+  ) %>% 
+  unnest() 
+
+
+
+library(gganimate)
+library(transformr)
 
 
 
@@ -190,15 +217,16 @@ main_tree |>
   geom_path() +
   geom_polygon(aes(fill = I(col1), color = I(col1))) +
   geom_line(
-    data = gerlyanda_multiplayer(10),
-    mapping = aes(x, y, group = group, color = I(color), linetype = group),
-    size = 1.5
+    data = gerlyanda_multiplayer(),
+    aes(x, y, linetype = as.factor(linetype), group = hight, color = I(color)),
+    size = 1.8
   ) +
   geom_point(
     data = bubbles, 
     aes(x = x, y = y + 0.4, shape = factor(shp), size=sz, color = I(col1)), 
     show.legend = F
   ) +
+  # geom_jitter(data=snow, aes(x,y,group=x), colour="white", shape=8, size=1) +
   scale_shape_manual(values = c(20:25,8)) +
   theme_void() + 
   coord_fixed() +
@@ -206,7 +234,20 @@ main_tree |>
     plot.background = element_rect(fill="#0E4732"), 
     title = element_text(colour="white"),
     legend.position = "drop"
-  ) 
+  ) +
+  labs(
+    caption = "tvyal.com"
+  ) +
+  transition_states(linetype, transition_length = 2, state_length = 1) +
+  # transition_states(color, transition_length = 2, state_length = 1) + 
+  enter_fade() +
+  exit_fade()
+
+
+  transition_time(time) + 
+  ease_aes('sine-in-out')
+    
+  
 
 
 
