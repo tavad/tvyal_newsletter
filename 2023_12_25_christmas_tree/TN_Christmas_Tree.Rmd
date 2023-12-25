@@ -18,38 +18,47 @@ rm(list = ls()); gc()
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 ```
 
+**Հարգելի գործընկեր,**
 
-***English summary below.***
+## **Շնորհավոր Ամանոր և Սուրբ Ծնունդ**
 
-Հարգելի գործընկեր,
+🎄🎅🎁✨🔔🕯️🦌🎉🍪🥛⛄🌨️🧤🧣🍬🍭
 
-Հուսով եմ լավ եք:
-Ներկայացնում եմ անցած շաբաթվա վերլուծությունները և աշխատանքները.
+Շնորհակալ եմ որ հետևում եք մեր գործունեությանը։
 
-1. Գյուղատնտեսությունից արդյունաբերություն անցումը
-2. Սխալների ուղղում
-3. ԶԼՄ հաղորդագրություններ
-4. English summary
-5. Նվեր Ամանորի նախօրեին / A little gift before Christmas
+Thanks for your time and for hanging with us.
 
+[![](christmas_tree_animation.gif)](https://forms.gle/C7ouBuBafxquDiRN9)
 
-[![](christmas_tree_animation.gif)](https://forms.gle/uwSiJNazakfP2EGj7)
+## Ամփոփենք տարին
 
+* գրեթե կես տարի՝ 25 շաբաթ, 25 վերլուծություն ⏳
+* ավելի քան 10 հազար տող կոդ 💻
+* ավելի քան 50 գծապատկեր 📊
+* 930 էլ փոստ բաժանորդագրվածների ցանկում 📬
 
-## 1. Գյուղատնտեսությունից արդյունաբերություն անցումը
+## Let's summarize the year
 
-### Կամ գյուղատնտեսությունը կոլապսի է ենթարվել
-
-
-
-## 2. Սխալների ուղղում
-
-
+* Almost half a year: 25 weeks, 25 analyses ⏳
+* More than 10 thousand lines of code 💻
+* More than 50 plots 📊
+* 930 subscribed emails 📬
 
 
-## 3. ԶԼՄ հաղորդագրություններ
+## Խնդրում եմ գնահատեք մեր գործունեությունը
 
-[Դիտեք իմ վերջին հարցազրույցը, որտեղ ամփոփում եմ 2023 թվականը։](https://www.youtube.com/watch?v=YbMAqFJkfeU)
+## Please rate our work
+
+[Հարցումը կարճ է:](https://forms.gle/C7ouBuBafxquDiRN9)
+
+[![](pictures/rate_us.png)](https://forms.gle/C7ouBuBafxquDiRN9)
+
+Հաջորդ շաբաթ նյուզլեթեր չի լինի։ Կհանդիպենք հաջորդ տարի։ Բարի հանգստյան օրեր։
+
+
+## ԶԼՄ հաղորդագրություններ
+
+[Դիտեք Նվեր Մնացականյանին տված իմ վերջին հարցազրույցը, որտեղ ամփոփում եմ 2023-ը։](https://www.youtube.com/watch?v=YbMAqFJkfeU)
 
 Հարցազրույցում շոշափվել են հետևյալ թեմաները։
 
@@ -63,13 +72,17 @@ setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 
 
 
-## 4. English Summary
+## The Christmas Tree code
 
-**The **
+Ձեզ ուղարկվող բոլոր վերլուծությունները պատրաստվել են կոդի միջոցով` հիմնականում R և markdown ծրագրավորման լեղվով։ Օֆիսային ծրագրեր չեն օգտագործվել հետազոտությունների իրականցման մեջ։ Բոլոր վերլուծությունները առկա են նաև [մեր կայքէջում](https://www.tvyal.com/newsletter), բոլոր վերլուծությունների կոդը և տվյալները դրված են [Github-ում](https://github.com/tavad/tvyal_newsletter)։
 
+🎄 Այսօր առաջին անգամ որոշեցի ձեր հետ կիսվել նաև կոդով։ Այս պարագայում տոնածառի գծագրման կոդով։ 🎄
 
+Ցանկանում եմ **ոգեշնչվեք ու ոգեշնչեք** եկող տարի։
 
+-------------
 
+The main colors of the Christmas Three and the main parameter `scale_factor`, which desides the hight of the three and ajast everything acordingly.
 
 ```{r setting the main colors}
 
@@ -102,6 +115,8 @@ green_shades <-
 set.seed(1234)
 ```
 
+Constructing the Christmas Tree toys (bubbles) database and ploting it.
+
 ```{r tree bubbles}
 # Christmas tree bubbles database
 bubbles <- 
@@ -127,6 +142,8 @@ bubbles |>
   geom_point() +
   scale_shape_manual(values = c(20:24,8))
 ```
+
+Constructing the three database with geometric scales and the tree topper. Below is the plot of Christmas three scales. Here the heavy lifting does the x^2 + y^2 = 1 circle equation: `y_prime = sqrt(1 - x_prime^2)`.
 
 ```{r tree and the treetopper database}
 
@@ -186,6 +203,7 @@ main_tree |>
 
 ```
 
+This function was the hardest. It randomly constructs a garland line that mimics the scales of the Tree.
 
 ```{r adding the garland}
 
@@ -231,6 +249,8 @@ garland() |>
   geom_line()
 ```
 
+This functin just multiples the said random garland to be drown all over the Three.
+
 ```{r multiplaying the garland to rap up it across the tree}
 garland_multiplayer <-
   function() {
@@ -264,7 +284,7 @@ garland_multiplayer() |>
   geom_line()
 ```
 
-
+Finialy. Combining everything and animating.
 
 ```{r combining everything together}
 # Combine everything together in a animation
@@ -301,35 +321,41 @@ christmas_tree_animation <-
     ),
     linewidth = 1
   ) +
+  labs(
+    title = "Merry Christmas & Happy New Year",
+    subtitle = NULL,
+    caption = "tvyal.com"
+  ) +
   scale_shape_manual(values = c(20:24,8)) +
   theme_void() + 
   coord_fixed() +
   theme(
+    legend.position = "drop",
     plot.background = element_rect(fill="#013220"), 
     title = element_text(colour="white"),
     plot.title = element_text(
       size = 30, hjust = 0.5,
-      margin = margin(t = 12, unit = "pt")
+      margin = margin(t = 30, unit = "pt")
     ),
-    plot.caption = element_text(size = 14, hjust = 0.5),
-    legend.position = "drop"
-  ) +
-  labs(
-    title = "Merry Christmas & Happy New Year",
-    caption = "tvyal.com\n"
+    plot.caption = element_text(
+      size = 14, hjust = 0.5, 
+      margin = margin(b = 12, unit = "pt")
+    )
   ) +
   transition_states(linetype, transition_length = 2, state_length = 1) +
   enter_fade() +
   exit_fade()
 ```
 
+Rendering and saving the animation.
+
 ```{r rendering and saving the animation, eval=FALSE}
 
 animate(
   christmas_tree_animation,
-  nframes = 14,
-  width = 627,
-  height = 800
+  nframes = 26,
+  width = 600,
+  height = 806
 )
 
 gganimate::anim_save("christmas_tree_animation.gif")
@@ -342,9 +368,7 @@ gganimate::anim_save("christmas_tree_animation.gif")
 
 
 ---
-
-Այս վերլուծությունը առկա է նաև [մեր կայքէջում](https://www.tvyal.com/newsletter/2023_12_25), այս վերլուծության կոդը և տվյալները դրված են նաև [Github-ում](https://github.com/tavad/tvyal_newsletter)։                        
----                  
+               
 
 Եթե հնարավոր է, խնդրում եմ այս նյութը ուղարկել նաև այն մարդկանց, ում այն կարծում եք կարող է հետաքրքրել:
 
