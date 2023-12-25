@@ -17,7 +17,7 @@ https://www.data-to-art.com/img/SIZE400/MV_geom_M_Volz-1024x1024.png
 ```{r}
 number_of_circules = 8
 diameter = 2
-dencity = 1e6 # decreasse dencity to 1e4 or 1e3 if your pc is slow
+dencity = 1e5 # decreasse dencity to 1e4 or 1e3 if your pc is slow
 
 
 tibble(
@@ -42,7 +42,8 @@ tibble(
   ) |> 
   ggplot(aes(x_final, y_final)) +
   geom_point(alpha = 0.01, shape = 19, fill = "black") +
-  theme_void()
+  theme_void() +
+  coord_fixed()
   
 
 ```

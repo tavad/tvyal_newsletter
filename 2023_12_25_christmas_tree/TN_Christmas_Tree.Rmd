@@ -117,7 +117,7 @@ bubbles <-
   mutate(
     x = x / 2,
     shp = sample(1:6, nrow(.), replace = T),
-    sz = sample(seq(.5,1,by=.1), nrow(.), replace = T),
+    sz = sample(seq(0.5, 1, by=0.1), nrow(.), replace = T),
     color = sample(bauble_colours, nrow(.), replace = T),
   )
 
@@ -151,10 +151,10 @@ main_shape_contour <- function(tbl) {
 
 main_tree <- 
   crossing(
-  x = 1:(scale_factor*2),
-  y = 1:scale_factor,
-  x_prime = seq(-1, 1 , 0.01)
-) |> 
+    x = 1:(scale_factor*2),
+    y = 1:scale_factor,
+    x_prime = seq(-1, 1 , 0.01)
+  ) |> 
   filter(
     x %% 2 != y %% 2,
     y <= x,
@@ -307,13 +307,16 @@ christmas_tree_animation <-
   theme(
     plot.background = element_rect(fill="#013220"), 
     title = element_text(colour="white"),
-    plot.title = element_text(size = 30, hjust = 0.5),
+    plot.title = element_text(
+      size = 30, hjust = 0.5,
+      margin = margin(t = 12, unit = "pt")
+    ),
     plot.caption = element_text(size = 14, hjust = 0.5),
     legend.position = "drop"
   ) +
   labs(
     title = "Merry Christmas & Happy New Year",
-    caption = "tvyal.com"
+    caption = "tvyal.com\n"
   ) +
   transition_states(linetype, transition_length = 2, state_length = 1) +
   enter_fade() +
