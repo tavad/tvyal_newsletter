@@ -14,3 +14,6 @@ spheres3d(x, y, z, radius = 0.3, color = color)
 play3d(spin3d(axis = c(0, 0, 1), rpm = 4))
 
 close3d()
+
+# Export (requires 3rd party tool "ImageMagick" resp. magick-package)
+# movie3d(spin3d(axis = c(0, 0, 1), rpm = 4), duration = 30, dir = getwd())
