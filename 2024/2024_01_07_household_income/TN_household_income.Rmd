@@ -132,8 +132,9 @@ marz_dict <-
 ```
 
 
-```{r, include=FALSE}
-household_income_db |> 
+```{r income_table, include=FALSE}
+income_table <- 
+  household_income_db |> 
   left_join(inf_cumprod, by = "date") |> 
   mutate(totincome = totincome * adj_price) |> 
   filter(marz == 1) |>
@@ -153,7 +154,9 @@ household_income_db |>
       "Տարի", "Ամենաաղքատ 10%-ի վերին շեմը (1-ին դեցիլ)",
       "Միջին ընտանիքի եկամուտ (median)",
       "Միջին եկամուտ (mean)", "Ամենահարուստ 10%-ի ներքևի շեմը (9-րդ դեցիլ)"
-    )
+    ),
+    caption = "**Հայաստանի տնային տնտեսությունների եկամուտների փոփխությունը\nհազար դրամ, եկամուտնեը ճշգրտվել են 2022 թվականի վերջի գներով և կշռվել**",
+    label = paste0(caption_arm, "    |    տվյալների աղբյուր` armstat.am")
   )
   
 ```
@@ -237,15 +240,7 @@ household_change_in_2_years_plot <-
 ```{r income change from 2018 to 2022, include=FALSE}
 
 wealth_change_data <- 
-  household_income_db |> 
-  mutate(
-    is_yerevan = ifelse(marz == 1, TRUE, FALSE),
-    settlement = case_when(
-      is_yerevan ~ "Yerevan",
-      !is_yerevan & settlement == 1 ~ "Other cities, urban",
-      !is_yerevan & settlement == 2 ~ "Rural",
-    )
-  ) %>%
+  household_income_db %>%
   bind_rows(
     mutate(., settlement = "Total")
   ) |> 
@@ -254,9 +249,7 @@ wealth_change_data <-
   group_by(year, settlement) |> 
   summarise(
     mean = sum(totincome*weight)/sum(weight),
-    # mean2 = mean(totincome),
     median = wtd.quantile(totincome, weight, probs = 0.5),
-    # median2 = median(totincome)
     q10 = wtd.quantile(totincome, weight, probs = 0.1),
     q90 = wtd.quantile(totincome, weight, probs = 0.9),
   )
@@ -268,7 +261,7 @@ household_change_18_22_plot <-
   mutate(
     settlement = factor(
       settlement,
-      levels = c("Total", "Yerevan", "Other cities, urban", "Rural"),
+      levels = c("Total", "Yerevan", "urban", "rural"),
       labels = c("Հայաստան", "Երևան", "այլ քաղաքներ", "գյուղեր")
     ),
     name = factor(
@@ -288,7 +281,7 @@ household_change_18_22_plot <-
     y = NULL,
     x = NULL,
     fill = NULL,
-    title = "Հայաստանի տնային տնտեսությունների եկամուտները",
+    title = "Հայաստանի տնային տնտեսությունների եկամուտների փոփոխությունը 2018-ից 2022 թվականներին",
     subtitle = "Հազար դրամ, եկամուտնեը ճշգրտվել են 2022 թվականի վերջի գներով և կշռվել",
     caption = paste0(caption_arm, "    |    տվյալների աղբյուր` armstat.am")
   ) +
@@ -351,9 +344,11 @@ household_pct_change_plot <-
     y = NULL,
     fill = NULL,
     title = "Որքա՞ն է Հայաստանի ընտանիքների ամսական եկամուտը",
-    subtitle = "Տնային տնտեսությունների եկամուտների բաշխվածությունը ըստ տարիների
-    Եկամուտնեը ճշգրտվել են 2022 թվականի վերջի գներով և կշռվել",
+    subtitle = "Տնային տնտեսությունների եկամուտների բաշխվածությունը ըստ տարիների\nԵկամուտնեը ճշգրտվել են 2022 թվականի վերջի գներով և կշռվել",
     caption = paste0(caption_arm, "    |    տվյալների աղբյուր` armstat.am")
+  ) +
+  theme(
+    panel.grid.major.x = element_blank()
   )
 
 ```
@@ -387,7 +382,7 @@ household_pct_change_plot_2 <-
   labs(
     x = "դրամ",
     y = NULL,
-    title = "Որքա՞ն է Հայաստանի ընտանիքների ամսական եկամուտը",
+    title = "Որքա՞ն է Հայաստանի ընտանիքների ամսական եկամուտը, այլընտրանքային հայացք",
     subtitle = "Տնային տնտեսությունների եկամուտների բաշխվածությունը ըստ տարիների\nԵկամուտնեը ճշգրտվել են 2021 թվականի գներով",
      caption = paste0(caption_arm, "    |    տվյալների աղբյուր` armstat.am")
   ) +
@@ -402,17 +397,24 @@ household_pct_change_plot_2 <-
 Հուսով եմ լավ եք:
 Ներկայացնում եմ անցած շաբաթվա վերլուծությունները և աշխատանքները.
 
-1. Գյուղատնտեսությունից արդյունաբերություն անցումը
-2. Սխալների ուղղում
-3. ԶԼՄ հաղորդագրություններ
-4. English summary
-5. Նվեր Ամանորի նախօրեին / A little gift before Christmas
+1. Տնային տնտեսությունները աղքատացել են 2022 թվականին
+2. ԶԼՄ հաղորդագրություններ
+3. English summary
 
 
-## 1.
+## 1. Տնային տնտեսությունները աղքատացել են 2022 թվականին
 
+2022-ին գրանցվել է 12.6 տոկոս տնտեսական աճ, մեկ շնչին ընկնող ՀՆԱ-ն աճել է 4 972 դոլարից մինչև 7 018 դոլար, այսինքն 41 տոկոսով,  սակայն ժողովուրդի իրակական եկամուտները ընկել են։
 
-Գծապատկերում տողերը ներկայացնում են մարզերը, իսկ սյուները հասարակության խավերը (աղքատներ, միջին խավ և հարուստներ)։ Եթե գիծը կարմիր է, ապա նախորդ տարվա համեմատ եկամուտները պակասել են, եթե կապույտ ապա՝ աճել։
+2021-ին տնային տնտեսությունների միջին ճշգրտված եկամուտը կազմել էր 333 հազար դրամ, իսկ 2022-ին՝ 320 հազար դրամ։ Բնակչության ամենաաղքատ 10% շեմը ստանում էր մինչև 101 հազար դրամ 2021 թվականին, իսկ 2022-ին՝ արդեն 88 հազար դրամ:
+
+Առաջին գծապատկերում տողերը ներկայացնում են մարզերը, իսկ սյուները հասարակության խավերը (անապահով խավ, միջին խավ և հարուստներ)։ Եթե գիծը կարմիր է, ապա նախորդ տարվա համեմատ եկամուտները պակասել են, եթե կապույտ ապա՝ աճել։
+
+**Գծապատկեր 1.** Տնային տնտեսությունների համախառն եկամուտների փոփոխությունը ըստ մարզերի
+
+```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 6}
+household_change_in_2_years_plot
+```
 
 Տնային տնտեսությունների եկամուտները 2022 թվականին պակասել են բոլոր մարզերում բացի Կոտայքի, Գեղարքունիքի և Տավուշի մարզերից։
 
@@ -420,49 +422,46 @@ household_pct_change_plot_2 <-
 
 Մնացած մարզերում, ինչպես նաև ամբողջ Հայաստանի համար, բոլոր խավերի եկամուտները համեմատած 2021 թվականի հետ պակասել են։
 
+Դիտարկենք տնային տնտեսությունների եկամուտների փոփոխությունը 2018 թվականից սկսած։ Ինչպես երևում է գնաճով ճշգրտված եկամուտները Հայաստանի համար ամենաբարձր կետում էին 2020 թվականին, միջին վիճակագրական ընտանիքը ստանում էր ամսական 278 հազար դրամ (2022 տարեվերջի գներով): Երկու տարվա ընթացքում միջին ընտանիքի եկամուտը ընկել է 15 հազար դրամով՝ մինչև 263 հազար դրամ։ Երևանում միջին ընտանիքի եկամտաբերությունը չի փոխվել այս 2 տարիների ընթացքում, այն հիմականում ընկել է մարզերում։ Նշված 2 տարիների ընթացքում եկամուտի աճ են գրանցել Երևանի հարուստ խաղվի ներկայացուցչները (9-րդ դեցիլ), որոնց ընտանեկան իրական եկամուտի շեմը բարձրացել է 629 հազարից 2022 թվականին մինչև 671 հազար դրամ։
 
-Ժողովուրդը աղքատացել է․․․ 2022-ին գրանցվել է 12.6 տոկոս տնտեսական աճ, մեկ շնչին ընկնող ՀՆԱ-ն աճել է 4 972 դոլարից մինչև 7 018 դոլար, այսինքն 41 տոկոսով,  սակայն ժողովուրդը իրականում աղքատացել է։
-2021-ին տնային տնտեսությունների միջին ճշգրտված եկամուտը կազմել էր 333 հազար դրամ, իսկ 2022-ին՝ 320 հազար դրամ։ Բնակչության ամենաաղքատ 10% շեմը ստանում էր մինչև 101 հազար դրամ 2021 թվականին, իսկ 2022-ին՝ արդեն 88 հազար դրամ:
-Ինչպես երևում է գծապատկերում մինչև 128 հազար դրամ ստացողները 3.5 տոկոսային կետով աճել են համեմատած 2021-ի։ 128-256 հազար դրամ ստացողների թիվը կրճատվել է 1.9 տոկոսային կետով։
-Նշեմ որ տվյալները ճշգրտվել են 2022 թվականի վերջի գներով։
-
-
-**Գծապատկեր 1.**  ՀՆԱ մեջ ապրանքների և ծառայությունների թողարկումն փոփոխությունը
-
-```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 6}
-household_change_in_2_years_plot
-```
-
-Դիտարկենք թե ապրանքների և ծառայությունների թողարկման որ ճյուղերն են ունեցել ամենազգալի աճը այս 10 տարիների ընթացքում:
-
-Ինչպես երևում է միակ ճյուղը որը գրեթե նույն է մնացել այս 10 տարիների ընթացքում` դա գյուղատնտեսությունն է: Այս ճյուղը այս ընթացքում աճ չի արձանագրել: Եթե հաշվի առնենք նաև գնաճը, ապա աճի տենդենցը բացասական է եղել: Փաստացի գրեթե բոլոր ճյուղերը գրանցել են 2 և ավելի անգամ աճ, բացի գյուղատնտեսությունից:
-
-Ամենամեծ աճը գրանցել է (I) Կացության և հանրային սննդի կազմակերպման և (R) Մշակույթի, զվարճությունների և հանգիստի ոլորտները որոնք այս 10 տարիների ընթացքում աճել են համապատասխանաբար ավելի քան 4.7 և 4 անգամ: Սա առաջին հերթին խոսում է Հայաստանում տուրիզմի զարգացման վերաբերյալ:
-
-Ֆինանսական և ապահովագրական գործունեությունը աճել է ավելի քան 3.6 անգամ
-
-* նշում. Այս հետազոտության մեջ 2023 թվականի տվյալները 2023 թվականի 1-ին, 2-րդ, 3-րդ, ինչպես նաև 2022 թվականի 4-րդ եռամսյակի կումուլատիվ գումարն են, որը ներկայացնում է տարեկան արժեքը:
-
-
-**Գծապատկեր 2.** ՀՆԱ կառուցվածքի 2013-ից մինչև 2023 աճի համեմատություն
+**Գծապատկեր 2.** Հայաստանի տնային տնտեսությունների եկամուտների փոփոխությունը 2018-ից 2022 թվականներին
 
 ```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
 household_change_18_22_plot
 ```
 
-**Գծապատկեր 3.** ՀՆԱ կառուցվածքի 2013-ից մինչև 2023 աճի համեմատություն
+Հաջորդ գծապատկերը համեմատում է գնաճով ճշգրտված տնային տնտեսությունների տարեկան եկամուտները 2005 թվականից սկսած։ Եկամուտները բաժանվել են աճողական զամբյուղների։ 
+
+**Գծապատկեր 3.** Որքա՞ն է Հայաստանի ընտանիքների ամսական եկամուտը
 
 ```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
 household_pct_change_plot
 ```
 
 
-**Գծապատկեր 4.** ՀՆԱ կառուցվածքի 2013-ից մինչև 2023 աճի համեմատություն
+Ինչպես երևում է գծապատկերից մինչև 128 հազար դրամ ստացողները 3.5 տոկոսային կետով աճել են համեմատած 2021-ի։ 128-256 հազար դրամ ստացողների թիվը կրճատվել է 1.9 տոկոսային կետով։
+
+Տվյալները առկա են 2005 թվականից։ Գծապատկերից նաև երևում է որ 2005 թվականից տնային տնտեսություններ գնաճով ճշգրտված եկամուտները գրանցել են կայուն աճ։ Ըստ տվյալների տնային տնտեսությունների իրական եկամուտները ամենամեծ աճն են արձանագրել 2006 և 2007, ինչպես նաև 2019 թվականին։
+
+Անվանական եկամուտների աճ գրանցվել է նաև 2021 և 2022 թվականներին, սակայն այդ տարիներին գրանցվել է համապատասխանաբար 7.2 և 8.6 տոկոս գնաճ, որը զգալի իջեցրել է իրական եկամուտները։ Սա նշանակում է որ 2022 թվականի վերջին աշխատավարձերը դեռ չեն հասել գնաճի տեմպին և 2022 թվականին գրանցված 12.6 տոկոս տնտեսական աճը դեռ չի անդրադարձել տնային տնտեսությունների եկամուտների կամ աշխատավարձերի աճի վրա։ Նշեմ որ 2023 թվականի վերջին գրանցվել է գրեթե զրոյական գնաճ։ Զրոյական գնաճի տեսակետը ներկայացված է [տեսանյութում](https://youtu.be/Va5q9efWaI4)։
+
+Երրորդ գծապատկերում ներկայացված միտքը այլընտրանքային կերպով արտացոլում է նաև հաջորդ գծապատկերը։
+
+**Գծապատկեր 4.** Որքա՞ն է Հայաստանի ընտանիքների ամսական եկամուտը, այլընտրանքային հայացք
 
 ```{r, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 12, fig.height = 8}
 household_pct_change_plot_2
 ```
 
+Այղուսակի տեսքով ներկայացնենք նաև տնային տնտեսությունների եկամուտների փոփոխությունը տարիների ընթացքում։
+
+```{r, echo=FALSE}
+income_table
+```
+
+
+
+Տվյալները վերցված են պաշտոնական աղբյուրներից, մասնավորապես՝ [տնային տնտեսությունների կենսամակարդակի (կենսապայմանների) ամբողջացված հետազոտության անվանազերծված միկրոտվյալների բազա (ըստ տնային տնտեսությունների)](https://www.armstat.am/en/?nid=205) և [Հայաստանի սպառողական գների ամսական ինդեքսը](https://www.cba.am/stat/stat_data_arm/6_CPI_arm.xls): Տնային տնտեսությունների կենսամակարդակի ցուցանիշները ճշգրտվել են ամսական կումուլատիվ գնաճով, այսինքն յուրաքանչյուր ցուցանիշ ներկայացնում է 2022 թվականի վերջի գնողունակությունը։ Ցուցանիշները նաև կշռվել են։ Հաշվարկները կարելի է ստուգել այցելելով [github-ի](https://github.com/tavad/tvyal_newsletter) մեր էջը, որտեղ տրված են տվյալները, հաշվարկների և գծապատկերների կոդը։ 
 
 
 
@@ -481,12 +480,11 @@ household_pct_change_plot_2
 
 ## 3. English Summary
 
-**The transition from agriculture to industry in Armenia**
+**2022- A Year of Declining Household Incomes in Armenia**
 
-In the past decade, Armenia has undergone a transformative shift from an agriculture-dominated economy to one led by industry. In 2013, agriculture contributed 19.5% to the GDP, amounting to 1.24 trillion drams, while industry held the second spot with 14.3% at 920 billion drams. Fast forward to 2023, industry has claimed the top spot, constituting 17.3% of the GDP, while agriculture has seen a decline from nearly 20% to 10.2%. Despite an overall GDP growth of over 2 times, agriculture has only experienced a marginal 5% increase, placing it in 3rd position after industry and wholesale/retail trade. Notably, the construction sector has witnessed a 40% increase, although its share in the GDP has decreased from 13% to 9.1% over the same period.
+In 2022, household incomes in Armenia witnessed a notable shift, with declines evident in most regions, except for Kotayk, Gegharkunik, and Tavush marzes. Within the capital city, Yerevan, and Aragatsotn, the affluent experienced a rise in income while the less privileged faced a further decrease. A broader analysis of income trends since 2018 reveals that Armenia reached its peak in 2020, with the average monthly household income standing at 278,000 AMD. However, by the end of 2022, this figure dropped by 15,000 drams to 263,000 AMD. Although the income for an average family in Yerevan remained unchanged over the two years, a decline was observed in other marzes. Notably, the top 10% of wealthy families in Yerevan saw an increase in real income from 629,000 to 671,000 drams during this period.
 
-Examining the growth trajectory of various sectors reveals a stark contrast. While almost all industries recorded a 2-fold or more growth, agriculture remained stagnant, registering minimal positive growth even when adjusted for inflation. Branches like Accommodation and Catering, as well as Culture, Entertainment, and Recreation, stood out with growth rates exceeding 4.7 and 4 times, signaling a burgeoning tourism industry in Armenia. Financial and insurance activities also experienced significant expansion, increasing more than 3.6 times. This dynamic shift underscores Armenia's evolving economic landscape and the rising prominence of diverse sectors beyond traditional agriculture.
-
+Examining the longer-term perspective, the second chart highlights the evolution of annual household incomes since 2005, categorized into ascending income brackets. Notably, the data reveals a 3.5 percentage point increase in recipients earning up to 128,000 AMD, while the 128,000-256,000 AMD bracket witnessed a 1.9 percentage point reduction. Despite nominal income growth in 2021 and 2022, high inflation rates of 7.2% and 8.6%, respectively, have mitigated real income gains. The disparity is emphasized by the fact that the 12.6% economic growth in 2022 has yet to translate into household income or wage growth, with the impact only starting to show in late 2023 due to almost zero inflation. These insights are supported by an alternative view presented in the fourth diagram, underscoring the intricate relationship between inflation, economic growth, and household income shifts.
 
 
 
