@@ -1,7 +1,7 @@
 ---
 title: "Tvyal Newsletter"
 author: "Aghasi Tavadyan"
-date: "2023-12-18"
+date: "2024-01-07"
 output: html_document
 ---
 
@@ -67,9 +67,11 @@ new_palette_colors <- c(
   "#003f5c", "#2f4b7c", "#665191", "#a05195", 
   "#d45087", "#f95d6a", "#ff7c43", "#ffa600"
 )
-update_geom_defaults("rect", list(fill  = new_palette_colors[1], alpha = 0.8)) 
-update_geom_defaults("line", list(color = new_palette_colors[1], alpha = 0.8))
-update_geom_defaults("area", list(fill  = new_palette_colors[1], alpha = 0.8))
+colfunc <- colorRampPalette(c("#2f4b7c", "#fffcf5", "#f95d6a"))
+
+update_geom_defaults("rect", list(fill  = new_palette_colors[2], alpha = 0.8)) 
+update_geom_defaults("line", list(color = new_palette_colors[2], alpha = 0.8))
+update_geom_defaults("area", list(fill  = new_palette_colors[2], alpha = 0.8))
 
 caption_arm <-  "Հեղինակ` Աղասի Թավադյան   |   tvyal.com   |   tavadyan.com"
 caption_eng <-  "Author: Aghasi Tavadyan   |   tvyal.com   |   tavadyan.com"
@@ -79,7 +81,7 @@ doParallel::registerDoParallel(cores = 8)
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 ```
 
-```{r , include=FALSE}
+```{r data download, include=FALSE}
 # Household database is aggregated from this official source:
 # https://www.armstat.am/en/?nid=205
 
@@ -130,7 +132,7 @@ marz_dict <-
 ```
 
 
-```{r}
+```{r, include=FALSE}
 household_income_db |> 
   left_join(inf_cumprod, by = "date") |> 
   mutate(totincome = totincome * adj_price) |> 
@@ -157,71 +159,8 @@ household_income_db |>
 ```
 
 
+```{r 2021 2022 change, include=FALSE}
 
-
-
-```{r, include=FALSE}
-wealth_change_data <- 
-  household_income_db |> 
-  mutate(
-    is_yerevan = ifelse(marz == 1, TRUE, FALSE),
-    settlement = case_when(
-      is_yerevan ~ "Yerevan",
-      !is_yerevan & settlement == 1 ~ "Other cities, urban",
-      !is_yerevan & settlement == 2 ~ "Rural",
-    )
-  ) %>%
-  bind_rows(
-    mutate(., settlement = "Total")
-  ) |> 
-  left_join(inf_cumprod, by = "date") |> 
-  mutate(totincome = totincome * adj_price) |> 
-  group_by(year, settlement) |> 
-  summarise(
-    mean = sum(totincome*weight)/sum(weight),
-    # mean2 = mean(totincome),
-    median = wtd.quantile(totincome, weight, probs = 0.5),
-    # median2 = median(totincome)
-    q10 = wtd.quantile(totincome, weight, probs = 0.1),
-    q90 = wtd.quantile(totincome, weight, probs = 0.9),
-  )
-
-wealth_change_data |> 
-  pivot_longer(c(mean, median, q10, q90)) |> 
-  filter(year %in% 2018:2022) |> 
-  mutate(
-    settlement = factor(
-      settlement,
-      levels = c("Total", "Yerevan", "Other cities, urban", "Rural"),
-      labels = c("Հայաստան", "Երևան", "այլ քաղաքներ", "գյուղեր")
-    ),
-    name = factor(
-      name, 
-      levels = c("q10", "median", "mean", "q90"),
-      labels = c("Ամենաաղքատ 10%-ի վերին շեմը (1-ին դեցիլ)", "Միջին ընտանիքի եկամուտ (median)",
-                 "Միջին եկամուտ (mean)", "Ամենահարուստ 10%-ի ներքևի շեմը (9-րդ դեցիլ)")
-    ),
-    text = number(value / 1000, accuracy = 1)
-  ) |> 
-  ggplot(aes(as.factor(year), value, label = text)) +
-  geom_col(fill = "midnightblue") +
-  geom_text(aes(y = 50000), color = "white") +
-  facet_grid(settlement~name, switch = "y") +
-  labs(
-    y = NULL,
-    x = NULL,
-    title = "Հայաստանի տնային տնտեսությունների եկամուտները",
-    subtitle = "Հազար դրամ, եկամուտնեը ճշգրտվել են 2022 թվականի վերջի գներով և կշռվել",
-    caption = "Հեղինակ` Աղասի Թավադյան    |    tvyal.com    |    տվյալների աղբյուր` armstat.am"
-  ) +
-  ggthemes::theme_fivethirtyeight() +
-  theme(
-    axis.text.y = element_blank(),
-    panel.grid.major = element_blank()
-  )
-```
-
-```{r}
 years_select = c(2021, 2022) # provide 2 consecutive years that are in household_income_db
 
 date_legend <- 
@@ -230,7 +169,8 @@ date_legend <-
     color = c("#2f4b7c", "#f95d6a"), text = years_select
   )
 
-household_income_db %>%
+household_change_in_2_years_plot <- 
+  household_income_db %>%
   bind_rows(
     mutate(., marz = 12)
   ) |> 
@@ -289,13 +229,80 @@ household_income_db %>%
     color = NULL,
     title = "Տնային տնտեսությունների համախառն եկամուտների փոփոխությունը ըստ մարզերի",
     subtitle = "2022-ին Հայաստանի եկամուտները պակասել են, բացի Կոտայքի, Գեղարքունիքի և Տավուշի մարզից,\nհազար ՀՀ դրամ",
-    caption = "Հեղինակ` Աղասի Թավադյան    |    tvyal.com    |    տվյալների աղբյուր` armstat.am"
+    caption = paste0(caption_arm, "    |    տվյալների աղբյուր` armstat.am")
   )
 ```
 
 
-```{r}
-household_income_db |> 
+```{r income change from 2018 to 2022, include=FALSE}
+
+wealth_change_data <- 
+  household_income_db |> 
+  mutate(
+    is_yerevan = ifelse(marz == 1, TRUE, FALSE),
+    settlement = case_when(
+      is_yerevan ~ "Yerevan",
+      !is_yerevan & settlement == 1 ~ "Other cities, urban",
+      !is_yerevan & settlement == 2 ~ "Rural",
+    )
+  ) %>%
+  bind_rows(
+    mutate(., settlement = "Total")
+  ) |> 
+  left_join(inf_cumprod, by = "date") |> 
+  mutate(totincome = totincome * adj_price) |> 
+  group_by(year, settlement) |> 
+  summarise(
+    mean = sum(totincome*weight)/sum(weight),
+    # mean2 = mean(totincome),
+    median = wtd.quantile(totincome, weight, probs = 0.5),
+    # median2 = median(totincome)
+    q10 = wtd.quantile(totincome, weight, probs = 0.1),
+    q90 = wtd.quantile(totincome, weight, probs = 0.9),
+  )
+
+household_change_18_22_plot <- 
+  wealth_change_data |> 
+  pivot_longer(c(mean, median, q10, q90)) |> 
+  filter(year %in% 2018:2022) |> 
+  mutate(
+    settlement = factor(
+      settlement,
+      levels = c("Total", "Yerevan", "Other cities, urban", "Rural"),
+      labels = c("Հայաստան", "Երևան", "այլ քաղաքներ", "գյուղեր")
+    ),
+    name = factor(
+      name, 
+      levels = c("q10", "median", "mean", "q90"),
+      labels = c("Ամենաաղքատ 10%-ի վերին շեմը (1-ին դեցիլ)", "Միջին ընտանիքի եկամուտ (median)",
+                 "Միջին եկամուտ (mean)", "Ամենահարուստ 10%-ի ներքևի շեմը (9-րդ դեցիլ)")
+    ),
+    text = number(value / 1000, accuracy = 1)
+  ) |> 
+  ggplot(aes(as.factor(year), value, label = text, fill = as.factor(year))) +
+  geom_col() +
+  geom_text(aes(y = 50000), color = "white") +
+  facet_grid(settlement~name, switch = "both") +
+  scale_fill_manual(values = new_palette_colors[6:2]) +
+  labs(
+    y = NULL,
+    x = NULL,
+    fill = NULL,
+    title = "Հայաստանի տնային տնտեսությունների եկամուտները",
+    subtitle = "Հազար դրամ, եկամուտնեը ճշգրտվել են 2022 թվականի վերջի գներով և կշռվել",
+    caption = paste0(caption_arm, "    |    տվյալների աղբյուր` armstat.am")
+  ) +
+  theme(
+    axis.text = element_blank(),
+    panel.grid.major = element_blank()
+  )
+```
+
+
+```{r percentage change, include=FALSE}
+
+household_pct_change_plot <- 
+  household_income_db |> 
   select(year, date, weight, marz, totincome) |> 
   left_join(inf_cumprod, join_by(date)) |> 
   mutate(totincome = totincome * adj_price) |>
@@ -337,7 +344,8 @@ household_income_db |>
   geom_text(position = position_stack(vjust = .5)) +
   scale_x_continuous(breaks = seq(2005, 2022, 1)) +
   scale_y_continuous(labels = percent_format()) +
-  scale_fill_brewer(type = "div", palette = 1, direction = -1) +
+  # scale_fill_brewer(type = "div", palette = 1, direction = -1) +
+  scale_fill_manual(values = colfunc(9)) +
   labs(
     x = NULL,
     y = NULL,
@@ -345,14 +353,16 @@ household_income_db |>
     title = "Որքա՞ն է Հայաստանի ընտանիքների ամսական եկամուտը",
     subtitle = "Տնային տնտեսությունների եկամուտների բաշխվածությունը ըստ տարիների
     Եկամուտնեը ճշգրտվել են 2022 թվականի վերջի գներով և կշռվել",
-    caption = "Հեղինակ` Աղասի Թավադյան    |    tvyal.com    |    տվյալների աղբյուր` armstat.am"
+    caption = paste0(caption_arm, "    |    տվյալների աղբյուր` armstat.am")
   )
 
 ```
 
 
-```{r}
-household_income_db |> 
+```{r percentage change 2, include=FALSE}
+
+household_pct_change_plot_2 <-
+  household_income_db |> 
   filter(
     year >= 2005,
     totincome != 0,
@@ -372,15 +382,14 @@ household_income_db |>
     geom = "density_ridges_gradient", calc_ecdf = TRUE
   ) +
   scale_x_log10(breaks = 10^(4:6), labels = number_format(), limits = c(10^3.5, 10^6.5)) +
-  scale_fill_viridis_c(name = "Հավանականություն", direction = -1) +
-  ggthemes::theme_fivethirtyeight() +
+  # scale_fill_viridis_c(name = "Հավանականություն", direction = -1) +
+  scale_fill_gradientn(name = "Հավանականություն", colors = rev(colfunc(100))) +
   labs(
     x = "դրամ",
     y = NULL,
     title = "Որքա՞ն է Հայաստանի ընտանիքների ամսական եկամուտը",
-    subtitle = "Տնային տնտեսությունների եկամուտների բաշխվածությունը ըստ տարիների
-    Եկամուտնեը ճշգրտվել են 2021 թվականի գներով",
-    caption = "Հեղինակ` Աղասի Թավադյան    |    tvyal.com    |    տվյալների աղբյուր` armstat.am"
+    subtitle = "Տնային տնտեսությունների եկամուտների բաշխվածությունը ըստ տարիների\nԵկամուտնեը ճշգրտվել են 2021 թվականի գներով",
+     caption = paste0(caption_arm, "    |    տվյալների աղբյուր` armstat.am")
   ) +
   annotation_logticks(base = 10, sides = "b")
 ```
@@ -400,24 +409,28 @@ household_income_db |>
 5. Նվեր Ամանորի նախօրեին / A little gift before Christmas
 
 
-## 1. Գյուղատնտեսությունից արդյունաբերություն անցումը
+## 1.
 
-### Կամ գյուղատնտեսությունը կոլապսի է ենթարվել
 
-Ընդհանուր առմամբ այս 10 տարում ՀՆԱ-ն ավելի քան կրկնապատկվել է` 2013-ին կազմելով 6.38 տրիլիոն դրամ, իսկ 2023-ին ակնկալվում է որ ՀՆԱ-ն լինելու է ավելի քան 13 տրլն դրամ:
-10 տարի առաջ 2013 թվականին Հայաստանի ՀՆԱ-ի 19.5 տոկոսը ապահովում էր գյուղատնտեսությունը, որը կազմում էր 1.24 տրիլիոն դրամ, արդյունաբերությունը գտնվում էր երկրորդ տեղում` կազմելով ՀՆԱ-ի 14.3 տոկոսը, կամ 920 մլրդ դրամ:
+Գծապատկերում տողերը ներկայացնում են մարզերը, իսկ սյուները հասարակության խավերը (աղքատներ, միջին խավ և հարուստներ)։ Եթե գիծը կարմիր է, ապա նախորդ տարվա համեմատ եկամուտները պակասել են, եթե կապույտ ապա՝ աճել։
 
-2023 թվականին պատկերը հակառակն է արդյունաբերությունը արդեն գտնվում է առաջին տեղը` ապահովելով ՀՆԱ-ի 17.3 տոկոսը, իսկ գյուղատնտեսությունը այս 10 տարվա մեջ գրեթե 20 տոկոս բաժնեմասից իջել է 10.2 տոկոսի:
+Տնային տնտեսությունների եկամուտները 2022 թվականին պակասել են բոլոր մարզերում բացի Կոտայքի, Գեղարքունիքի և Տավուշի մարզերից։
 
-Հուշագրավ է, որ այս 10 տարվա մեջ ՀՆԱ-ն աճել է ավելի քան 2 անգամ, իսկ գյուղատնտեսությունը գրեթե աճ չի արձանագրել աճելով չնչին 5 տոկոսով: Արդյունաբերությունը այս 10 տարվա մեջ աճել է 2.5 անգամ: Գյուղատնտեսությունը արդեն գտնվում է 3-րդ տեղում արդյունաբերությունից և մեծածախ ու մանրածախ առևտրից հետո:
+Երևանում և Արագածոտնում 2022 թվականին հարուստները ավելի են հարստացել, իսկ աղքատները ավելի են աղքատացնել։
 
-Դիտարկենք նաև շինարարություն ոլորտը, որի մասնաբաժինը այս 10 տարիների ընթացքում 13-ից իջել է 9.1 տոկոս: Այս ոլորտում արձանագրվել է 40 տոկոս աճ: Անշարժ գույքի հետ կապված գործունեությունը (L) աճել է ավելի քան 2 անգամ:
+Մնացած մարզերում, ինչպես նաև ամբողջ Հայաստանի համար, բոլոր խավերի եկամուտները համեմատած 2021 թվականի հետ պակասել են։
+
+
+Ժողովուրդը աղքատացել է․․․ 2022-ին գրանցվել է 12.6 տոկոս տնտեսական աճ, մեկ շնչին ընկնող ՀՆԱ-ն աճել է 4 972 դոլարից մինչև 7 018 դոլար, այսինքն 41 տոկոսով,  սակայն ժողովուրդը իրականում աղքատացել է։
+2021-ին տնային տնտեսությունների միջին ճշգրտված եկամուտը կազմել էր 333 հազար դրամ, իսկ 2022-ին՝ 320 հազար դրամ։ Բնակչության ամենաաղքատ 10% շեմը ստանում էր մինչև 101 հազար դրամ 2021 թվականին, իսկ 2022-ին՝ արդեն 88 հազար դրամ:
+Ինչպես երևում է գծապատկերում մինչև 128 հազար դրամ ստացողները 3.5 տոկոսային կետով աճել են համեմատած 2021-ի։ 128-256 հազար դրամ ստացողների թիվը կրճատվել է 1.9 տոկոսային կետով։
+Նշեմ որ տվյալները ճշգրտվել են 2022 թվականի վերջի գներով։
 
 
 **Գծապատկեր 1.**  ՀՆԱ մեջ ապրանքների և ծառայությունների թողարկումն փոփոխությունը
 
-```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
-
+```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 6}
+household_change_in_2_years_plot
 ```
 
 Դիտարկենք թե ապրանքների և ծառայությունների թողարկման որ ճյուղերն են ունեցել ամենազգալի աճը այս 10 տարիների ընթացքում:
@@ -434,41 +447,39 @@ household_income_db |>
 **Գծապատկեր 2.** ՀՆԱ կառուցվածքի 2013-ից մինչև 2023 աճի համեմատություն
 
 ```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
+household_change_18_22_plot
+```
 
+**Գծապատկեր 3.** ՀՆԱ կառուցվածքի 2013-ից մինչև 2023 աճի համեմատություն
+
+```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
+household_pct_change_plot
 ```
 
 
-## 2. Սխալների ուղղում
+**Գծապատկեր 4.** ՀՆԱ կառուցվածքի 2013-ից մինչև 2023 աճի համեմատություն
 
-Նախորդ նյութի մեջ առկա է կանխատեսման սխալ, որը պատճառը այն է որ [2023թ հուլիսից վիճակագրական կոմիտեում տեղադրված էլեկտրաէներգիայի արտադրության ծավալներում](https://www.armstat.am/file/article/sv_07_23a_121.pdf) ներառված են նաև էլեկտրաէներգիայի փոխհոսքերի մասով ինքնավար արտադրողների կողմից արտադրված էլեկտրաէներգիայի ծավալները: Տվյալների բազան ստացել է այս հաշվետվությունները համացանցից ավտոմատացված կերպով ներբեռնելով և տվյալների բազայի ավտոմատացված հաշվարկմամբ, որտեղ ամսվա տվյալը ստացվել է տվյալ ամսից հանելով նախորդ ամսվա կումուլատիվ գումարը:
-
-Այս հանգամանքով անցած շաբաթ Ձեզ ուղարկած նյուզլեթերի մեջ 2023 թվականի հունի արևային էլեկտրաէներգիայի արտադրության տվյալը իր մեջ ներառում է այդ ամսվա կոմերցիոն արտադրության ծավալները, ինչպես նաև 2023 թվականի սկզբից մինչև հունիսը ներառյալ ինքնավար արտադրողների կողմից արտադրված էլեկտրաէներգիայի ծավալները: Դա է պատճառը որ տվյալների մեջ առկա է հանկարծակի և չկրկնվող աճ 2023թ. հունիսին, որը ենթադրաբար կազմում էր այդ ամսվա արտադրության մոտ 30 տոկոսը: Սա սխալ է:
-
-Նախորդ վերլուծության մեջ բոլոր գծապատկերները, հաշվարկները, կանխատեսումները և տեքստը արդեն ուղղված են: [Սեղմեք այս հղումը ճշգրտված տարբերակին անցնելու համար](https://www.tvyal.com/newsletter/2023_12_11): [Հին տարբերակը չի ջնջվի և լինելու է այս հղման տակ](https://www.tvyal.com/newsletter/2023_12_11_old):
-
-Գծապատկերում արտացոլված էլեկտրաէներգիայի արտադրության տարեկան ծավալների ճշգրտված կանխատեսումը
+```{r, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 12, fig.height = 8}
+household_pct_change_plot_2
+```
 
 
-**Գծապատկեր 3.** Էլեկտրաէներգիայի արտադրության տարեկան ծավալները և կանխատեսումը
 
 
-![](../2023_12_11_electricity_forecast/plots/electricity_forecast_plot2.png)
+## 2. ԶԼՄ հաղորդագրություններ
 
 
-## 3. ԶԼՄ հաղորդագրություններ
+Դիտեք իմ սիրելի գրծընկեր [Սոս Խաչիկյանի](https://www.linkedin.com/in/sos-khachikyan-46a51b3a/) և [իմ](https://www.linkedin.com/in/tavad/) [Ամանորյա հարցազրույցը](https://youtu.be/Va5q9efWaI4), որտեղ ամփոփել ենք տարին և քննարկել թե ինչ է մեզ սպասում 2024 թվականին։
 
-[Panorama.am](https://www.youtube.com/watch?v=FV0NqHOHfY4) լրատվամիջոցին տվել եմ հարցազրույց: 
 
-Այս վիդիոնյութը, ըստ իս, դեռևս իմ ամենաանմիջական զրույցներից է: Խորհուրդ եմ տալիս դիտել այն:
-Պետք է հասկանալ, թե 2023 թ.-ին ինչու չունեցանք 2022 թ-ի չափ բարձր տնտեսական աճ:
 
-<a href="https://www.youtube.com/watch?v=FV0NqHOHfY4">
-  <img src="https://i3.ytimg.com/vi/FV0NqHOHfY4/maxresdefault.jpg" alt="YouTube Video" style="width:60%;">
+<a href="https://youtu.be/Va5q9efWaI4">
+  <img src="https://i3.ytimg.com/vi/Va5q9efWaI4/maxresdefault.jpg" alt="YouTube Video" style="width:60%;">
 </a>
 
 
 
-## 4. English Summary
+## 3. English Summary
 
 **The transition from agriculture to industry in Armenia**
 
@@ -477,22 +488,11 @@ In the past decade, Armenia has undergone a transformative shift from an agricul
 Examining the growth trajectory of various sectors reveals a stark contrast. While almost all industries recorded a 2-fold or more growth, agriculture remained stagnant, registering minimal positive growth even when adjusted for inflation. Branches like Accommodation and Catering, as well as Culture, Entertainment, and Recreation, stood out with growth rates exceeding 4.7 and 4 times, signaling a burgeoning tourism industry in Armenia. Financial and insurance activities also experienced significant expansion, increasing more than 3.6 times. This dynamic shift underscores Armenia's evolving economic landscape and the rising prominence of diverse sectors beyond traditional agriculture.
 
 
-## 5. Նվեր Ամանորի նախօրեին / A little gift beforе Christmas
-
-Ձեզ եմ ընծայում իմ կողմից կոդով ստեղսված նկարը:
-
-Անվանումը` **Թռչուններ և խխունջներ**
-
-Title: **Birds & Snails**
-
-![](plots/birds_and_snails.png)
-
-Սպասեք ավելի շատ նվարներ հաջորդ նյուզլեթերին, որը լինելու է մեր կողմից պատրաստած այս տարվա վերջին հաղորդագրությունը:
 
 
 ---
 
-Այս վերլուծությունը առկա է նաև [մեր կայքէջում](https://www.tvyal.com/newsletter/2023_12_18), այս վերլուծության կոդը և տվյալները դրված են նաև [Github-ում](https://github.com/tavad/tvyal_newsletter)։                        
+Այս վերլուծությունը առկա է նաև [մեր կայքէջում](https://www.tvyal.com/newsletter/2024_01_07), այս վերլուծության կոդը և տվյալները դրված են նաև [Github-ում](https://github.com/tavad/tvyal_newsletter)։                        
 ---                  
 
 Եթե հնարավոր է, խնդրում եմ այս նյութը ուղարկել նաև այն մարդկանց, ում այն կարծում եք կարող է հետաքրքրել:
@@ -502,7 +502,7 @@ Title: **Birds & Snails**
 
 Հարգանքներով,            
 Աղասի Թավադյան         
-18.12.2023          
+07.01.2024          
 [tvyal.com](https://www.tvyal.com/)      
 [tavadyan.com](https://www.tavadyan.com/)
 
