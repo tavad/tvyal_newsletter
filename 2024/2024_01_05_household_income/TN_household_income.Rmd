@@ -9,10 +9,10 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 
 library(tidyverse)
-library(rvest)
-library(RcppRoll)
 library(scales)
 library(readxl)
+library(Hmisc)
+library(ggridges)
 
 rm(list = ls()); gc()
 
@@ -80,17 +80,309 @@ setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 ```
 
 ```{r , include=FALSE}
+# Household database is aggregated from this official source:
+# https://www.armstat.am/en/?nid=205
 
+household_income_db <- read_csv("household_income_db.csv")
+
+# consumer price index is downloaded from cba.am:
+#https://www.cba.am/en/sitepages/statrealsector.aspx
+# commencement and run only to update the database
+
+# system(
+#   paste0(
+#     "curl \"", "https://www.cba.am/stat/stat_data_eng/6_CPI_eng.xls", "\"",
+#     " -o ", "\"cpi_armenia_eng.xls\""
+#   )
+# )
+
+inflation_row <- read_excel("cpi_armenia_eng.xls", skip = 3)
+
+inf_cumprod <- 
+  inflation_row |> 
+  rename(date = 1, cpi_m = 2) |> 
+  select(date, cpi_m) |> 
+  mutate(
+    date = ym(date),
+    cpi_m = cpi_m / 100,
+    year = year(date)
+  ) |> 
+  filter(year <= 2022) |>
+  select(-year) |> 
+  arrange(desc(date)) |> 
+  mutate(
+    adj_price = cumprod(cpi_m),
+    adj_price = adj_price / first(adj_price)
+  )
+
+marz_dict <- 
+  tibble(
+    marz = 1:12,
+    marz_eng = c(
+      "Yerevan", "Aragatsotn", "Ararat", "Armavir", "Gegharkunik", "Lori", 
+      "Kotayk", "Shirak", "Syunik", "Vayots Dzor", "Tavush", "Armenia"
+    ),
+     marz_arm = c(
+      "Երևան", "Արագածոտն", "Արարատ", "Արմավիր", "Գեղարքունիք", "Լոռի",
+       "Կոտայք", "Շիրակ", "Սյունիք", "Վայոց ձոր", "Տավուշ", "Հայաստան"
+    )
+  )
 ```
 
 
-```{r , include=FALSE}
-
+```{r}
+household_income_db |> 
+  left_join(inf_cumprod, by = "date") |> 
+  mutate(totincome = totincome * adj_price) |> 
+  filter(marz == 1) |>
+  group_by(year) |> 
+  summarise(
+    q10 = wtd.quantile(totincome, weight, probs = 0.1),
+    median = wtd.quantile(totincome, weight, probs = 0.5),
+    mean = sum(totincome*weight)/sum(weight),
+    q90 = wtd.quantile(totincome, weight, probs = 0.9),
+  ) |> 
+  mutate(
+    across(-year, ~number(.x/1000, accuracy = 1))
+  ) |> 
+  knitr::kable(
+    align = c("l", "r", "r", "r", "r"),
+    col.names = c(
+      "Տարի", "Ամենաաղքատ 10%-ի վերին շեմը (1-ին դեցիլ)",
+      "Միջին ընտանիքի եկամուտ (median)",
+      "Միջին եկամուտ (mean)", "Ամենահարուստ 10%-ի ներքևի շեմը (9-րդ դեցիլ)"
+    )
+  )
+  
 ```
+
+
+
 
 
 ```{r, include=FALSE}
+wealth_change_data <- 
+  household_income_db |> 
+  mutate(
+    is_yerevan = ifelse(marz == 1, TRUE, FALSE),
+    settlement = case_when(
+      is_yerevan ~ "Yerevan",
+      !is_yerevan & settlement == 1 ~ "Other cities, urban",
+      !is_yerevan & settlement == 2 ~ "Rural",
+    )
+  ) %>%
+  bind_rows(
+    mutate(., settlement = "Total")
+  ) |> 
+  left_join(inf_cumprod, by = "date") |> 
+  mutate(totincome = totincome * adj_price) |> 
+  group_by(year, settlement) |> 
+  summarise(
+    mean = sum(totincome*weight)/sum(weight),
+    # mean2 = mean(totincome),
+    median = wtd.quantile(totincome, weight, probs = 0.5),
+    # median2 = median(totincome)
+    q10 = wtd.quantile(totincome, weight, probs = 0.1),
+    q90 = wtd.quantile(totincome, weight, probs = 0.9),
+  )
 
+wealth_change_data |> 
+  pivot_longer(c(mean, median, q10, q90)) |> 
+  filter(year %in% 2018:2022) |> 
+  mutate(
+    settlement = factor(
+      settlement,
+      levels = c("Total", "Yerevan", "Other cities, urban", "Rural"),
+      labels = c("Հայաստան", "Երևան", "այլ քաղաքներ", "գյուղեր")
+    ),
+    name = factor(
+      name, 
+      levels = c("q10", "median", "mean", "q90"),
+      labels = c("Ամենաաղքատ 10%-ի վերին շեմը (1-ին դեցիլ)", "Միջին ընտանիքի եկամուտ (median)",
+                 "Միջին եկամուտ (mean)", "Ամենահարուստ 10%-ի ներքևի շեմը (9-րդ դեցիլ)")
+    ),
+    text = number(value / 1000, accuracy = 1)
+  ) |> 
+  ggplot(aes(as.factor(year), value, label = text)) +
+  geom_col(fill = "midnightblue") +
+  geom_text(aes(y = 50000), color = "white") +
+  facet_grid(settlement~name, switch = "y") +
+  labs(
+    y = NULL,
+    x = NULL,
+    title = "Հայաստանի տնային տնտեսությունների եկամուտները",
+    subtitle = "Հազար դրամ, եկամուտնեը ճշգրտվել են 2022 թվականի վերջի գներով և կշռվել",
+    caption = "Հեղինակ` Աղասի Թավադյան    |    tvyal.com    |    տվյալների աղբյուր` armstat.am"
+  ) +
+  ggthemes::theme_fivethirtyeight() +
+  theme(
+    axis.text.y = element_blank(),
+    panel.grid.major = element_blank()
+  )
+```
+
+```{r}
+years_select = c(2021, 2022) # provide 2 consecutive years that are in household_income_db
+
+date_legend <- 
+  tibble(
+    x = 710, y = c(1.5, 2.5), 
+    color = c("#2f4b7c", "#f95d6a"), text = years_select
+  )
+
+household_income_db %>%
+  bind_rows(
+    mutate(., marz = 12)
+  ) |> 
+  left_join(inf_cumprod, by = "date") |> 
+  mutate(totincome = totincome * adj_price) |> 
+  group_by(year, marz) |>  
+  summarise(
+    mean = sum(totincome*weight)/sum(weight),
+    median = wtd.quantile(totincome, weight, probs = 0.5),
+    q10 = wtd.quantile(totincome, weight, probs = 0.1),
+    q90 = wtd.quantile(totincome, weight, probs = 0.9),
+  ) |>
+  pivot_longer(-c(year, marz)) |> 
+  left_join(marz_dict, by = "marz") |> 
+  filter(
+    year %in% years_select,
+    name != "mean"
+  ) |> 
+  ungroup() |> 
+  mutate(
+    value = value / 1000,
+    year = ifelse(year == min(year), "begining", "end")
+  ) |> 
+  pivot_wider(names_from = year, values_from = value) |> 
+  mutate(
+    marz_arm = fct_reorder(marz_arm, (begining + end)/2, .fun = mean),
+    marz_eng = fct_reorder(marz_eng, (begining + end)/2, .fun = mean),
+    color = ifelse(begining > end, "#f95d6a", "#2f4b7c")
+  ) |> 
+  ggplot() +
+  geom_segment(
+    aes(x = begining, xend= end,  y= marz_arm, 
+        yend=marz_arm, group = name, color = I(color)),
+    linewidth = 1.2,
+    lineend = 'round', linejoin = 'round',
+   arrow = arrow(length = unit(0.1, "inches"))
+  ) +
+  geom_point(aes(x=begining, y=marz_arm, color=I("#f95d6a")), size = 3) +
+  geom_point(aes(x=end, y=marz_arm, color=I("#2f4b7c")), size = 3) +
+  geom_point(data = date_legend, aes(x, y, color = I(color)), size = 3) +
+  geom_text(data = date_legend, aes(x + 25, y, label = text)) +
+  geom_vline(xintercept = c(170, 390)) +  #dividers are changed manually
+  annotate(
+    geom = "text", x = c(95, 280, 595), y = 13, #dividers are changed manually
+    label = c(
+      "Ամենաաղքատ 10%-ի\nվերին շեմը (1-ին դեցիլ)",
+      "Միջին ընտանիքի\nեկամուտ (median)",
+      "Ամենահարուստ 10%-ի\nներքևի շեմը (9-րդ դեցիլ)"
+    )
+  ) +
+  scale_x_continuous(breaks = seq(0, 800, 100), labels = number_format()) +
+  scale_y_discrete(expand = c(0.05,0,0.2,0)) +
+  labs(
+    x = NULL,
+    y = NULL,
+    color = NULL,
+    title = "Տնային տնտեսությունների համախառն եկամուտների փոփոխությունը ըստ մարզերի",
+    subtitle = "2022-ին Հայաստանի եկամուտները պակասել են, բացի Կոտայքի, Գեղարքունիքի և Տավուշի մարզից,\nհազար ՀՀ դրամ",
+    caption = "Հեղինակ` Աղասի Թավադյան    |    tvyal.com    |    տվյալների աղբյուր` armstat.am"
+  )
+```
+
+
+```{r}
+household_income_db |> 
+  select(year, date, weight, marz, totincome) |> 
+  left_join(inf_cumprod, join_by(date)) |> 
+  mutate(totincome = totincome * adj_price) |>
+  mutate(
+    income_bin = cut(
+      totincome/1000,
+      breaks = c(0, 2^(4:11), 1e5),
+      include.lowest = TRUE
+    )
+  ) |> 
+  group_by(year) |> 
+  # begin weighting data
+  count(year, income_bin, wt = weight) |> 
+  # end weighting data
+  group_by(year) |> 
+  extract(income_bin, into = c("lower_cut", "upper_cut"),
+          regex = ".(.*),(.*)\\]", remove = FALSE, convert = TRUE) |> 
+  mutate(
+    pct = n/sum(n),
+    label = case_when(
+      lower_cut == 0 ~ paste0(upper_cut, " հազար դրամից պակաս"),
+      upper_cut == 1e5 ~ paste0(round(lower_cut/1000), " մլն. դրամից ավել"),
+      lower_cut == 512 ~ paste0(lower_cut, " հազար դրամից մինչև ",
+                                round(upper_cut/1000), " մլն. դրամ"),
+      lower_cut > 1000 ~ paste0(round(lower_cut/1000), "-ից մինչև ",
+                                round(upper_cut/1000), " մլն. դրամ"),
+      TRUE ~ paste0(lower_cut, "-ից մինչև ", upper_cut, " հազար դրամ")
+    )
+  ) |> 
+  arrange(lower_cut) |> 
+  mutate(
+    label = fct_inorder(label),
+    label = fct_rev(label),
+    pct_text = ifelse(pct <= 0.01, NA, percent(pct, accuracy = 0.1))
+  ) |> 
+  ungroup() |> 
+  ggplot(aes(year, pct, fill = label, label = pct_text)) +
+  geom_col(alpha = 0.8) +
+  geom_text(position = position_stack(vjust = .5)) +
+  scale_x_continuous(breaks = seq(2005, 2022, 1)) +
+  scale_y_continuous(labels = percent_format()) +
+  scale_fill_brewer(type = "div", palette = 1, direction = -1) +
+  labs(
+    x = NULL,
+    y = NULL,
+    fill = NULL,
+    title = "Որքա՞ն է Հայաստանի ընտանիքների ամսական եկամուտը",
+    subtitle = "Տնային տնտեսությունների եկամուտների բաշխվածությունը ըստ տարիների
+    Եկամուտնեը ճշգրտվել են 2022 թվականի վերջի գներով և կշռվել",
+    caption = "Հեղինակ` Աղասի Թավադյան    |    tvyal.com    |    տվյալների աղբյուր` armstat.am"
+  )
+
+```
+
+
+```{r}
+household_income_db |> 
+  filter(
+    year >= 2005,
+    totincome != 0,
+    !is.na(totincome)
+  ) |> 
+  select(year, date, marz, totincome, weight) |> 
+  left_join(inf_cumprod, join_by(date)) |> 
+  mutate(totincome = totincome * adj_price) |> 
+  ggplot(aes(
+    x = totincome, y = as.factor(year), 
+    fill = 0.5 - abs(0.5 - after_stat(ecdf)),
+    # weight = weight
+  )) +
+  stat_density_ridges(
+    quantile_lines = TRUE, scale = 3,
+    rel_min_height = 0.01,  quantiles = 4, alpha = 0.5,
+    geom = "density_ridges_gradient", calc_ecdf = TRUE
+  ) +
+  scale_x_log10(breaks = 10^(4:6), labels = number_format(), limits = c(10^3.5, 10^6.5)) +
+  scale_fill_viridis_c(name = "Հավանականություն", direction = -1) +
+  ggthemes::theme_fivethirtyeight() +
+  labs(
+    x = "դրամ",
+    y = NULL,
+    title = "Որքա՞ն է Հայաստանի ընտանիքների ամսական եկամուտը",
+    subtitle = "Տնային տնտեսությունների եկամուտների բաշխվածությունը ըստ տարիների
+    Եկամուտնեը ճշգրտվել են 2021 թվականի գներով",
+    caption = "Հեղինակ` Աղասի Թավադյան    |    tvyal.com    |    տվյալների աղբյուր` armstat.am"
+  ) +
+  annotation_logticks(base = 10, sides = "b")
 ```
 
 
