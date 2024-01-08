@@ -10,9 +10,6 @@ knitr::opts_chunk$set(echo = TRUE)
 
 library(tidyverse)
 library(scales)
-library(readxl)
-library(Hmisc)
-library(ggridges)
 
 rm(list = ls()); gc()
 
@@ -45,7 +42,8 @@ theme_tvyal <- function(base_size = 12, base_family = "sans")
 theme_set(theme_tvyal())
 
 save_last_plot <- 
-  function(filename, extension = "png", width = 1344, height = 756) {
+  # function(filename, extension = "png", width = 1344, height = 756) {
+  function(filename, extension = "png", width = 1008, height = 576) {
     
     filename <- str_replace_all(filename, " ", "_")
     last_plot <- recordPlot()
@@ -83,10 +81,55 @@ setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 
 ```{r data download, include=FALSE}
 
+numbeo_8_cities <- read_csv("numbeo_8_cities_db.csv")
+
+indicator_gr <- 
+  numbeo_8_cities |> 
+  mutate(indicator_group = fct_inorder(indicator_group)) |> 
+  count(indicator_group) |> 
+  pull(indicator_group)
+
 ```
 
 
 ```{r income_table, include=FALSE}
+
+apartament_price_plot <- 
+  numbeo_8_cities |> 
+  filter(
+    indicator_group %in% indicator_gr[c(8,9)]
+  ) |> 
+  # filter(
+  #   grepl("Meal|Mac|Capp", indicator)
+  # ) |> 
+  mutate(
+    # across(c(mean_price, min_range, max_range), ~.x*400),
+    country = paste0(country, ", ", cities),
+    country = fct_reorder(country, mean_price),
+    indicator = fct_inorder(indicator),
+    text = formatC(mean_price, format = "f", width = 2, digits = 0,
+                   big.mark = ",")
+  ) |> 
+  ggplot(aes(mean_price, country, fill = country)) +
+  facet_wrap(~indicator, scales = "free_x") +
+  geom_col()+
+  geom_text(aes(x = 0, label = text), hjust = 0) +
+  geom_errorbarh(aes(xmin = min_range, xmax = max_range), height = 0.5) +
+  scale_fill_manual(values = rev(new_palette_colors)) +
+  labs(
+    x = NULL,
+    y = NULL,
+    title = "Rent and Apartment Prices in Armenia and Neighbouring Countries",
+    # title = "Restorant Prices in Armenia and Neighbouring Countries",
+    subtitle = "In USD, prices in 2023",
+    # subtitle = "In Armenian drams, prices in 2023",
+    caption = paste0(caption_eng, "   |   Data Source: numbeo.com")
+  ) +
+  theme(
+    legend.position = "drop", 
+    panel.grid.major = element_blank(),
+    axis.text.x = element_blank()
+  )
 
 ```
 
@@ -110,7 +153,7 @@ setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 **Գծապատկեր 1.** 
 
 ```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 6}
-
+apartament_price_plot
 ```
 
 
