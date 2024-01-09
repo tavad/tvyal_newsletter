@@ -65,7 +65,8 @@ new_palette_colors <- c(
   "#003f5c", "#2f4b7c", "#665191", "#a05195", 
   "#d45087", "#f95d6a", "#ff7c43", "#ffa600"
 )
-colfunc <- colorRampPalette(c("#2f4b7c", "#fffcf5", "#f95d6a"))
+colfunc   <- colorRampPalette(c("#2f4b7c", "#fffcf5", "#f95d6a"))
+colfunc_2 <- colorRampPalette(new_palette_colors)
 
 update_geom_defaults("rect", list(fill  = new_palette_colors[2], alpha = 0.8)) 
 update_geom_defaults("line", list(color = new_palette_colors[2], alpha = 0.8))
@@ -89,21 +90,31 @@ indicator_gr <-
   count(indicator_group) |> 
   pull(indicator_group)
 
+numbeo_cities_popularity <- read_csv("numbeo_cities_popularity.csv")
+
+select_countries <- c("Armenia", "Iran", "Azerbaijan", "Georgia",
+                      "Kazakhstan", "Russia", "Belarus", "Turkey")
+
 ```
 
 
 ```{r, include=FALSE}
 
-numbeo_8_cities |> 
+cities_popularity_plot <- 
+  numbeo_cities_popularity |> 
+  filter(country %in% select_countries) |> 
   select(country, cities, info_entries) |> 
-  unique() |> 
+  arrange(desc(info_entries)) |> 
+  slice_head(n = 14) |> 
   mutate(
-    place = paste0(country, ", ", cities),
-    place = fct_reorder(place, info_entries)
+    place = paste0(cities, ", ",country),
+    place = fct_reorder(place, info_entries),
+    text_entries = number(info_entries, accuracy = 1, prefix = " ")
   ) |> 
-  ggplot(aes(info_entries, place, )) +
+  ggplot(aes(info_entries, place, fill = place)) +
   geom_col() +
-  geom_text(aes(x = 0, label = info_entries), hjust = 0) +
+  geom_text(aes(x = 0, label = text_entries), hjust = 0) +
+  scale_fill_manual(values = rev(colfunc_2(14))) +
   labs(
     x = NULL,
     y = NULL,
@@ -112,6 +123,7 @@ numbeo_8_cities |>
     caption = paste0(caption_eng, "   |   Data Source: numbeo.com")
   ) +
   theme(
+    legend.position = "none",
     axis.text.x = element_blank(),
     panel.grid.major = element_blank()
   )
@@ -227,9 +239,14 @@ clothing_price_plot <-
 
 ## 1. Տնային տնտեսությունները աղքատացել են 2022 թվականին
 
-
-
 **Գծապատկեր 1.** 
+
+```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 6}
+cities_popularity_plot
+```
+
+
+**Գծապատկեր 2.** 
 
 ```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 6}
 apartament_price_plot
@@ -237,7 +254,7 @@ apartament_price_plot
 
 
 
-**Գծապատկեր 2.** 
+**Գծապատկեր 3.** 
 
 ```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
 restaurant_price_plot
@@ -245,13 +262,19 @@ restaurant_price_plot
 
 
 
-**Գծապատկեր 3.** 
+**Գծապատկեր 4.** 
 
 ```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
-
+leisure_price_plot
 ```
 
 
+
+**Գծապատկեր 5.** 
+
+```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
+clothing_price_plot
+```
 
 
 
