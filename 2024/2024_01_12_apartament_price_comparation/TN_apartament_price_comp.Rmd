@@ -94,7 +94,7 @@ numbeo_cities_popularity <- read_csv("numbeo_cities_popularity.csv")
 
 select_countries <- c("Armenia", "Iran", "Azerbaijan", "Georgia",
                       "Kazakhstan", "Russia", "Belarus", "Turkey")
-
+ 
 ```
 
 
