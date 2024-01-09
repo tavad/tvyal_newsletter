@@ -92,6 +92,33 @@ indicator_gr <-
 ```
 
 
+```{r, include=FALSE}
+
+numbeo_8_cities |> 
+  select(country, cities, info_entries) |> 
+  unique() |> 
+  mutate(
+    place = paste0(country, ", ", cities),
+    place = fct_reorder(place, info_entries)
+  ) |> 
+  ggplot(aes(info_entries, place, )) +
+  geom_col() +
+  geom_text(aes(x = 0, label = info_entries), hjust = 0) +
+  labs(
+    x = NULL,
+    y = NULL,
+    title = "The Most Popular Cities to Visit in Armenia and Neighbouring Countries",
+    subtitle = "Popularity is measured by the enteries on numbeo.com",
+    caption = paste0(caption_eng, "   |   Data Source: numbeo.com")
+  ) +
+  theme(
+    axis.text.x = element_blank(),
+    panel.grid.major = element_blank()
+  )
+
+```
+
+
 ```{r city_comparation_plotter, include=FALSE}
 
 city_comparation_plotter <- 
@@ -131,16 +158,17 @@ city_comparation_plotter <-
 ```
 
 ```{r plots, include=FALSE}
+
 apartament_price_plot <- 
   numbeo_8_cities |> 
   city_comparation_plotter(indicator_group_ = 8:9) +
   labs(
-      x = NULL,
-      y = NULL,
-      title = "Rent and Apartment Prices in Armenia and Neighbouring Countries",
-      subtitle = "In USD, prices in 2023",
-      caption = paste0(caption_eng, "   |   Data Source: numbeo.com")
-    )
+    x = NULL,
+    y = NULL,
+    title = "Rent and Apartment Prices in Armenia and Neighbouring Countries",
+    subtitle = "In USD, prices in 2023",
+    caption = paste0(caption_eng, "   |   Data Source: numbeo.com")
+  )
 
 restaurant_price_plot <- 
   numbeo_8_cities |> 
@@ -149,12 +177,38 @@ restaurant_price_plot <-
     indicator_group_ = 1, indicator_ = "Meal|McDonalds|Cappuccino"
   ) +
   labs(
-      x = NULL,
-      y = NULL,
-      title = "Restorant Prices in Armenia and Neighbouring Countries",
-      subtitle = "In Armenian drams, prices in 2023",
-      caption = paste0(caption_eng, "   |   Data Source: numbeo.com")
-    )
+    x = NULL,
+    y = NULL,
+    title = "Restorant Prices in Armenia and Neighbouring Countries",
+    subtitle = "In Armenian drams, prices in 2023",
+    caption = paste0(caption_eng, "   |   Data Source: numbeo.com")
+  )
+
+leisure_price_plot <- 
+  numbeo_8_cities |> 
+  city_comparation_plotter(
+    indicator_group_ = 5:6, indicator_ = ""
+  ) +
+  labs(
+    x = NULL,
+    y = NULL,
+    title = "Sports, Leisure and Childcare Prices in Armenia and Neighbouring Countries",
+    subtitle = "In USD, prices in 2023",
+    caption = paste0(caption_eng, "   |   Data Source: numbeo.com")
+  )
+
+clothing_price_plot <- 
+  numbeo_8_cities |> 
+  city_comparation_plotter(
+    indicator_group_ = 7, indicator_ = ""
+  ) +
+  labs(
+    x = NULL,
+    y = NULL,
+    title = "Clothing and Shoes Prices in Armenia and Neighbouring Countries",
+    subtitle = "In USD, prices in 2023",
+    caption = paste0(caption_eng, "   |   Data Source: numbeo.com")
+  )
 ```
 
 
