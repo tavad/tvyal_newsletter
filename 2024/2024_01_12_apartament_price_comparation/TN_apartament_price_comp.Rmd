@@ -92,46 +92,71 @@ indicator_gr <-
 ```
 
 
-```{r income_table, include=FALSE}
+```{r city_comparation_plotter, include=FALSE}
 
-apartament_price_plot <- 
-  numbeo_8_cities |> 
-  filter(
-    indicator_group %in% indicator_gr[c(8,9)]
-  ) |> 
-  # filter(
-  #   grepl("Meal|Mac|Capp", indicator)
-  # ) |> 
-  mutate(
-    # across(c(mean_price, min_range, max_range), ~.x*400),
-    country = paste0(country, ", ", cities),
-    country = fct_reorder(country, mean_price),
-    indicator = fct_inorder(indicator),
-    text = formatC(mean_price, format = "f", width = 2, digits = 0,
-                   big.mark = ",")
-  ) |> 
-  ggplot(aes(mean_price, country, fill = country)) +
-  facet_wrap(~indicator, scales = "free_x") +
-  geom_col()+
-  geom_text(aes(x = 0, label = text), hjust = 0) +
-  geom_errorbarh(aes(xmin = min_range, xmax = max_range), height = 0.5) +
-  scale_fill_manual(values = rev(new_palette_colors)) +
-  labs(
-    x = NULL,
-    y = NULL,
-    title = "Rent and Apartment Prices in Armenia and Neighbouring Countries",
-    # title = "Restorant Prices in Armenia and Neighbouring Countries",
-    subtitle = "In USD, prices in 2023",
-    # subtitle = "In Armenian drams, prices in 2023",
-    caption = paste0(caption_eng, "   |   Data Source: numbeo.com")
-  ) +
-  theme(
-    legend.position = "drop", 
-    panel.grid.major = element_blank(),
-    axis.text.x = element_blank()
-  )
+city_comparation_plotter <- 
+  function(tbl, currency_exchange = 1, indicator_group_ = 1:10, indicator_ = ""){
+  
+    plot <- 
+      tbl |> 
+      filter(
+        indicator_group %in% indicator_gr[indicator_group_]
+      ) |> 
+      filter(
+        grepl(indicator_, indicator)
+      ) |>
+      mutate(
+        across(c(mean_price, min_range, max_range), ~.x * currency_exchange),
+        country = paste0(country, ", ", cities),
+        country = fct_reorder(country, mean_price),
+        indicator = fct_inorder(indicator),
+        text = formatC(mean_price, format = "f", width = 2, digits = 0,
+                       big.mark = ",")
+      ) |> 
+      ggplot(aes(mean_price, country, fill = country)) +
+      facet_wrap(~indicator, scales = "free_x") +
+      geom_col()+
+      geom_text(aes(x = 0, label = text), hjust = 0) +
+      geom_errorbarh(aes(xmin = min_range, xmax = max_range), height = 0.5) +
+      scale_fill_manual(values = rev(new_palette_colors)) +
+      theme(
+        legend.position = "drop", 
+        panel.grid.major = element_blank(),
+        axis.text.x = element_blank()
+      )
+  
+  return(plot)
+}
 
 ```
+
+```{r plots, include=FALSE}
+apartament_price_plot <- 
+  numbeo_8_cities |> 
+  city_comparation_plotter(indicator_group_ = 8:9) +
+  labs(
+      x = NULL,
+      y = NULL,
+      title = "Rent and Apartment Prices in Armenia and Neighbouring Countries",
+      subtitle = "In USD, prices in 2023",
+      caption = paste0(caption_eng, "   |   Data Source: numbeo.com")
+    )
+
+restaurant_price_plot <- 
+  numbeo_8_cities |> 
+  city_comparation_plotter(
+    currency_exchange = 403,
+    indicator_group_ = 1, indicator_ = "Meal|McDonalds|Cappuccino"
+  ) +
+  labs(
+      x = NULL,
+      y = NULL,
+      title = "Restorant Prices in Armenia and Neighbouring Countries",
+      subtitle = "In Armenian drams, prices in 2023",
+      caption = paste0(caption_eng, "   |   Data Source: numbeo.com")
+    )
+```
+
 
 
 ***English summary below.***
@@ -161,7 +186,7 @@ apartament_price_plot
 **Գծապատկեր 2.** 
 
 ```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
-
+restaurant_price_plot
 ```
 
 
