@@ -1,4 +1,4 @@
-country,cities,indicator_group,indicator,city_urls,mean_price,min_range,max_range,info_entries,info_contributers,last_update
+country,city,indicator_group,indicator,city_urls,mean_price,min_range,max_range,info_entries,info_contributers,last_update
 Belarus,Minsk,Restaurants,"Meal, Inexpensive Restaurant",https://www.numbeo.com/cost-of-living/in/Minsk?displayCurrency=USD,7.57,4.54,15.15,2053,0,2023-12-01
 Belarus,Minsk,Restaurants,"Meal for 2 People, Mid-range Restaurant, Three-course",https://www.numbeo.com/cost-of-living/in/Minsk?displayCurrency=USD,33.33,24.24,54.54,2053,0,2023-12-01
 Belarus,Minsk,Restaurants,McMeal at McDonalds (or Equivalent Combo Meal),https://www.numbeo.com/cost-of-living/in/Minsk?displayCurrency=USD,4.54,3.8,6.06,2053,0,2023-12-01

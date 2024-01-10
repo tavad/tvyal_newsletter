@@ -94,7 +94,21 @@ numbeo_cities_popularity <- read_csv("numbeo_cities_popularity.csv")
 
 select_countries <- c("Armenia", "Iran", "Azerbaijan", "Georgia",
                       "Kazakhstan", "Russia", "Belarus", "Turkey")
- 
+
+```
+
+
+```{r vecor of places by cost of leaving, include = FALSE}
+
+places_by_cost_of_leaving <- 
+  numbeo_8_cities |> 
+  select(country, city) |> 
+  unique() |> 
+  left_join(numbeo_cities_popularity, join_by(country, city)) |> 
+  mutate(place = paste0(city, ", ", country)) |> 
+  arrange(usd_ammount) |> 
+  pull(place)
+
 ```
 
 
@@ -103,15 +117,23 @@ select_countries <- c("Armenia", "Iran", "Azerbaijan", "Georgia",
 cities_popularity_plot <- 
   numbeo_cities_popularity |> 
   filter(country %in% select_countries) |> 
-  select(country, cities, info_entries) |> 
   arrange(desc(info_entries)) |> 
   slice_head(n = 14) |> 
   mutate(
-    place = paste0(cities, ", ",country),
-    place = fct_reorder(place, info_entries),
-    text_entries = number(info_entries, accuracy = 1, prefix = " ")
+    place = paste0(city, ", ",country),
+    place = fct_reorder(place, info_entries)
   ) |> 
-  ggplot(aes(info_entries, place, fill = place)) +
+  select(place, info_entries, usd_ammount) |> 
+  pivot_longer(-place) |> 
+  mutate(
+    text_entries = ifelse(
+      name == "usd_ammount",
+      dollar(value, accuracy = 1, prefix = " $"),
+      number(value, accuracy = 1, prefix = " ")
+    )
+  ) |> 
+  ggplot(aes(value, place, fill = place)) +
+  facet_wrap(~name, scale = "free_x") +
   geom_col() +
   geom_text(aes(x = 0, label = text_entries), hjust = 0) +
   scale_fill_manual(values = rev(colfunc_2(14))) +
@@ -128,6 +150,10 @@ cities_popularity_plot <-
     panel.grid.major = element_blank()
   )
 
+
+# numbeo_cities_popularity |> 
+#   arrange(usd_ammount) |> 
+#   view()
 ```
 
 
@@ -137,7 +163,7 @@ city_comparation_plotter <-
   function(tbl, currency_exchange = 1, indicator_group_ = 1:10, indicator_ = ""){
   
     plot <- 
-      tbl |> 
+      numbeo_8_cities |> 
       filter(
         indicator_group %in% indicator_gr[indicator_group_]
       ) |> 
@@ -146,13 +172,13 @@ city_comparation_plotter <-
       ) |>
       mutate(
         across(c(mean_price, min_range, max_range), ~.x * currency_exchange),
-        country = paste0(country, ", ", cities),
-        country = fct_reorder(country, mean_price),
+        place = paste0(city, ", ", country),
+        place = factor(place, levels = places_by_cost_of_leaving),
         indicator = fct_inorder(indicator),
         text = formatC(mean_price, format = "f", width = 2, digits = 0,
                        big.mark = ",")
       ) |> 
-      ggplot(aes(mean_price, country, fill = country)) +
+      ggplot(aes(mean_price, place, fill = place)) +
       facet_wrap(~indicator, scales = "free_x") +
       geom_col()+
       geom_text(aes(x = 0, label = text), hjust = 0) +
@@ -221,6 +247,7 @@ clothing_price_plot <-
     subtitle = "In USD, prices in 2023",
     caption = paste0(caption_eng, "   |   Data Source: numbeo.com")
   )
+
 ```
 
 
