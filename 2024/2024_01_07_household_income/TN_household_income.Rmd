@@ -114,7 +114,8 @@ inf_cumprod <-
   arrange(desc(date)) |> 
   mutate(
     adj_price = cumprod(cpi_m),
-    adj_price = adj_price / first(adj_price)
+    adj_price = lag(adj_price),
+    adj_price = ifelse(is.na(adj_price), 1, adj_price)
   )
 
 marz_dict <- 
@@ -170,7 +171,7 @@ years_select = c(2021, 2022) # provide 2 consecutive years that are in household
 date_legend <- 
   tibble(
     x = 710, y = c(1.5, 2.5), 
-    color = c("#2f4b7c", "#f95d6a"), text = years_select
+    color = c("#2f4b7c", "#f95d6a"), text = rev(years_select)
   )
 
 household_change_in_2_years_plot <- 
