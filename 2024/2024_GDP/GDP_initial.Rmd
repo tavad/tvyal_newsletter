@@ -1,0 +1,124 @@
+---
+title: "Tvyal Newsletter"
+author: "Aghasi Tavadyan"
+date: "2023-12-18"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(rvest)
+library(RcppRoll)
+library(scales)
+library(readxl)
+
+rm(list = ls()); gc()
+
+theme_tvyal <- function(base_size = 12, base_family = "sans") 
+{
+  colors <- deframe(ggthemes::ggthemes_data[["fivethirtyeight"]])
+  (ggthemes::theme_foundation(
+    base_size = base_size, base_family = base_family) + 
+      theme(
+        line = element_line(colour = "black"), 
+        rect = element_rect(fill = "white", linetype = 0, colour = NA),
+        text = element_text(colour = colors["Dark Gray"]), 
+        # axis.title = element_blank(),
+        # axis.text = element_text(), 
+        axis.ticks = element_blank(),
+        axis.line = element_blank(), 
+        legend.background = element_rect(), 
+        legend.position = "bottom", 
+        legend.direction = "horizontal", 
+        legend.box = "vertical", 
+        panel.grid = element_line(colour = NULL), 
+        panel.grid.major = element_line(colour = colors["Medium Gray"]), 
+        panel.grid.minor = element_blank(), 
+        plot.title = element_text(hjust = 0, size = rel(1.5), face = "bold"),
+        plot.margin = unit(c(1, 1, 1, 1), "lines"), strip.background = element_rect()
+      )
+  )
+}
+
+theme_set(theme_tvyal())
+
+save_last_plot <- 
+  function(filename, extension = "png", width = 1344, height = 756) {
+    
+    filename <- str_replace_all(filename, " ", "_")
+    last_plot <- recordPlot()
+    
+    if (extension == "png") {
+      png(paste0(filename, ".", extension), width = width, height = height)
+    } else if (extension == "pdf") {
+      pdf(paste0(filename, ".", extension), width = width, height = height)
+    } else {
+      stop("Unsupported file extension. Use 'png' or 'pdf'.")
+    }
+    
+    replayPlot(last_plot)
+    dev.off()
+    paste0(filename, ".", extension)
+  }
+
+new_palette_colors <- c(
+  "#003f5c", "#2f4b7c", "#665191", "#a05195", 
+  "#d45087", "#f95d6a", "#ff7c43", "#ffa600"
+)
+update_geom_defaults("rect", list(fill  = new_palette_colors[1], alpha = 0.8)) 
+update_geom_defaults("line", list(color = new_palette_colors[1], alpha = 0.8))
+update_geom_defaults("area", list(fill  = new_palette_colors[1], alpha = 0.8))
+
+caption_arm <-  "Հեղինակ` Աղասի Թավադյան   |   tvyal.com   |   tavadyan.com"
+caption_eng <-  "Author: Aghasi Tavadyan   |   tvyal.com   |   tavadyan.com"
+
+doParallel::registerDoParallel(cores = 8)
+
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+```
+
+```{r downloading GDP data, include=FALSE}
+national_account_html_elements <- 
+  read_html("https://www.armstat.am/am/?nid=202") |> 
+  html_elements("a")
+
+national_account_urls <- 
+  tibble(
+    url = html_attr(national_account_html_elements, "href"),
+    text = html_text(national_account_html_elements)
+  ) |> 
+  filter(grepl("^\\.\\./", url)) |> 
+  mutate(
+    text = str_trim(text),
+    url = str_replace(url, "^\\.\\.", "https://www.armstat.am")
+    ) |> 
+  filter(text != "")
+
+GDP_services_links <- 
+  national_account_urls |> 
+  filter(grepl("^ՀՆԱ", text)) |> 
+  pull(url)
+
+# system(
+#   paste0("curl -A 'Mozilla/5.0' \"", GDP_services_links[4],
+#          "\" -o \"GDP_services.xls\"")
+# )
+
+GDP_services <-
+  left_join(
+    
+    read_excel("GDP_services.xls", skip = 4) |> 
+      rename(code = 1, arm = 2, eng = 3, rus = 4) |> 
+      pivot_longer(matches("\\d{4}"), names_to = "date", values_to = "production_month"),
+    
+    read_excel("GDP_services.xls", skip = 4, sheet = 4) |> 
+      rename(code = 1, arm = 2, eng = 3, rus = 4) |> 
+      pivot_longer(matches("\\d{4}"), names_to = "date", values_to = "vol_YoY_pct"),
+    
+    by = join_by(code, arm, eng, rus, date)
+  )
+
+GDP_services |> write_excel_csv("GDP_services_tidy.csv")
+```
