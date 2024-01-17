@@ -105,6 +105,11 @@ GDP_services_links <-
 #   paste0("curl -A 'Mozilla/5.0' \"", GDP_services_links[4],
 #          "\" -o \"GDP_services.xls\"")
 # )
+# 
+# system(
+#   paste0("curl -A 'Mozilla/5.0' \"", GDP_services_links[1],
+#          "\" -o \"GDP_services_year.xls\"")
+# )
 
 GDP_services <-
   left_join(
@@ -121,4 +126,59 @@ GDP_services <-
   )
 
 GDP_services |> write_excel_csv("GDP_services_tidy.csv")
+
+
+GDP_services_year <-
+  left_join(
+    
+    read_excel("GDP_services_year.xls", skip = 4) |> 
+      rename(code = 1, arm = 2, eng = 3, rus = 4) |> 
+      pivot_longer(matches("\\d{4}"), names_to = "date", values_to = "production_year"),
+    
+    read_excel("GDP_services_year.xls", skip = 4, sheet = 4) |> 
+      rename(code = 1, arm = 2, eng = 3, rus = 4) |> 
+      pivot_longer(matches("\\d{4}"), names_to = "date", values_to = "vol_YoY_pct"),
+    
+    by = join_by(code, arm, eng, rus, date)
+  )
+
 ```
+
+
+
+```{r}
+GDP_year_pct <- 
+  GDP_services_year |> 
+  filter(
+    grepl("Ներքին արդյունք", arm),
+    !is.na(vol_YoY_pct)
+  ) |> 
+  mutate(
+    date = as.numeric(date),
+    vol_YoY_pct = vol_YoY_pct / 100
+  ) |> 
+  bind_rows(
+    tibble(
+      date = 2023, vol_YoY_pct = 1.07032
+    )
+  ) |> 
+  select(date, vol_YoY_pct)
+
+
+GDP_year_pct |> 
+  summarise(
+    geomean_growth = exp(mean(log(vol_YoY_pct))),
+    mean_growth = mean(vol_YoY_pct)
+  )
+	
+1.043263
+
+GDP_year_pct |> 
+  mutate(cum_growth = cumprod(vol_YoY_pct)) |> 
+  ggplot(aes(date, cum_growth)) +
+  geom_line() +
+  geom_smooth(method = "lm") +
+  scale_y_log10() +
+  scale_x_continuous(breaks = 2012:2023)
+```
+
