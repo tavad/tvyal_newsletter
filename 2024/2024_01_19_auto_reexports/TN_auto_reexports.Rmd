@@ -10,6 +10,9 @@ knitr::opts_chunk$set(echo = TRUE)
 
 library(tidyverse)
 library(scales)
+library(countrycode)
+library(patchwork)
+library(ggstream)
 
 rm(list = ls()); gc()
 
@@ -66,7 +69,8 @@ new_palette_colors <- c(
   "#d45087", "#f95d6a", "#ff7c43", "#ffa600"
 )
 colfunc   <- colorRampPalette(c("#2f4b7c", "#fffcf5", "#f95d6a"))
-colfunc_2 <- colorRampPalette(new_palette_colors)
+colfunc_2 <- colorRampPalette(c("#005C4B", new_palette_colors,  "#FFC251", "#FFDFA3", "#FFFCF5"))
+
 
 update_geom_defaults("rect", list(fill  = new_palette_colors[2], alpha = 0.8)) 
 update_geom_defaults("line", list(color = new_palette_colors[2], alpha = 0.8))
@@ -102,26 +106,15 @@ auto_trade_armenia |>
 ```
 
 ```{r, include=FALSE}
-# auto_trade_armenia |> 
-#   filter(year == 2023) |> 
-#    filter(aggregate_level == 4) |> 
-#   left_join(
-#     transmute(countrycode::codelist, 
-#               partner_iso = iso3c, partner_am = cldr.name.hy), 
-#     by = join_by(partner_iso)
-#   )
-```
-
-
-```{r, include=FALSE}
-
-auto_trade_armenia_plot <- 
-  auto_trade_armenia |> 
-  filter(year >= 2021) |> 
-  filter(aggregate_level == 4) |> 
+auto_trade_armenia |>
+  filter(
+    year == 2023,
+    aggregate_level == 4,
+    trade_code == "M"
+  ) |> 
   left_join(
-    transmute(countrycode::codelist, 
-              partner_iso = iso3c, partner_am = cldr.name.hy), 
+    transmute(countrycode::codelist,
+              partner_iso = iso3c, partner_am = cldr.name.hy),
     by = join_by(partner_iso)
   ) |> 
   mutate(
@@ -129,30 +122,216 @@ auto_trade_armenia_plot <-
                          other_level = "Other counties"),
     partner_am = ifelse(is.na(partner_am), "Այլ պետություններ", partner_am),
     partner_am = fct_lump_n(partner_am, 10, w = trade_value_us, 
-                         other_level = "Այլ պետություններ"),
-    trade_flow_am = case_when(
-      trade_code == "M" ~ "Ներմուծում",
-      trade_code == "X" ~ "Արտահանում",
-    ),
-    trade_flow = fct_rev(trade_flow),
-    trade_flow_am = fct_rev(trade_flow_am)
+                            other_level = "Այլ պետություններ")
   ) |> 
-  ggplot(aes(period, Qty, fill = partner_am)) + 
-  geom_col() +
-  facet_wrap(~trade_flow_am) +
-  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
-  scale_y_continuous(labels = number_format(), n.breaks = 8) +
-  scale_fill_brewer(type = "qual", palette = 3) +
-  labs(
-    fill = NULL,
-    # title = "Մեքենաների առևտուրը թափ է՞ հավաքում, թե՞ պարապ ընթացքի մեջ է",
-    title = "Ավտոմեքենաների ներմուծմումը և արտահանումը Հայաստանում",
-    # title = "Ավտոմեքենաների ներմուծմումը և արտահանումը Վրաստանում",
-    subtitle = "միավոր, ԱՏԳ ԱԱ դասակարգչ 8703",
-    caption = paste0(caption_eng, "    |    Data Source: Comtrade")
-  )
+  group_by(partner) |> 
+  summarise(trade_value_us = sum(trade_value_us)) |> 
+  ungroup() |> 
+  mutate(pct = trade_value_us / sum(trade_value_us)) |> 
+  arrange(desc(pct))
 ```
 
+
+```{r, include=FALSE}
+
+# Kazakhstan         United Kingdom     Canada             China             
+#  [5] Rep. of Korea      Mexico             Germany            Japan             
+#  [9] USA                Russian Federation Other counties  
+
+trade_smooth_plotter <- 
+  function(
+    tbl, trade_code_, lumps, year_start = 2021, facet_label, ...
+  ){
+    
+    smooth_plot <- 
+      tbl |> 
+      filter(
+        trade_code %in% trade_code_,
+        year >= year_start,
+        aggregate_level == 4
+      ) |> 
+      mutate(
+        partner = fct_lump_n(partner, lumps, w = Qty, 
+                             other_level = "Other counties"),
+      ) |> 
+      group_by(period, partner, trade_code, trade_flow) |> 
+      summarise(Qty = sum(Qty), .groups = "drop") |> 
+      mutate(
+        partner = fct_reorder(partner, Qty, .fun = sum, .desc = TRUE),
+        partner = fct_relevel(partner, "Other counties", after = Inf)
+      ) |> 
+      ggplot(aes(period, Qty, fill = partner)) + 
+      geom_stream(...) +
+      scale_x_date(
+        date_breaks = "1 year", date_labels = "%Y",
+        limits = c(as.Date(paste0(year_start, "-01-01")), as.Date("2024-01-01"))
+      ) +
+      scale_y_continuous(labels = number_format(), n.breaks = 8) +
+      scale_fill_manual(values = colfunc_2(lumps + 1)) +
+      guides(fill = guide_legend(nrow = 2, byrow = TRUE)) +
+      labs(
+        x = NULL,
+        y = NULL,
+        fill = NULL,
+        subtitle = facet_label
+      ) +
+      theme(
+        plot.subtitle = element_text(hjust = 0.5),
+        panel.grid.major.x = element_blank()
+      )
+    
+    return(smooth_plot)
+  }
+
+# 
+# auto_trade_armenia_plot <- 
+#   auto_trade_armenia |> 
+#   auto_trade_partners_lumpped(lump = 10) |> 
+#   ggplot(aes(period, Qty, fill = partner)) + 
+#   geom_col() +
+#   facet_wrap(~trade_flow) +
+#   scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+#   scale_y_continuous(labels = number_format(), n.breaks = 8) +
+#   # scale_fill_brewer(type = "qual", palette = 3) +
+#   scale_fill_manual(values = colfunc_2(11)) +
+#   labs(
+#     x = NULL,
+#     y = NULL,
+#     fill = NULL,
+#     # title = "Մեքենաների առևտուրը թափ է՞ հավաքում, թե՞ պարապ ընթացքի մեջ է",
+#     title = "Ավտոմեքենաների ներմուծմումը և արտահանումը Հայաստանում",
+#     # title = "Ավտոմեքենաների ներմուծմումը և արտահանումը Վրաստանում",
+#     subtitle = "միավոր, ԱՏԳ ԱԱ դասակարգչ 8703",
+#     caption = paste0(caption_eng, "    |    Data Source: Comtrade")
+#   )
+#   
+# 
+# auto_trade_georgia_plot <- 
+#   auto_trade_georgia |> 
+#   auto_trade_partners_lumpped(lump = 10) |> 
+#   ggplot(aes(period, Qty, fill = partner)) + 
+#   geom_col() +
+#   facet_wrap(~trade_flow) +
+#   scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+#   scale_y_continuous(labels = number_format(), n.breaks = 8) +
+#   # scale_fill_brewer(type = "qual", palette = 3) +
+#   scale_fill_manual(values = colfunc_2(11)) +
+#   labs(
+#     x = NULL,
+#     y = NULL,
+#     fill = NULL,
+#     # title = "Մեքենաների առևտուրը թափ է՞ հավաքում, թե՞ պարապ ընթացքի մեջ է",
+#     title = "Ավտոմեքենաների ներմուծմումը և արտահանումը Վրաստանում",
+#     # title = "Ավտոմեքենաների ներմուծմումը և արտահանումը Վրաստանում",
+#     subtitle = "միավոր, ԱՏԳ ԱԱ դասակարգչ 8703",
+#     caption = paste0(caption_eng, "    |    Data Source: Comtrade")
+#   )
+#   
+
+
+```
+
+```{r, include=FALSE}
+# auto_trade_armenia |> 
+#   filter(trade_code == "M") |> 
+#   auto_trade_partners_lumpped(lump = 7) |> 
+#   group_by(period, partner) |> 
+#   summarise(Qty = sum(Qty)) |> 
+#   ungroup() |> 
+#   ggplot(aes(period, Qty, fill = partner)) + 
+#   geom_area() +
+#   scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+#   scale_y_continuous(labels = number_format(), n.breaks = 8) +
+#   scale_fill_manual(values = colfunc_2(8)) +
+#   guides(fill=guide_legend(nrow=2,byrow=TRUE)) +
+#   labs(
+#     x = NULL,
+#     y = NULL,
+#     fill = NULL,
+#     subtitle = "Export"
+#   ) +
+#   theme(plot.subtitle = element_text(hjust = 0.5))
+```
+
+
+```{r, include=FALSE}
+
+plot_armenia_imports_2017 <- 
+  auto_trade_armenia |> 
+  trade_smooth_plotter(
+    trade_code_ = "M", lumps = 7, year_start = 2017,
+    facet_label = "Import",
+    type = "ridge", bw=0.55, n_grid = 5000, extra_span = 0.15
+  ) +
+  labs(
+    title = "Armenia's Vehicle Export",
+    subtitle = "Units in a Month, HS code 8703",
+    caption = paste0(caption_eng, "    |    Data Source: Comtrade")
+  ) +
+  theme(
+     plot.subtitle = element_text(hjust = 0)
+  )
+
+plot_armenia_imports <- 
+  auto_trade_armenia |> 
+  trade_smooth_plotter(
+    trade_code_ = "M", lumps = 7, year_start = 2021,
+    facet_label = "Import",
+    type = "ridge", bw=0.75, n_grid = 5000, extra_span = 0.15
+  )
+
+plot_armenia_exports <- 
+  auto_trade_armenia |> 
+  trade_smooth_plotter(
+    trade_code_ = "X", lumps = 3, year_start = 2021,
+    facet_label = "Export",
+    type = "ridge", bw=0.75, n_grid = 5000, extra_span = 0.15
+  )
+
+
+
+auto_trade_armenia_plot <- 
+  plot_armenia_imports +
+  plot_armenia_exports +
+  plot_layout(ncol = 2) +
+  plot_annotation(
+    title = "Armenia's Vehicle Trade",
+    subtitle = "Units in a Month, HS code 8703",
+    caption = paste0(caption_eng, "    |    Data Source: Comtrade")
+  )
+
+```
+
+
+```{r, include=FALSE}
+
+plot_georgia_imports <- 
+  auto_trade_georgia |> 
+  trade_smooth_plotter(
+    trade_code_ = "M", lumps = 6, year_start = 2021,
+    facet_label = "Import",
+    type = "ridge", bw=0.75, n_grid = 5000, extra_span = 0.15
+  )
+
+plot_georgia_exports <- 
+  auto_trade_georgia |> 
+  trade_smooth_plotter(
+    trade_code_ = "X", lumps = 6, year_start = 2021,
+    facet_label = "Export",
+    type = "ridge", bw=0.75, n_grid = 5000, extra_span = 0.15
+  )
+
+auto_trade_georgia_plot <- 
+  plot_georgia_imports +
+  plot_georgia_exports +
+  plot_layout(ncol = 2) +
+  plot_annotation(
+    title = "Georgia's Vehicle Trade",
+  subtitle = "Units in a Month, HS code 8703",
+    caption = paste0(caption_eng, "    |    Data Source: Comtrade")
+  )
+
+```
 
 
 ***English summary below.***
@@ -167,7 +346,7 @@ auto_trade_armenia_plot <-
 3. English summary
 
 
-## 1. Երևանը Մոսկվայից ավելի թանկ է
+## 1. "Ավտոարտադրույան" մահը Հայաստանում
 
 
 
@@ -184,7 +363,7 @@ auto_trade_armenia_plot <-
 
 Հավելված` Ավտոմոբիլների տարեկան առևտուրը Հայաստանում (միավոր, ԱՏԳ ԱԱ դասակարգչ 8703)
 
-| տարի| #ներմուծում | #արտահանում |
+| տարի| ներմուծում |#արտահանում |
 |----:|------:|------:|
 | 2017|    191|   3343|
 | 2018|    425|  10639|
@@ -201,8 +380,8 @@ auto_trade_armenia_plot <-
 
 **Գծապատկեր 1.** 
 
-```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 6}
-auto_trade_armenia_plot
+```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
+plot_armenia_imports_2017
 ```
 
 
@@ -226,21 +405,21 @@ auto_trade_armenia_plot
 
 ```
 
-
+Փաստորեն Վրաստանն էլ 2023 թվականի օգոստոսից չի արտահանում դեպի Ռուսատան մեքենաներ
 
 
 **Գծապատկեր 3.** 
 
 ```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
-
+auto_trade_armenia_plot
 ```
 
 
 
 **Գծապատկեր 4.** 
 
-```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 6}
-
+```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
+auto_trade_georgia_plot
 ```
 
 
