@@ -82,209 +82,7 @@ setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 
 ```{r data download, include=FALSE}
 
-numbeo_8_cities <- read_csv("numbeo_8_cities_db.csv")
 
-indicator_gr <- 
-  numbeo_8_cities |> 
-  mutate(indicator_group = fct_inorder(indicator_group)) |> 
-  count(indicator_group) |> 
-  pull(indicator_group)
-
-numbeo_cities_popularity <- read_csv("numbeo_cities_popularity.csv")
-
-select_countries <- c("Armenia", "Iran", "Azerbaijan", "Georgia",
-                      "Kazakhstan", "Russia", "Belarus", "Turkey")
-
-```
-
-
-```{r vecor of places by cost of leaving, include = FALSE}
-
-places_by_cost_of_leaving <- 
-  numbeo_8_cities |> 
-  select(country, city) |> 
-  unique() |> 
-  left_join(numbeo_cities_popularity, join_by(country, city)) |> 
-  mutate(place = paste0(city, ", ", country)) |> 
-  arrange(usd_ammount) |> 
-  pull(place)
-
-```
-
-
-```{r, include=FALSE}
-
-cities_popularity_plot <- 
-  numbeo_cities_popularity |> 
-  filter(country %in% select_countries) |> 
-  arrange(desc(info_entries)) |> 
-  slice_head(n = 14) |> 
-  mutate(
-    place = paste0(city, ", ",country),
-    place = fct_reorder(place, info_entries)
-  ) |> 
-  select(place, info_entries, usd_ammount) |> 
-  pivot_longer(-place) |> 
-  mutate(
-    text_entries = ifelse(
-      name == "usd_ammount",
-      dollar(value, accuracy = 1, prefix = " $"),
-      number(value, accuracy = 1, prefix = " ")
-    )
-  ) |> 
-  filter(name == "info_entries") |> 
-  ggplot(aes(value, place, fill = place)) +
-  # facet_wrap(~name, scale = "free_x") +
-  geom_col() +
-  geom_text(aes(x = 0, label = text_entries), hjust = 0) +
-  scale_fill_manual(values = rev(colfunc_2(14))) +
-  labs(
-    x = NULL,
-    y = NULL,
-    title = "The Most Popular Cities to Visit in Armenia and Neighbouring Countries",
-    subtitle = "Popularity is measured by the enteries on numbeo.com",
-    caption = paste0(caption_eng, "   |   Data Source: numbeo.com")
-  ) +
-  theme(
-    legend.position = "none",
-    axis.text.x = element_blank(),
-    panel.grid.major = element_blank()
-  )
-
-
-# numbeo_cities_popularity |> 
-#   arrange(usd_ammount) |> 
-#   view()
-```
-
-
-```{r city_comparation_plotter, include=FALSE}
-
-city_comparation_plotter <- 
-  function(tbl, currency_exchange = 1, indicator_group_ = 1:10, indicator_ = ""){
-  
-    plot <- 
-      numbeo_8_cities |> 
-      filter(
-        indicator_group %in% indicator_gr[indicator_group_]
-      ) |> 
-      filter(
-        grepl(indicator_, indicator)
-      ) |>
-      mutate(
-        across(c(mean_price, min_range, max_range), ~.x * currency_exchange),
-        place = paste0(city, ", ", country),
-        place = factor(place, levels = places_by_cost_of_leaving),
-        indicator = fct_inorder(indicator),
-        text = formatC(mean_price, format = "f", width = 2, digits = 0,
-                       big.mark = ",")
-      ) |> 
-      ggplot(aes(mean_price, place, fill = place)) +
-      facet_wrap(~indicator, scales = "free_x") +
-      geom_col()+
-      geom_text(aes(x = 0, label = text), hjust = 0) +
-      geom_errorbarh(aes(xmin = min_range, xmax = max_range), height = 0.5) +
-      scale_fill_manual(values = rev(new_palette_colors)) +
-      theme(
-        legend.position = "drop", 
-        panel.grid.major = element_blank(),
-        axis.text.x = element_blank()
-      )
-  
-  return(plot)
-}
-
-```
-
-
-```{r}
-numbeo_8_cities |> 
-  filter(
-    indicator_group %in% indicator_gr[8]
-  ) |> 
-  filter(
-    grepl("1 bedroom", indicator)
-  ) |>
-  mutate(
-    place = paste0(city, ", ", country),
-    place = factor(place, levels = places_by_cost_of_leaving),
-    indicator = fct_inorder(indicator),
-    text = formatC(mean_price, format = "f", width = 2, digits = 0,
-                   big.mark = ",")
-  ) |> 
-  ggplot(aes(mean_price, place, fill = place)) +
-  facet_wrap(~indicator, scales = "free_x", nrow = 2) +
-  geom_col()+
-  geom_text(aes(x = 0, label = text), hjust = 0) +
-  geom_errorbarh(aes(xmin = min_range, xmax = max_range), height = 0.5) +
-  scale_fill_manual(values = rev(new_palette_colors)) +
-  theme(
-    legend.position = "drop", 
-    panel.grid.major = element_blank(),
-    axis.text.x = element_blank()
-  ) +
-    labs(
-    x = NULL,
-    y = NULL,
-    title = "Երևանում ապրելն ավելի\nթանկ է, քան Մոսկվայում",
-    subtitle = "ԱՄՆ դոլար, 2023",
-    caption = paste0(caption_eng, "\nData Source: numbeo.com")
-  )
-```
-
-
-```{r plots, include=FALSE}
-
-apartament_price_plot <- 
-  numbeo_8_cities |> 
-  city_comparation_plotter(indicator_group_ = 8:9) +
-  labs(
-    x = NULL,
-    y = NULL,
-    title = "Rent and Apartment Prices in Armenia and Neighbouring Countries",
-    subtitle = "In USD, prices in 2023",
-    caption = paste0(caption_eng, "   |   Data Source: numbeo.com")
-  )
-
-restaurant_price_plot <- 
-  numbeo_8_cities |> 
-  city_comparation_plotter(
-    currency_exchange = 403,
-    indicator_group_ = 1, indicator_ = "Meal|McDonalds|Cappuccino"
-  ) +
-  labs(
-    x = NULL,
-    y = NULL,
-    title = "Restorant Prices in Armenia and Neighbouring Countries",
-    subtitle = "In Armenian drams, prices in 2023",
-    caption = paste0(caption_eng, "   |   Data Source: numbeo.com")
-  )
-
-leisure_price_plot <- 
-  numbeo_8_cities |> 
-  city_comparation_plotter(
-    indicator_group_ = 5:6, indicator_ = ""
-  ) +
-  labs(
-    x = NULL,
-    y = NULL,
-    title = "Sports, Leisure and Childcare Prices in Armenia and Neighbouring Countries",
-    subtitle = "In USD, prices in 2023",
-    caption = paste0(caption_eng, "   |   Data Source: numbeo.com")
-  )
-
-clothing_price_plot <- 
-  numbeo_8_cities |> 
-  city_comparation_plotter(
-    indicator_group_ = 7, indicator_ = ""
-  ) +
-  labs(
-    x = NULL,
-    y = NULL,
-    title = "Clothing and Shoes Prices in Armenia and Neighbouring Countries",
-    subtitle = "In USD, prices in 2023",
-    caption = paste0(caption_eng, "   |   Data Source: numbeo.com")
-  )
 
 ```
 
@@ -297,31 +95,26 @@ clothing_price_plot <-
 Հուսով եմ լավ եք:
 Ներկայացնում եմ այս շաբաթվա վերլուծությունները և աշխատանքները.
 
-1. Երևանը Մոսկվայից ավելի թանկ է
+1. "Ավտոարտադրույան" մահը Հայաստանում
 2. ԶԼՄ հաղորդագրություններ
 3. English summary
 
 
 ## 1. Երևանը Մոսկվայից ավելի թանկ է
 
-Ըստ [Numbeo․com](https://www.numbeo.com/cost-of-living/) կայքի Երևանում ապրուստը 2023 թվականին ամենաթանկն է եղել մեր հարևան երկրների համեմատ։ [Երևանում ապրելն ավելի թանկ է, քան նույնիսկ Մոսկվայում](https://www.numbeo.com/cost-of-living/compare_cities.jsp?country1=Russia&city1=Moscow&country2=Armenia&city2=Yerevan&displayCurrency=USD)։
+2023 թվականի առաջին 10 ամիսների ընթացքում Հայաստանից արտահանվել է 18 835 ավտոմեքենա (ներմուծվել՝ 70 859), ամբողջ 2022 թվականին արտահանվել է 10 936 ավտոմեքենա (ներմուծվել՝ 42 293)։ 
+2023 թվականին արտահանման ծավալներով ամենախոշոր 35֊րդ արտահանողն ենք լինելու, իսկ Վրաստանը մոտ 25-րդ տեղում։ Վրաստանը 2023-ին արտահանելու է մոտ 100 հազար ավտոմեքենա։
 
-<a href="https://www.numbeo.com/cost-of-living/compare_cities.jsp?country1=Russia&city1=Moscow&country2=Armenia&city2=Yerevan&displayCurrency=USD">
-  <img src="media/numbeo_yerevan_moscow.png" alt="Jam News article" style="width:100%;">
-</a>
+Հասկանալի է, որ այս ամենը վերաարտահանում է, ու որ Հայաստանից ավտոմեքենաների արտահանումն աճել է 2022 թվականից Ռուսաստանի դեմ կիրառվող պատժամիջոցներից հետո։ Որպես ԵԱՏՄ անդամ այստեղ շահել ենք, քանի որ այլ իրավիճակում իմաստ չէր լինի ավտոմեքենաները Հյուսիսային Ամերիկայից բերել Վրաստան, ապա Հայաստան, որից հետո տանելլ Ռուսաստան։ ԵԱՏՄ ազատ առևտրի տարածքը որոշակի օգուտներ է տվել նաև այդ մասով։
 
-Ըստ այս աղբյուրի կյանքի նույն որակը ապահովելու համար անհատին անհրաժեշտ կլինի ամսական [3,246,3 դոլար (1,312,852.0 դրամ) Երևանում, իսկ Մոսկվայում՝ 2,909,4 դոլար (260,000.0 ռուբլի)](https://www.numbeo.com/cost-of-living/compare_cities.jsp?country1=Russia&city1=Moscow&country2=Armenia&city2=Yerevan&displayCurrency=USD)։ Այս գումարի մեջ է մտնում նաև նույն որակի տան վարձակալությունը, որը Երևանի կենտրոնում 1 սենյականոց բնակարանի համար գրեթե 1000 դոլար էր 2023 թվականին: Ըստ այս տվյալների տարածաշրջանի քաղաքների համեմատ Երևանում ապրուստը ամենաթանկն է։
+Թվում է` ամեն ինչ լավ է. ավտոմեքենաների արտահանումն աճել է 2023-ին համեմատած 22 թվականի հետ։ Սակայն իրականությունը, ինչպես գծապատկերն է ցույց տալիս, այդքան էլ դրական չէ։
+Վրաստանը այս տարածաշրջանի ավտոմեքենաների հիմնական շուկան է ու այդքան հեշտ չի զիջի իր փայի թեկուզ փոքր մասը Հայաստանին։ Այդ պատճառով է, որ օգոստոսի 1-ից Թբիլիսիի իշխանություններն արգելել են 1,9 լիտր և ավելի շարժիչով ամերիկյան ավտոմեքենաների, ինչպես նաև հիբրիդային և էլեկտրական մեքենաների արտահանումը։ Սա երևում է գծապատկերում։
 
-* Սպառողական գները Երևանում 15,1%-ով բարձր են, քան Մոսկվայում (առանց վարձակալության)
-* Երևանում սպառողական գները ներառյալ վարձավճարը 11,6%-ով բարձր են, քան Մոսկվայում
-* Երևանում վարձակալության գները 4,8%-ով բարձր են, քան Մոսկվայում
-* Ռեստորանային գները Երևանում 21,8%-ով բարձր են, քան Մոսկվայում
-* Մթերքները Երևանում 17,6%-ով բարձր են, քան Մոսկվայում
-* Տեղական գնողունակությունը Երևանում 56,9%-ով ցածր է, քան Մոսկվայում
+Եթե նայենք խոշոր հարկատուների ցանկը, 2022 թվականին 2021-ի համեմատ Հայաստանի ավտոներմուծողների շահութահարկը 7-ից 15 անգամ կրկնապատկվել է։ Մեծ շահույթներ են ստացել։ Այդ շահույթը գնացել է հետագա վերաարտահանման հույսով նոր ավտոմեքենաներ ձեռքբերելուն ։
 
-[Numbeo․com](https://www.numbeo.com/common/about.jsp) կայքին վստահում են BBC, Time, Forbes, The Economist, Business Insider, New York Times, The Telegraph և այլ հայտնի պարբերականները։ Այս հարթակը հաշվարկում է կյանքի արժեքի, կյանքի որակի և տարբեր սոցիալ-տնտեսական գործոնների վերաբերյալ ճշգրիտ և արդի տեղեկատվություն ամբողջ աշխարհի քաղաքներում և երկրներում:
+Մեր շուկա բավականին մեծ քանակությամբ մեքենա է մտել, ինչը լցրել է մաքսակետերը ու ներմուծողների ավտոկայանատեղիները։ Իսկ ավտոմեքենան այնպիսի ապրանք է, որ ժամանակի ընթացքում արժեզրկվում է։
 
-Երևանում են մեր տարածաշրջանի ամենաթանկ վարձով տները։ Ըստ տվյալների 2023 թվականին Երևանի կենտրոնում 1 սենյականոց բնակարանի միջին ամսական արժքը կազմում էր 979 դոլար, կամ մոտ 400 հազար դրամ, իսկ Մոսկվայի կենտրոնում նույնանման բնակարանը՝ 772 դոլար կամ 312 հազար դրամ։ Սրա պատճառը կարող է հանդիսանալ այն որ Ռուսաստանի հանդեպ պատժամիջոցներով պայմանավորված վարձակալության պահանջարկը ընկավ և համապատասխանաբար նաև գները, իսկ Երևանում հակառակը՝ մեծ քանակությամբ ՌԴ քաղաքացիների ներհոսքից վարձակալության գները բարձրացան։
+Կարելի է սպասել, որ 2024 թվականին ավտոներմուծողները ստիպված են լինելու վնասով մեծ քանակությամբ ավտոմեքենաներ վաճառել ներքին շուկայում, այսինքն կարող է մեքենաների գները հաջորդ տարի լավ իջնեն, մեքենաների քանակը շատանա, բայց նաև փողոցներում ավտոմեքենաներն ավելի թարմ թվի լինեն։
 
 **Գծապատկեր 1.** 
 
@@ -329,9 +122,7 @@ clothing_price_plot <-
 apartament_price_plot
 ```
 
-Նշեմ որ, 2021 թվականին 45 ք․մ․ բնակարանի վարձակալության արժեքը Երևանի կենտրոնում կազմում էր մոտ 700 դոլար, 2022 թվականի սեպտեմբերից մինչև 2023 թվականի սեպտեմբերը արդեն՝ 1000 դոլար։ Սակայն այժմ նմանատիպ բնակարանի վարձակալության գինը իջել է 750 դոլար։ Հավանական է, որ սա սեզենային բնույթ ունի, քանզի ձմռան սեզոնին պահանջարկը ավելի ցածր է և վարձակալության գները ամռանը ունեն բարձրանալու միտում։ Սակայն 2022-23 թվականի ձմռանը բնակարանների գնի սեզոնային իջեցում չնկատվեց, քանզի առկա էր ՌԴ քաղաքացիների մեծ ներհոսք։ ՌԴ քաղաքացիները հոսքը ունի միջնաժամկետ բնույթ և հնարավոր է որ 2024 թվականին վարձակալության գները ավելի ցածր լինեն 2023 թվականի համեմատ։
 
-Հաջորդ գծապատկերը ցույց է տալիս ռեստորան այցելելու արժեքը Հայաստանում և հարևան երկրներում։ Ինչպես երևում է գծապատկերից ռեստորան այցելությունը նույնպես ավելի թանկ է նույնիսկ համեմատած Մոսկվայի հետ։ 2 հոգու համար 3 ուտեստից բաղկացած կերակուրի արժեքը Երևանի ռեստորանում կազմում է 20 հազար դրամ, իսկ Մոսկվայում մոտ 14 հազար դրամ։ Ըստ տվյալների արագ սնունդը և մասսայական ռեստորաններում սնունդը ամենաթանկը Թբիլիսիում է, որից հետո գալիս է Երևանը։
 
 **Գծապատկեր 2.** 
 
@@ -340,7 +131,6 @@ restaurant_price_plot
 ```
 
 
-Երևանում թանկ է նաև բրենդային հագուտը։ Ասիայի բոլոր քաղաքներից, որոնք գրանցվեծ են Numbeo․com կայքում Երևանում միջին դասի Nike վազքի կոշիկները գնով ամենաթանկ 2-րդ տեղում են։ [Տես՝ Rankings, History and Analysis](https://www.numbeo.com/cost-of-living/in/Yerevan)
 
 
 **Գծապատկեր 3.** 
@@ -349,7 +139,7 @@ restaurant_price_plot
 clothing_price_plot
 ```
 
-Ստորև ներկայացված է նաև տվյալ տարածաշրջանի ամեահանրաճանաչ կամ պոպուլյար քաղաքները ըստ Numbeo․com կայքում ներկայացված գրառումներումների քանակի։
+
 
 **Գծապատկեր 4.** 
 
@@ -357,10 +147,7 @@ clothing_price_plot
 cities_popularity_plot
 ```
 
-Երևանը զբաղեցնում է 11-րդ տեղը ըստ գրառումների քանակի և առաջին տեղը ըստ նույն որակը ապահովելու ապրուստի ծախսերի։ Ներկայացված տվյալները նախանշում են որ այստեղ առկա է որոշակի անհավասարակշռություն, որը առաջացել է Ռուսաստանի դեմ պատժամիջոցներից և դեպի Հայաստան համեմատաբար մեծ քանակությամբ ՌԴ քաղաքացիների և կապիտալի ներհոսքից։ Այպիսի ներքոսը չի կարող ունենալ շարունակական բնույթ, որը արդեն իսկ [երևում է տվյալներով (տես՝ Գծապատկեր 2 և 3, Հայաստան կատարված դրամական փոխանցումներ)](https://www.tvyal.com/newsletter/2023_10_16)։ Այս անհավասարակշռությունը ունի որոշակի վտանգներ։ Եթե ՌԴ քաղաքացիները Հայաստանում երկարատև չհաստատվեն և դեպի Ռուսաստան կապիտալի ներհոսքը վերականգնվի, ([որի նախանշանները արդեն առկա են](https://www.tvyal.com/newsletter/2023_10_23)) ապա Հայաստանում գները կարող են ընկնել՝ հատկապես վարձակալության և վաճառքի, որը տնտեսական աճի տեսանկյունից կունենա բացասական հետևանք, քանզի Հայաստանտան մտած կապիտալը հիմնականում ներդրվում է շինարարության մեջ։
 
-
-Նշեմ, որ Numbeo․com կայքից վերծանված տվյալների բազաները կարող եք գտնել նաև մեր [Github-ում](https://github.com/tavad/tvyal_newsletter/2024)։
 
 
 ## 2. ԶԼՄ հաղորդագրություններ
@@ -385,9 +172,6 @@ cities_popularity_plot
 
 **Yerevan is More Expensive than Moscow in 2023**
 
-In 2023, living in Yerevan surpassed Moscow as the most expensive among neighboring cities, according to Numbeo.com. To maintain an equivalent quality of life, an individual needs \$3,246.3 per month in Yerevan compared to \$2,909.4 in Moscow, including rent. Consumer prices in Yerevan are 15.1% higher than in Moscow, with 4.8% higher rental prices. The surge in rental costs in Yerevan is attributed to an influx of Russian citizens, while in Moscow, prices fell due to sanctions. The impact of this imbalance poses economic risks for Armenia, as a potential return of capital to Russia could lead to a decline in prices, especially in the real estate sector.
-
-Despite a recent drop in rental prices from \$1,000 to \$750 for a similar apartment in Yerevan, seasonal fluctuations and the influx of Russian citizens may influence 2024 prices. Additionally, Yerevan stands out in restaurant costs, with a 3-course meal for two being more expensive than in Moscow. Branded clothes, particularly mid-range Nike running shoes, are also relatively pricier in Yerevan compared to other Asian cities. The data suggests a temporary imbalance driven by the influx of Russian citizens and capital, posing potential economic challenges if the trend reverses in the future.
 
 
 ---
