@@ -82,8 +82,75 @@ setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 
 ```{r data download, include=FALSE}
 
+auto_trade_armenia <- read_csv("auto_trade_armenia.csv")
+
+auto_trade_georgia <- read_csv("auto_trade_georgia.csv")
 
 
+```
+
+
+```{r, include=FALSE}
+
+auto_trade_armenia |> 
+  filter(aggregate_level == 4) |> 
+  group_by(trade_flow, year) |> 
+  summarise(Qty = sum(Qty), .groups = "drop") |> 
+  mutate(Qty = round(Qty)) |> 
+  pivot_wider(names_from = "trade_flow", values_from = "Qty") |> 
+  knitr::kable()
+```
+
+```{r, include=FALSE}
+# auto_trade_armenia |> 
+#   filter(year == 2023) |> 
+#    filter(aggregate_level == 4) |> 
+#   left_join(
+#     transmute(countrycode::codelist, 
+#               partner_iso = iso3c, partner_am = cldr.name.hy), 
+#     by = join_by(partner_iso)
+#   )
+```
+
+
+```{r, include=FALSE}
+
+auto_trade_armenia_plot <- 
+  auto_trade_armenia |> 
+  filter(year >= 2021) |> 
+  filter(aggregate_level == 4) |> 
+  left_join(
+    transmute(countrycode::codelist, 
+              partner_iso = iso3c, partner_am = cldr.name.hy), 
+    by = join_by(partner_iso)
+  ) |> 
+  mutate(
+    partner = fct_lump_n(partner, 10, w = trade_value_us, 
+                         other_level = "Other counties"),
+    partner_am = ifelse(is.na(partner_am), "Այլ պետություններ", partner_am),
+    partner_am = fct_lump_n(partner_am, 10, w = trade_value_us, 
+                         other_level = "Այլ պետություններ"),
+    trade_flow_am = case_when(
+      trade_code == "M" ~ "Ներմուծում",
+      trade_code == "X" ~ "Արտահանում",
+    ),
+    trade_flow = fct_rev(trade_flow),
+    trade_flow_am = fct_rev(trade_flow_am)
+  ) |> 
+  ggplot(aes(period, Qty, fill = partner_am)) + 
+  geom_col() +
+  facet_wrap(~trade_flow_am) +
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+  scale_y_continuous(labels = number_format(), n.breaks = 8) +
+  scale_fill_brewer(type = "qual", palette = 3) +
+  labs(
+    fill = NULL,
+    # title = "Մեքենաների առևտուրը թափ է՞ հավաքում, թե՞ պարապ ընթացքի մեջ է",
+    title = "Ավտոմեքենաների ներմուծմումը և արտահանումը Հայաստանում",
+    # title = "Ավտոմեքենաների ներմուծմումը և արտահանումը Վրաստանում",
+    subtitle = "միավոր, ԱՏԳ ԱԱ դասակարգչ 8703",
+    caption = paste0(caption_eng, "    |    Data Source: Comtrade")
+  )
 ```
 
 
@@ -102,6 +169,43 @@ setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 
 ## 1. Երևանը Մոսկվայից ավելի թանկ է
 
+
+
+
+Ավտոմեքենաների ներմուծման մասին:
+
+Չեք նկատել որ մեքենաները փողոցներում գրեթե կրկնապատկվել են:
+
+2021-ին ներմուծվել է 7362 թեթև մարդատար ավտոմեքենա, ապա 2022-ին արդեն՝ 42 293 ավտոմեքենա: Այսինքն մոտ 6 անգամ աճ է տեղի ունեցել: 2021-ին Հայաստանից արտահանել է 319 մեքենա, իսկ 2022-ին՝ 10936 ավտոմեքենա: Այսպիսով ներմուծված մեքենաների քառորդը վերաարտահանել ենք հիմնականում Ռուսաստան: Գրանցվել է ԱՄՆ-ից մեքենաների ներմուծման զգալի աճ` մոտ 7 անգամ 2022թ. ընթացքում։ 
+
+Այս մասին տվել եմ հարցազրույց` https://www.1in.am/3253116.html (կարդացեք):
+
+Հետաքրքիր է նաև 2019-2020 թվականների ավտոմեքենաների ներմուծման հանկարծակի անկումը։ Այս անկումը հիմնականում անդրադարձել է ճապոնական մեքենաների ներմուծման կրճատման վրա: Սա պատճառը կարող է լինել կորոնավիրուսոի տարածումը կամ աջաղեկյան մեքենաների ներմուծման արգելքով: Կուզենայի քոմենտներում մեկնաբանություններ լսել սրա մասին:
+
+Հավելված` Ավտոմոբիլների տարեկան առևտուրը Հայաստանում (միավոր, ԱՏԳ ԱԱ դասակարգչ 8703)
+
+| տարի| #ներմուծում | #արտահանում |
+|----:|------:|------:|
+| 2017|    191|   3343|
+| 2018|    425|  10639|
+| 2019|    771|  33132|
+| 2020|    123|   6193|
+| 2021|    319|   7362|
+| 2022|  10936|  42293|
+
+
+
+
+
+
+
+**Գծապատկեր 1.** 
+
+```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 6}
+auto_trade_armenia_plot
+```
+
+
 2023 թվականի առաջին 10 ամիսների ընթացքում Հայաստանից արտահանվել է 18 835 ավտոմեքենա (ներմուծվել՝ 70 859), ամբողջ 2022 թվականին արտահանվել է 10 936 ավտոմեքենա (ներմուծվել՝ 42 293)։ 
 2023 թվականին արտահանման ծավալներով ամենախոշոր 35֊րդ արտահանողն ենք լինելու, իսկ Վրաստանը մոտ 25-րդ տեղում։ Վրաստանը 2023-ին արտահանելու է մոտ 100 հազար ավտոմեքենա։
 
@@ -116,18 +220,10 @@ setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 
 Կարելի է սպասել, որ 2024 թվականին ավտոներմուծողները ստիպված են լինելու վնասով մեծ քանակությամբ ավտոմեքենաներ վաճառել ներքին շուկայում, այսինքն կարող է մեքենաների գները հաջորդ տարի լավ իջնեն, մեքենաների քանակը շատանա, բայց նաև փողոցներում ավտոմեքենաներն ավելի թարմ թվի լինեն։
 
-**Գծապատկեր 1.** 
-
-```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 6}
-apartament_price_plot
-```
-
-
-
 **Գծապատկեր 2.** 
 
 ```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
-restaurant_price_plot
+
 ```
 
 
@@ -136,7 +232,7 @@ restaurant_price_plot
 **Գծապատկեր 3.** 
 
 ```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
-clothing_price_plot
+
 ```
 
 
@@ -144,7 +240,7 @@ clothing_price_plot
 **Գծապատկեր 4.** 
 
 ```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 6}
-cities_popularity_plot
+
 ```
 
 
