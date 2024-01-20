@@ -252,7 +252,7 @@ plot_armenia_imports_2017 <-
     type = "ridge", bw=0.55, n_grid = 5000, extra_span = 0.15
   ) +
   labs(
-    title = "Armenia's Vehicle Export",
+    title = "Armenia's Vehicle Import",
     subtitle = "Units in a Month, HS code 8703",
     caption = paste0(caption_eng, "    |    Data Source: Comtrade")
   ) +
