@@ -16,26 +16,26 @@ library(ggridges)
 
 rm(list = ls()); gc()
 
-theme_tvyal <- function(base_size = 12, base_family = "sans") 
+theme_tvyal <- function(base_size = 12, base_family = "sans")
 {
   colors <- deframe(ggthemes::ggthemes_data[["fivethirtyeight"]])
   (ggthemes::theme_foundation(
-    base_size = base_size, base_family = base_family) + 
+    base_size = base_size, base_family = base_family) +
       theme(
-        line = element_line(colour = "black"), 
+        line = element_line(colour = "black"),
         rect = element_rect(fill = "white", linetype = 0, colour = NA),
-        text = element_text(colour = colors["Dark Gray"]), 
+        text = element_text(colour = colors["Dark Gray"]),
         # axis.title = element_blank(),
-        # axis.text = element_text(), 
+        # axis.text = element_text(),
         axis.ticks = element_blank(),
-        axis.line = element_blank(), 
-        legend.background = element_rect(), 
-        legend.position = "bottom", 
-        legend.direction = "horizontal", 
-        legend.box = "vertical", 
-        panel.grid = element_line(colour = NULL), 
-        panel.grid.major = element_line(colour = colors["Medium Gray"]), 
-        panel.grid.minor = element_blank(), 
+        axis.line = element_blank(),
+        legend.background = element_rect(),
+        legend.position = "bottom",
+        legend.direction = "horizontal",
+        legend.box = "vertical",
+        panel.grid = element_line(colour = NULL),
+        panel.grid.major = element_line(colour = colors["Medium Gray"]),
+        panel.grid.minor = element_blank(),
         plot.title = element_text(hjust = 0, size = rel(1.5), face = "bold"),
         plot.margin = unit(c(1, 1, 1, 1), "lines"), strip.background = element_rect()
       )
@@ -44,12 +44,12 @@ theme_tvyal <- function(base_size = 12, base_family = "sans")
 
 theme_set(theme_tvyal())
 
-save_last_plot <- 
+save_last_plot <-
   function(filename, extension = "png", width = 1344, height = 756) {
-    
+
     filename <- str_replace_all(filename, " ", "_")
     last_plot <- recordPlot()
-    
+
     if (extension == "png") {
       png(paste0(filename, ".", extension), width = width, height = height)
     } else if (extension == "pdf") {
@@ -57,21 +57,21 @@ save_last_plot <-
     } else {
       stop("Unsupported file extension. Use 'png' or 'pdf'.")
     }
-    
+
     replayPlot(last_plot)
     dev.off()
     paste0(filename, ".", extension)
   }
 
 new_palette_colors <- c(
-  "#003f5c", "#2f4b7c", "#665191", "#a05195", 
+  "#003f5c", "#2f4b7c", "#665191", "#a05195",
   "#d45087", "#f95d6a", "#ff7c43", "#ffa600"
 )
 colfunc <- colorRampPalette(c("#2f4b7c", "#fffcf5", "#f95d6a"))
 colfunc2 <- colorRampPalette(new_palette_colors)
 colfunc3 <- colorRampPalette(c(new_palette_colors, "#FFD17A", "#FFFCF5"))
 
-update_geom_defaults("rect", list(fill  = new_palette_colors[2], alpha = 0.8)) 
+update_geom_defaults("rect", list(fill  = new_palette_colors[2], alpha = 0.8))
 update_geom_defaults("line", list(color = new_palette_colors[2], alpha = 0.8))
 update_geom_defaults("area", list(fill  = new_palette_colors[2], alpha = 0.8))
 
@@ -104,28 +104,28 @@ data_37 <- read_csv("~/R/projects/t/data_37.csv")
 
 inflation_row <- read_excel("cpi_armenia_eng.xls", skip = 3)
 
-inf_cumprod <- 
-  inflation_row |> 
-  rename(date = 1, cpi_m = 2) |> 
-  select(date, cpi_m) |> 
+inf_cumprod <-
+  inflation_row |>
+  rename(date = 1, cpi_m = 2) |>
+  select(date, cpi_m) |>
   mutate(
     date = ym(date),
     cpi_m = cpi_m / 100,
     year = year(date)
-  ) |> 
+  ) |>
   filter(year <= 2022) |>
-  select(-year) |> 
-  arrange(desc(date)) |> 
+  select(-year) |>
+  arrange(desc(date)) |>
   mutate(
     adj_price = cumprod(cpi_m),
     adj_price = adj_price / first(adj_price)
   )
 
-marz_dict <- 
+marz_dict <-
   tibble(
     marz = 1:12,
     marz_eng = c(
-      "Yerevan", "Aragatsotn", "Ararat", "Armavir", "Gegharkunik", "Lori", 
+      "Yerevan", "Aragatsotn", "Ararat", "Armavir", "Gegharkunik", "Lori",
       "Kotayk", "Shirak", "Syunik", "Vayots Dzor", "Tavush", "Armenia"
     ),
      marz_arm = c(
@@ -137,21 +137,21 @@ marz_dict <-
 
 
 ```{r income_table, include=FALSE}
-income_table <- 
-  household_income_db |> 
-  left_join(inf_cumprod, by = "date") |> 
-  mutate(totincome = totincome * adj_price) |> 
+income_table <-
+  household_income_db |>
+  left_join(inf_cumprod, by = "date") |>
+  mutate(totincome = totincome * adj_price) |>
   filter(marz == 1) |>
-  group_by(year) |> 
+  group_by(year) |>
   summarise(
     q10 = wtd.quantile(totincome, weight, probs = 0.1),
     median = wtd.quantile(totincome, weight, probs = 0.5),
     mean = sum(totincome*weight)/sum(weight),
     q90 = wtd.quantile(totincome, weight, probs = 0.9),
-  ) |> 
+  ) |>
   mutate(
     across(-year, ~number(.x/1000, accuracy = 1))
-  ) |> 
+  ) |>
   knitr::kable(
     align = c("l", "r", "r", "r", "r"),
     col.names = c(
@@ -163,7 +163,7 @@ income_table <-
     label = paste0(caption_arm, "    |    տվյալների աղբյուր` armstat.am"),
     col.width = c("5cm", "2cm", "2cm")
   )
-  
+
 ```
 
 
@@ -171,46 +171,46 @@ income_table <-
 
 years_select = c(2021, 2022) # provide 2 consecutive years that are in household_income_db
 
-date_legend <- 
+date_legend <-
   tibble(
-    x = 710, y = c(1.5, 2.5), 
+    x = 710, y = c(1.5, 2.5),
     color = c("#2f4b7c", "#f95d6a"), text = years_select
   )
 
-household_change_in_2_years_plot <- 
+household_change_in_2_years_plot <-
   household_income_db %>%
   bind_rows(
     mutate(., marz = 12)
-  ) |> 
-  left_join(inf_cumprod, by = "date") |> 
-  mutate(totincome = totincome * adj_price) |> 
-  group_by(year, marz) |>  
+  ) |>
+  left_join(inf_cumprod, by = "date") |>
+  mutate(totincome = totincome * adj_price) |>
+  group_by(year, marz) |>
   summarise(
     mean = sum(totincome*weight)/sum(weight),
     median = wtd.quantile(totincome, weight, probs = 0.5),
     q10 = wtd.quantile(totincome, weight, probs = 0.1),
     q90 = wtd.quantile(totincome, weight, probs = 0.9),
   ) |>
-  pivot_longer(-c(year, marz)) |> 
-  left_join(marz_dict, by = "marz") |> 
+  pivot_longer(-c(year, marz)) |>
+  left_join(marz_dict, by = "marz") |>
   filter(
     year %in% years_select,
     name != "mean"
-  ) |> 
-  ungroup() |> 
+  ) |>
+  ungroup() |>
   mutate(
     value = value / 1000,
     year = ifelse(year == min(year), "begining", "end")
-  ) |> 
-  pivot_wider(names_from = year, values_from = value) |> 
+  ) |>
+  pivot_wider(names_from = year, values_from = value) |>
   mutate(
     marz_arm = fct_reorder(marz_arm, (begining + end)/2, .fun = mean),
     marz_eng = fct_reorder(marz_eng, (begining + end)/2, .fun = mean),
     color = ifelse(begining > end, "#f95d6a", "#2f4b7c")
-  ) |> 
+  ) |>
   ggplot() +
   geom_segment(
-    aes(x = begining, xend= end,  y= marz_arm, 
+    aes(x = begining, xend= end,  y= marz_arm,
         yend=marz_arm, group = name, color = I(color)),
     linewidth = 1.2,
     lineend = 'round', linejoin = 'round',
@@ -244,14 +244,14 @@ household_change_in_2_years_plot <-
 
 ```{r income change from 2018 to 2022, include=FALSE}
 
-wealth_change_data <- 
+wealth_change_data <-
   household_income_db %>%
   bind_rows(
     mutate(., settlement = "Total")
-  ) |> 
-  left_join(inf_cumprod, by = "date") |> 
-  mutate(totincome = totincome * adj_price) |> 
-  group_by(year, settlement) |> 
+  ) |>
+  left_join(inf_cumprod, by = "date") |>
+  mutate(totincome = totincome * adj_price) |>
+  group_by(year, settlement) |>
   summarise(
     mean = sum(totincome*weight)/sum(weight),
     median = wtd.quantile(totincome, weight, probs = 0.5),
@@ -259,10 +259,10 @@ wealth_change_data <-
     q90 = wtd.quantile(totincome, weight, probs = 0.9),
   )
 
-household_change_18_22_plot <- 
-  wealth_change_data |> 
-  pivot_longer(c(mean, median, q10, q90)) |> 
-  filter(year %in% 2018:2022) |> 
+household_change_18_22_plot <-
+  wealth_change_data |>
+  pivot_longer(c(mean, median, q10, q90)) |>
+  filter(year %in% 2018:2022) |>
   mutate(
     settlement = factor(
       settlement,
@@ -270,13 +270,13 @@ household_change_18_22_plot <-
       labels = c("Հայաստան", "Երևան", "այլ քաղաքներ", "գյուղեր")
     ),
     name = factor(
-      name, 
+      name,
       levels = c("q10", "median", "mean", "q90"),
       labels = c("Ամենաաղքատ 10%-ի վերին\nշեմը (1-ին դեցիլ)", "Միջին ընտանիքի եկամուտ\n(median)",
                  "Միջին եկամուտ\n(mean)", "Ամենահարուստ 10%-ի ստորին\nշեմը (9-րդ դեցիլ)")
     ),
     text = number(value / 1000, accuracy = 1)
-  ) |> 
+  ) |>
   ggplot(aes(as.factor(year), value, label = text, fill = as.factor(year))) +
   geom_col() +
   geom_text(aes(y = 50000), color = "white") +
@@ -299,10 +299,10 @@ household_change_18_22_plot <-
 
 ```{r percentage change, include=FALSE}
 
-household_pct_change_plot <- 
-  household_income_db |> 
-  select(year, date, weight, marz, totincome) |> 
-  left_join(inf_cumprod, join_by(date)) |> 
+household_pct_change_plot <-
+  household_income_db |>
+  select(year, date, weight, marz, totincome) |>
+  left_join(inf_cumprod, join_by(date)) |>
   mutate(totincome = totincome * adj_price) |>
   mutate(
     income_bin = cut(
@@ -310,14 +310,14 @@ household_pct_change_plot <-
       breaks = c(0, 2^(4:11), 1e5),
       include.lowest = TRUE
     )
-  ) |> 
-  group_by(year) |> 
+  ) |>
+  group_by(year) |>
   # begin weighting data
-  count(year, income_bin, wt = weight) |> 
+  count(year, income_bin, wt = weight) |>
   # end weighting data
-  group_by(year) |> 
+  group_by(year) |>
   extract(income_bin, into = c("lower_cut", "upper_cut"),
-          regex = ".(.*),(.*)\\]", remove = FALSE, convert = TRUE) |> 
+          regex = ".(.*),(.*)\\]", remove = FALSE, convert = TRUE) |>
   mutate(
     pct = n/sum(n),
     label = case_when(
@@ -329,14 +329,14 @@ household_pct_change_plot <-
                                 round(upper_cut/1000), " մլն. դրամ"),
       TRUE ~ paste0(lower_cut, "-ից մինչև ", upper_cut, " հազար դրամ")
     )
-  ) |> 
-  arrange(lower_cut) |> 
+  ) |>
+  arrange(lower_cut) |>
   mutate(
     label = fct_inorder(label),
     label = fct_rev(label),
     pct_text = ifelse(pct <= 0.01, NA, percent(pct, accuracy = 0.1))
-  ) |> 
-  ungroup() |> 
+  ) |>
+  ungroup() |>
   ggplot(aes(year, pct, fill = label, label = pct_text)) +
   geom_col(alpha = 0.8) +
   geom_text(position = position_stack(vjust = .5)) +
@@ -362,17 +362,17 @@ household_pct_change_plot <-
 ```{r percentage change 2, include=FALSE}
 
 household_pct_change_plot_2 <-
-  household_income_db |> 
+  household_income_db |>
   filter(
     year >= 2005,
     totincome != 0,
     !is.na(totincome)
-  ) |> 
-  select(year, date, marz, totincome, weight) |> 
-  left_join(inf_cumprod, join_by(date)) |> 
-  mutate(totincome = totincome * adj_price) |> 
+  ) |>
+  select(year, date, marz, totincome, weight) |>
+  left_join(inf_cumprod, join_by(date)) |>
+  mutate(totincome = totincome * adj_price) |>
   ggplot(aes(
-    x = totincome, y = as.factor(year), 
+    x = totincome, y = as.factor(year),
     fill = 0.5 - abs(0.5 - after_stat(ecdf)),
     # weight = weight
   )) +
@@ -400,32 +400,32 @@ household_pct_change_plot_2 <-
 
 decile_year <- 2022
 
-decile_description <- 
-  data_37 %>% 
-  filter(year == decile_year) %>% 
-  summarise(deciles = quantile(totincome, probs = seq(0.1, 0.9, 0.1))) %>% 
-  bind_rows(tibble(deciles = NA), .) %>% 
+decile_description <-
+  data_37 %>%
+  filter(year == decile_year) %>%
+  summarise(deciles = quantile(totincome, probs = seq(0.1, 0.9, 0.1))) %>%
+  bind_rows(tibble(deciles = NA), .) %>%
   mutate(
     deciles2 = lead(deciles),
     x = row_number(),
     description = case_when(
       x == 1 ~ paste0("1-ին դեցիլ` ", round(deciles2/1000), " հազար դրամից պակաս"),
       x == 10 ~ paste0("10-րդ դեցիլ` ", round(deciles/1000), " հազար դրամից ավել"),
-      TRUE ~ paste0(x, "-րդ դեցիլ` ", round(deciles/1000), "-ից մինչև ", 
+      TRUE ~ paste0(x, "-րդ դեցիլ` ", round(deciles/1000), "-ից մինչև ",
                     round(deciles2/1000)," հազար դրամ"),
     ),
     description = fct_inorder(description),
     y = 0
-  ) %>% 
+  ) %>%
   select(description, x, y)
 
 # I am not calculating the wight factor here, should I?
 
-deciles_and_age_plot <- 
-  data_37 %>% 
+deciles_and_age_plot <-
+  data_37 %>%
   filter(year == decile_year) %>%
-  select(year, marz, members, totincome, contains("_sum")) %>% 
-  select(-hheld_over63_sum) %>% 
+  select(year, marz, members, totincome, contains("_sum")) %>%
+  select(-hheld_over63_sum) %>%
   mutate(
     hhch_18_62_sum = members - rowSums(across(contains("_sum")), na.rm = TRUE),
     income_bin = ntile(totincome, 10),
@@ -433,22 +433,22 @@ deciles_and_age_plot <-
     #   totincome/1000,
     #   breaks = c(0, 2^(6:10), 1e5),
     #   include.lowest = TRUE,
-    #   labels = c("[0, 64]", "(64, 128]", "(128, 256]", 
+    #   labels = c("[0, 64]", "(64, 128]", "(128, 256]",
     #              "(256, 512]", "(512, 1024]", "(1024 & more)")
     # )
-  ) %>% 
+  ) %>%
   group_by(
-    year, 
+    year,
     # marz,
     income_bin
-  ) %>% 
-  summarise(across(contains("_sum"), ~sum(.x, na.rm = TRUE)), .groups = "drop") %>% 
+  ) %>%
+  summarise(across(contains("_sum"), ~sum(.x, na.rm = TRUE)), .groups = "drop") %>%
   pivot_longer(contains("_sum"), names_to = "age_group", values_to = "sum_head_count") %>%
   group_by(
-    year, 
+    year,
     # marz,
     income_bin
-  ) %>% 
+  ) %>%
   mutate(
     age_group = str_remove(age_group, "hhch_|hheld_"),
     age_group = str_remove(age_group, "_sum"),
@@ -457,7 +457,7 @@ deciles_and_age_plot <-
     age_group = fct_rev(age_group),
     pct_head_count = sum_head_count / sum(sum_head_count)
   ) %>%
-  ungroup() %>% 
+  ungroup() %>%
   ggplot() +
   geom_col(aes(income_bin, pct_head_count, fill = age_group)) +
   geom_point(data = decile_description, aes(x, y, color = description)) + # delete cuts
@@ -477,7 +477,7 @@ deciles_and_age_plot <-
     subtitle = "2022թ․",
     caption = "Հեղինակ` Աղասի Թավադյան    |    tvyal.com    |    տվյալների աղբյուր` armstat.am"
   )
-  
+
 ```
 
 
@@ -487,31 +487,31 @@ data_37
 
 
 ```{r, include=FALSE}
-# household_22 %>% 
-#   transmute(marz = hh_02, weight, members, totincome, hheld_over63_sum, y1_3amd.1.00) |> 
+# household_22 %>%
+#   transmute(marz = hh_02, weight, members, totincome, hheld_over63_sum, y1_3amd.1.00) |>
 #   mutate(
 #     income_bin = ntile(totincome, 10),
 #     # income_bin = cut(
 #     #   totincome/1000,
 #     #   breaks = c(0, 2^(6:10), 1e5),
 #     #   include.lowest = TRUE,
-#     #   labels = c("[0, 64]", "(64, 128]", "(128, 256]", 
+#     #   labels = c("[0, 64]", "(64, 128]", "(128, 256]",
 #     #              "(256, 512]", "(512, 1024]", "(1024 & more)")
 #     # )
-#   ) |> 
-#   filter(!is.na(hheld_over63_sum)) |> 
-#   mutate(y1_3amd.4.00  = y1_3amd.4.00 / hheld_over63_sum) |> 
-#   # group_by(income_bin) |> 
-#   summarise(pension = sum(y1_3amd.4.00 * weight, na.rm = TRUE) / sum(weight, na.rm = TRUE)) |> 
+#   ) |>
+#   filter(!is.na(hheld_over63_sum)) |>
+#   mutate(y1_3amd.4.00  = y1_3amd.4.00 / hheld_over63_sum) |>
+#   # group_by(income_bin) |>
+#   summarise(pension = sum(y1_3amd.4.00 * weight, na.rm = TRUE) / sum(weight, na.rm = TRUE)) |>
 #   group_by(
-#     year, 
+#     year,
 #     # marz,
 #     income_bin
-#   ) %>% 
-#   summarise(across(contains("_sum"), ~sum(.x, na.rm = TRUE)), .groups = "drop") %>% 
+#   ) %>%
+#   summarise(across(contains("_sum"), ~sum(.x, na.rm = TRUE)), .groups = "drop") %>%
 #   pivot_longer(contains("_sum"), names_to = "age_group", values_to = "sum_head_count") %>%
 #   group_by(
-#     year, 
+#     year,
 #     # marz,
 #     income_bin
 #   )
@@ -520,19 +520,19 @@ data_37
 
 
 ```{r household income by types, include=FALSE}
-household_22 <- 
-  rio::import("https://www.armstat.am/file/doc/99543018.xlsx") |> 
+household_22 <-
+  rio::import("https://www.armstat.am/file/doc/99543018.xlsx") |>
   as_tibble()
 
 
-household_22_income_cuts <- 
-  household_22 |> 
+household_22_income_cuts <-
+  household_22 |>
   reframe(
     totincome = wtd.quantile(totincome, weight, probs = seq(0, 1, 0.1))
-  ) |> 
+  ) |>
   pull(totincome)
 
-income_type_dict <- 
+income_type_dict <-
   tibble(
     name = c(
       "y1_3amd.1.00", "y1_3amd.2.00", "y1_3amd.4.00", "y1_3amd.6.00",
@@ -580,8 +580,8 @@ income_type_dict <-
     )
   )
 
-income_data <- 
-  household_22 |> 
+income_data <-
+  household_22 |>
   mutate(
      deciles = cut(
       totincome,
@@ -589,43 +589,43 @@ income_data <-
       labels = 1:10,
       include.lowest = TRUE
     )
-  ) |> 
-  select(deciles, weight, contains("y1_3amd")) |> 
+  ) |>
+  select(deciles, weight, contains("y1_3amd")) |>
   mutate(
     across(-c(deciles, weight), ~ifelse(is.na(.x), 0, .x))
-  ) |> 
-  group_by(deciles) |> 
+  ) |>
+  group_by(deciles) |>
   reframe(
     across(-weight, ~sum(.x * weight) / sum(weight))
-  ) |> 
-  ungroup() |> 
-  pivot_longer(-deciles) |> 
+  ) |>
+  ungroup() |>
+  pivot_longer(-deciles) |>
   mutate(
     name = fct_lump_n(name, n = 6, w = value,  other_level = "y1_3amd.28.00")
-  ) |> 
-  group_by(deciles, name) |> 
+  ) |>
+  group_by(deciles, name) |>
   summarise(
     value = sum(value)
-  ) |> 
-  ungroup() |> 
-  left_join(income_type_dict, join_by(name)) |> 
-  group_by(deciles) |> 
+  ) |>
+  ungroup() |>
+  left_join(income_type_dict, join_by(name)) |>
+  group_by(deciles) |>
   mutate(
     pct = value / sum(value),
     pct_text = ifelse(pct < 0.01, NA, percent(pct, accuracy = 0.1)),
     value_text = ifelse(value < 7e3, NA, number(value / 1000, accuracy = 1)),
     name_number = str_replace(name, "y1_3amd.(\\d+).00", "\\1"),
     name_number = as.integer(name_number)
-  ) |> 
-  ungroup() |> 
-  arrange(name_number) |> 
+  ) |>
+  ungroup() |>
+  arrange(name_number) |>
   mutate(
     name_desc = fct_inorder(name_desc),
     name_desc_arm = fct_inorder(name_desc_arm)
   )
 
-income_deciles_drams <- 
-  income_data |> 
+income_deciles_drams <-
+  income_data |>
   ggplot(aes(deciles, value / 1000, fill = name_desc_arm, label = value_text)) +
   geom_col() +
   geom_text(position = position_stack(vjust = .5)) +
@@ -644,8 +644,8 @@ income_deciles_drams <-
     caption = "Հեղինակ` Աղասի Թավադյան    |    tvyal.com    |    տվյալների աղբյուր` armstat.am"
   )
 
-income_deciles_pct <- 
-  income_data |> 
+income_deciles_pct <-
+  income_data |>
   ggplot(aes(deciles, pct, fill = name_desc_arm, label = pct_text)) +
   geom_col() +
   geom_text(position = position_stack(vjust = .5)) +
@@ -669,14 +669,14 @@ income_deciles_pct <-
 
 
 
-  
-  
+
+
 ```
 
 
 
 
-Նշենք, որ այս վերլուծության տվյալները վերցված են պաշտոնական աղբյուրներից, մասնավորապես՝ [տնային տնտեսությունների կենսամակարդակի (կենսապայմանների) ամբողջացված հետազոտության անվանազերծված միկրոտվյալների բազա (ըստ տնային տնտեսությունների)](https://www.armstat.am/en/?nid=205) և [Հայաստանի սպառողական գների ամսական ինդեքսը](https://www.cba.am/stat/stat_data_arm/6_CPI_arm.xls): Տնային տնտեսությունների կենսամակարդակի ցուցանիշները ճշգրտվել են ամսական կումուլատիվ գնաճով, այսինքն յուրաքանչյուր ցուցանիշ ներկայացնում է 2022 թվականի վերջի գնողունակությունը։ Ցուցանիշները նաև կշռվել են։ Հաշվարկները կարելի է ստուգել այցելելով [github-ի](https://github.com/tavad/tvyal_newsletter/2024) մեր էջը, որտեղ տրված են տվյալները, հաշվարկների և գծապատկերների կոդը։ 
+Նշենք, որ այս վերլուծության տվյալները վերցված են պաշտոնական աղբյուրներից, մասնավորապես՝ [տնային տնտեսությունների կենսամակարդակի (կենսապայմանների) ամբողջացված հետազոտության անվանազերծված միկրոտվյալների բազա (ըստ տնային տնտեսությունների)](https://www.armstat.am/en/?nid=205) և [Հայաստանի սպառողական գների ամսական ինդեքսը](https://www.cba.am/stat/stat_data_arm/6_CPI_arm.xls): Տնային տնտեսությունների կենսամակարդակի ցուցանիշները ճշգրտվել են ամսական կումուլատիվ գնաճով, այսինքն յուրաքանչյուր ցուցանիշ ներկայացնում է 2022 թվականի վերջի գնողունակությունը։ Ցուցանիշները նաև կշռվել են։ Հաշվարկները կարելի է ստուգել այցելելով [github-ի](https://github.com/tavad/tvyal_newsletter/2024) մեր էջը, որտեղ տրված են տվյալները, հաշվարկների և գծապատկերների կոդը։
 
 2022-ին գրանցվել է 12.6 տոկոս տնտեսական աճ, մեկ շնչին ընկնող ՀՆԱ-ն աճել է 4 972 դոլարից մինչև 7 018 դոլար, այսինքն 41 տոկոսով, սակայն ժողովրդի իրակական եկամուտները ընկել են։
 
@@ -704,7 +704,7 @@ household_change_in_2_years_plot
 household_change_18_22_plot
 ```
 
-Հաջորդ գծապատկերը համեմատում է գնաճով ճշգրտված տնային տնտեսությունների տարեկան եկամուտները 2005 թվականից սկսած։ Եկամուտները բաժանվել են աճողական զամբյուղների։ 
+Հաջորդ գծապատկերը համեմատում է գնաճով ճշգրտված տնային տնտեսությունների տարեկան եկամուտները 2005 թվականից սկսած։ Եկամուտները բաժանվել են աճողական զամբյուղների։
 
 **Գծապատկեր 3.** Որքա՞ն է Հայաստանի ընտանիքների ամսական եկամուտը
 
@@ -759,13 +759,8 @@ income_deciles_pct
 
 
 
-Հարգանքներով,            
-Աղասի Թավադյան         
-07.01.2024          
-[tvyal.com](https://www.tvyal.com/)      
+Հարգանքներով,
+Աղասի Թավադյան
+07.01.2024
+[tvyal.com](https://www.tvyal.com/)
 [tavadyan.com](https://www.tavadyan.com/)
-
-
-
-
-
