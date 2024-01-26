@@ -1,0 +1,577 @@
+---
+title: "2022 թվականի տնային տնտեսությունների եկամուտների վերլուծություն"
+author: "Աղասի Թավադյան, tvyal.com"
+date: "2024-01-26"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(scales)
+library(rio)
+library(Hmisc)
+library(gt)
+
+rm(list = ls()); gc()
+
+theme_tvyal <- function(base_size = 12, base_family = "sans")
+{
+  colors <- deframe(ggthemes::ggthemes_data[["fivethirtyeight"]])
+  (ggthemes::theme_foundation(
+    base_size = base_size, base_family = base_family) +
+      theme(
+        line = element_line(colour = "black"),
+        rect = element_rect(fill = "white", linetype = 0, colour = NA),
+        text = element_text(colour = colors["Dark Gray"]),
+        # axis.title = element_blank(),
+        # axis.text = element_text(),
+        axis.ticks = element_blank(),
+        axis.line = element_blank(),
+        legend.background = element_rect(),
+        legend.position = "bottom",
+        legend.direction = "horizontal",
+        legend.box = "vertical",
+        panel.grid = element_line(colour = NULL),
+        panel.grid.major = element_line(colour = colors["Medium Gray"]),
+        panel.grid.minor = element_blank(),
+        plot.title = element_text(hjust = 0, size = rel(1.5), face = "bold"),
+        plot.margin = unit(c(1, 1, 1, 1), "lines"), strip.background = element_rect()
+      )
+  )
+}
+
+theme_set(theme_tvyal())
+
+save_last_plot <-
+  function(filename, extension = "png", width = 1344, height = 756) {
+
+    filename <- str_replace_all(filename, " ", "_")
+    last_plot <- recordPlot()
+
+    if (extension == "png") {
+      png(paste0(filename, ".", extension), width = width, height = height)
+    } else if (extension == "pdf") {
+      pdf(paste0(filename, ".", extension), width = width, height = height)
+    } else {
+      stop("Unsupported file extension. Use 'png' or 'pdf'.")
+    }
+
+    replayPlot(last_plot)
+    dev.off()
+    paste0(filename, ".", extension)
+  }
+
+new_palette_colors <- c(
+  "#003f5c", "#2f4b7c", "#665191", "#a05195",
+  "#d45087", "#f95d6a", "#ff7c43", "#ffa600"
+)
+colfunc <- colorRampPalette(c("#2f4b7c", "#fffcf5", "#f95d6a"))
+colfunc2 <- colorRampPalette(new_palette_colors)
+colfunc3 <- colorRampPalette(c(new_palette_colors, "#FFD17A", "#FFFCF5"))
+
+update_geom_defaults("rect", list(fill  = new_palette_colors[2], alpha = 0.8))
+update_geom_defaults("line", list(color = new_palette_colors[2], alpha = 0.8))
+update_geom_defaults("area", list(fill  = new_palette_colors[2], alpha = 0.8))
+
+caption_arm <-  "Հեղինակ` Աղասի Թավադյան   |   tvyal.com   |   tavadyan.com"
+caption_eng <-  "Author: Aghasi Tavadyan   |   tvyal.com   |   tavadyan.com"
+
+doParallel::registerDoParallel(cores = 8)
+
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+```
+
+```{r data download, include=FALSE}
+# Household database is aggregated from this official source:
+# https://www.armstat.am/en/?nid=205
+
+household_22 <-
+  rio::import("https://www.armstat.am/file/doc/99543018.xlsx") |>
+  as_tibble()
+
+household_22 |> write_excel_csv("household_2022.csv")
+
+decile_year = 2022
+```
+
+
+
+
+```{r deciles and age plot, include=FALSE}
+
+decile_description <-
+  household_22 |> 
+  reframe(deciles = quantile(totincome, probs = seq(0.1, 0.9, 0.1))) %>%
+  bind_rows(tibble(deciles = NA), .) %>%
+  mutate(
+    deciles2 = lead(deciles),
+    x = row_number(),
+    description = case_when(
+      x == 1 ~ paste0("1-ին դեցիլ` ", round(deciles2/1000), " հազար դրամից պակաս"),
+      x == 10 ~ paste0("10-րդ դեցիլ` ", round(deciles/1000), " հազար դրամից ավել"),
+      TRUE ~ paste0(x, "-րդ դեցիլ` ", round(deciles/1000), "-ից մինչև ",
+                    round(deciles2/1000)," հազար դրամ"),
+    ),
+    description = fct_inorder(description),
+    y = 0
+  ) %>%
+  select(description, x, y)
+
+
+deciles_and_age_plot <-
+  household_22 %>%
+  rename(marz = hh_02) |> 
+  select(marz, members, totincome, contains("_sum")) %>%
+  select(-hheld_over63_sum) %>%
+  mutate(
+    hhch_18_62_sum = members - rowSums(across(matches("hh.*_sum")), na.rm = TRUE),
+    income_bin = ntile(totincome, 10),
+    # income_bin = cut(
+    #   totincome/1000,
+    #   breaks = c(0, 2^(6:10), 1e5),
+    #   include.lowest = TRUE,
+    #   labels = c("[0, 64]", "(64, 128]", "(128, 256]",
+    #              "(256, 512]", "(512, 1024]", "(1024 & more)")
+    # )
+  ) %>%
+  group_by(
+    # year,
+    # marz,
+    income_bin
+  ) %>%
+  summarise(across(contains("_sum"), ~sum(.x, na.rm = TRUE)), .groups = "drop") %>%
+  pivot_longer(contains("_sum"), names_to = "age_group", values_to = "sum_head_count") %>%
+  group_by(
+    # year,
+    # marz,
+    income_bin
+  ) %>%
+  mutate(
+    age_group = str_remove(age_group, "hhch_|hheld_"),
+    age_group = str_remove(age_group, "_sum"),
+    age_group = str_replace(age_group, "_", "-"),
+    age_group = fct_relevel(age_group, "0-3", "4-5", "6-11", "12-17", "18-62"),
+    age_group = fct_rev(age_group),
+    pct_head_count = sum_head_count / sum(sum_head_count)
+  ) %>%
+  ungroup() %>%
+  ggplot() +
+  geom_col(aes(income_bin, pct_head_count, fill = age_group)) +
+  geom_point(data = decile_description, aes(x, y, color = description)) + # delete cuts
+  scale_x_continuous(breaks = 1:10) +   # delete when using cuts
+  scale_color_manual(values = rep("#FFFFFF00", 10)) + # delete when using cuts
+  scale_y_continuous(labels = percent_format()) +
+  scale_fill_manual(values = rev(colfunc(9))) +
+  guides(color=guide_legend(nrow = 4,byrow = TRUE)) +
+  # facet_wrap(~marz) +
+  labs(
+    x = "եկամտային խումբի դեցիլներ",
+    y = NULL,
+    fill = "տարիքային խումբ",
+    color = NULL,
+    title = paste0("Տնային տնտեսությունների տարիքային և եկամտային խմբարի բաշխվածությունը"),
+    # "Դեմոգրաֆիկ ջրբաժանը. Ինչպիսի՞ն է տարիքային և եկամտային բաշխումը հայերի միջև",
+    subtitle = "2022թ․",
+    caption = "Հեղինակ` Աղասի Թավադյան    |    tvyal.com    |    տվյալների աղբյուր` armstat.am"
+  )
+
+```
+
+
+
+
+```{r household income by types, include=FALSE}
+
+household_22_income_cuts <-
+  household_22 |>
+  reframe(
+    totincome = wtd.quantile(totincome, weight, probs = seq(0, 1, 0.1))
+  ) |>
+  pull(totincome)
+
+income_type_dict <-
+  tibble(
+    name = c(
+      "y1_3amd.1.00", "y1_3amd.2.00", "y1_3amd.4.00", "y1_3amd.6.00",
+      "y1_3amd.8.00", "y1_3amd.9.00", "y1_3amd.10.00", "y1_3amd.12.00",
+      "y1_3amd.13.00", "y1_3amd.14.00", "y1_3amd.15.00", "y1_3amd.17.00",
+      "y1_3amd.18.00", "y1_3amd.19.00", "y1_3amd.23.00", "y1_3amd.26.00", "y1_3amd.28.00"
+    ),
+    name_desc = c(
+      "income from salary, including in kind payment of household per month in dram",
+      "income from self employment",
+      "income from pension",
+      "income from family benefit",
+      "Income from one-off benefit for child birth",
+      "income from benefit given for care of a child under 2 years old",
+      "income from other benefit for the child",
+      "income from other benefits",
+      "income from stipendium",
+      "income from sale of real estate (flat, cottage, land)",
+      "income from sale of the valuables (car, jewelry, furniture)",
+      "income from property (rent, interests, dividend)",
+      "income from money received from relatives, living in Armenia",
+      "income from money received from relatives, living out of Armenia",
+      "income from sale of securities",
+      "income from pension from other country",
+      "other income"
+    ),
+    name_desc_arm = c(
+      "աշխատավարձից",
+       "ինքնազբաղվածությունից",
+       "կենսաթոշակից",
+       "ընտանեկան նպաստից",
+       "ծննդյան միանվագ նպաստից եկամուտ",
+       "մինչև 2 տարեկան երեխայի խնամքի համար տրվող նպաստից",
+       "երեխայի համար այլ նպաստից",
+       "այլ նպաստներից",
+       "կրթաթոշակից",
+       "անշարժ գույքի վաճառքից",
+       "թանկարժեք իրերի վաճառքից",
+       "վարձավճար, տոկոսներ, շահաբաժիններ",
+       "Հայաստանում բնակվող հարազատներից ստացված գումարներ",
+       "Հայաստանից դուրս ապրող հարազատներից ստացված գումարներ",
+       "արժեթղթերի վաճառքից",
+       "այլ երկրի կենսաթոշակից",
+       "այլ եկամուտներ"
+    )
+  )
+
+income_data <-
+  household_22 |>
+  mutate(
+     deciles = cut(
+      totincome,
+      breaks = household_22_income_cuts,
+      labels = 1:10,
+      include.lowest = TRUE
+    )
+  ) |>
+  select(deciles, weight, contains("y1_3amd")) |>
+  mutate(
+    across(-c(deciles, weight), ~ifelse(is.na(.x), 0, .x))
+  ) |>
+  group_by(deciles) |>
+  reframe(
+    across(-weight, ~sum(.x * weight) / sum(weight))
+  ) |>
+  ungroup() |>
+  pivot_longer(-deciles) |>
+  mutate(
+    name = fct_lump_n(name, n = 6, w = value,  other_level = "y1_3amd.28.00")
+  ) |>
+  group_by(deciles, name) |>
+  summarise(
+    value = sum(value)
+  ) |>
+  ungroup() |>
+  left_join(income_type_dict, join_by(name)) |>
+  group_by(deciles) |>
+  mutate(
+    pct = value / sum(value),
+    pct_text = ifelse(pct < 0.01, NA, percent(pct, accuracy = 0.1)),
+    value_text = ifelse(value < 7e3, NA, number(value / 1000, accuracy = 1)),
+    name_number = str_replace(name, "y1_3amd.(\\d+).00", "\\1"),
+    name_number = as.integer(name_number)
+  ) |>
+  ungroup() |>
+  arrange(name_number) |>
+  mutate(
+    name_desc = fct_inorder(name_desc),
+    name_desc_arm = fct_inorder(name_desc_arm)
+  )
+
+income_deciles_drams <-
+  income_data |>
+  ggplot(aes(deciles, value / 1000, fill = name_desc_arm, label = value_text)) +
+  geom_col() +
+  geom_text(position = position_stack(vjust = .5)) +
+  scale_fill_manual(values = colfunc3(7)) +
+  scale_y_continuous(breaks = seq(0, 1000, 100), labels = number_format()) +
+  guides(fill=guide_legend(nrow=4,byrow=TRUE)) +
+  theme( panel.grid.major = element_blank()) +
+  labs(
+    x = "եկամտային խումբի դեցիլներ",
+    y = NULL,
+    fill = "Եկամտ`",
+    color = "եկամտային խմբի դեցիլներ", # delete when using cuts
+    title = paste0("Դեցիլային խմբերի եկամտի գոյացման աղբյուրները ",
+                   decile_year ,"թ.-ին"),
+    subtitle = "Հազար դրամ",
+    caption = "Հեղինակ` Աղասի Թավադյան    |    tvyal.com    |    տվյալների աղբյուր` armstat.am"
+  )
+
+income_deciles_pct <-
+  income_data |>
+  ggplot(aes(deciles, pct, fill = name_desc_arm, label = pct_text)) +
+  geom_col() +
+  geom_text(position = position_stack(vjust = .5)) +
+    scale_fill_manual(values = colfunc3(7)) +
+  scale_y_continuous(breaks = seq(0, 1, 0.25), labels = percent_format()) +
+  guides(fill=guide_legend(nrow=4,byrow=TRUE)) +
+  theme( panel.grid.major = element_blank()) +
+  labs(
+    x = "եկամտային խումբի դեցիլներ",
+    y = NULL,
+    fill = "Եկամտ`",
+    color = "եկամտային խմբի դեցիլներ", # delete when using cuts
+    title = paste0("Դեցիլային խմբերի եկամտի գոյացման աղբյուրները ",
+                   decile_year ,"թ.-ին"),
+    subtitle = "տոկոս",
+    caption = "Հեղինակ` Աղասի Թավադյան    |    tvyal.com    |    տվյալների աղբյուր` armstat.am"
+  )
+
+
+
+
+
+
+
+
+```
+
+
+```{r, include=FALSE}
+
+household_table <- 
+  household_22 |> 
+  mutate(
+    deciles = cut(
+      totincome,
+      breaks = household_22_income_cuts,
+      labels = 1:10,
+      include.lowest = TRUE
+    ),
+    across(matches("hh.*_sum"), ~ifelse(is.na(.x), 0, .x))
+  ) |> 
+  rename(seniors = hheld_over63_sum) |> 
+  mutate(
+    hhch_18_62_sum = members - rowSums(across(matches("hh.*_sum")), na.rm = TRUE),
+    children = members -hhch_18_62_sum -seniors,
+    general_educ = ifelse(headeduc >= 4, 1, 0),
+    married = ifelse(headmerstatus == 1, 1, 0)
+  ) |> 
+  group_by(deciles) |> 
+  summarise(
+    totincome = wtd.quantile(totincome, weight, probs = 0.5),
+    work_age_pct = sum(hhch_18_62_sum, na.rm = TRUE) / sum(members),
+    seniors_pct = sum(seniors, na.rm = TRUE) / sum(members),
+    children_pct = sum(children, na.rm = TRUE) / sum(members),
+    members = mean(members),
+    work_age = mean(hhch_18_62_sum, na.rm = TRUE),
+    children = mean(children, na.rm = TRUE),
+    headage = mean(headage),
+    head_woman = mean(headsex) - 1,
+    general_educ_pct = mean(general_educ, na.rm = TRUE),
+    married = mean(married, na.rm = TRUE)
+  ) |> 
+  
+  gt() |> 
+  data_color(
+    columns = -c(deciles, seniors_pct, headage, head_woman),
+    colors = scales::col_numeric(
+      palette = c("#f95d6a", "#fffcf5", "#2f4b7c"),
+      domain = NULL
+    )
+  ) |> 
+    data_color(
+    columns = c(seniors_pct, headage, head_woman),
+    colors = scales::col_numeric(
+      palette = c("#2f4b7c", "#fffcf5", "#f95d6a"),
+      domain = NULL
+    )
+  ) |> 
+  fmt_number(
+    columns = c("members", "work_age", "children"),
+    decimals = 2, 
+    use_seps = TRUE,
+  ) |> 
+  fmt_number(
+    columns = c("totincome"),
+    decimals = 1, 
+    scale_by = 0.001,
+    use_seps = TRUE,
+  ) |> 
+   fmt_number(
+    columns = c("headage"),
+    decimals = 0, 
+    use_seps = TRUE,
+    # suffixing = "k"  # You can adjust the suffix as needed
+  ) |> 
+  fmt_number(
+    columns = c("work_age_pct", "seniors_pct", "children_pct",
+                "head_woman", "general_educ_pct", "married"),
+    scale_by = 100,
+    decimals = 1,
+    pattern = "{x}%"
+  ) |> 
+  cols_label(
+    deciles = "Household Decile",
+    totincome = "Average Monthly Income (in thousand AMD)",
+    work_age_pct ~ "Working-Age Population (%)",
+    seniors_pct = "Senior Population (over 63, %)",
+    children_pct = "Child Population (0-17, %)",
+    members = "Household Size",
+    work_age = "Working-Age",
+    children = "Children",
+    headage = "Average Age of HH",
+    head_woman = "Proportion of Female in HH (%)",
+    general_educ_pct = "HH with Basic Education (%)",
+    married = "Married HH (%)"
+  ) |> 
+  tab_spanner(
+    label = "Demographic Information",
+    columns = c(work_age_pct, seniors_pct, children_pct)
+  ) |>
+  tab_spanner(
+    label = "Household Composition (Average)",
+    columns = c(members, work_age, children)
+  ) |>
+  tab_spanner(
+    label = "Head of Household (HH) Details",
+    columns = c(headage, head_woman, general_educ_pct, married)
+  ) |> 
+  tab_header(
+    title = "Armenia's Household Demographics",
+    subtitle = "Summary of demographic and income information in 2022"
+  ) |> 
+  tab_footnote(
+    footnote = paste0(caption_eng, "    |    Data Source: armstat.am")
+  )
+
+```
+
+
+
+***English summary below.***
+
+Հարգելի գործընկեր,
+
+Հուսով եմ լավ եք:
+Ներկայացնում եմ այս շաբաթվա վերլուծությունները և աշխատանքները.
+
+1. Հայաստանի "ավտոարտադրության" մահը
+2. ԶԼՄ հաղորդագրություններ
+3. English summary
+
+
+## 1. Հայաստանի "ավտոարտադրության" մահը
+
+Հայ ընտանիքների ուսումնասիրություն
+
+123 հազար դրամը չգերազանցող ամսական եկամուտ ունեցող ընտանիքները գտնվում են 1-2 դեցիլային խմբերում։ Այս խմբին բնորոշ է տարեցների մեծ մասնաբաժինը, որոնց ընտանիքների ավելի քան 35 տոկոսը բաղկացած է 63 և բարձր տարիքի թոշակառուներից: Այս խմբի ընտանիքների միջին մեծությունը 2 մարդ է։ Այս ընտանիքները հիմնականում լիարժեք չեն, այս խմբում միայն մեկ երրորդն է ամուսնացած: Երեխաների ամենացածր մասնաբաժինը նկատվում է այս խմբում, աշխատունակ տարիքի անձանց ավելի ցածր կշռի հետ մեկտեղ:
+
+**Գծապատկեր 5.** Տնային տնտեսությունների և տարիքային խմբարի բաշխվածությունը
+```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
+deciles_and_age_plot
+```
+
+
+ԴԻտարկենք նաև տնային տնտեսությունների եկամուտները ըստ դեցիլային խմբարի և այդ խմբերում սեռատարիքային կազմի։
+Ինչպես երևում է գծապատկերում ինչքան տնային տնտեսությունը ավելի քիչ է ստանում եկամուտ, այնքան ավելի մեծ է հավանականությունը որ այդ տնային տնտեսությունում տարեցների քանակությունը ավելի մեծ կլինի։ Այսպես 123 հազար դրամից ցածր եկամուտ ստացող տնային տնտեսություններում 1/3-ը 63 և ավել տարիք ունեցող քաղաքացիներ են։ Այսպես այս խմբի վրա ավելի շատ են ընկնում առողջապահական ծախսերը:
+
+
+
+
+Ինչպես երևում է հաջորդ գծապատկերում մինչև հազար դրամ ստացող առաջին և երկրորդ դեցիլի համար հիմնական եկամուտըգոյանում է կնսաթոշակից։ Նշենք որ ըստ տնային տնտեսությունների 2022 63-տվյալների բազայի թվականին անց մարդկանց մոտ միջին կենսաթոշակը կազմում է 46 245 դրամ։ Յուրաքանչյուր դեցիլային խմբում, ոչ բոլորն անդամներն են ստանում աշխատավարձ կամ կենսաթոշակ դրա համար է որ որոշ միջինացված եկամուտներ ցածր են։
+
+
+
+
+
+Որքան մեծ է տնային տնտեսության գլխի տարիքը և որքան մեծ է գլխի կին լինելու հավանականությունը, այնքան մեծ է տնային տնտեսության անապահով խավի մեջ հայտնվելու հավանականությունը: Անապահով տնային տնտեսությունները հիմնականում բաղկացած են տարեց կանանցից, ովքեր չունեն հարազատներ, որոնց մոտ 40 տոկոսն ունի հիմնական կրթություն:
+
+Հարուստ խավն առանձնանում է ավելի մեծ ընտանիքներով, ինչի մասին է վկայում 10-րդ դեցիլային խմբում միջինը 5 հոգանոց ընտանիքների չափը։ Ապահովված տնային տնտեսություններն ունեն նաև աշխատողների մեծ թվով անդամներ, որոնցից երեքից ավելի անդամներ գտնվում են աշխատանքային տարիքի սահմաններում: Ավելին, ապահով ընտանիքների ղեկավարների ավելի քան 77 տոկոսն ամուսնացած է։ Այսպիսով, ամբողջական ընտանիքի առկայությունը հիմնականում բնութագրում է ապահովված ընտանիք: Կրթության մակարդակն ամենաբարձրն է 10-րդ դեցիլում, որի 56,3 տոկոսն ունի հիմնական կրթություն:
+
+Միջին խավը հասարակության հիմքն է։ Այս խավն ունի ամենաշատ երեխաների թիվը։ Այս ընտանիքների անդամների մոտավորապես 25 տոկոսը երեխաներ են՝ ի տարբերություն հարուստ խավի, որը համեմատաբար ավելի քիչ երեխաներ ունի։ Ամենաապահով 10-րդ դեցիլային խմբում երեխաների տոկոսը կազմում է 21 տոկոս։
+
+Ամբողջական ընտանիքի առկայությունը էականորեն ազդում է ապահով և միջին խավի ձևավորման վրա, մինչդեռ ցածր խավին առավելապես բնորոշ է միայնությունը։
+
+
+
+```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
+household_table
+```
+
+
+Ինչպես երևում է մինչև 123 հազար դրամ ստացող առաջին և երկրորդ դեցիլի համար հիմնական եկամուտը գոյանում է եկնսաթոշակից։
+
+**Գծապատկեր 6.** Դեցիլային խմբերի եկամտների աղբյուրները, դրամ
+```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
+income_deciles_drams
+```
+
+
+**Գծապատկեր 7.** Որքա՞ն է Հայաստանի ընտանիքների ամսական եկամուտը, այլընտրանքային հայացք
+```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
+income_deciles_pct
+```
+
+
+
+
+Նշենք, որ այս վերլուծության տվյալները վերցված են պաշտոնական աղբյուրներից, մասնավորապես՝ [տնային տնտեսությունների կենսամակարդակի (կենսապայմանների) ամբողջացված հետազոտության անվանազերծված միկրոտվյալների բազա (ըստ տնային տնտեսությունների)](https://www.armstat.am/en/?nid=205) և [Հայաստանի սպառողական գների ամսական ինդեքսը](https://www.cba.am/stat/stat_data_arm/6_CPI_arm.xls): Տնային տնտեսությունների կենսամակարդակի ցուցանիշները ճշգրտվել են ամսական կումուլատիվ գնաճով, այսինքն յուրաքանչյուր ցուցանիշ ներկայացնում է 2022 թվականի վերջի գնողունակությունը։ Ցուցանիշները նաև կշռվել են։ Հաշվարկները կարելի է ստուգել այցելելով [github-ի](https://github.com/tavad/tvyal_newsletter/2024) մեր էջը, որտեղ տրված են տվյալները, հաշվարկների և գծապատկերների կոդը։
+
+## 2. ԶԼՄ հաղորդագրություններ
+
+<!-- 🇦🇲🇷🇺Հայաստան-Ռուսաստան առևտուրը․ օգուտն ու պատժամիջոցների տակ հայտնվելու ռիսկերը 🌐 -->
+
+<!-- 🔗 [Կարդացեք իմ վերջին հարցազրույցը, տրված jam-news կայքին](https://jam-news.net/am/%d5%b0%d5%b0-%d5%b6-%d5%af%d5%a8%d5%b6%d5%af%d5%b6%d5%ab%d5%9e-%d5%a1%d5%b4%d5%b6-%d5%ba%d5%a1%d5%bf%d5%aa%d5%a1%d5%b4%d5%ab%d5%bb%d5%b8%d6%81%d5%b6%d5%a5%d6%80%d5%ab-%d5%bf%d5%a1%d5%af/)։ Հարցազրույցը հասանելի է նաև Անգլերեն և ռուսերեն տարբերակներով։ -->
+
+<!-- 🔍 Հիմնական կետերը. -->
+
+<!-- * 📈 Հայաստանի արտահանման ցուցանիշի կտրուկ աճ՝ Հայաստանը Ռուսաստան է արտահանում ապրանքների կեսից ավելին՝ 52 տոկոսը։ -->
+<!-- * 🔄 Արտահանման փոփոխություն, ներառյալ ռադիո սարքավորումների, հեռախոսների, մեքենաների, մոնիտորների, պրոյեկտորների, ընդունիչ սարքավորումների, հեռուստացույցների և համակարգիչների արտահանման զգալի աճ: -->
+<!-- * 📊 Տեխնիկական սարքավորումներ արտահանող ընկերությունների թվի աճ։ -->
+<!-- * 🇺🇸 Ռուսաստանի հետ առևտրով զբաղվող հայկական կազմակերպությունների նկատմամբ ԱՄՆ-ի հնարավոր պատժամիջոցների քննարկում։ -->
+
+<!-- <a href="https://jam-news.net/am/%d5%b0%d5%b0-%d5%b6-%d5%af%d5%a8%d5%b6%d5%af%d5%b6%d5%ab%d5%9e-%d5%a1%d5%b4%d5%b6-%d5%ba%d5%a1%d5%bf%d5%aa%d5%a1%d5%b4%d5%ab%d5%bb%d5%b8%d6%81%d5%b6%d5%a5%d6%80%d5%ab-%d5%bf%d5%a1%d5%af/"> -->
+<!--   <img src="media/jam_news_article.png" alt="YouTube Short" style="width:50%;"> -->
+<!-- </a> -->
+
+
+
+## 3. English Summary
+
+**The Death of Armenia's "Auto-industry"**
+
+
+
+
+---
+
+Այս վերլուծությունը առկա է նաև [մեր կայքէջում](https://www.tvyal.com/newsletter/2024/2024_01_26), այս վերլուծության կոդը և տվյալները դրված են նաև [Github-ում](https://github.com/tavad/tvyal_newsletter)։                        
+---                  
+
+Եթե հնարավոր է, խնդրում եմ այս նյութը ուղարկել նաև այն մարդկանց, ում այն կարծում եք կարող է հետաքրքրել:
+
+Սպասեք հաջորդ հաղորդագրությանը հաջորդ ուրբաթ օրը:      
+
+
+Հարգանքներով,            
+Աղասի Թավադյան         
+26.01.2024          
+[tvyal.com](https://www.tvyal.com/)      
+[tavadyan.com](https://www.tavadyan.com/)
+
+---
+
+[Was this email forwarded to you? Subscribe here.](https://www.tvyal.com/subscribe)
+
+[Բաժանորդագրվեք](https://www.tvyal.com/subscribe)
+
+       
+---              
+               
+
+
+####### **Ուշադրություն. Ձեր էլ.փոստը մեյլիսթի մեջ է, որի միջոցով ես կիսվում եմ շաբաթական նյութեր, որոնք հիմնականում ներկայացնում են Հայաստանի տնտեսությանը: Նյութերը ներառում են գծապատկերներ, [տվյալների բազաներ](https://github.com/tavad/tvyal_newsletter), տեսանյութեր, հոդվածներ, [առցանց վահանակներ](https://www.tvyal.com/projects), տնտեսական գործիքներ, կանխատեսումներ և հաշվետվություններ: Եթե ցանկանում եք չեղարկել բաժանորդագրությունը, խնդրում եմ տեղեկացրեք ինձ, և ես կհեռացնեմ ձեր էլ. փոստը ցուցակից: Գրեք նաև եթե ունեք մենկնաբանություններ:**
+
+####### **Important! Your email is part of the mailing list where I share weekly materials primarily focused on the Armenian economy. These materials encompass charts, [databases](https://github.com/tavad/tvyal_newsletter), videos, articles, [online dashboards](https://www.tvyal.com/projects), economic tools, forecasts, and reports. If you wish to unsubscribe, please let me know, and I will remove your email from the list. Please share your comments as well․**
+
+
+
+
+
