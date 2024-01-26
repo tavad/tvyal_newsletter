@@ -116,9 +116,9 @@ decile_description <-
                     round(deciles2/1000)," հազար դրամ"),
     ),
     description_eng = case_when(
-      x == 1 ~ paste0("1st decil - less than ", round(deciles2/1000), " thousand drams"),
-      x == 10 ~ paste0("10th decil - more than ", round(deciles/1000), " thousand drams"),
-      TRUE ~ paste0(toOrdinal(x), " decil - from ", round(deciles/1000), " to ",
+      x == 1 ~ paste0("1st decile - less than ", round(deciles2/1000), " thousand drams"),
+      x == 10 ~ paste0("10th decile - more than ", round(deciles/1000), " thousand drams"),
+      TRUE ~ paste0(toOrdinal(x), " decile - from ", round(deciles/1000), " to ",
                     round(deciles2/1000)," thousand drams"),
     ),
     description_arm = fct_inorder(description_arm),
