@@ -1,6 +1,6 @@
 ---
-title: "2022 թվականի տնային տնտեսությունների եկամուտների վերլուծություն"
-author: "Աղասի Թավադյան, tvyal.com"
+title: "Tvyal Newsletter"
+author: "Aghasi Tavadyan"
 date: "2024-01-26"
 output: html_document
 ---
