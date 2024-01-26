@@ -10,6 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 library(tidyverse)
 library(scales)
+library(toOrdinal)
 library(rio)
 library(Hmisc)
 library(gt)
@@ -104,27 +105,34 @@ decile_year = 2022
 decile_description <-
   household_22 |> 
   reframe(deciles = quantile(totincome, probs = seq(0.1, 0.9, 0.1))) %>%
-  bind_rows(tibble(deciles = NA), .) %>%
+  bind_rows(tibble(deciles = NA), .) |>
   mutate(
     deciles2 = lead(deciles),
     x = row_number(),
-    description = case_when(
+    description_arm = case_when(
       x == 1 ~ paste0("1-ին դեցիլ` ", round(deciles2/1000), " հազար դրամից պակաս"),
       x == 10 ~ paste0("10-րդ դեցիլ` ", round(deciles/1000), " հազար դրամից ավել"),
       TRUE ~ paste0(x, "-րդ դեցիլ` ", round(deciles/1000), "-ից մինչև ",
                     round(deciles2/1000)," հազար դրամ"),
     ),
-    description = fct_inorder(description),
+    description_eng = case_when(
+      x == 1 ~ paste0("1st decil - less than ", round(deciles2/1000), " thousand drams"),
+      x == 10 ~ paste0("10th decil - more than ", round(deciles/1000), " thousand drams"),
+      TRUE ~ paste0(toOrdinal(x), " decil - from ", round(deciles/1000), " to ",
+                    round(deciles2/1000)," thousand drams"),
+    ),
+    description_arm = fct_inorder(description_arm),
+    description_eng = fct_inorder(description_eng),
     y = 0
-  ) %>%
-  select(description, x, y)
+  ) |>
+  select(description_arm, description_eng, x, y)
 
 
 deciles_and_age_plot <-
-  household_22 %>%
+  household_22 |>
   rename(marz = hh_02) |> 
-  select(marz, members, totincome, contains("_sum")) %>%
-  select(-hheld_over63_sum) %>%
+  select(marz, members, totincome, contains("_sum")) |>
+  select(-hheld_over63_sum) |>
   mutate(
     hhch_18_62_sum = members - rowSums(across(matches("hh.*_sum")), na.rm = TRUE),
     income_bin = ntile(totincome, 10),
@@ -135,19 +143,19 @@ deciles_and_age_plot <-
     #   labels = c("[0, 64]", "(64, 128]", "(128, 256]",
     #              "(256, 512]", "(512, 1024]", "(1024 & more)")
     # )
-  ) %>%
+  ) |>
   group_by(
     # year,
     # marz,
     income_bin
-  ) %>%
-  summarise(across(contains("_sum"), ~sum(.x, na.rm = TRUE)), .groups = "drop") %>%
-  pivot_longer(contains("_sum"), names_to = "age_group", values_to = "sum_head_count") %>%
+  ) |>
+  summarise(across(contains("_sum"), ~sum(.x, na.rm = TRUE)), .groups = "drop") |>
+  pivot_longer(contains("_sum"), names_to = "age_group", values_to = "sum_head_count") |>
   group_by(
     # year,
     # marz,
     income_bin
-  ) %>%
+  ) |>
   mutate(
     age_group = str_remove(age_group, "hhch_|hheld_"),
     age_group = str_remove(age_group, "_sum"),
@@ -155,11 +163,11 @@ deciles_and_age_plot <-
     age_group = fct_relevel(age_group, "0-3", "4-5", "6-11", "12-17", "18-62"),
     age_group = fct_rev(age_group),
     pct_head_count = sum_head_count / sum(sum_head_count)
-  ) %>%
-  ungroup() %>%
+  ) |>
+  ungroup() |>
   ggplot() +
   geom_col(aes(income_bin, pct_head_count, fill = age_group)) +
-  geom_point(data = decile_description, aes(x, y, color = description)) + # delete cuts
+  geom_point(data = decile_description, aes(x, y, color = description_eng)) + # delete cuts
   scale_x_continuous(breaks = 1:10) +   # delete when using cuts
   scale_color_manual(values = rep("#FFFFFF00", 10)) + # delete when using cuts
   scale_y_continuous(labels = percent_format()) +
@@ -167,14 +175,13 @@ deciles_and_age_plot <-
   guides(color=guide_legend(nrow = 4,byrow = TRUE)) +
   # facet_wrap(~marz) +
   labs(
-    x = "եկամտային խումբի դեցիլներ",
+    x = "Decil Groups",
     y = NULL,
-    fill = "տարիքային խումբ",
+    fill = "Age Group",
     color = NULL,
-    title = paste0("Տնային տնտեսությունների տարիքային և եկամտային խմբարի բաշխվածությունը"),
-    # "Դեմոգրաֆիկ ջրբաժանը. Ինչպիսի՞ն է տարիքային և եկամտային բաշխումը հայերի միջև",
-    subtitle = "2022թ․",
-    caption = "Հեղինակ` Աղասի Թավադյան    |    tvyal.com    |    տվյալների աղբյուր` armstat.am"
+    title = "Armenian Household Income by Decil Groups and Age",
+    subtitle = "Proportion, data for 2022",
+    caption = paste0(caption_eng, "    |    Data Source: armstat.am")
   )
 
 ```
@@ -200,23 +207,23 @@ income_type_dict <-
       "y1_3amd.18.00", "y1_3amd.19.00", "y1_3amd.23.00", "y1_3amd.26.00", "y1_3amd.28.00"
     ),
     name_desc = c(
-      "income from salary, including in kind payment of household per month in dram",
-      "income from self employment",
-      "income from pension",
-      "income from family benefit",
-      "Income from one-off benefit for child birth",
-      "income from benefit given for care of a child under 2 years old",
-      "income from other benefit for the child",
-      "income from other benefits",
-      "income from stipendium",
-      "income from sale of real estate (flat, cottage, land)",
-      "income from sale of the valuables (car, jewelry, furniture)",
-      "income from property (rent, interests, dividend)",
-      "income from money received from relatives, living in Armenia",
-      "income from money received from relatives, living out of Armenia",
-      "income from sale of securities",
-      "income from pension from other country",
-      "other income"
+      "Salary",
+      "Self employment",
+      "Pension",
+      "Family benefit",
+      "One-off benefit for child birth",
+      "Benefit given for care of a child under 2 years old",
+      "Other benefit for the child",
+      "Other benefits",
+      "Stipendium",
+      "Sale of real estate (flat, cottage, land)",
+      "Sale of the valuables (car, jewelry, furniture)",
+      "Property (rent, interests, dividend)",
+      "Money received from relatives, living in Armenia",
+      "Money received from relatives, living out of Armenia",
+      "Sale of securities",
+      "Pension from other country",
+      "Other income"
     ),
     name_desc_arm = c(
       "աշխատավարձից",
@@ -285,7 +292,7 @@ income_data <-
 
 income_deciles_drams <-
   income_data |>
-  ggplot(aes(deciles, value / 1000, fill = name_desc_arm, label = value_text)) +
+  ggplot(aes(deciles, value / 1000, fill = name_desc, label = value_text)) +
   geom_col() +
   geom_text(position = position_stack(vjust = .5)) +
   scale_fill_manual(values = colfunc3(7)) +
@@ -293,34 +300,30 @@ income_deciles_drams <-
   guides(fill=guide_legend(nrow=4,byrow=TRUE)) +
   theme( panel.grid.major = element_blank()) +
   labs(
-    x = "եկամտային խումբի դեցիլներ",
+    x = NULL,
     y = NULL,
-    fill = "Եկամտ`",
-    color = "եկամտային խմբի դեցիլներ", # delete when using cuts
-    title = paste0("Դեցիլային խմբերի եկամտի գոյացման աղբյուրները ",
-                   decile_year ,"թ.-ին"),
-    subtitle = "Հազար դրամ",
-    caption = "Հեղինակ` Աղասի Թավադյան    |    tvyal.com    |    տվյալների աղբյուր` armstat.am"
+    fill = NULL,
+    title = "Sources of Income in Armenian Households",
+    subtitle = "Thousand drams, by decil groups, 2022",
+    caption = paste0(caption_eng, "    |    Data Source: armstat.am")
   )
 
 income_deciles_pct <-
   income_data |>
-  ggplot(aes(deciles, pct, fill = name_desc_arm, label = pct_text)) +
+  ggplot(aes(deciles, pct, fill = name_desc, label = pct_text)) +
   geom_col() +
   geom_text(position = position_stack(vjust = .5)) +
     scale_fill_manual(values = colfunc3(7)) +
   scale_y_continuous(breaks = seq(0, 1, 0.25), labels = percent_format()) +
   guides(fill=guide_legend(nrow=4,byrow=TRUE)) +
   theme( panel.grid.major = element_blank()) +
-  labs(
-    x = "եկամտային խումբի դեցիլներ",
+   labs(
+    x = NULL,
     y = NULL,
-    fill = "Եկամտ`",
-    color = "եկամտային խմբի դեցիլներ", # delete when using cuts
-    title = paste0("Դեցիլային խմբերի եկամտի գոյացման աղբյուրները ",
-                   decile_year ,"թ.-ին"),
-    subtitle = "տոկոս",
-    caption = "Հեղինակ` Աղասի Թավադյան    |    tvyal.com    |    տվյալների աղբյուր` armstat.am"
+    fill = NULL,
+    title = "Sources of Income in Armenian Households",
+    subtitle = "Proportion, by decil groups, 2022",
+    caption = paste0(caption_eng, "    |    Data Source: armstat.am")
   )
 
 
@@ -459,11 +462,12 @@ household_table <-
 
 ## 1. Հայաստանի "ավտոարտադրության" մահը
 
-Հայ ընտանիքների ուսումնասիրություն
+Հայաստանի ընտանիքների ուսումնասիրություն
 
 123 հազար դրամը չգերազանցող ամսական եկամուտ ունեցող ընտանիքները գտնվում են 1-2 դեցիլային խմբերում։ Այս խմբին բնորոշ է տարեցների մեծ մասնաբաժինը, որոնց ընտանիքների ավելի քան 35 տոկոսը բաղկացած է 63 և բարձր տարիքի թոշակառուներից: Այս խմբի ընտանիքների միջին մեծությունը 2 մարդ է։ Այս ընտանիքները հիմնականում լիարժեք չեն, այս խմբում միայն մեկ երրորդն է ամուսնացած: Երեխաների ամենացածր մասնաբաժինը նկատվում է այս խմբում, աշխատունակ տարիքի անձանց ավելի ցածր կշռի հետ մեկտեղ:
 
-**Գծապատկեր 5.** Տնային տնտեսությունների և տարիքային խմբարի բաշխվածությունը
+**Գծապատկեր 1.** Տնային տնտեսությունների և տարիքային խմբարի բաշխվածությունը
+
 ```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
 deciles_and_age_plot
 ```
@@ -490,6 +494,7 @@ deciles_and_age_plot
 Ամբողջական ընտանիքի առկայությունը էականորեն ազդում է ապահով և միջին խավի ձևավորման վրա, մինչդեռ ցածր խավին առավելապես բնորոշ է միայնությունը։
 
 
+**Աղյուսակ 1.** ՀՀ տնային տնտեսությունների ժողովրդագրական վերլուծություն
 
 ```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
 household_table
@@ -498,13 +503,15 @@ household_table
 
 Ինչպես երևում է մինչև 123 հազար դրամ ստացող առաջին և երկրորդ դեցիլի համար հիմնական եկամուտը գոյանում է եկնսաթոշակից։
 
-**Գծապատկեր 6.** Դեցիլային խմբերի եկամտների աղբյուրները, դրամ
+**Գծապատկեր 2.** Դեցիլային խմբերի եկամտների աղբյուրները, դրամ
+
 ```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
 income_deciles_drams
 ```
 
 
-**Գծապատկեր 7.** Որքա՞ն է Հայաստանի ընտանիքների ամսական եկամուտը, այլընտրանքային հայացք
+**Գծապատկեր 3.** Դեցիլային խմբերի եկամտների աղբյուրները, տոկոս
+
 ```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
 income_deciles_pct
 ```
