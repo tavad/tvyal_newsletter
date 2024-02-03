@@ -1,0 +1,480 @@
+---
+title: "Tvyal Newsletter"
+author: "Aghasi Tavadyan"
+date: "2024-02-09"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(scales)
+library(readxl)
+library(RcppRoll)
+
+rm(list = ls()); gc()
+
+theme_tvyal <- function(base_size = 12, base_family = "sans")
+{
+  colors <- deframe(ggthemes::ggthemes_data[["fivethirtyeight"]])
+  (ggthemes::theme_foundation(
+    base_size = base_size, base_family = base_family) +
+      theme(
+        line = element_line(colour = "black"),
+        rect = element_rect(fill = "white", linetype = 0, colour = NA),
+        text = element_text(colour = colors["Dark Gray"]),
+        # axis.title = element_blank(),
+        # axis.text = element_text(),
+        axis.ticks = element_blank(),
+        axis.line = element_blank(),
+        legend.background = element_rect(),
+        legend.position = "bottom",
+        legend.direction = "horizontal",
+        legend.box = "vertical",
+        panel.grid = element_line(colour = NULL),
+        panel.grid.major.x = element_blank(),
+        panel.grid.major.y = element_line(colour = colors["Medium Gray"]),
+        panel.grid.minor = element_blank(),
+        plot.title = element_text(hjust = 0, size = rel(1.5), face = "bold"),
+        plot.margin = unit(c(1, 1, 1, 1), "lines"), strip.background = element_rect()
+      )
+  )
+}
+
+theme_set(theme_tvyal())
+
+save_last_plot <-
+  function(filename, extension = "png", width = 1344, height = 756) {
+
+    filename <- str_replace_all(filename, " ", "_")
+    last_plot <- recordPlot()
+
+    if (extension == "png") {
+      png(paste0(filename, ".", extension), width = width, height = height)
+    } else if (extension == "pdf") {
+      pdf(paste0(filename, ".", extension), width = width, height = height)
+    } else {
+      stop("Unsupported file extension. Use 'png' or 'pdf'.")
+    }
+
+    replayPlot(last_plot)
+    dev.off()
+    paste0(filename, ".", extension)
+  }
+
+new_palette_colors <- c(
+  "#003f5c", "#2f4b7c", "#665191", "#a05195",
+  "#d45087", "#f95d6a", "#ff7c43", "#ffa600"
+)
+colfunc <- colorRampPalette(c("#2f4b7c", "#fffcf5", "#f95d6a"))
+colfunc2 <- colorRampPalette(new_palette_colors)
+colfunc3 <- colorRampPalette(c(new_palette_colors, "#FFD17A", "#FFFCF5"))
+
+update_geom_defaults("rect", list(fill  = new_palette_colors[2], alpha = 0.8))
+update_geom_defaults("line", list(color = new_palette_colors[2], alpha = 0.8))
+update_geom_defaults("area", list(fill  = new_palette_colors[2], alpha = 0.8))
+
+caption_arm <-  "Հեղինակ` Աղասի Թավադյան   |   tvyal.com   |   tavadyan.com"
+caption_eng <-  "Author: Aghasi Tavadyan   |   tvyal.com   |   tavadyan.com"
+
+doParallel::registerDoParallel(cores = 8)
+
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+```
+
+
+```{r get raw data download, include=FALSE}
+
+wages_raw <- 
+  read_excel("wages_in_armenia_raw_2022.xlsx", skip = 2) |> 
+  rename(indicator = 1)
+
+## run the code below to update CPI data
+# system(
+#   paste0(
+#     "curl \"", "https://www.cba.am/stat/stat_data_eng/6_CPI_eng.xls", "\"",
+#     " -o ", "\"cpi_armenia_eng.xls\""
+#   )
+# )
+
+inflation_raw <- read_excel("cpi_armenia_eng.xls", skip = 3)
+
+```
+
+```{r data cleaning, include=FALSE}
+
+max_year <- wages_raw |> colnames() |> parse_number() |> max(na.rm = TRUE)
+
+inf_cumprod <- 
+  inflation_raw |> 
+  rename(date = 1, cpi_m = 2) |> 
+  select(date, cpi_m) |> 
+  mutate(
+    date = ym(date),
+    cpi_m = cpi_m / 100,
+    year = year(date)
+  ) |> 
+  filter(year <= max_year) |>
+  mutate(
+    cpi_yoy = roll_prodr(cpi_m, 12)
+  ) |>
+  arrange(desc(date)) |> 
+  mutate(
+    adj_price = cumprod(cpi_m),
+    adj_price = lag(adj_price),
+    adj_price = ifelse(is.na(adj_price), 1, adj_price)
+  ) |> 
+  group_by(year) |> 
+  filter(date == max(date)) |> 
+  ungroup() |> 
+  select(year, cpi_yoy, adj_price)
+
+
+wages_clean <- 
+  wages_raw |>
+  filter(!is.na(`2020`))  |>  
+  janitor::clean_names() |> 
+  mutate(
+    across(matches("\\d{4}"), ~ifelse(.x == "-", NA, .x)),
+    across(matches("\\d{4}"), ~ as.numeric(.x))
+  ) |> 
+  mutate(
+    indicator = str_replace(indicator, "աշխատավարձ, դրամ", "աշխատավարձ ՀՀ ընդհանուր, դրամ"),
+    indicator = str_remove(indicator, "Միջին ամսական անվանական աշխատավարձը? ? ?-? ?\\(?"),
+    indicator = str_remove(indicator, ", դրամ$")
+  ) |>
+  extract(indicator, into = c("ind0", "ind3"),
+          regex = "(ըստ .*) *- *(.*)", remove = FALSE) |> 
+  # extract(ind0, into = c("ind1", "ind2"),
+  #         regex = "(ըստ .*) *- *(.*)", remove = FALSE) |> 
+  # mutate(
+  #   ind1 = ifelse(is.na(ind1), ind0, ind1),
+  #   
+  # ) |> view()
+  mutate(
+    ind0 = str_replace_all(ind0, " *- *", " - "),
+    correction_2017 = x2017_2 / x2017,
+    correction_2012 = x2012_2 / x2012,
+  ) |> 
+  select(-c(x2017_2, x2012_2)) |>
+  pivot_longer( 
+    cols = -c(indicator, ind0, ind3, correction_2017, correction_2012),
+    names_to = "year", values_to = "wages"
+  ) |> 
+  mutate(
+    across(contains("ind"), ~str_trim(.x)),
+    year = parse_number(year),
+    wages_corrected = case_when(
+      year <= 2012 & !is.na(correction_2017) ~ correction_2012 * correction_2017 * wages,
+      year <= 2017 & year > 2012 & !is.na(correction_2017) ~ correction_2017 * wages,
+      TRUE ~ wages
+    )
+  ) |> 
+  left_join(inf_cumprod, by = "year") |> 
+  mutate(wages_real = wages_corrected * adj_price) |> 
+  select(-contains("correction"))
+
+wages_clean |> write_excel_csv("wages_in_armenia_clean_2022.csv")
+
+rm(wages_raw, inflation_row)
+
+```
+
+
+```{r plot 1, include=FALSE}
+
+wages_clean |> 
+  filter(grepl("ըստ ՀՀ մարզերի և ք. Երևանի", indicator)) |>
+  mutate(
+    ind0 = case_when(
+      grepl("ոչ պետական", ind0) ~ "ոչ պետական",
+      grepl("պետական", ind0) ~ "պետական",
+      TRUE ~ "ընդհանուր"
+    )
+  ) |> 
+  # filter(ind1 == "ըստ ՀՀ մարզերի և ք. Երևանի ") |>
+  ggplot(aes(year, wages_real / 1000, fill = year)) +
+  geom_col() +
+  facet_grid(ind0 ~ ind3) +
+  scale_y_continuous(breaks = seq(0, 1000, 100), labels = comma_format()) +
+  scale_x_continuous(labels = NULL, breaks = NULL) +
+  scale_fill_gradient(breaks = 2008:2020,  high = "#132B43", low = "#56B1F7") +
+  labs(
+    x = NULL,
+    y = NULL,
+    title = "Ամսական իրական միջին աշխատավարձը ըստ մարզերի Հայաստանում",
+    subtitle = "հազար դրամ, գնաճով ճշգրտված"
+  ) +
+  theme(
+    legend.position = "bottom",
+    legend.key.width = unit(2.5, 'cm'),
+    legend.box = 
+  )
+
+```
+
+
+```{r main 2, include=FALSE}
+
+ # provide 2 consecutive years that are in wages_clean
+years_select = c(max_year - 1, max_year) 
+
+date_legend <- 
+  tibble(
+    x = 215, y = c(1.5, 2.5), 
+    color = c("#2f4b7c", "#f95d6a"), 
+    text = rev(years_select),
+    ind0 = "պետական"
+  )
+
+
+wages_change_2021_22_plot <- 
+  wages_clean |> 
+  filter(grepl("ըստ ՀՀ մարզերի և ք. Երևանի", indicator)) |>
+  mutate(
+    ind0 = case_when(
+      grepl("ոչ պետական", ind0) ~ "ոչ պետական",
+      grepl("պետական", ind0) ~ "պետական",
+      TRUE ~ "ընդհանուր"
+    )
+  ) |> 
+  filter(year %in% years_select) |> 
+  select(ind0, ind3, year, wages_real) |> 
+  mutate(
+    wages_real = wages_real / 1000,
+    year = ifelse(year == min(year), "begining", "end")
+  ) |> 
+  rename(marz_arm = ind3) |> 
+  pivot_wider(names_from = year, values_from = wages_real) |> 
+  mutate(
+    marz_arm = fct_reorder(marz_arm, (begining + end)/2, .fun = mean),
+    # marz_eng = fct_reorder(marz_eng, (begining + end)/2, .fun = mean),
+    color = ifelse(begining > end, "#f95d6a", "#2f4b7c")
+  ) |> 
+  ggplot() +
+  facet_grid(~ind0, scales = "free_x") +
+  geom_segment(
+    aes(x = begining, xend= end,  y= marz_arm, 
+        yend=marz_arm, group = ind0, color = I(color)),
+    linewidth = 1.2,
+    lineend = 'round', linejoin = 'round',
+    arrow = arrow(length = unit(0.1, "inches"))
+  ) +
+  geom_point(aes(x=begining, y=marz_arm, color=I("#f95d6a")), size = 3) +
+  geom_point(aes(x=end, y=marz_arm, color=I("#2f4b7c")), size = 3) +
+  geom_point(data = date_legend, aes(x, y, color = I(color)), size = 3) +
+  geom_text(data = date_legend, aes(x + 15, y, label = text)) +
+  scale_y_discrete(expand = c(0.05,0,0.2,0)) +
+  labs(
+    x = NULL,
+    y = NULL,
+    color = NULL,
+    title = "Միջին ամսական անվանական աշխատավարձը ըստ մարզերի և տնտեսության հատվածների",
+    subtitle = "Ներկայացված են իրական աշխատավարձերը, 2022 թվականի 8.3 տոկոս գնաճով ճշգրտված\nհազար ՀՀ դրամ",
+    caption = paste0(caption_arm, "    |    տվյալների աղբյուր` armstat.am")
+  )
+
+
+```
+
+
+```{r plots 3,  include=FALSE}
+
+wages_by_sector <- 
+  wages_clean |> 
+  filter(grepl("ըստ տնտեսական գործունեության տեսակների", indicator)) |> 
+  mutate(
+    ind3 = str_trunc(ind3, 30)
+  ) |> 
+  filter(year %in% years_select) |> 
+  select(ind0, ind3, year, wages_real) |> 
+  mutate(
+    wages_real = wages_real / 1000,
+    year = ifelse(year == min(year), "begining", "end")
+  ) |> 
+  pivot_wider(names_from = year, values_from = wages_real) |> 
+  mutate(
+    ind3 = fct_reorder(ind3, (begining + end)/2, .fun = mean),
+    # marz_eng = fct_reorder(marz_eng, (begining + end)/2, .fun = mean),
+    color = ifelse(begining > end, "#f95d6a", "#2f4b7c")
+  ) |> 
+  ggplot() +
+  geom_segment(
+    aes(x = begining, xend= end,  y= ind3, 
+        yend=ind3, group = ind0, color = I(color)),
+    linewidth = 1.2,
+    lineend = 'round', linejoin = 'round',
+    arrow = arrow(length = unit(0.1, "inches"))
+  ) +
+  geom_point(aes(x=begining, y=ind3, color=I("#f95d6a")), size = 3) +
+  geom_point(aes(x=end, y=ind3, color=I("#2f4b7c")), size = 3) +
+  geom_point(data = date_legend, aes(x + 400, y, color = I(color)), size = 3) +
+  geom_text(data = date_legend, aes(x + 480, y, label = text)) +
+  scale_x_log10(breaks = seq(0, 800, 100), limits =c(100, 800)) +
+  scale_y_discrete(expand = c(0.05,0,0.2,0)) +
+  labs(
+    x = NULL,
+    y = NULL,
+    color = NULL,
+    title = "Միջին ամսական աշխատավարձը ըստ տնտեսական գործունեության",
+    subtitle = "Ներկայացված են իրական աշխատավարձերը, 2022 թվականի 8.3 տոկոս գնաճով ճշգրտված\nանվանական, հազար ՀՀ դրամ",
+    caption = paste0(caption_arm, "    |    տվյալների աղբյուր` armstat.am")
+  )
+
+```
+
+```{r plot 4}
+wages_clean |> 
+  filter(grepl("ըստ կազմակերպության չափի", indicator)) |>
+  mutate(
+    ind0 = case_when(
+      grepl("ոչ պետական", ind0) ~ "ոչ պետական",
+      grepl("պետական", ind0) ~ "պետական",
+      TRUE ~ "ընդհանուր"
+    ),
+    ind0 = fct_reorder(ind0, wages_real, .desc = TRUE),
+    ind3 = str_remove(ind3, "ում$")
+  ) |> 
+  ggplot(aes(year, wages_real / 1000, color = ind0)) +
+  geom_line(linewidth = 1.5) +
+  facet_wrap(~ind3, scale = "free_y") +
+  scale_x_continuous(breaks = seq(2008, 2030, 2)) +
+  scale_color_manual(values = new_palette_colors[c(2,6,8)]) +
+  labs(
+    x = NULL,
+    y = NULL,
+    color = NULL,
+    title = "Միջին ամսական անվանական աշխատավարձը ըստ կազմակերպության չափի",
+    subtitle = "Ներկայացված եsն իրական աշխատավարձերը, 2022 թվականի 8.3 տոկոս գնաճով ճշգրտված\nհազար ՀՀ դրամ",
+    caption = paste0(caption_arm, "    |    տվյալների աղբյուր` armstat.am")
+  )
+
+
+wages_clean |> 
+  filter(
+    grepl("ՀՀ ընդհանուր|ըստ սեռի", indicator),
+    !grepl( "նվազագույն", indicator)
+  ) |> 
+  mutate(
+    indicator = ifelse(is.na(ind0), indicator, ind3),
+    indicator = fct_reorder(indicator, wages_real, .desc = TRUE),
+  ) |> 
+  ggplot(aes(year, wages_real / 1000, color = indicator)) +
+  geom_line(linewidth = 1.5) +
+  scale_x_continuous(breaks = seq(2008, 2030, 2)) +
+  scale_color_manual(values = new_palette_colors[c(2,6,8)]) +
+  labs(
+    x = NULL,
+    y = NULL,
+    color = NULL,
+    title = "Միջին ամսական անվանական աշխատավարձը ըստ սեռի",
+    subtitle = "Ներկայացված են իրական աշխատավարձերը, 2022 թվականի 8.3 տոկոս գնաճով ճշգրտված\nհազար ՀՀ դրամ",
+    caption = paste0(caption_arm, "    |    տվյալների աղբյուր` armstat.am")
+  )
+```
+
+
+***English summary below.***
+
+Հարգելի գործընկեր,
+
+Հուսով եմ լավ եք:
+Ներկայացնում եմ այս շաբաթվա վերլուծությունները և աշխատանքները.
+
+1. 🍇🚀 
+2. English summary
+
+
+## 1. 
+
+
+
+
+**Աղյուսակ 1.** 
+
+```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
+wages_change_2021_22_plot
+```
+
+
+
+
+**Գծապատկեր 2.** 
+
+```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
+wages_by_sector
+```
+
+
+
+**Գծապատկեր 3.** 
+
+```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
+
+```
+
+>
+>Նշենք որ այս վերլուծությունը տնտային տնտեսությունների վերլուծության 3-րդ մասին է։
+>
+>Նախորդ վերլուծությունները կարդացեք այստեղ․
+>
+>1. [🏠💰📉 Տնային տնտեսությունները աղքատացել են](https://www.tvyal.com/newsletter/2024/2024_01_07)
+>2. [👨‍👩‍👧‍👦✨ Ամուր ընտանիք․ հարուստ ընտանիք](hhttps://www.tvyal.com/newsletter/2024/2024_01_26)
+>
+
+
+
+**Գծապատկեր 4.** 
+
+```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
+
+```
+
+
+
+## 2. English Summary
+
+**🍇🚀 **
+
+
+
+
+
+
+
+---
+
+Այս վերլուծությունը առկա է նաև [մեր կայքէջում](https://www.tvyal.com/newsletter/2024/2024_02_09), այս վերլուծության կոդը և տվյալները դրված են նաև [Github-ում](https://github.com/tavad/tvyal_newsletter)։                        
+---                  
+
+Եթե հնարավոր է, խնդրում եմ այս նյութը ուղարկել նաև այն մարդկանց, ում այն կարծում եք կարող է հետաքրքրել:
+
+Սպասեք հաջորդ հաղորդագրությանը հաջորդ ուրբաթ օրը:      
+
+
+Հարգանքներով,            
+Աղասի Թավադյան         
+09.02.2024          
+[tvyal.com](https://www.tvyal.com/)      
+[tavadyan.com](https://www.tavadyan.com/)
+
+---
+
+[Was this email forwarded to you? Subscribe here.](https://www.tvyal.com/subscribe)
+
+[Բաժանորդագրվեք](https://www.tvyal.com/subscribe)
+
+       
+---              
+               
+
+
+####### **Ուշադրություն. Ձեր էլ.փոստը մեյլիսթի մեջ է, որի միջոցով ես կիսվում եմ շաբաթական նյութեր, որոնք հիմնականում ներկայացնում են Հայաստանի տնտեսությանը: Նյութերը ներառում են գծապատկերներ, [տվյալների բազաներ](https://github.com/tavad/tvyal_newsletter), տեսանյութեր, հոդվածներ, [առցանց վահանակներ](https://www.tvyal.com/projects), տնտեսական գործիքներ, կանխատեսումներ և հաշվետվություններ: Եթե ցանկանում եք չեղարկել բաժանորդագրությունը, խնդրում եմ տեղեկացրեք ինձ, և ես կհեռացնեմ ձեր էլ. փոստը ցուցակից: Գրեք նաև եթե ունեք մենկնաբանություններ:**
+
+####### **Important! Your email is part of the mailing list where I share weekly materials primarily focused on the Armenian economy. These materials encompass charts, [databases](https://github.com/tavad/tvyal_newsletter), videos, articles, [online dashboards](https://www.tvyal.com/projects), economic tools, forecasts, and reports. If you wish to unsubscribe, please let me know, and I will remove your email from the list. Please share your comments as well․**
+
+
+
+
+
