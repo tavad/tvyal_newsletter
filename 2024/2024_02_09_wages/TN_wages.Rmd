@@ -199,7 +199,7 @@ wages_clean |>
   facet_grid(ind0 ~ ind3) +
   scale_y_continuous(breaks = seq(0, 1000, 100), labels = comma_format()) +
   scale_x_continuous(labels = NULL, breaks = NULL) +
-  scale_fill_gradient(breaks = 2008:2020,  high = "#132B43", low = "#56B1F7") +
+  scale_fill_gradient(breaks = 2008:2020,  high = "#2f4b7c", low = "#f95d6a") +
   labs(
     x = NULL,
     y = NULL,

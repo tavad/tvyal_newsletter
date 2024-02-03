@@ -278,3 +278,49 @@ wages_clean |>
   )
 
 
+#######################################################
+
+
+public_wages <- read_excel("wages_more_info.xlsx", sheet = 3)
+
+public_wages |> 
+  # rename(public = 3, non_public = 4) |> 
+  select(year, total, public, non_public) |>
+  pivot_longer(-year) |> 
+  pivot_wider(names_from = year, names_prefix = "x") |> 
+  mutate(
+    correction_2017 = x2017_2 / x2017,
+    correction_2012 = x2012_2 / x2012,
+  ) |> 
+  select(-c(x2017_2, x2012_2)) |>
+  pivot_longer( 
+    cols = -c(name, correction_2012, correction_2017),
+    names_to = "year", values_to = "wages"
+  ) |> 
+  mutate(
+    year = parse_number(year),
+    wages_corrected = case_when(
+      year <= 2012 & !is.na(correction_2017) ~ correction_2012 * correction_2017 * wages,
+      year <= 2017 & year > 2012 & !is.na(correction_2017) ~ correction_2017 * wages,
+      TRUE ~ wages
+    )
+  ) |> 
+  select(name, year, wages_corrected) |> 
+  pivot_wider(names_from = name, values_from = wages_corrected) |> 
+  mutate(
+    pct_public = (total - non_public) / (public - non_public),
+    pct_non_public = (total - public) / (non_public - public)
+  ) |> 
+  ggplot(aes(year, pct_public)) +
+  geom_col() +
+  scale_x_continuous(breaks = seq(2000, 2030, 2)) +
+  scale_y_continuous(breaks = seq(0, 1, 0.1), labels = percent_format()) +
+  labs(
+    x = NULL,
+    y = NULL,
+    title = "Պետական ոլորտի աշխատողների տեսակարար կշիռը",
+    # subtitle = ""
+    caption = caption_arm
+  )
+
+
