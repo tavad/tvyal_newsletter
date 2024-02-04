@@ -324,3 +324,70 @@ public_wages |>
   )
 
 
+###################################
+
+workers_n <- read_excel("wages_more_info.xlsx", sheet = "workers_n")
+
+workers_n |> 
+  filter(year == max(year)) |> 
+  group_by(type, year) |> 
+  mutate(
+    workers_pct = workers_n / sum(workers_n),
+    workers_pct_txt = percent(workers_pct, accuracy = 0.1),
+    workers_pct_txt = ifelse(workers_pct >= 0.02, workers_pct_txt, NA),
+    marz_arm = fct_inorder(marz_arm)
+  ) |> 
+  ggplot(aes(y = "1", x = workers_pct, fill = marz_arm, label = workers_pct_txt)) +
+  geom_col() +
+  geom_text(position = position_stack(vjust = .5)) +
+  facet_grid(year~type) +
+  coord_polar() +
+  ggthemes::scale_fill_stata() +
+  labs(
+    x = NULL,
+    y = NULL,
+    fill = NULL
+  ) +
+  theme(
+    panel.grid.major.x = element_blank(),
+    panel.grid.major.y = element_blank(),
+    axis.text = element_blank()
+  )
+
+workers_n |> 
+  select(-mean_wage) |> 
+  pivot_wider(names_from = type, values_from = workers_n) |> 
+  mutate(
+    non_public_to_public = non_public / public,
+    non_public_to_public_txt = number(non_public_to_public, accuracy = 0.01),
+    text_possition = ifelse(
+      non_public_to_public > 1,
+      non_public_to_public * 1.1,
+      non_public_to_public / 1.1
+    )
+  ) |> 
+  arrange(non_public_to_public) |> 
+  filter(year == 2022) |> 
+  mutate(
+    marz_arm = fct_inorder(marz_arm),
+    marz_eng = fct_inorder(marz_eng), 
+  ) |> 
+  ggplot(aes(non_public_to_public, marz_arm, label = non_public_to_public_txt)) +
+  geom_col() +
+  geom_text(aes(x = text_possition)) +
+  scale_x_log10() +
+  labs(
+    x = NULL,
+    y = NULL,
+    title = "Ոչ պետական և պետական աշխատատեղերի հարաբերությունը",
+    subtitle = "2022թ․, ըստ մարզերի, լոգարիթմիկ առանցք",
+    caption = paste0(caption_arm, "   |   source:armstat.am")
+  ) +
+  theme(
+    panel.grid.major.y = element_blank(),
+    axis.text.x = element_blank()
+  )
+
+
+1642/6804.5; 5116.2/11314.7
+
