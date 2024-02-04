@@ -5,6 +5,17 @@ library(RcppRoll)
 
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 
+new_palette_colors <- c(
+  "#003f5c", "#2f4b7c", "#665191", "#a05195",
+  "#d45087", "#f95d6a", "#ff7c43", "#ffa600"
+)
+
+colfunc <- colorRampPalette(c("#2f4b7c", "#fffcf5", "#f95d6a"))
+colfunc2 <- colorRampPalette(new_palette_colors)
+colfunc3 <- colorRampPalette(c(new_palette_colors, "#FFD17A", "#FFFCF5"))
+
+##########################
+
 wages_raw <- read_excel("wages_in_armenia_2022.xlsx", skip = 2) |> 
   rename(indicator = 1)
 
@@ -334,19 +345,29 @@ workers_n |>
   mutate(
     workers_pct = workers_n / sum(workers_n),
     workers_pct_txt = percent(workers_pct, accuracy = 0.1),
-    workers_pct_txt = ifelse(workers_pct >= 0.02, workers_pct_txt, NA),
-    marz_arm = fct_inorder(marz_arm)
+    workers_pct_txt = ifelse(workers_pct >= 0.025, workers_pct_txt, NA),
+    marz_arm = fct_reorder(marz_arm, workers_pct, .desc = TRUE),
+    type = case_match(
+      type,
+      "non_public" ~ "Ոչ պետական",
+      "public" ~ "Պետական",
+      "total" ~ "Ընդամենը"
+    )
   ) |> 
   ggplot(aes(y = "1", x = workers_pct, fill = marz_arm, label = workers_pct_txt)) +
   geom_col() +
-  geom_text(position = position_stack(vjust = .5)) +
-  facet_grid(year~type) +
+  geom_text(aes(y = 1.25), position = position_stack(vjust = .5)) +
+  facet_grid(year~type, switch = "y") +
   coord_polar() +
-  ggthemes::scale_fill_stata() +
+  # ggthemes::scale_fill_stata() +
+  scale_fill_manual(values = colfunc3(11)) +
   labs(
     x = NULL,
     y = NULL,
-    fill = NULL
+    fill = NULL,
+    title = "Աշխատողները ըստ մարզերի",
+    subtitle = "Ոչ պետական և պետական աշխատատեղեր․․․",
+    caption = paste0(caption_arm, "   |   source:armstat.am")
   ) +
   theme(
     panel.grid.major.x = element_blank(),
@@ -372,10 +393,12 @@ workers_n |>
     marz_arm = fct_inorder(marz_arm),
     marz_eng = fct_inorder(marz_eng), 
   ) |> 
-  ggplot(aes(non_public_to_public, marz_arm, label = non_public_to_public_txt)) +
+  ggplot(aes(non_public_to_public, marz_arm,
+             fill = marz_arm, label = non_public_to_public_txt)) +
   geom_col() +
   geom_text(aes(x = text_possition)) +
   scale_x_log10() +
+  scale_fill_manual(values = colfunc2(11)) +
   labs(
     x = NULL,
     y = NULL,
@@ -385,9 +408,9 @@ workers_n |>
   ) +
   theme(
     panel.grid.major.y = element_blank(),
-    axis.text.x = element_blank()
+    axis.text.x = element_blank(),
+    legend.position = "none"
   )
 
 
-1642/6804.5; 5116.2/11314.7
 
