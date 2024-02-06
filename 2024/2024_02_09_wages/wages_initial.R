@@ -340,7 +340,25 @@ public_wages |>
 workers_n <- read_excel("wages_more_info.xlsx", sheet = "workers_n")
 
 workers_n |> 
-  filter(year == max(year)) |> 
+  mutate(
+    # is_yerevan = ifelse(marz_eng == "Yerevan city", "Yerevan city", "Marzez")
+  ) |>
+  group_by(marz_eng, type, year) |> 
+  summarise(workers_n = sum(workers_n)) |> 
+  group_by(type, year) |> 
+  # mutate(
+  #   workers_pct = workers_n / sum(workers_n),
+  # ) |>
+  filter(year %in% c(2019, 2022), type == "public") |> 
+  pivot_wider(names_from = year, values_from = workers_n, names_prefix = "x") |> 
+  mutate(gwt = x2022/x2019) |> 
+  view()
+  
+  
+
+workers_n |> 
+  filter(year == max(year)) |>
+  # filter(year %in% c(2019, 2022)) |>
   group_by(type, year) |> 
   mutate(
     workers_pct = workers_n / sum(workers_n),

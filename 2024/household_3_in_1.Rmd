@@ -1,0 +1,1314 @@
+---
+title: "Tvyal Newsletter"
+author: "Aghasi Tavadyan"
+date: "2024-02-09"
+# output:
+#   pdf_document:
+#     # latex_engine: xelatex
+#     latex_engine: lualatex
+# mainfont: "DejaVu Serif"  
+# polyglossia:
+#   - Armenian
+
+output: html_document
+---
+
+Հարգանքներով,            
+Աղասի Թավադյան         
+09.02.2024          
+[tvyal.com](https://www.tvyal.com/)      
+[tavadyan.com](https://www.tavadyan.com/)
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(scales)
+library(readxl)
+library(rio)
+
+library(RcppRoll)
+
+library(Hmisc)
+library(ggridges)
+library(toOrdinal)
+library(gt)
+
+
+rm(list = ls()); gc()
+
+theme_tvyal <- function(base_size = 12, base_family = "sans")
+{
+  colors <- deframe(ggthemes::ggthemes_data[["fivethirtyeight"]])
+  (ggthemes::theme_foundation(
+    base_size = base_size, base_family = base_family) +
+      theme(
+        line = element_line(colour = "black"),
+        rect = element_rect(fill = "white", linetype = 0, colour = NA),
+        text = element_text(colour = colors["Dark Gray"]),
+        # axis.title = element_blank(),
+        # axis.text = element_text(),
+        axis.ticks = element_blank(),
+        axis.line = element_blank(),
+        legend.background = element_rect(),
+        legend.position = "bottom",
+        legend.direction = "horizontal",
+        legend.box = "vertical",
+        panel.grid = element_line(colour = NULL),
+        panel.grid.major.x = element_blank(),
+        panel.grid.major.y = element_line(colour = colors["Medium Gray"]),
+        panel.grid.minor = element_blank(),
+        plot.title = element_text(hjust = 0, size = rel(1.5), face = "bold"),
+        plot.margin = unit(c(1, 1, 1, 1), "lines"), strip.background = element_rect()
+      )
+  )
+}
+
+theme_set(theme_tvyal())
+
+
+new_palette_colors <- c(
+  "#003f5c", "#2f4b7c", "#665191", "#a05195",
+  "#d45087", "#f95d6a", "#ff7c43", "#ffa600"
+)
+colfunc <- colorRampPalette(c("#2f4b7c", "#fffcf5", "#f95d6a"))
+colfunc2 <- colorRampPalette(new_palette_colors)
+colfunc3 <- colorRampPalette(c(new_palette_colors, "#FFD17A", "#FFFCF5"))
+
+update_geom_defaults("rect", list(fill  = new_palette_colors[2], alpha = 0.8))
+update_geom_defaults("line", list(color = new_palette_colors[2], alpha = 0.8))
+update_geom_defaults("area", list(fill  = new_palette_colors[2], alpha = 0.8))
+
+caption_arm <-  ""
+caption_eng <-  ""
+
+doParallel::registerDoParallel(cores = 8)
+
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+```
+
+# 1. Տնային տնտեսությունները աղքատացել են 2022 թվականին
+## Գնաճով ճշգրտված տնային տնտեսությունների ընդհանուր եկամտի վերլուծություն
+
+```{r data download, include=FALSE}
+# Household database is aggregated from this official source:
+# https://www.armstat.am/en/?nid=205
+
+household_income_db <- read_csv("2024_01_07_household_income/household_income_db.csv")
+
+
+inflation_row <- read_excel("2024_01_07_household_income/cpi_armenia_eng.xls", skip = 3)
+
+inf_cumprod <- 
+  inflation_row |> 
+  rename(date = 1, cpi_m = 2) |> 
+  select(date, cpi_m) |> 
+  mutate(
+    date = ym(date),
+    cpi_m = cpi_m / 100,
+    year = year(date)
+  ) |> 
+  filter(year <= 2022) |>
+  select(-year) |> 
+  arrange(desc(date)) |> 
+  mutate(
+    adj_price = cumprod(cpi_m),
+    adj_price = lag(adj_price),
+    adj_price = ifelse(is.na(adj_price), 1, adj_price)
+  )
+
+marz_dict <- 
+  tibble(
+    marz = 1:12,
+    marz_eng = c(
+      "Yerevan", "Aragatsotn", "Ararat", "Armavir", "Gegharkunik", "Lori", 
+      "Kotayk", "Shirak", "Syunik", "Vayots Dzor", "Tavush", "Armenia"
+    ),
+     marz_arm = c(
+      "Երևան", "Արագածոտն", "Արարատ", "Արմավիր", "Գեղարքունիք", "Լոռի",
+       "Կոտայք", "Շիրակ", "Սյունիք", "Վայոց ձոր", "Տավուշ", "Հայաստան"
+    )
+  )
+```
+
+
+```{r income_table, include=FALSE}
+income_table <- 
+  household_income_db |> 
+  left_join(inf_cumprod, by = "date") |> 
+  mutate(totincome = totincome * adj_price) |> 
+  filter(marz == 1) |>
+  group_by(year) |> 
+  summarise(
+    q10 = wtd.quantile(totincome, weight, probs = 0.1),
+    median = wtd.quantile(totincome, weight, probs = 0.5),
+    mean = sum(totincome*weight)/sum(weight),
+    q90 = wtd.quantile(totincome, weight, probs = 0.9),
+  ) |> 
+  mutate(
+    across(-year, ~number(.x/1000, accuracy = 1))
+  ) |> 
+  gt() |> 
+  cols_label(
+    year = "Տարի",
+    q10 = "Ամենաաղքատ 10%-ի վերին շեմը (1-ին դեցիլ)",
+    median = "Միջին ընտանիքի եկամուտ (median)",
+    mean = "Միջին եկամուտ (mean)",
+    q90 = "Ամենահարուստ 10%-ի ստորին շեմը (9-րդ դեցիլ)"
+  ) |> 
+  tab_header(
+    title = "Հայաստանի տնային տնտեսությունների եկամուտների փոփխությունը",
+    subtitle = "հազար դրամ, եկամուտնեը ճշգրտվել են 2022 թվականի վերջի գներով և կշռվել"
+  ) |>  
+  tab_footnote(
+    footnote = paste0(caption_eng, "    |    Data Source: armstat.am")
+  )
+  
+```
+
+
+```{r 2021 2022 change, include=FALSE}
+
+years_select = c(2021, 2022) # provide 2 consecutive years that are in household_income_db
+
+date_legend <- 
+  tibble(
+    x = 710, y = c(1.5, 2.5), 
+    color = c("#2f4b7c", "#f95d6a"), text = rev(years_select)
+  )
+
+household_change_in_2_years_plot <- 
+  household_income_db %>%
+  bind_rows(
+    mutate(., marz = 12)
+  ) |> 
+  left_join(inf_cumprod, by = "date") |> 
+  mutate(totincome = totincome * adj_price) |> 
+  group_by(year, marz) |>  
+  summarise(
+    mean = sum(totincome*weight)/sum(weight),
+    median = wtd.quantile(totincome, weight, probs = 0.5),
+    q10 = wtd.quantile(totincome, weight, probs = 0.1),
+    q90 = wtd.quantile(totincome, weight, probs = 0.9),
+  ) |>
+  pivot_longer(-c(year, marz)) |> 
+  left_join(marz_dict, by = "marz") |> 
+  filter(
+    year %in% years_select,
+    name != "mean"
+  ) |> 
+  ungroup() |> 
+  mutate(
+    value = value / 1000,
+    year = ifelse(year == min(year), "begining", "end")
+  ) |> 
+  pivot_wider(names_from = year, values_from = value) |> 
+  mutate(
+    marz_arm = fct_reorder(marz_arm, (begining + end)/2, .fun = mean),
+    marz_eng = fct_reorder(marz_eng, (begining + end)/2, .fun = mean),
+    color = ifelse(begining > end, "#f95d6a", "#2f4b7c")
+  ) |> 
+  ggplot() +
+  geom_segment(
+    aes(x = begining, xend= end,  y= marz_arm, 
+        yend=marz_arm, group = name, color = I(color)),
+    linewidth = 1.2,
+    lineend = 'round', linejoin = 'round',
+   arrow = arrow(length = unit(0.1, "inches"))
+  ) +
+  geom_point(aes(x=begining, y=marz_arm, color=I("#f95d6a")), size = 3) +
+  geom_point(aes(x=end, y=marz_arm, color=I("#2f4b7c")), size = 3) +
+  geom_point(data = date_legend, aes(x, y, color = I(color)), size = 3) +
+  geom_text(data = date_legend, aes(x + 25, y, label = text)) +
+  geom_vline(xintercept = c(170, 390)) +  #dividers are changed manually
+  annotate(
+    geom = "text", x = c(95, 280, 595), y = 13, #dividers are changed manually
+    label = c(
+      "Ամենաաղքատ 10%-ի\nվերին շեմը (1-ին դեցիլ)",
+      "Միջին ընտանիքի\nեկամուտ (median)",
+      "Ամենահարուստ 10%-ի\nստորին շեմը (9-րդ դեցիլ)"
+    )
+  ) +
+  scale_x_continuous(breaks = seq(0, 800, 100), labels = number_format()) +
+  scale_y_discrete(expand = c(0.05,0,0.2,0)) +
+  labs(
+    x = NULL,
+    y = NULL,
+    color = NULL,
+    title = "Տնային տնտեսությունների եկամուտների փոփոխությունը ըստ մարզերի",
+    subtitle = "2022-ին Հայաստանի եկամուտները պակասել են, բացի Կոտայքի, Գեղարքունիքի և Տավուշի մարզից,\nհազար ՀՀ դրամ",
+    caption = paste0(caption_arm, "    |    տվյալների աղբյուր` armstat.am")
+  )
+```
+
+
+```{r income change from 2018 to 2022, include=FALSE}
+
+wealth_change_data <- 
+  household_income_db %>%
+  bind_rows(
+    mutate(., settlement = "Total")
+  ) |> 
+  left_join(inf_cumprod, by = "date") |> 
+  mutate(totincome = totincome * adj_price) |> 
+  group_by(year, settlement) |> 
+  summarise(
+    mean = sum(totincome*weight)/sum(weight),
+    median = wtd.quantile(totincome, weight, probs = 0.5),
+    q10 = wtd.quantile(totincome, weight, probs = 0.1),
+    q90 = wtd.quantile(totincome, weight, probs = 0.9),
+  )
+
+household_change_18_22_plot <- 
+  wealth_change_data |> 
+  pivot_longer(c(mean, median, q10, q90)) |> 
+  filter(year %in% 2018:2022) |> 
+  mutate(
+    settlement = factor(
+      settlement,
+      levels = c("Total", "Yerevan", "urban", "rural"),
+      labels = c("Հայաստան", "Երևան", "այլ քաղաքներ", "գյուղեր")
+    ),
+    name = factor(
+      name, 
+      levels = c("q10", "median", "mean", "q90"),
+      labels = c("Ամենաաղքատ 10%-ի վերին\nշեմը (1-ին դեցիլ)", "Միջին ընտանիքի եկամուտ\n(median)",
+                 "Միջին եկամուտ\n(mean)", "Ամենահարուստ 10%-ի ստորին\nշեմը (9-րդ դեցիլ)")
+    ),
+    text = number(value / 1000, accuracy = 1)
+  ) |> 
+  ggplot(aes(as.factor(year), value, label = text, fill = as.factor(year))) +
+  geom_col() +
+  geom_text(aes(y = 50000), color = "white") +
+  facet_grid(settlement~name, switch = "both") +
+  scale_fill_manual(values = new_palette_colors[6:2]) +
+  labs(
+    y = NULL,
+    x = NULL,
+    fill = NULL,
+    title = "Հայաստանի տնային տնտեսությունների եկամուտների փոփոխությունը",
+    subtitle = "Հազար դրամ, եկամուտնեը ճշգրտվել են 2022 թվականի վերջի գներով և կշռվել",
+    caption = paste0(caption_arm, "    |    տվյալների աղբյուր` armstat.am")
+  ) +
+  theme(
+    axis.text = element_blank(),
+    panel.grid.major = element_blank()
+  )
+```
+
+
+```{r percentage change, include=FALSE}
+
+household_pct_change_plot <- 
+  household_income_db |> 
+  select(year, date, weight, marz, totincome) |> 
+  left_join(inf_cumprod, join_by(date)) |> 
+  mutate(totincome = totincome * adj_price) |>
+  mutate(
+    income_bin = cut(
+      totincome/1000,
+      breaks = c(0, 2^(4:11), 1e5),
+      include.lowest = TRUE
+    )
+  ) |> 
+  group_by(year) |> 
+  # begin weighting data
+  count(year, income_bin, wt = weight) |> 
+  # end weighting data
+  group_by(year) |> 
+  extract(income_bin, into = c("lower_cut", "upper_cut"),
+          regex = ".(.*),(.*)\\]", remove = FALSE, convert = TRUE) |> 
+  mutate(
+    pct = n/sum(n),
+    label = case_when(
+      lower_cut == 0 ~ paste0(upper_cut, " հազար դրամից պակաս"),
+      upper_cut == 1e5 ~ paste0(round(lower_cut/1000), " մլն. դրամից ավել"),
+      lower_cut == 512 ~ paste0(lower_cut, " հազար դրամից մինչև ",
+                                round(upper_cut/1000), " մլն. դրամ"),
+      lower_cut > 1000 ~ paste0(round(lower_cut/1000), "-ից մինչև ",
+                                round(upper_cut/1000), " մլն. դրամ"),
+      TRUE ~ paste0(lower_cut, "-ից մինչև ", upper_cut, " հազար դրամ")
+    )
+  ) |> 
+  arrange(lower_cut) |> 
+  mutate(
+    label = fct_inorder(label),
+    label = fct_rev(label),
+    pct_text = ifelse(pct <= 0.01, NA, percent(pct, accuracy = 0.1))
+  ) |> 
+  ungroup() |> 
+  ggplot(aes(year, pct, fill = label, label = pct_text)) +
+  geom_col(alpha = 0.8) +
+  geom_text(position = position_stack(vjust = .5)) +
+  scale_x_continuous(breaks = seq(2005, 2022, 1)) +
+  scale_y_continuous(labels = percent_format()) +
+  # scale_fill_brewer(type = "div", palette = 1, direction = -1) +
+  scale_fill_manual(values = colfunc(9)) +
+  labs(
+    x = NULL,
+    y = NULL,
+    fill = NULL,
+    title = "Որքա՞ն է Հայաստանի ընտանիքների ամսական եկամուտը",
+    subtitle = "Տնային տնտեսությունների եկամուտների բաշխվածությունը ըստ տարիների\nԵկամուտնեը ճշգրտվել են 2022 թվականի վերջի գներով և կշռվել",
+    caption = paste0(caption_arm, "    |    տվյալների աղբյուր` armstat.am")
+  ) +
+  theme(
+    panel.grid.major.x = element_blank()
+  )
+
+```
+
+
+```{r percentage change 2, include=FALSE}
+
+household_pct_change_plot_2 <-
+  household_income_db |> 
+  filter(
+    year >= 2005,
+    totincome != 0,
+    !is.na(totincome)
+  ) |> 
+  select(year, date, marz, totincome, weight) |> 
+  left_join(inf_cumprod, join_by(date)) |> 
+  mutate(totincome = totincome * adj_price) |> 
+  ggplot(aes(
+    x = totincome, y = as.factor(year), 
+    fill = 0.5 - abs(0.5 - after_stat(ecdf)),
+    # weight = weight
+  )) +
+  stat_density_ridges(
+    quantile_lines = TRUE, scale = 3,
+    rel_min_height = 0.01,  quantiles = 4, alpha = 0.5,
+    geom = "density_ridges_gradient", calc_ecdf = TRUE
+  ) +
+  scale_x_log10(breaks = 10^(4:6), labels = number_format(), limits = c(10^3.5, 10^6.5)) +
+  # scale_fill_viridis_c(name = "Հավանականություն", direction = -1) +
+  scale_fill_gradientn(name = "Հավանականություն", colors = rev(colfunc(100))) +
+  labs(
+    x = "դրամ",
+    y = NULL,
+    title = "Որքա՞ն է Հայաստանի ընտանիքների ամսական եկամուտը",
+    subtitle = "Տնային տնտեսությունների եկամուտների բաշխվածությունը ըստ տարիների\nԵկամուտնեը ճշգրտվել են 2021 թվականի գներով",
+     caption = paste0(caption_arm, "    |    տվյալների աղբյուր` armstat.am")
+  ) +
+  annotation_logticks(base = 10, sides = "b")
+```
+
+
+
+2022-ին գրանցվել է 12.6 տոկոս տնտեսական աճ, մեկ շնչին ընկնող ՀՆԱ-ն աճել է 4 972 դոլարից մինչև 7 018 դոլար, այսինքն 41 տոկոսով, սակայն ժողովրդի իրակական եկամուտները ընկել են։
+
+2021-ին տնային տնտեսությունների միջին ճշգրտված եկամուտը կազմել էր 333 հազար դրամ, իսկ 2022-ին՝ 320 հազար դրամ։ Բնակչության ամենաաղքատ 10% շեմը ստանում էր մինչև 101 հազար դրամ 2021 թվականին, իսկ 2022-ին՝ արդեն 88 հազար դրամ:
+
+Առաջին գծապատկերում տողերը ներկայացնում են մարզերը, իսկ սյուները հասարակության խավերը (անապահով խավ, միջին խավ և հարուստներ)։ Եթե գիծը կարմիր է, ապա նախորդ տարվա համեմատ եկամուտները պակասել են, եթե կապույտ ապա՝ աճել։
+
+**Գծապատկեր 1.** Տնային տնտեսությունների համախառն եկամուտների փոփոխությունը ըստ մարզերի
+
+```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 6}
+household_change_in_2_years_plot
+```
+
+Տնային տնտեսությունների եկամուտները 2022 թվականին պակասել են բոլոր մարզերում բացի Կոտայքի, Գեղարքունիքի և Տավուշի մարզերից։
+
+Երևանում և Արագածոտնում 2022 թվականին հարուստները ավելի են հարստացել, իսկ աղքատները ավելի են աղքատացնել։
+
+Մնացած մարզերում, ինչպես նաև ամբողջ Հայաստանի համար, բոլոր խավերի եկամուտները համեմատած 2021 թվականի հետ պակասել են։
+
+Դիտարկենք տնային տնտեսությունների եկամուտների փոփոխությունը 2018 թվականից սկսած։ Ինչպես երևում է գնաճով ճշգրտված եկամուտները Հայաստանի համար ամենաբարձր կետում էին 2020 թվականին, միջին վիճակագրական ընտանիքը ստանում էր ամսական 278 հազար դրամ (2022 տարեվերջի գներով): Երկու տարվա ընթացքում միջին ընտանիքի եկամուտը ընկել է 15 հազար դրամով՝ մինչև 263 հազար դրամ։ Երևանում միջին ընտանիքի եկամտաբերությունը չի փոխվել այս 2 տարիների ընթացքում, այն հիմականում ընկել է մարզերում։ Նշված 2 տարիների ընթացքում եկամուտի աճ են գրանցել Երևանի հարուստ խաղվի ներկայացուցչները (9-րդ դեցիլ), որոնց ընտանեկան իրական եկամուտի շեմը բարձրացել է 629 հազարից 2022 թվականին մինչև 671 հազար դրամ։
+
+Հաջորդ գծապատկերը համեմատում է գնաճով ճշգրտված տնային տնտեսությունների տարեկան եկամուտները 2005 թվականից սկսած։ Եկամուտները բաժանվել են աճողական զամբյուղների։ 
+
+**Գծապատկեր 3.** Որքա՞ն է Հայաստանի ընտանիքների ամսական եկամուտը
+
+```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
+household_pct_change_plot
+```
+
+
+Ինչպես երևում է գծապատկերից մինչև 128 հազար դրամ ստացողները 3.5 տոկոսային կետով աճել են համեմատած 2021-ի։ 128-256 հազար դրամ ստացողների թիվը կրճատվել է 1.9 տոկոսային կետով։
+
+Տվյալները առկա են 2005 թվականից։ Գծապատկերից նաև երևում է որ 2005 թվականից տնային տնտեսություններ գնաճով ճշգրտված եկամուտները գրանցել են կայուն աճ։ Ըստ տվյալների տնային տնտեսությունների իրական եկամուտները ամենամեծ աճն են արձանագրել 2006 և 2007, ինչպես նաև 2019 թվականին։
+
+Անվանական եկամուտների աճ գրանցվել է նաև 2021 և 2022 թվականներին, սակայն այդ տարիներին գրանցվել է համապատասխանաբար 7.2 և 8.6 տոկոս գնաճ, որը զգալի իջեցրել է իրական եկամուտները։ Սա նշանակում է որ 2022 թվականի վերջին աշխատավարձերը դեռ չեն հասել գնաճի տեմպին և 2022 թվականին գրանցված 12.6 տոկոս տնտեսական աճը դեռ չի անդրադարձել տնային տնտեսությունների եկամուտների կամ աշխատավարձերի աճի վրա։ Նշեմ որ 2023 թվականի վերջին գրանցվել է գրեթե զրոյական գնաճ։ Զրոյական գնաճի տեսակետը ներկայացված է [տեսանյութում](https://youtu.be/Va5q9efWaI4)։
+
+Երրորդ գծապատկերում ներկայացված միտքը այլընտրանքային կերպով արտացոլում է նաև հաջորդ գծապատկերը։
+
+**Գծապատկեր 4.** Որքա՞ն է Հայաստանի ընտանիքների ամսական եկամուտը, այլընտրանքային հայացք
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 12, fig.height = 8}
+household_pct_change_plot_2
+```
+
+Այղուսակի տեսքով ներկայացնենք նաև տնային տնտեսությունների եկամուտների փոփոխությունը տարիների ընթացքում։
+
+```{r, echo=FALSE, fig.width = 6}
+income_table
+```
+
+
+
+Տվյալները վերցված են պաշտոնական աղբյուրներից, մասնավորապես՝ [տնային տնտեսությունների կենսամակարդակի (կենսապայմանների) ամբողջացված հետազոտության անվանազերծված միկրոտվյալների բազա (ըստ տնային տնտեսությունների)](https://www.armstat.am/en/?nid=205) և [Հայաստանի սպառողական գների ամսական ինդեքսը](https://www.cba.am/stat/stat_data_arm/6_CPI_arm.xls): Տնային տնտեսությունների կենսամակարդակի ցուցանիշները ճշգրտվել են ամսական կումուլատիվ գնաճով, այսինքն յուրաքանչյուր ցուցանիշ ներկայացնում է 2022 թվականի վերջի գնողունակությունը։ Ցուցանիշները նաև կշռվել են։ Հաշվարկները կարելի է ստուգել այցելելով [github-ի](https://github.com/tavad/tvyal_newsletter) մեր էջը, որտեղ տրված են տվյալները, հաշվարկների և գծապատկերների կոդը։ 
+
+
+\newpage
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# 2. Ամուր ընտանիք. հարուստ ընտանիք
+
+## Հայաստանի ընտանիքների ուսումնասիրություն
+
+```{r data download 2, include=FALSE}
+# Household database is aggregated from this official source:
+# https://www.armstat.am/en/?nid=205
+
+household_22 <- read_csv("2024_01_26_households_structure/household_2022.csv")
+
+decile_year = 2022
+```
+
+
+
+
+```{r deciles and age plot, include=FALSE}
+
+decile_description <-
+  household_22 |> 
+  reframe(deciles = quantile(totincome, probs = seq(0.1, 0.9, 0.1))) %>%
+  bind_rows(tibble(deciles = NA), .) |>
+  mutate(
+    deciles2 = lead(deciles),
+    x = row_number(),
+    description_arm = case_when(
+      x == 1 ~ paste0("1-ին դեցիլ` ", round(deciles2/1000), " հազար դրամից պակաս"),
+      x == 10 ~ paste0("10-րդ դեցիլ` ", round(deciles/1000), " հազար դրամից ավել"),
+      TRUE ~ paste0(x, "-րդ դեցիլ` ", round(deciles/1000), "-ից մինչև ",
+                    round(deciles2/1000)," հազար դրամ"),
+    ),
+    description_eng = case_when(
+      x == 1 ~ paste0("1st decile - less than ", round(deciles2/1000), " thousand drams"),
+      x == 10 ~ paste0("10th decile - more than ", round(deciles/1000), " thousand drams"),
+      TRUE ~ paste0(toOrdinal(x), " decile - from ", round(deciles/1000), " to ",
+                    round(deciles2/1000)," thousand drams"),
+    ),
+    description_arm = fct_inorder(description_arm),
+    description_eng = fct_inorder(description_eng),
+    y = 0
+  ) |>
+  select(description_arm, description_eng, x, y)
+
+
+deciles_and_age_plot <-
+  household_22 |>
+  rename(marz = hh_02) |> 
+  select(marz, members, totincome, contains("_sum")) |>
+  select(-hheld_over63_sum) |>
+  mutate(
+    hhch_18_62_sum = members - rowSums(across(matches("hh.*_sum")), na.rm = TRUE),
+    income_bin = ntile(totincome, 10),
+    # income_bin = cut(
+    #   totincome/1000,
+    #   breaks = c(0, 2^(6:10), 1e5),
+    #   include.lowest = TRUE,
+    #   labels = c("[0, 64]", "(64, 128]", "(128, 256]",
+    #              "(256, 512]", "(512, 1024]", "(1024 & more)")
+    # )
+  ) |>
+  group_by(
+    # year,
+    # marz,
+    income_bin
+  ) |>
+  summarise(across(contains("_sum"), ~sum(.x, na.rm = TRUE)), .groups = "drop") |>
+  pivot_longer(contains("_sum"), names_to = "age_group", values_to = "sum_head_count") |>
+  group_by(
+    # year,
+    # marz,
+    income_bin
+  ) |>
+  mutate(
+    age_group = str_remove(age_group, "hhch_|hheld_"),
+    age_group = str_remove(age_group, "_sum"),
+    age_group = str_replace(age_group, "_", "-"),
+    age_group = fct_relevel(age_group, "0-3", "4-5", "6-11", "12-17", "18-62"),
+    age_group = fct_rev(age_group),
+    pct_head_count = sum_head_count / sum(sum_head_count)
+  ) |>
+  ungroup() |>
+  ggplot() +
+  geom_col(aes(income_bin, pct_head_count, fill = age_group)) +
+  geom_point(data = decile_description, aes(x, y, color = description_eng)) + # delete cuts
+  scale_x_continuous(breaks = 1:10) +   # delete when using cuts
+  scale_color_manual(values = rep("#FFFFFF00", 10)) + # delete when using cuts
+  scale_y_continuous(labels = percent_format()) +
+  scale_fill_manual(values = rev(colfunc(9))) +
+  guides(color=guide_legend(nrow = 4,byrow = TRUE)) +
+  # facet_wrap(~marz) +
+  labs(
+    x = "Decil Groups",
+    y = NULL,
+    fill = "Age Group",
+    color = NULL,
+    title = "Armenian Household Income by Decil Groups and Age",
+    subtitle = "Proportion, data for 2022",
+    caption = paste0(caption_eng, "    |    Data Source: armstat.am")
+  ) +
+  theme(panel.grid.major.x = element_blank())
+
+```
+
+
+
+
+```{r household income by types, include=FALSE}
+
+household_22_income_cuts <-
+  household_22 |>
+  reframe(
+    totincome = wtd.quantile(totincome, weight, probs = seq(0, 1, 0.1))
+  ) |>
+  pull(totincome)
+
+income_type_dict <-
+  tibble(
+    name = c(
+      "y1_3amd.1.00", "y1_3amd.2.00", "y1_3amd.4.00", "y1_3amd.6.00",
+      "y1_3amd.8.00", "y1_3amd.9.00", "y1_3amd.10.00", "y1_3amd.12.00",
+      "y1_3amd.13.00", "y1_3amd.14.00", "y1_3amd.15.00", "y1_3amd.17.00",
+      "y1_3amd.18.00", "y1_3amd.19.00", "y1_3amd.23.00", "y1_3amd.26.00", "y1_3amd.28.00"
+    ),
+    name_desc = c(
+      "Salary",
+      "Self employment",
+      "Pension",
+      "Family benefit",
+      "One-off benefit for child birth",
+      "Benefit given for care of a child under 2 years old",
+      "Other benefit for the child",
+      "Other benefits",
+      "Stipendium",
+      "Sale of real estate (flat, cottage, land)",
+      "Sale of the valuables (car, jewelry, furniture)",
+      "Property (rent, interests, dividend)",
+      "Money received from relatives, living in Armenia",
+      "Money received from relatives, living out of Armenia",
+      "Sale of securities",
+      "Pension from other country",
+      "Other income"
+    ),
+    name_desc_arm = c(
+      "աշխատավարձից",
+       "ինքնազբաղվածությունից",
+       "կենսաթոշակից",
+       "ընտանեկան նպաստից",
+       "ծննդյան միանվագ նպաստից եկամուտ",
+       "մինչև 2 տարեկան երեխայի խնամքի համար տրվող նպաստից",
+       "երեխայի համար այլ նպաստից",
+       "այլ նպաստներից",
+       "կրթաթոշակից",
+       "անշարժ գույքի վաճառքից",
+       "թանկարժեք իրերի վաճառքից",
+       "վարձավճար, տոկոսներ, շահաբաժիններ",
+       "Հայաստանում բնակվող հարազատներից ստացված գումարներ",
+       "Հայաստանից դուրս ապրող հարազատներից ստացված գումարներ",
+       "արժեթղթերի վաճառքից",
+       "այլ երկրի կենսաթոշակից",
+       "այլ եկամուտներ"
+    )
+  )
+
+income_data <-
+  household_22 |>
+  mutate(
+     deciles = cut(
+      totincome,
+      breaks = household_22_income_cuts,
+      labels = 1:10,
+      include.lowest = TRUE
+    )
+  ) |>
+  select(deciles, weight, contains("y1_3amd")) |>
+  mutate(
+    across(-c(deciles, weight), ~ifelse(is.na(.x), 0, .x))
+  ) |>
+  group_by(deciles) |>
+  reframe(
+    across(-weight, ~sum(.x * weight) / sum(weight))
+  ) |>
+  ungroup() |>
+  pivot_longer(-deciles) |>
+  mutate(
+    name = fct_lump_n(name, n = 6, w = value,  other_level = "y1_3amd.28.00")
+  ) |>
+  group_by(deciles, name) |>
+  summarise(
+    value = sum(value)
+  ) |>
+  ungroup() |>
+  left_join(income_type_dict, join_by(name)) |>
+  group_by(deciles) |>
+  mutate(
+    pct = value / sum(value),
+    pct_text = ifelse(pct < 0.01, NA, percent(pct, accuracy = 0.1)),
+    value_text = ifelse(value < 7e3, NA, number(value / 1000, accuracy = 1)),
+    name_number = str_replace(name, "y1_3amd.(\\d+).00", "\\1"),
+    name_number = as.integer(name_number)
+  ) |>
+  ungroup() |>
+  arrange(name_number) |>
+  mutate(
+    name_desc = fct_inorder(name_desc),
+    name_desc_arm = fct_inorder(name_desc_arm)
+  )
+
+income_deciles_drams <-
+  income_data |>
+  ggplot(aes(deciles, value / 1000, fill = name_desc, label = value_text)) +
+  geom_col() +
+  geom_text(position = position_stack(vjust = .5)) +
+  scale_fill_manual(values = colfunc3(7)) +
+  scale_y_continuous(breaks = seq(0, 1000, 100), labels = number_format()) +
+  guides(fill=guide_legend(nrow=4,byrow=TRUE)) +
+  theme( panel.grid.major = element_blank()) +
+  labs(
+    x = NULL,
+    y = NULL,
+    fill = NULL,
+    title = "Sources of Income in Armenian Households",
+    subtitle = "Thousand drams, by decil groups, 2022",
+    caption = paste0(caption_eng, "    |    Data Source: armstat.am")
+  )
+
+income_deciles_pct <-
+  income_data |>
+  ggplot(aes(deciles, pct, fill = name_desc, label = pct_text)) +
+  geom_col() +
+  geom_text(position = position_stack(vjust = .5)) +
+    scale_fill_manual(values = colfunc3(7)) +
+  scale_y_continuous(breaks = seq(0, 1, 0.25), labels = percent_format()) +
+  guides(fill=guide_legend(nrow=4,byrow=TRUE)) +
+  theme( panel.grid.major = element_blank()) +
+   labs(
+    x = NULL,
+    y = NULL,
+    fill = NULL,
+    title = "Sources of Income in Armenian Households",
+    subtitle = "Proportion, by decil groups, 2022",
+    caption = paste0(caption_eng, "    |    Data Source: armstat.am")
+  )
+
+
+
+
+
+
+
+
+```
+
+
+```{r, include=FALSE}
+
+household_table <- 
+  household_22 |> 
+  mutate(
+    deciles = cut(
+      totincome,
+      breaks = household_22_income_cuts,
+      labels = 1:10,
+      include.lowest = TRUE
+    ),
+    across(matches("hh.*_sum"), ~ifelse(is.na(.x), 0, .x))
+  ) |> 
+  rename(seniors = hheld_over63_sum) |> 
+  mutate(
+    hhch_18_62_sum = members - rowSums(across(matches("hh.*_sum")), na.rm = TRUE),
+    children = members -hhch_18_62_sum -seniors,
+    general_educ = ifelse(headeduc >= 4, 1, 0),
+    married = ifelse(headmerstatus == 1, 1, 0)
+  ) |> 
+  group_by(deciles) |> 
+  summarise(
+    totincome = wtd.quantile(totincome, weight, probs = 0.5),
+    work_age_pct = sum(hhch_18_62_sum, na.rm = TRUE) / sum(members),
+    seniors_pct = sum(seniors, na.rm = TRUE) / sum(members),
+    children_pct = sum(children, na.rm = TRUE) / sum(members),
+    members = mean(members),
+    work_age = mean(hhch_18_62_sum, na.rm = TRUE),
+    children = mean(children, na.rm = TRUE),
+    headage = mean(headage),
+    head_woman = mean(headsex) - 1,
+    general_educ_pct = mean(general_educ, na.rm = TRUE),
+    married = mean(married, na.rm = TRUE)
+  ) |> 
+  
+  gt() |> 
+  data_color(
+    columns = -c(deciles, seniors_pct, headage, head_woman),
+    colors = scales::col_numeric(
+      palette = c("#f95d6a", "#fffcf5", "#2f4b7c"),
+      domain = NULL
+    )
+  ) |> 
+    data_color(
+    columns = c(seniors_pct, headage, head_woman),
+    colors = scales::col_numeric(
+      palette = c("#2f4b7c", "#fffcf5", "#f95d6a"),
+      domain = NULL
+    )
+  ) |> 
+  fmt_number(
+    columns = c("members", "work_age", "children"),
+    decimals = 2, 
+    use_seps = TRUE,
+  ) |> 
+  fmt_number(
+    columns = c("totincome"),
+    decimals = 1, 
+    scale_by = 0.001,
+    use_seps = TRUE,
+  ) |> 
+   fmt_number(
+    columns = c("headage"),
+    decimals = 0, 
+    use_seps = TRUE,
+    # suffixing = "k"  # You can adjust the suffix as needed
+  ) |> 
+  fmt_number(
+    columns = c("work_age_pct", "seniors_pct", "children_pct",
+                "head_woman", "general_educ_pct", "married"),
+    scale_by = 100,
+    decimals = 1,
+    pattern = "{x}%"
+  ) |> 
+  cols_label(
+    deciles = "Household Decile",
+    totincome = "Average Monthly Income (in thousand AMD)",
+    work_age_pct ~ "Working-Age Population (%)",
+    seniors_pct = "Senior Population (over 63, %)",
+    children_pct = "Child Population (0-17, %)",
+    members = "Household Size",
+    work_age = "Working-Age",
+    children = "Children",
+    headage = "Average Age of HH",
+    head_woman = "Proportion of Female in HH (%)",
+    general_educ_pct = "HH with Basic Education (%)",
+    married = "Married HH (%)"
+  ) |> 
+  tab_spanner(
+    label = "Demographic Information",
+    columns = c(work_age_pct, seniors_pct, children_pct)
+  ) |>
+  tab_spanner(
+    label = "Household Composition (Average)",
+    columns = c(members, work_age, children)
+  ) |>
+  tab_spanner(
+    label = "Head of Household (HH) Details",
+    columns = c(headage, head_woman, general_educ_pct, married)
+  ) |> 
+  tab_header(
+    title = "Armenia's Household Demographics",
+    subtitle = "Summary of demographic and income information in 2022"
+  ) |> 
+  tab_footnote(
+    footnote = paste0(caption_eng, "    |    Data Source: armstat.am")
+  )
+
+```
+
+
+
+
+
+>
+> Ոչ լիարժեք ընտանիք է համարվում մեկ ծնողից և երեխայից բաղկացած ընտանիքը:
+> 
+> Ոչ լիարժեք ընտանիքները բնութագրվում են հետևյալ հատկանիշներով՝
+> 
+> * որբացած,
+> * ծնողազուրկ,
+> * ամուսնալուծված։
+>
+
+Դիտարկենք տնային տնտեսությունների եկամուտները ըստ դեցիլային խմբարի և այդ խմբերում սեռատարիքային կազմի։
+
+
+123 հազար դրամը չգերազանցող ամսական եկամուտ ունեցող ընտանիքները գտնվում են 1-2 դեցիլային խմբերում։ Այս խմբին բնորոշ է տարեցների մեծ մասնաբաժինը, որոնց ընտանիքների ավելի քան 35 տոկոսը բաղկացած է 63 և բարձր տարիքի թոշակառուներից: Այս խմբի ընտանիքների միջին մեծությունը 2 մարդ է։ Այս ընտանիքները հիմնականում լիարժեք չեն, այս խմբում միայն մեկ երրորդն է որ ամուսին ունի: Երեխաների ամենացածր մասնաբաժինը նկատվում է այս խմբում, աշխատունակ տարիքի անձանց ավելի ցածր կշռի հետ մեկտեղ:
+
+**Գծապատկեր 1.** Տնային տնտեսությունների և տարիքային խմբարի բաշխվածությունը
+
+```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
+deciles_and_age_plot
+```
+
+
+```
+Դեցիլային խումբերը տվյալների բազան բաժանում են տասը հավասար մասերի,
+որոնցից յուրաքանչյուրը ներկայացնում է ընդհանուր դիտարկումների 10%-ը՝
+հավասար համամասնությամբ: Առաջին դեցիլը ներկայացնում է տվյալների 
+առաջին 10%-ը, երկրորդը ներկայացնում է երկրորդ 10%-ը և այլն, 10-րդ դեցիլը, 
+ներկայացնում է տվյալների ամենաբարձր 10%-ը:
+```
+
+
+Ինչպես երևում է գծապատկերում ինչքան տնային տնտեսությունը ավելի քիչ է ստանում եկամուտ, այնքան ավելի մեծ է հավանականությունը որ այդ տնային տնտեսությունում տարեցների քանակությունը ավելի մեծ կլինի։ Այսպես 123 հազար դրամից ցածր եկամուտ ստացող տնային տնտեսություններում 1/3-ը 63 և ավել տարիք ունեցող քաղաքացիներ են։ Այսպես այս խմբի վրա ավելի շատ են ընկնում առողջապահական ծախսերը:
+
+Որքան մեծ է տնային տնտեսության գլխի տարիքը և որքան մեծ է տնային տնտեսության գլխի կին լինելու հավանականությունը, այնքան մեծ է ընտանիքի անապահով խավի մեջ հայտնվելու հավանականությունը: Անապահով տնային տնտեսությունները հիմնականում բաղկացած են տարեց կանանցից, ովքեր չունեն հարազատներ, որոնց մոտ 40 տոկոսն ունի հիմնական կրթություն:
+
+Հարուստ խավն առանձնանում է ավելի մեծ ընտանիքներով, ինչի մասին է վկայում 10-րդ դեցիլային խմբում միջինը 5 հոգանոց ընտանիքների չափը։ Ապահովված տնային տնտեսություններն ունեն նաև աշխատողների մեծ թվով անդամներ, որոնցից երեքից ավելի անդամներ գտնվում են աշխատանքային տարիքում: Ավելին՝ ապահով ընտանիքների գլուխների ավելի քան 77 տոկոսն ունի ամուսին։ Այսպիսով, ամբողջական ընտանիքի առկայությունը հիմնականում բնութագրում է ապահովված ընտանիք: Կրթության մակարդակն ամենաբարձրն է 10-րդ դեցիլում, որի 56,3 տոկոսն ունի հիմնական կրթություն:
+
+Միջին խավը հասարակության հիմքն է։ Այս խավն ունի ամենաշատ երեխաների թիվը։ Այս ընտանիքների անդամների մոտավորապես 25 տոկոսը երեխաներ են՝ ի տարբերություն հարուստ խավի, որը համեմատաբար ավելի քիչ երեխաներ ունի։ Ամենաապահով 10-րդ դեցիլային խմբում երեխաների տոկոսը կազմում է 21 տոկոս։
+
+Ամբողջական ընտանիքի առկայությունը էականորեն ազդում է ապահով և միջին խավի ձևավորման վրա, մինչդեռ ցածր խավին առավելապես բնորոշ է միայնությունը։
+
+
+**Աղյուսակ 1.** ՀՀ տնային տնտեսությունների ժողովրդագրական վերլուծություն
+
+```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
+household_table
+```
+
+
+>
+>Նշենք որ այս վերլուծությունը տնտային տնտեսությունների վերլուծության 2-րդ մասին է։
+>
+>Առաջին վերլուծությունը կարդացեք այստեղ․
+>
+>[🏠💰 📉 Տնային տնտեսությունները աղքատացել են](https://www.tvyal.com/newsletter/2024/2024_01_07):
+>
+
+Ինչպես երևում է մինչև 161 հազար դրամ ընդհանուր եկամուտ ստացող առաջին, երկրորդ և երրորդ դեցիլային խմբերի հիմնական դրամական եկամուտը գոյանում է կնսաթոշակից։*
+
+Տնային տնտեսությունների ամենաաղքատ 10 տոկոսի հիմնական եկամտի աղբյուրը կենսաթոշակն է, որը կազմում է մինչև 85 հազար դրամ ստացող տնային տնտեսությունների եկամտի 67 տոկոսը, 12 տոկոսը՝ ընտանեկան նպաստն է, իսկ աշխատավարձը՝ ընդամենը 7 տոկոսը։ Նշենք որ այս խմբում մեկ տնային տնտեսության հաշվով կենսաթոշակից միջին եկամուտը կազմում է 28 հազար դրամ։ Սա չի նշանակում որ այս խմբի թոշակառուները միջինը ստանում են 28 հազար դրամ։ Պարզապես որոշ տնային տնտեսություններ այս խմբում չունեն 63 անց թոշակառու և այդ տնային տնտեսությունները կենսաթոշակ չեն ստանում։ Նույնը վերաբերում է աշխատավարձից ստացված միջին եկամտին։ Ըստ տնային տնտեսությունների բազայի 2022-ին 63 անց թոշակառուների մոտ միջին կենսաթոշակը կազմում է 46 245 դրամ։
+
+**Գծապատկեր 2.** Դեցիլային խմբերի եկամտների աղբյուրները, դրամ
+
+```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
+income_deciles_drams
+```
+
+
+3-ից 5-րդ դեցիլային խմբերի դրամական եկամուտի ավելի քան 10 տոկոսը ստանում են բարեկամներից, որոնք գտնվում են արտասահմանում։ Սա ամենամեծ տեսակարար կշիռն է։ Այս եկամուտը ստացվում է արտագնա աշխատողներից։
+
+Ինչքան տնային տնտեսությունը ապահով է այնքան մեծանում է ինքնազբաղվածությունից կամ բիզնեսից ստացված եկամուտի մասնաբաժինը։ Հուշագրավ է այն որ 10-րդ խմբում, որը ներկայացնում է ամենաապահով 10 տոկոսը, աշխատավարձից ստացված եկամուտի տոկոսային կշիռը ավելի ցածր է, քան 9-րդ խմբում։ Ամենաապահով խավը առանձնանում է ինքնազբաղվածների համեմատաբար մեծ տոկոսով։ Նշենք նաև որ այս խմբի եկամտների 1 տոկոսը ձևավորվում է անշարժ գույքի վաճառքից, որը գծապատկերում ներառված է "այլ եկամուտներ" սանդղակում։
+
+**Գծապատկեր 3.** Դեցիլային խմբերի եկամտների աղբյուրները, տոկոս
+
+```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
+income_deciles_pct
+```
+
+
+*Նշում․ Տնային տնտեսությունների եկամուտները ձևավորվում են դրամական և ոչ դրամական աղբյուրներից։ Դեցիլային խմբերը հաշվարկվել են ընդհանուր եկամտի հիման վրա։ 2-րդ և 3-րդ գծապատկերները արտացոլում են միայն դրամական եկամուտների բաշխվածությունը ըստ խմբերի։ Առաջին աղյուսակի դեցիլային խմբերի միջին եկամուտը հաշվարկվել է կշռված մեդիանով։ 
+
+Այս վերլուծության տվյալները վերցված են պաշտոնական աղբյուրից, մասնավորապես՝ [տնային տնտեսությունների կենսամակարդակի (կենսապայմանների) ամբողջացված հետազոտության անվանազերծված միկրոտվյալների բազա (ըստ տնային տնտեսությունների)](https://www.armstat.am/en/?nid=205)։ Տնային տնտեսությունների կենսամակարդակի ցուցանիշները կշռվել են։ Հաշվարկները կարելի է ստուգել այցելելով [github-ի](https://github.com/tavad/tvyal_newsletter/tree/main/2024) մեր էջը, որտեղ տրված են տվյալները, հաշվարկների և գծապատկերների կոդը։
+
+
+
+
+
+
+
+
+
+# 3. Աշխատավարձերի վերլուծություն
+
+
+
+```{r get raw data download 3, include=FALSE}
+
+wages_raw <- 
+  read_excel("2024_02_09_wages/wages_in_armenia_raw_2022.xlsx", skip = 2)
+
+inflation_raw <- read_excel("2024_02_09_wages/cpi_armenia_eng.xls", skip = 3)
+
+workers_n <- read_excel("2024_02_09_wages/wages_more_info.xlsx", sheet = "workers_n")
+
+```
+
+```{r data cleaning 3, include=FALSE}
+
+max_year <- wages_raw |> colnames() |> parse_number() |> max(na.rm = TRUE)
+
+inf_cumprod <- 
+  inflation_raw |> 
+  rename(date = 1, cpi_m = 2) |> 
+  select(date, cpi_m) |> 
+  mutate(
+    date = ym(date),
+    cpi_m = cpi_m / 100,
+    year = year(date)
+  ) |> 
+  filter(year <= max_year) |>
+  mutate(
+    cpi_yoy = roll_prodr(cpi_m, 12)
+  ) |>
+  arrange(desc(date)) |> 
+  mutate(
+    adj_price = cumprod(cpi_m),
+    adj_price = lag(adj_price),
+    adj_price = ifelse(is.na(adj_price), 1, adj_price)
+  ) |> 
+  group_by(year) |> 
+  filter(date == max(date)) |> 
+  ungroup() |> 
+  select(year, cpi_yoy, adj_price)
+
+
+wages_clean <- 
+  wages_raw |>
+  filter(!is.na(`2020`))  |>  
+  janitor::clean_names() |> 
+  mutate(
+    across(matches("\\d{4}"), ~ifelse(.x == "-", NA, .x)),
+    across(matches("\\d{4}"), ~ as.numeric(.x))
+  ) |> 
+  mutate(
+    indicator_arm = str_replace(indicator_arm, "աշխատավարձ, դրամ", "աշխատավարձ ՀՀ ընդհանուր, դրամ"),
+    indicator_arm = str_remove(indicator_arm, "Միջին ամսական անվանական աշխատավարձը? ? ?-? ?\\(?"),
+    indicator_arm = str_remove(indicator_arm, ", դրամ$"),
+    indicator_arm = str_replace_all(indicator_arm, " *- *", " - "),
+    
+    indicator_eng = str_remove(indicator_eng, "Average monthly nominal wages? ? ?-? ?\\(? ?b?y? ?"),
+    indicator_eng = str_replace_all(indicator_eng, " *- *", " - "),
+  ) |> 
+  extract(
+    indicator_arm, into = c("ind1_arm", "ind2_arm"),
+    regex = "(ըստ .*) - (.*)", remove = FALSE
+  ) |> 
+  extract(
+    indicator_eng, into = c("ind1_eng", "ind2_eng"),
+    regex = "(.*) - (.*)", remove = FALSE
+  ) |> 
+  # extract(ind1_arm, into = c("ind1", "ind2"),
+  #         regex = "(ըստ .*) *- *(.*)", remove = FALSE) |> 
+  # mutate(
+  #   ind1 = ifelse(is.na(ind1), ind1_arm, ind1),
+  #   
+  # ) |> view()
+  mutate(
+    correction_2017 = x2017_2 / x2017,
+    correction_2012 = x2012_2 / x2012,
+  ) |> 
+  select(-c(x2017_2, x2012_2)) |>
+  pivot_longer( 
+    cols = matches("^x\\d{4}$"),
+    names_to = "year", values_to = "wages"
+  ) |> 
+  mutate(
+    across(contains("ind"), ~str_trim(.x)),
+    year = parse_number(year),
+    wages_corrected = case_when(
+      year <= 2012 & !is.na(correction_2017) ~ correction_2012 * correction_2017 * wages,
+      year <= 2017 & year > 2012 & !is.na(correction_2017) ~ correction_2017 * wages,
+      TRUE ~ wages
+    )
+  ) |> 
+  left_join(inf_cumprod, by = "year") |> 
+  mutate(wages_real = wages_corrected * adj_price) |> 
+  select(-contains("correction"))
+
+
+wages_clean |> write_excel_csv("wages_in_armenia_clean_2022.csv")
+
+rm(wages_raw, inflation_row)
+
+```
+
+
+```{r main 3, include=FALSE}
+
+ # provide 2 consecutive years that are in wages_clean
+years_select = c(max_year - 1, max_year) 
+
+date_legend <- 
+  tibble(
+    x = 215, y = c(1.5, 2.5), 
+    color = c("#2f4b7c", "#f95d6a"), 
+    text = rev(years_select),
+    ind1_arm = "պետական",
+    ind1_eng = "Public"
+  )
+
+
+wages_change_2021_22_plot <- 
+  wages_clean |> 
+  filter(grepl("RA Marzes and Yerevan", indicator_eng)) |> 
+  mutate(
+    ind1_arm = case_when(
+      grepl("ոչ պետական", ind1_arm) ~ "ոչ պետական",
+      grepl("պետական", ind1_arm) ~ "պետական",
+      TRUE ~ "ընդհանուր"
+    ),
+    ind1_eng = case_when(
+      grepl("Non - Public", ind1_eng) ~ "Non-Public",
+      grepl("Public", ind1_eng) ~ "Public",
+      TRUE ~ "Total"
+    ),
+    # ind2_eng = fct_relevel(ind2_eng, "Yerevan"),
+    # ind2_arm = fct_relevel(ind2_arm, "ք. Երևան")
+  ) |> 
+  filter(year %in% years_select) |> 
+  select(ind1_arm, ind2_arm, ind1_eng, ind2_eng, year, wages_real) |> 
+  mutate(
+    wages_real = wages_real / 1000,
+    year = ifelse(year == min(year), "begining", "end")
+  ) |> 
+  rename(marz_arm = ind2_arm, marz_eng = ind2_eng) |> 
+  pivot_wider(names_from = year, values_from = wages_real) |> 
+  mutate(
+    marz_arm = fct_reorder(marz_arm, (begining + end)/2, .fun = mean),
+    marz_eng = fct_reorder(marz_eng, (begining + end)/2, .fun = mean),
+    color = ifelse(begining > end, "#f95d6a", "#2f4b7c"),
+    ind1_eng = factor(ind1_eng, levels = c("Total", "Non-Public", "Public"))
+  ) |> 
+  ggplot() +
+  facet_grid(~ind1_eng, scales = "free_x", space = "free_x") +
+  geom_segment(
+    aes(x = begining, xend = end,  y = marz_eng, 
+        yend = marz_eng, group = ind1_eng, color = I(color)),
+    linewidth = 1.2,
+    lineend = "round", linejoin = "round",
+    arrow = arrow(length = unit(0.1, "inches"))
+  ) +
+  geom_point(aes(x=begining, y=marz_eng, color=I("#f95d6a")), size = 3) +
+  geom_point(aes(x=end, y=marz_eng, color=I("#2f4b7c")), size = 3) +
+  geom_point(data = date_legend, aes(x, y, color = I(color)), size = 3) +
+  geom_text(data = date_legend, aes(x + 15, y, label = text)) +
+  scale_y_discrete() +
+  labs(
+    x = NULL,
+    y = NULL,
+    color = NULL,
+    # title = "Միջին ամսական անվանական աշխատավարձը ըստ մարզերի և տնտեսության հատվածների",
+    # subtitle = "Ներկայացված են իրական աշխատավարձերը, 2022 թվականի 8.3 տոկոս գնաճով ճշգրտված\nհազար ՀՀ դրամ",
+    # caption = paste0(caption_arm, "    |    տվյալների աղբյուր` armstat.am")
+    title = "Average monthly salary by regions and sectors of the economy",
+    subtitle = "Real nominal salaries, thousand AMD, 2021 is adjusted by 8.3% inflation in 2022",
+    caption = paste0(caption_eng, "    |    Data Source: armstat.am")
+  )
+
+
+```
+
+
+```{r plots 3,  include=FALSE}
+
+wages_by_sector <- 
+  wages_clean |> 
+  filter(grepl("Types of Economic Activity", indicator_eng)) |>
+  mutate(
+    ind2_arm = str_trunc(ind2_arm, 30),
+    ind2_eng = str_trunc(ind2_eng, 30)
+  ) |> 
+  filter(year %in% years_select) |> 
+  select(ind1_arm, ind2_arm, ind1_eng, ind2_eng, year, wages_real) |> 
+  mutate(
+    wages_real = wages_real / 1000,
+    year = ifelse(year == min(year), "begining", "end")
+  ) |> 
+  pivot_wider(names_from = year, values_from = wages_real) |> 
+  mutate(
+    ind2_arm = fct_reorder(ind2_arm, (begining + end)/2, .fun = mean),
+    ind2_eng = fct_reorder(ind2_eng, (begining + end)/2, .fun = mean),
+    color = ifelse(begining > end, "#f95d6a", "#2f4b7c")
+  ) |> 
+  ggplot() +
+  geom_segment(
+    aes(x = begining, xend = end,  y = ind2_eng, 
+        yend = ind2_eng, group = ind1_eng, color = I(color)),
+    linewidth = 1.2,
+    lineend = 'round', linejoin = 'round',
+    arrow = arrow(length = unit(0.1, "inches"))
+  ) +
+  geom_point(aes(x = begining, y = ind2_eng, color = I("#f95d6a")), size = 3) +
+  geom_point(aes(x = end, y = ind2_eng, color = I("#2f4b7c")), size = 3) +
+  geom_point(data = date_legend, aes(x + 400, y, color = I(color)), size = 3) +
+  geom_text(data = date_legend, aes(x + 480, y, label = text)) +
+  scale_x_log10(breaks = seq(0, 800, 100), limits =c(100, 800)) +
+  scale_y_discrete() +
+  labs(
+    x = NULL,
+    y = NULL,
+    color = NULL,
+    # title = "Միջին ամսական աշխատավարձը ըստ տնտեսական գործունեության",
+    # subtitle = "Ներկայացված են իրական աշխատավարձերը, 2022 թվականի 8.3 տոկոս գնաճով ճշգրտված\nանվանական, հազար ՀՀ դրամ",
+    # caption = paste0(caption_arm, "    |    տվյալների աղբյուր` armstat.am")
+    title = "Average Monthly Salary by Economic Activity",
+    subtitle = "Real nominal salaries, thousand AMD, 2021 is adjusted by 8.3% inflation in 2022",
+    caption = paste0(caption_eng, "    |    Data Source: armstat.am")
+  )
+
+```
+
+
+```{r, include=FALSE}
+
+pie_chart <- 
+  workers_n |> 
+  filter(year == max(year)) |>
+  # filter(year %in% c(2019, 2022)) |>
+  group_by(type, year) |> 
+  mutate(
+    workers_pct = workers_n / sum(workers_n),
+    workers_pct_txt = percent(workers_pct, accuracy = 0.1),
+    workers_pct_txt = ifelse(workers_pct >= 0.025, workers_pct_txt, NA),
+    marz_arm = fct_reorder(marz_arm, workers_pct, .desc = TRUE),
+    type = case_match(
+      type,
+      "non_public" ~ "Ոչ պետական",
+      "public" ~ "Պետական",
+      "total" ~ "Ընդամենը"
+    )
+  ) |> 
+  ggplot(aes(y = "1", x = workers_pct, fill = marz_arm, label = workers_pct_txt)) +
+  geom_col() +
+  geom_text(aes(y = 1.25), position = position_stack(vjust = .5)) +
+  facet_grid(year~type, switch = "y") +
+  coord_polar() +
+  # ggthemes::scale_fill_stata() +
+  scale_fill_manual(values = colfunc3(11)) +
+  labs(
+    x = NULL,
+    y = NULL,
+    fill = NULL,
+    title = "Աշխատողները ըստ մարզերի",
+    subtitle = "Ոչ պետական և պետական աշխատատեղեր․․․",
+    caption = paste0(caption_arm, "   |   source:armstat.am")
+  ) +
+  theme(
+    panel.grid.major.x = element_blank(),
+    panel.grid.major.y = element_blank(),
+    axis.text = element_blank()
+  )
+
+public_to_non_public_plot <- 
+  workers_n |> 
+  select(-mean_wage) |> 
+  pivot_wider(names_from = type, values_from = workers_n) |> 
+  mutate(
+    non_public_to_public = non_public / public,
+    non_public_to_public_txt = number(non_public_to_public, accuracy = 0.01),
+    text_possition = ifelse(
+      non_public_to_public > 1,
+      non_public_to_public * 1.1,
+      non_public_to_public / 1.1
+    )
+  ) |> 
+  arrange(non_public_to_public) |> 
+  filter(year == 2022) |> 
+  mutate(
+    marz_arm = fct_inorder(marz_arm),
+    marz_eng = fct_inorder(marz_eng), 
+  ) |> 
+  ggplot(aes(non_public_to_public, marz_arm,
+             fill = marz_arm, label = non_public_to_public_txt)) +
+  geom_col() +
+  geom_text(aes(x = text_possition)) +
+  scale_x_log10() +
+  scale_fill_manual(values = colfunc2(11)) +
+  labs(
+    x = NULL,
+    y = NULL,
+    title = "Ոչ պետական և պետական աշխատատեղերի հարաբերությունը",
+    subtitle = "2022թ․, ըստ մարզերի, լոգարիթմիկ առանցք",
+    caption = paste0(caption_arm, "   |   source:armstat.am")
+  ) +
+  theme(
+    panel.grid.major.y = element_blank(),
+    axis.text.x = element_blank(),
+    legend.position = "none"
+  )
+```
+
+
+
+
+[ԱՇԽԱՏԱՎԱՐՁ ԵՎ ԱՇԽԱՏՈՂՆԵՐԻ ԹՎԱՔԱՆԱԿ -  2020-2022](https://www.armstat.am/file/article/lab_market_2023_14.pdf)
+
+՝՝՝
+խոսալ միջինի ու մեդիանի տարբերության մասին և թե ինչու է մեդիանը երբեմն ավելի կարևոր աշխատավարձերի դիտարկման համար, քանի որ հարուստները կարող են հարստանալ, իսկ միջին խավը նույնը մնասլ։
+՝՝՝
+
+
+ընդանուր՝ 684783 մարդ աշխատող 2022
+
+Պետական ոլորտի իրական միջին աշխատավաձերը նվազել են բոլոր մարզերում 2022 թվականին։ Նշենք որ 2022 թվականին պետական ոլորտում աշխատում է ընդանուր աշխատողների 30 տոկոսը։ Այս ոլորտի միջին աշխատավարձը 2022 թվականեն կազմում էր 186940 դրամ իսկ 2021-ին՝ 179174 դրամ, անվանական աճը՝ 4.3 տոկոս, գնաճը՝ 8.3 տոկոս, իրական աճը՝ -4 տոկոս անկում։
+
+
+**Աղյուսակ 1.** 
+
+```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
+wages_change_2021_22_plot
+```
+
+
+2022 թվականին Տեղեկատվություն և կապ ոլորտում աշխատել է 40301 մարդ, որը կազմել է ընդհանուր աշխատատեղերի 5.9 տոկոսը, այս ոլորտը ստանում է ամենաբարձր միջին աշխատավարձը՝	748235։ Նշենք որ այս ոլորտի 71.1 տոկոսը 2022 թվականին կազմել է ՏՏ ոլորտը (28668 մարդ)։ ՏՏ ոլորտի միջին աշխատավարձը եղել 917192 դրամ։ Եթե հանենք ՏՏ ոլորտը Տեղեկատվություն և կապից և դիտարկենք միայն կապը ապա միջին աշխատավարձը կապում լինելու է 331863 դրամ։
+
+Մարդկանց թվաքանակով ամենամեծ ոլորտը մինչև 2021 թիվը կրթուունն էր, այստեղ է աշխատում 116445 մարդ, կամ աշխատողների 17 տոկոսը։ 2022 թվականին առաջինը ըստ աշխատողների թվաքանակի դարձավ Մեծածախ և մանրածախ առևտուր, ավտոմեքենաների և մոտոցիկլների նորոգում, որտեղ 2022 աշխատում էին 121953 մարդ կամ 17.8 տոկոսը։
+
+Կրթությունը ամենախաշոր ոլորտը լինելով ու շատ կարևոր ոլորտ լինելով Միջին ամսական անվանական աշխատավարձն (հարկերով) պետական ոլորտում 2022 թ կազմել է ընդամենը 132756 դրամ, 2021 թ՝ 128518 դրամ։ Եթե հաշվի առնենք որ 2022 թվականի գնաճը կազմել է 8․3 տոկոս, իսկ պետական ոլորտի կրթության աշխատավարձերը աճել են 3.3 տոկոսով, ապա իրական աշխատավարձև այս ոլորտում իջել է 5 տոկոսով։
+
+Ֆինանսական և ապահովագրական գործունեություն աշխատում է 21449 մորդ։ Այս ոլորտի աշխատավարձերը նույնպես ունեն ռեկորդային աճ։
+
+
+2019 թվականին աշխատտեղերի 65.9 տոկոսը երևանում էր 2022-ին արդեն՝ 68.8 տոկոսը։ Հիմնականում նոր աշխատատեղերը առաջանում են երևանում։
+
+3 տարում՝ 
+մարզեր 203929 213518 4.7 տոկոս աճ, ոչ պետական` 7.2 տոկոս աճ։
+Մարզերից ամենավատը այս 3 տարում Լոռիում է 2.5 տոկոս աճ 3 տարվա մեջ։
+
+Երևան 394308 471265 19.5 տոկոս աճ, ոչ պետական 24.5 տոկոս աճ
+
+Ի դեպ պետական գործը ամենաշատը աճել է Արարատի մարզում 10310 աշխատողից՝ 10975 աշխատող 6.4 տոկոս աճ, հետո նոր
+Երևանում 101 744 աշխատողից 107 039 աշխատող՝ 5.2 տոկոս աճ։
+
+
+
+
+
+
+**Գծապատկեր 2.** 
+
+```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
+wages_by_sector
+```
+
+
+
+**Գծապատկեր 3.** 
+
+```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
+public_to_non_public_plot
+```
+
+
+
+
+**Գծապատկեր 4.** 
+
+```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
+pie_chart
+```
+
+
+
+
+
+
+
+
