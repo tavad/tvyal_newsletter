@@ -5,6 +5,17 @@ library(RcppRoll)
 
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 
+new_palette_colors <- c(
+  "#003f5c", "#2f4b7c", "#665191", "#a05195",
+  "#d45087", "#f95d6a", "#ff7c43", "#ffa600"
+)
+
+colfunc <- colorRampPalette(c("#2f4b7c", "#fffcf5", "#f95d6a"))
+colfunc2 <- colorRampPalette(new_palette_colors)
+colfunc3 <- colorRampPalette(c(new_palette_colors, "#FFD17A", "#FFFCF5"))
+
+##########################
+
 wages_raw <- read_excel("wages_in_armenia_2022.xlsx", skip = 2) |> 
   rename(indicator = 1)
 
@@ -276,5 +287,148 @@ wages_clean |>
     subtitle = "Ներկայացված են իրական աշխատավարձերը, 2022 թվականի 8.3 տոկոս գնաճով ճշգրտված\nհազար ՀՀ դրամ",
     caption = paste0(caption_arm, "    |    տվյալների աղբյուր` armstat.am")
   )
+
+
+#######################################################
+
+
+public_wages <- read_excel("wages_more_info.xlsx", sheet = 3)
+
+public_wages |> 
+  # rename(public = 3, non_public = 4) |> 
+  select(year, total, public, non_public) |>
+  pivot_longer(-year) |> 
+  pivot_wider(names_from = year, names_prefix = "x") |> 
+  mutate(
+    correction_2017 = x2017_2 / x2017,
+    correction_2012 = x2012_2 / x2012,
+  ) |> 
+  select(-c(x2017_2, x2012_2)) |>
+  pivot_longer( 
+    cols = -c(name, correction_2012, correction_2017),
+    names_to = "year", values_to = "wages"
+  ) |> 
+  mutate(
+    year = parse_number(year),
+    wages_corrected = case_when(
+      year <= 2012 & !is.na(correction_2017) ~ correction_2012 * correction_2017 * wages,
+      year <= 2017 & year > 2012 & !is.na(correction_2017) ~ correction_2017 * wages,
+      TRUE ~ wages
+    )
+  ) |> 
+  select(name, year, wages_corrected) |> 
+  pivot_wider(names_from = name, values_from = wages_corrected) |> 
+  mutate(
+    pct_public = (total - non_public) / (public - non_public),
+    pct_non_public = (total - public) / (non_public - public)
+  ) |> 
+  ggplot(aes(year, pct_public)) +
+  geom_col() +
+  scale_x_continuous(breaks = seq(2000, 2030, 2)) +
+  scale_y_continuous(breaks = seq(0, 1, 0.1), labels = percent_format()) +
+  labs(
+    x = NULL,
+    y = NULL,
+    title = "Պետական ոլորտի աշխատողների տեսակարար կշիռը",
+    # subtitle = ""
+    caption = caption_arm
+  )
+
+
+###################################
+
+workers_n <- read_excel("wages_more_info.xlsx", sheet = "workers_n")
+
+workers_n |> 
+  mutate(
+    # is_yerevan = ifelse(marz_eng == "Yerevan city", "Yerevan city", "Marzez")
+  ) |>
+  group_by(marz_eng, type, year) |> 
+  summarise(workers_n = sum(workers_n)) |> 
+  group_by(type, year) |> 
+  # mutate(
+  #   workers_pct = workers_n / sum(workers_n),
+  # ) |>
+  filter(year %in% c(2019, 2022), type == "public") |> 
+  pivot_wider(names_from = year, values_from = workers_n, names_prefix = "x") |> 
+  mutate(gwt = x2022/x2019) |> 
+  view()
+  
+  
+
+workers_n |> 
+  filter(year == max(year)) |>
+  # filter(year %in% c(2019, 2022)) |>
+  group_by(type, year) |> 
+  mutate(
+    workers_pct = workers_n / sum(workers_n),
+    workers_pct_txt = percent(workers_pct, accuracy = 0.1),
+    workers_pct_txt = ifelse(workers_pct >= 0.025, workers_pct_txt, NA),
+    marz_arm = fct_reorder(marz_arm, workers_pct, .desc = TRUE),
+    type = case_match(
+      type,
+      "non_public" ~ "Ոչ պետական",
+      "public" ~ "Պետական",
+      "total" ~ "Ընդամենը"
+    )
+  ) |> 
+  ggplot(aes(y = "1", x = workers_pct, fill = marz_arm, label = workers_pct_txt)) +
+  geom_col() +
+  geom_text(aes(y = 1.25), position = position_stack(vjust = .5)) +
+  facet_grid(year~type, switch = "y") +
+  coord_polar() +
+  # ggthemes::scale_fill_stata() +
+  scale_fill_manual(values = colfunc3(11)) +
+  labs(
+    x = NULL,
+    y = NULL,
+    fill = NULL,
+    title = "Աշխատողները ըստ մարզերի",
+    subtitle = "Ոչ պետական և պետական աշխատատեղեր․․․",
+    caption = paste0(caption_arm, "   |   source:armstat.am")
+  ) +
+  theme(
+    panel.grid.major.x = element_blank(),
+    panel.grid.major.y = element_blank(),
+    axis.text = element_blank()
+  )
+
+workers_n |> 
+  select(-mean_wage) |> 
+  pivot_wider(names_from = type, values_from = workers_n) |> 
+  mutate(
+    non_public_to_public = non_public / public,
+    non_public_to_public_txt = number(non_public_to_public, accuracy = 0.01),
+    text_possition = ifelse(
+      non_public_to_public > 1,
+      non_public_to_public * 1.1,
+      non_public_to_public / 1.1
+    )
+  ) |> 
+  arrange(non_public_to_public) |> 
+  filter(year == 2022) |> 
+  mutate(
+    marz_arm = fct_inorder(marz_arm),
+    marz_eng = fct_inorder(marz_eng), 
+  ) |> 
+  ggplot(aes(non_public_to_public, marz_arm,
+             fill = marz_arm, label = non_public_to_public_txt)) +
+  geom_col() +
+  geom_text(aes(x = text_possition)) +
+  scale_x_log10() +
+  scale_fill_manual(values = colfunc2(11)) +
+  labs(
+    x = NULL,
+    y = NULL,
+    title = "Ոչ պետական և պետական աշխատատեղերի հարաբերությունը",
+    subtitle = "2022թ․, ըստ մարզերի, լոգարիթմիկ առանցք",
+    caption = paste0(caption_arm, "   |   source:armstat.am")
+  ) +
+  theme(
+    panel.grid.major.y = element_blank(),
+    axis.text.x = element_blank(),
+    legend.position = "none"
+  )
+
 
 
