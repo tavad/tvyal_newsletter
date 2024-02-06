@@ -431,4 +431,31 @@ workers_n |>
   )
 
 
+###############################################
+
+
+
+library(Hmisc)
+
+wages_by_sector <- read_excel("wages_more_info.xlsx", sheet = "wages_secors")
+
+wages_by_sector <- 
+  wages_by_sector |> 
+  pivot_longer(matches("\\d{4}"), names_to = "year") |>
+  pivot_wider(names_from = version) |> 
+  arrange(year, type, sector_code) |> 
+  relocate(year, type, sector_code, wage)
+
+wages_by_sector |> 
+  filter(sector_code != "total") |> 
+  group_by(year, type) |> 
+  summarise(
+    mean_wage = sum(wage * person) / sum(person),
+    median = wtd.quantile(wage, person, probs = 0.5),
+    q1 = wtd.quantile(wage, person, probs = 0.25),
+    q3 = wtd.quantile(wage, person, probs = 0.75)
+  ) |> 
+  filter(type == "non_public")
+
+
 

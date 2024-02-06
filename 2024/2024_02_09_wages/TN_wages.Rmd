@@ -95,17 +95,27 @@ setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 wages_raw <- 
   read_excel("wages_in_armenia_raw_2022.xlsx", skip = 2)
 
-## run the code below to update CPI data
-# system(
-#   paste0(
-#     "curl \"", "https://www.cba.am/stat/stat_data_eng/6_CPI_eng.xls", "\"",
-#     " -o ", "\"cpi_armenia_eng.xls\""
-#   )
-# )
+# run the code below to update CPI data
+system(
+  paste0(
+    "curl \"", "https://www.cba.am/stat/stat_data_eng/6_CPI_eng.xls", "\"",
+    " -o ", "\"cpi_armenia_eng.xls\""
+  )
+)
 
 inflation_raw <- read_excel("cpi_armenia_eng.xls", skip = 3)
 
 workers_n <- read_excel("wages_more_info.xlsx", sheet = "workers_n")
+
+inflation_raw |> 
+  rename(date = 1, cpi_m = 2) |> 
+  transmute(
+    date = ym(date), 
+    cpi_m = cpi_m/100,
+    cpi_yoy = roll_prodr(cpi_m, 12)
+  ) |> 
+  view()
+
 
 ```
 
@@ -454,8 +464,8 @@ pie_chart <-
     axis.text = element_blank()
   )
 
-public_to_non_public_plot <- 
-  workers_n |> 
+public_to_non_public_plot 
+workers_n |> 
   select(-mean_wage) |> 
   pivot_wider(names_from = type, values_from = workers_n) |> 
   mutate(
@@ -478,6 +488,7 @@ public_to_non_public_plot <-
   geom_col() +
   geom_text(aes(x = text_possition)) +
   scale_x_log10() +
+  geom_vline(xintercept = 1) +
   scale_fill_manual(values = colfunc2(11)) +
   labs(
     x = NULL,
