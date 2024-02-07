@@ -39,7 +39,7 @@ theme_tvyal <- function(base_size = 12, base_family = "sans")
         legend.direction = "horizontal",
         legend.box = "vertical",
         panel.grid = element_line(colour = NULL),
-        panel.grid.major.x = element_blank(),
+        panel.grid.major.x = element_line(colour = colors["Medium Gray"]),
         panel.grid.major.y = element_line(colour = colors["Medium Gray"]),
         panel.grid.minor = element_blank(),
         plot.title = element_text(hjust = 0, size = rel(1.5), face = "bold"),
@@ -90,38 +90,31 @@ setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 ```
 
 
+
 ```{r get raw data download, include=FALSE}
 
 wages_raw <- 
   read_excel("wages_in_armenia_raw_2022.xlsx", skip = 2)
 
-# run the code below to update CPI data
-system(
-  paste0(
-    "curl \"", "https://www.cba.am/stat/stat_data_eng/6_CPI_eng.xls", "\"",
-    " -o ", "\"cpi_armenia_eng.xls\""
-  )
-)
+# # run the code below to update CPI data
+# system(
+#   paste0(
+#     "curl \"", "https://www.cba.am/stat/stat_data_eng/6_CPI_eng.xls", "\"",
+#     " -o ", "\"cpi_armenia_eng.xls\""
+#   )
+# )
 
 inflation_raw <- read_excel("cpi_armenia_eng.xls", skip = 3)
-
 workers_n <- read_excel("wages_more_info.xlsx", sheet = "workers_n")
-
-inflation_raw |> 
-  rename(date = 1, cpi_m = 2) |> 
-  transmute(
-    date = ym(date), 
-    cpi_m = cpi_m/100,
-    cpi_yoy = roll_prodr(cpi_m, 12)
-  ) |> 
-  view()
-
+public_wages <- read_excel("wages_more_info.xlsx", sheet = 3)
 
 ```
 
-```{r data cleaning, include=FALSE}
+
+```{r data cleaning 3, include=FALSE}
 
 max_year <- wages_raw |> colnames() |> parse_number() |> max(na.rm = TRUE)
+
 
 inf_cumprod <- 
   inflation_raw |> 
@@ -202,17 +195,15 @@ wages_clean <-
   select(-contains("correction"))
 
 
-wages_clean |> write_excel_csv("wages_in_armenia_clean_2022.csv")
-
 rm(wages_raw, inflation_row)
 
 ```
 
 
-```{r plot 1, include=FALSE}
+```{r plot 1, include=FALSE, eval=FALSE}
 
-wages_clean |> 
-  filter(grepl("RA Marzes and Yerevan", indicator_eng)) |> 
+wages_clean |>
+  filter(grepl("RA Marzes and Yerevan", indicator_eng)) |>
   mutate(
     ind1_arm = case_when(
       grepl("ոչ պետական", ind1_arm) ~ "ոչ պետական",
@@ -226,7 +217,7 @@ wages_clean |>
     ),
     ind2_eng = fct_relevel(ind2_eng, "Yerevan"),
     ind2_arm = fct_relevel(ind2_arm, "ք. Երևան")
-  ) |> 
+  ) |>
   ggplot(aes(year, wages_real / 1000, fill = year)) +
   geom_col() +
   facet_grid(ind1_eng ~ ind2_eng) +
@@ -242,13 +233,147 @@ wages_clean |>
   theme(
     legend.position = "bottom",
     legend.key.width = unit(2.5, 'cm'),
-    legend.box = 
+    legend.box =
   )
 
 ```
 
 
 ```{r main 2, include=FALSE}
+# 
+#  # provide 2 consecutive years that are in wages_clean
+# years_select = c(max_year - 1, max_year) 
+# 
+# date_legend <- 
+#   tibble(
+#     x = 215, y = c(1.5, 2.5), 
+#     color = c("#2f4b7c", "#f95d6a"), 
+#     text = rev(years_select),
+#     ind1_arm = "պետական",
+#     ind1_eng = "Public"
+#   )
+# 
+# 
+# wages_change_2021_22_plot <- 
+#   wages_clean |> 
+#   filter(grepl("RA Marzes and Yerevan", indicator_eng)) |> 
+#   mutate(
+#     ind1_arm = case_when(
+#       grepl("ոչ պետական", ind1_arm) ~ "ոչ պետական",
+#       grepl("պետական", ind1_arm) ~ "պետական",
+#       TRUE ~ "ընդհանուր"
+#     ),
+#     ind1_eng = case_when(
+#       grepl("Non - Public", ind1_eng) ~ "Non-Public",
+#       grepl("Public", ind1_eng) ~ "Public",
+#       TRUE ~ "Total"
+#     ),
+#     # ind2_eng = fct_relevel(ind2_eng, "Yerevan"),
+#     # ind2_arm = fct_relevel(ind2_arm, "ք. Երևան")
+#   ) |> 
+#   filter(year %in% years_select) |> 
+#   select(ind1_arm, ind2_arm, ind1_eng, ind2_eng, year, wages_real) |> 
+#   mutate(
+#     wages_real = wages_real / 1000,
+#     year = ifelse(year == min(year), "begining", "end")
+#   ) |> 
+#   rename(marz_arm = ind2_arm, marz_eng = ind2_eng) |> 
+#   pivot_wider(names_from = year, values_from = wages_real) |> 
+#   mutate(
+#     marz_arm = fct_reorder(marz_arm, (begining + end)/2, .fun = mean),
+#     marz_eng = fct_reorder(marz_eng, (begining + end)/2, .fun = mean),
+#     color = ifelse(begining > end, "#f95d6a", "#2f4b7c"),
+#     ind1_eng = factor(ind1_eng, levels = c("Total", "Non-Public", "Public"))
+#   ) |> 
+#   ggplot() +
+#   facet_grid(~ind1_eng, scales = "free_x", space = "free_x") +
+#   geom_segment(
+#     aes(x = begining, xend = end,  y = marz_eng, 
+#         yend = marz_eng, group = ind1_eng, color = I(color)),
+#     linewidth = 1.2,
+#     lineend = "round", linejoin = "round",
+#     arrow = arrow(length = unit(0.1, "inches"))
+#   ) +
+#   geom_point(aes(x=begining, y=marz_eng, color=I("#f95d6a")), size = 3) +
+#   geom_point(aes(x=end, y=marz_eng, color=I("#2f4b7c")), size = 3) +
+#   geom_point(data = date_legend, aes(x, y, color = I(color)), size = 3) +
+#   geom_text(data = date_legend, aes(x + 15, y, label = text)) +
+#   scale_y_discrete() +
+#   labs(
+#     x = NULL,
+#     y = NULL,
+#     color = NULL,
+#     # title = "Միջին ամսական անվանական աշխատավարձը ըստ մարզերի և տնտեսության հատվածների",
+#     # subtitle = "Ներկայացված են իրական աշխատավարձերը, 2022 թվականի 8.3 տոկոս գնաճով ճշգրտված\nհազար ՀՀ դրամ",
+#     # caption = paste0(caption_arm, "    |    տվյալների աղբյուր` armstat.am")
+#     title = "Average monthly salary by regions and sectors of the economy",
+#     subtitle = "Real nominal salaries, thousand AMD, 2021 is adjusted by 8.3% inflation in 2022",
+#     caption = paste0(caption_eng, "    |    Data Source: armstat.am")
+#   )
+
+
+```
+
+
+```{r plots 32,  include=FALSE, eval=FALSE}
+
+# wages_by_sector <- 
+#   wages_clean |> 
+#   filter(grepl("Types of Economic Activity", indicator_eng)) |>
+#   mutate(
+#     ind2_arm = str_trunc(ind2_arm, 30),
+#     ind2_eng = str_trunc(ind2_eng, 30)
+#   ) |> 
+#   filter(year %in% years_select) |> 
+#   select(ind1_arm, ind2_arm, ind1_eng, ind2_eng, year, wages_real) |> 
+#   mutate(
+#     wages_real = wages_real / 1000,
+#     year = ifelse(year == min(year), "begining", "end")
+#   ) |> 
+#   pivot_wider(names_from = year, values_from = wages_real) |> 
+#   mutate(
+#     ind2_arm = fct_reorder(ind2_arm, (begining + end)/2, .fun = mean),
+#     ind2_eng = fct_reorder(ind2_eng, (begining + end)/2, .fun = mean),
+#     color = ifelse(begining > end, "#f95d6a", "#2f4b7c")
+#   ) |> 
+#   ggplot() +
+#   geom_segment(
+#     aes(x = begining, xend = end,  y = ind2_eng, 
+#         yend = ind2_eng, group = ind1_eng, color = I(color)),
+#     linewidth = 1.2,
+#     lineend = 'round', linejoin = 'round',
+#     arrow = arrow(length = unit(0.1, "inches"))
+#   ) +
+#   geom_point(aes(x = begining, y = ind2_eng, color = I("#f95d6a")), size = 3) +
+#   geom_point(aes(x = end, y = ind2_eng, color = I("#2f4b7c")), size = 3) +
+#   geom_point(data = date_legend, aes(x + 400, y, color = I(color)), size = 3) +
+#   geom_text(data = date_legend, aes(x + 480, y, label = text)) +
+#   scale_x_log10(breaks = seq(0, 800, 100), limits =c(100, 800)) +
+#   scale_y_discrete() +
+#   labs(
+#     x = NULL,
+#     y = NULL,
+#     color = NULL,
+#     # title = "Միջին ամսական աշխատավարձը ըստ տնտեսական գործունեության",
+#     # subtitle = "Ներկայացված են իրական աշխատավարձերը, 2022 թվականի 8.3 տոկոս գնաճով ճշգրտված\nանվանական, հազար ՀՀ դրամ",
+#     # caption = paste0(caption_arm, "    |    տվյալների աղբյուր` armstat.am")
+#     title = "Average Monthly Salary by Economic Activity",
+#     subtitle = "Real nominal salaries, thousand AMD, 2021 is adjusted by 8.3% inflation in 2022",
+#     caption = paste0(caption_eng, "    |    Data Source: armstat.am")
+#   )
+
+```
+
+
+
+
+
+
+
+
+
+
+```{r main 3, include=FALSE}
 
  # provide 2 consecutive years that are in wages_clean
 years_select = c(max_year - 1, max_year) 
@@ -305,8 +430,9 @@ wages_change_2021_22_plot <-
   ) +
   geom_point(aes(x=begining, y=marz_eng, color=I("#f95d6a")), size = 3) +
   geom_point(aes(x=end, y=marz_eng, color=I("#2f4b7c")), size = 3) +
-  geom_point(data = date_legend, aes(x, y, color = I(color)), size = 3) +
-  geom_text(data = date_legend, aes(x + 15, y, label = text)) +
+  # geom_point(data = date_legend, aes(x, y, color = I(color)), size = 3) +
+  # geom_text(data = date_legend, aes(x + 15, y, label = text)) +
+  scale_x_continuous(breaks = seq(50, 600, 50)) +
   scale_y_discrete() +
   labs(
     x = NULL,
@@ -316,9 +442,12 @@ wages_change_2021_22_plot <-
     # subtitle = "Ներկայացված են իրական աշխատավարձերը, 2022 թվականի 8.3 տոկոս գնաճով ճշգրտված\nհազար ՀՀ դրամ",
     # caption = paste0(caption_arm, "    |    տվյալների աղբյուր` armstat.am")
     title = "Average monthly salary by regions and sectors of the economy",
-    subtitle = "Real nominal salaries, thousand AMD, 2021 is adjusted by 8.3% inflation in 2022",
+    subtitle = "Real nominal salaries, thousand AMD, 2021 (red) is adjusted by 8.3% inflation in 2022 (blue)",
     caption = paste0(caption_eng, "    |    Data Source: armstat.am")
-  )
+  ) 
+  # theme(
+  #   panel.grid.major.y = element_blank()
+  # )
 
 
 ```
@@ -373,7 +502,147 @@ wages_by_sector <-
 
 ```
 
-```{r plot 4, include=FALSE, warning=FALSE}
+
+```{r, include=FALSE}
+
+pie_chart <- 
+  workers_n |> 
+  filter(year == max(year)) |>
+  # filter(year %in% c(2019, 2022)) |>
+  group_by(type, year) |> 
+  mutate(
+    workers_pct = workers_n / sum(workers_n),
+    workers_pct_txt = percent(workers_pct, accuracy = 0.1),
+    workers_pct_txt = ifelse(workers_pct >= 0.025, workers_pct_txt, NA),
+    marz_arm = fct_reorder(marz_arm, workers_pct, .desc = TRUE),
+    marz_eng = fct_reorder(marz_eng, workers_pct, .desc = TRUE),
+    # type = case_match(
+    #   type,
+    #   "non_public" ~ "Ոչ պետական",
+    #   "public" ~ "Պետական",
+    #   "total" ~ "Ընդամենը"
+    # )
+    type = str_replace(type, "_", " ") |> str_to_title(),
+    type = factor(type, levels = c("Total", "Non Public", "Public"))
+  ) |> 
+  ggplot(aes(y = "1", x = workers_pct, fill = marz_eng, label = workers_pct_txt)) +
+  geom_col() +
+  geom_text(aes(y = 1.25), position = position_stack(vjust = .5)) +
+  facet_grid(year~type, switch = "y") +
+  coord_polar() +
+  # ggthemes::scale_fill_stata() +
+  scale_fill_manual(values = colfunc3(11)) +
+  labs(
+    x = NULL,
+    y = NULL,
+    fill = NULL,
+    # title = "Աշխատողները ըստ մարզերի",
+    # subtitle = "Ոչ պետական և պետական աշխատատեղեր․․․",
+    title = "76.3% of non-governmental jobs were held in Yerevan in 2022",
+    subtitle = "Piechart of employment by marzes",
+    caption = paste0(caption_arm, "   |   source:armstat.am")
+  ) +
+  theme(
+    panel.grid.major.x = element_blank(),
+    panel.grid.major.y = element_blank(),
+    axis.text = element_blank()
+  )
+
+public_to_non_public_plot <- 
+  workers_n |> 
+  select(-mean_wage) |> 
+  pivot_wider(names_from = type, values_from = workers_n) |> 
+  mutate(
+    non_public_to_public = non_public / public,
+    non_public_to_public_txt = number(non_public_to_public, accuracy = 0.01),
+    text_possition = ifelse(
+      non_public_to_public > 1,
+      non_public_to_public * 1.1,
+      non_public_to_public / 1.1
+    )
+  ) |> 
+  arrange(non_public_to_public) |> 
+  filter(year == 2022) |> 
+  mutate(
+    marz_arm = fct_inorder(marz_arm),
+    marz_eng = fct_inorder(marz_eng), 
+  ) |> 
+  ggplot(aes(non_public_to_public, marz_eng,
+             fill = marz_eng, label = non_public_to_public_txt)) +
+  geom_col() +
+  geom_text(aes(x = text_possition)) +
+  geom_vline(xintercept = 1) +
+  scale_x_log10() +
+  scale_fill_manual(values = colfunc2(11)) +
+  labs(
+    x = NULL,
+    y = NULL,
+    title = "Relationship between Non-Government and Government Jobs",
+    subtitle = "2022, by marzes, logarithmic axis",
+    caption = paste0(caption_arm, "   |   source:armstat.am")
+  ) +
+  theme(
+    panel.grid.major.y = element_blank(),
+    panel.grid.major.x = element_blank(),
+    axis.text.x = element_blank(),
+    legend.position = "none"
+  )
+```
+
+
+```{r, include=FALSE}
+
+public_wages_pct <- 
+  public_wages |> 
+  # rename(public = 3, non_public = 4) |> 
+  select(year, total, public, non_public) |>
+  pivot_longer(-year) |> 
+  pivot_wider(names_from = year, names_prefix = "x") |> 
+  mutate(
+    correction_2017 = x2017_2 / x2017,
+    correction_2012 = x2012_2 / x2012,
+  ) |> 
+  select(-c(x2017_2, x2012_2)) |>
+  pivot_longer( 
+    cols = -c(name, correction_2012, correction_2017),
+    names_to = "year", values_to = "wages"
+  ) |> 
+  mutate(
+    year = parse_number(year),
+    wages_corrected = case_when(
+      year <= 2012 & !is.na(correction_2017) ~ correction_2012 * correction_2017 * wages,
+      year <= 2017 & year > 2012 & !is.na(correction_2017) ~ correction_2017 * wages,
+      TRUE ~ wages
+    )
+  ) |> 
+  select(name, year, wages_corrected) |> 
+  pivot_wider(names_from = name, values_from = wages_corrected) |> 
+  mutate(
+    pct_public = (total - non_public) / (public - non_public),
+    pct_non_public = (total - public) / (non_public - public)
+  ) |> 
+  ggplot(aes(year, pct_public, fill = year)) +
+  geom_col() +
+  scale_x_continuous(breaks = seq(2000, 2030, 2)) +
+  scale_y_continuous(breaks = seq(0, 1, 0.1), labels = percent_format()) +
+  scale_fill_gradientn(colors = colfunc2(100)) +
+  labs(
+    x = NULL,
+    y = NULL,
+    title = "Share of Public Sector Jobs",
+    subtitle = "percent",
+    caption = caption_arm
+  ) +
+  theme(
+    legend.position = "none",
+    panel.grid.major.x = element_blank()
+  )
+```
+
+
+
+
+```{r not run, include=FALSE, warning=FALSE, eval=FALSE}
 wages_clean |> 
   filter(grepl("ըստ կազմակերպության չափի", indicator_arm)) |>
   mutate(
@@ -423,88 +692,6 @@ wages_clean |>
   )
 ```
 
-
-```{r, include=FALSE}
-
-pie_chart <- 
-  workers_n |> 
-  filter(year == max(year)) |>
-  # filter(year %in% c(2019, 2022)) |>
-  group_by(type, year) |> 
-  mutate(
-    workers_pct = workers_n / sum(workers_n),
-    workers_pct_txt = percent(workers_pct, accuracy = 0.1),
-    workers_pct_txt = ifelse(workers_pct >= 0.025, workers_pct_txt, NA),
-    marz_arm = fct_reorder(marz_arm, workers_pct, .desc = TRUE),
-    type = case_match(
-      type,
-      "non_public" ~ "Ոչ պետական",
-      "public" ~ "Պետական",
-      "total" ~ "Ընդամենը"
-    )
-  ) |> 
-  ggplot(aes(y = "1", x = workers_pct, fill = marz_arm, label = workers_pct_txt)) +
-  geom_col() +
-  geom_text(aes(y = 1.25), position = position_stack(vjust = .5)) +
-  facet_grid(year~type, switch = "y") +
-  coord_polar() +
-  # ggthemes::scale_fill_stata() +
-  scale_fill_manual(values = colfunc3(11)) +
-  labs(
-    x = NULL,
-    y = NULL,
-    fill = NULL,
-    title = "Աշխատողները ըստ մարզերի",
-    subtitle = "Ոչ պետական և պետական աշխատատեղեր․․․",
-    caption = paste0(caption_arm, "   |   source:armstat.am")
-  ) +
-  theme(
-    panel.grid.major.x = element_blank(),
-    panel.grid.major.y = element_blank(),
-    axis.text = element_blank()
-  )
-
-public_to_non_public_plot 
-workers_n |> 
-  select(-mean_wage) |> 
-  pivot_wider(names_from = type, values_from = workers_n) |> 
-  mutate(
-    non_public_to_public = non_public / public,
-    non_public_to_public_txt = number(non_public_to_public, accuracy = 0.01),
-    text_possition = ifelse(
-      non_public_to_public > 1,
-      non_public_to_public * 1.1,
-      non_public_to_public / 1.1
-    )
-  ) |> 
-  arrange(non_public_to_public) |> 
-  filter(year == 2022) |> 
-  mutate(
-    marz_arm = fct_inorder(marz_arm),
-    marz_eng = fct_inorder(marz_eng), 
-  ) |> 
-  ggplot(aes(non_public_to_public, marz_arm,
-             fill = marz_arm, label = non_public_to_public_txt)) +
-  geom_col() +
-  geom_text(aes(x = text_possition)) +
-  scale_x_log10() +
-  geom_vline(xintercept = 1) +
-  scale_fill_manual(values = colfunc2(11)) +
-  labs(
-    x = NULL,
-    y = NULL,
-    title = "Ոչ պետական և պետական աշխատատեղերի հարաբերությունը",
-    subtitle = "2022թ․, ըստ մարզերի, լոգարիթմիկ առանցք",
-    caption = paste0(caption_arm, "   |   source:armstat.am")
-  ) +
-  theme(
-    panel.grid.major.y = element_blank(),
-    axis.text.x = element_blank(),
-    legend.position = "none"
-  )
-```
-
-
 ***English summary below.***
 
 Հարգելի գործընկեր,
@@ -512,68 +699,47 @@ workers_n |>
 Հուսով եմ լավ եք:
 Ներկայացնում եմ այս շաբաթվա վերլուծությունները և աշխատանքները.
 
-1. 🍇🚀 
+1. 💹💳 Ոչ պետական աշխատատեղերի 76 տոկոսը Երևանում է
 2. English summary
 
 
-## 1. 
+## 1. 💹💳 Ոչ պետական աշխատատեղերի 76 տոկոսը Երևանում է
+### Գնաճով ճշտված աշխատավարձերի վերլուծություն
 
-[ԱՇԽԱՏԱՎԱՐՁ ԵՎ ԱՇԽԱՏՈՂՆԵՐԻ ԹՎԱՔԱՆԱԿ -  2020-2022](https://www.armstat.am/file/article/lab_market_2023_14.pdf)
+Հարկ է նշել, որ պետական հատվածում աշխատատեղերի համամասնությունը շարունակաբար նվազել է 2002 թվականից ի վեր, երբ գրանցված աշխատատեղերի մոտավորապես 70 տոկոսը աշխատում էր պետական հատվածում։ 2022 թվականին պետական աշխատատեղերը կազմել են ընդհանուրի 30,3 տոկոսը։ Կրճատումը պայմանավորված է ոչ թե պետական հատվածում աշխատատեղերի թվի նվազմամբ, այլ գրանցված ոչ պետական աշխատատեղերի աճով: Պետական հատվածի աշխատողների թիվը 2020-22 թվականների ընթացքում աճել է 3,2 տոկոսով, մինչդեռ ոչ պետական հոտվածի աշխատատեղերը աճել են 12,8 տոկոսով: 2022 թվականին գրանցված է եղել 684783 աշխատող, որը նախորդ տարվա համեմատ ավել է 5,4 տոկոսով։
 
-՝՝՝
-խոսալ միջինի ու մեդիանի տարբերության մասին և թե ինչու է մեդիանը երբեմն ավելի կարևոր աշխատավարձերի դիտարկման համար, քանի որ հարուստները կարող են հարստանալ, իսկ միջին խավը նույնը մնասլ։
-՝՝՝
+**Գծապատկեր 1.** Պետական ոլորտի աշխատողների տեսակարար կշիռը Հայաստանում
 
-
-ընդանուր՝ 684783 մարդ աշխատող 2022
-
-Պետական ոլորտի իրական միջին աշխատավաձերը նվազել են բոլոր մարզերում 2022 թվականին։ Նշենք որ 2022 թվականին պետական ոլորտում աշխատում է ընդանուր աշխատողների 30 տոկոսը։ Այս ոլորտի միջին աշխատավարձը 2022 թվականեն կազմում էր 186940 դրամ իսկ 2021-ին՝ 179174 դրամ, անվանական աճը՝ 4.3 տոկոս, գնաճը՝ 8.3 տոկոս, իրական աճը՝ -4 տոկոս անկում։
+```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 6}
+public_wages_pct
+```
 
 
-**Աղյուսակ 1.** 
+2022 թվականին ոչ պետական հատվածում աշխատատեղերի 76,3 տոկոսը գրանցված է եղել Երևանում, ինչը նկատելի աճ է 2019 թվականի համեմատ, երբ աշխատատեղերի 73,5 տոկոսն է եղել Երևանում։ Այսպիսով մասնավոր հատվածի աշխատատեղերը հիմնակնաում աճել են Երևանում: Մեր հաշվարկով՝ 2023 թվականի դեկտեմբերին մասնավոր ոլորտի աշխատատեղերի 78 տոկոսը գրանցված է լինելու Երևանում։ Սա մտահոգիչ միտում է՝ մարզերը Երևանին անհամաչափ են զարգանում։ Մարզերում եկամուտները հիմնականում ապահովում են պետական հատվածի աշխատատեղերը: Հաշվի առնելով Երևանի վարչական կարգավիճակը՝ 2022 թվականին ոչ պետական հատվածի աշխատատեղերի 51.6 տոկոսը կենտրոնացած էր Երևանում։
 
-```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
+**Գծապատկեր 2.** Զբաղվածությունն ըստ մարզերի
+
+```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 6}
+pie_chart
+```
+
+
+Վերջին երեք տարում (2022թ.՝ 2019թ.-ի համեմատ) աշխատատեղերը մարզերում աճել են ընդամենը 4,7 տոկոսով, իսկ Երևանում՝ 19,5 տոկոսով։ Մարզերում մասնավոր հատվածի աշխատատեղերը աճել են 7,2 տոկոսով, մինչդեռ Երևանում աճն ավելի էական է եղել՝ 24,5 տոկոս։ Աշխատատեղերի ամենաքիչ աճը գրանցվել է Լոռիում՝ ընդամենը 2,5 տոկոս աճո։ Այս ընթացքում Արարատի մարզում պետական հատվածում աշխատատեղերն աճել են 6,4 տոկոսով՝ հասնելով 10975 աշխատողի, իսկ Երևանում՝ 101744 աշխատողից հասնելով 107039 աշխատողի՝ 5,2 տոկոս աճով։
+
+Դդիտարկենք միջին ամսական անվանական աշխատավարձն ըստմարզերի և տնտեսության ճյուղերի։ Դիտարկված են իրական աշխատավարձերը, որոնք կշռվել են 2022 թվականի գնողունակությամբ։
+
+Ինչպես երևում է գծապատկերում, 2022 թվականին պետական հատվածի իրական միջին աշխատավարձերը նվազել են բոլոր մարզերում։ Այս անկման վրա ազդել է 2022 թվականին գրանցված 8,3 տոկոս գնաճը։ Պետական հատվածում միջին աշխատավարձը 2022 թվականին կազմել է 186940 դրամ, անվանական աճը կազմել է 4,3 տոկոս։ Սակայն իրական աճը նվազել է -4 տոկոսով։
+
+<!-- 2023 թվականին արձանագրվել է 2,0 տոկոս գնաճ։ Եթե հաշվի առնենք որ 2023 թվականին պետական հատվածում աշխատավարձերը նույնպես ապահովելու են մոտ 4 տոկոս աճ և գնաճը 2 տոկոս է, ապա պետական հատվածում աշխատավարձերի իրական աճը լինելու է մոտ 2 տոկոս։ Այսինքն պետական հատվածի 2023 թվականի միջին իրական աշխատավարձը ավելի ցածր է քան 2021 թվականի միջին աշխատավարձի գնողունակությունը: Հարկ է նշել, որ 2022 թվականին 207591 մարդ, կամ գրանցված ընդհանուր աշխատուժի 30.3 տոկոսը գրանցված է եղել պետական հատվածում։ -->
+
+2023 թվականին արձանագրվել է 0,6 տոկոս գնանկում, ինչը չի նվազեցրել իրական աշխատավարձերի աճը։ Եթե հաշվի առնենք որ 2023 թվականին պետական հատվածում աշխատավարձերը նույնպես ապահովելու են 4 տոկոս աճ և չի գրանցվել գնաճ, ապա պետական ոլորտի աշխատավարձերը պետք է համադրվեն 2021 թվականի գնողունակության հետ: Հարկ է նշել, որ 2022 թվականին 207591 մարդ կամ գրանցված ընդհանուր աշխատուժի 30.3 տոկոսը գրանցված է եղել պետական հատվածում։
+
+Կարևոր է նշել, որ 0,6 տոկոս գնանկումը չի համընկնում ՀՀ պետական բյուջեի մասին օրենքի 4-րդ հոդվածի հետ, որը պահանջում է «առաջնորդվել 12-ամսյա գնաճի 4±1.5 տոկոսային կետ տատանումների թույլատրելի միջակայքում նպատակային ցուցանիշով»:
+
+**Աղյուսակ 3.** Միջին ամսական անվանական աշխատավարձը ըստ մարզերի և տնտեսության հատվածների
+
+```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 6}
 wages_change_2021_22_plot
-```
-
-
-2022 թվականին Տեղեկատվություն և կապ ոլորտում աշխատել է 40301 մարդ, որը կազմել է ընդհանուր աշխատատեղերի 5.9 տոկոսը, այս ոլորտը ստանում է ամենաբարձր միջին աշխատավարձը՝	748235։ Նշենք որ այս ոլորտի 71.1 տոկոսը 2022 թվականին կազմել է ՏՏ ոլորտը (28668 մարդ)։ ՏՏ ոլորտի միջին աշխատավարձը եղել 917192 դրամ։ Եթե հանենք ՏՏ ոլորտը Տեղեկատվություն և կապից և դիտարկենք միայն կապը ապա միջին աշխատավարձը կապում լինելու է 331863 դրամ։
-
-Մարդկանց թվաքանակով ամենամեծ ոլորտը մինչև 2021 թիվը կրթուունն էր, այստեղ է աշխատում 116445 մարդ, կամ աշխատողների 17 տոկոսը։ 2022 թվականին առաջինը ըստ աշխատողների թվաքանակի դարձավ Մեծածախ և մանրածախ առևտուր, ավտոմեքենաների և մոտոցիկլների նորոգում, որտեղ 2022 աշխատում էին 121953 մարդ կամ 17.8 տոկոսը։
-
-Կրթությունը ամենախաշոր ոլորտը լինելով ու շատ կարևոր ոլորտ լինելով Միջին ամսական անվանական աշխատավարձն (հարկերով) պետական ոլորտում 2022 թ կազմել է ընդամենը 132756 դրամ, 2021 թ՝ 128518 դրամ։ Եթե հաշվի առնենք որ 2022 թվականի գնաճը կազմել է 8․3 տոկոս, իսկ պետական ոլորտի կրթության աշխատավարձերը աճել են 3.3 տոկոսով, ապա իրական աշխատավարձև այս ոլորտում իջել է 5 տոկոսով։
-
-Ֆինանսական և ապահովագրական գործունեություն աշխատում է 21449 մորդ։ Այս ոլորտի աշխատավարձերը նույնպես ունեն ռեկորդային աճ։
-
-
-2019 թվականին աշխատտեղերի 65.9 տոկոսը երևանում էր 2022-ին արդեն՝ 68.8 տոկոսը։ Հիմնականում նոր աշխատատեղերը առաջանում են երևանում։
-
-3 տարում՝ 
-մարզեր 203929 213518 4.7 տոկոս աճ, ոչ պետական` 7.2 տոկոս աճ։
-Մարզերից ամենավատը այս 3 տարում Լոռիում է 2.5 տոկոս աճ 3 տարվա մեջ։
-
-Երևան 394308 471265 19.5 տոկոս աճ, ոչ պետական 24.5 տոկոս աճ
-
-Ի դեպ պետական գործը ամենաշատը աճել է Արարատի մարզում 10310 աշխատողից՝ 10975 աշխատող 6.4 տոկոս աճ, հետո նոր
-Երևանում 101 744 աշխատողից 107 039 աշխատող՝ 5.2 տոկոս աճ։
-
-
-
-
-
-
-**Գծապատկեր 2.** 
-
-```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
-wages_by_sector
-```
-
-
-
-**Գծապատկեր 3.** 
-
-```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
-public_to_non_public_plot
 ```
 
 >
@@ -585,19 +751,50 @@ public_to_non_public_plot
 >2. [👨‍👩‍👧‍👦✨ Ամուր ընտանիք․ հարուստ ընտանիք](hhttps://www.tvyal.com/newsletter/2024/2024_01_26)
 >
 
+Ինչպես երևում է 3.4 գծապատկերում ամենացածր ոչ պետական աշխատավարձերը գրանցվել են Գեղարքունիքի, Շիրակի և Արագածոտնի մարզերում, որտեղ, հաշվի առնելով գնաճը, 2022 թվականին իրական աշխատավարձը ցածր է եղել 2021 թվականի համեմատ։ Այս մարզերում պետական հատվածի աշխատողների տեսակարար կշիռն ավելի մեծ է, քան ոչ պետական հատվածի աշխատողների թիվը (տես գծապատկեր 3.4)։ Գեղարքունիքում պետական հատվածում ավելի քան երկու անգամ ավելի շատ աշխատող է գրանցված, քան ոչ պետական հատվածում: Սա ևս ընդգծում է, որ մարզերում եկամուտների ստեղծմանը հիմնականում նպաստում են պետական հատվածի աշխատատեղերը:
+
+**Գծապատկեր 4.** Ոչ պետական և պետական աշխատատեղերի հարաբերությունը:
+
+```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 6}
+public_to_non_public_plot
+```
 
 
-**Գծապատկեր 4.** 
+Դիտարկենք միջին աշխատավարձը ըստ տնտեսական գործունեության։ 2022 թվականին տեղեկատվության և կապի, ինչպես նաև ֆինանսական ծառայությունների ոլորտները գրանցել են ամենաբարձր և ամենաարագ աճը՝ անվանական աշխատավարձի աճը այս ոլորտներում եղել է համապատասխանաբար 35% և 33,7%:
+
+2022 թվականին ֆինանսների և ապահովագրության ոլորտում աշխատում էր 21449 մարդ, իսկ տեղեկատվության և կապի ոլորտում՝ 40301 մարդ։ տեղեկատվություն և կապը կազմել էր ընդանուր գրանցված աշխատողների 5.9%-ը։ Այս հատվածն ունի ամենաբարձր միջին աշխատավարձը՝ 748235 դրամ: Հատկանշական է, որ ՏՏ-ին բաժին է ընկել այս ոլորտի 71,1 տոկոսը (28668 աշխատող)։ ՏՏ ոլորտում միջին աշխատավարձը 2022 թվականին կազմել է 917192 դրամ: 2023 թվականին ՏՏ միջին աշխատավարձը արդեն գերազանցել է 1 միլիոն դրամը։ Եթե ՏՏ ոլորտը հանենք Տեղեկատվության և հաղորդակցության շրջանակից, ապա միայն կապի ոլորտում միջին աշխատավարձը կազմել էր 331 863 դրամ։
+
+**Գծապատկեր 5.** Միջին ամսական աշխատավարձը ըստ տնտեսական գործունեության
 
 ```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
-pie_chart
+wages_by_sector
 ```
+
+
+Մինչև 2021 թվականը կրթության ոլորտը ամենամեծ գործատուն էր՝ 116445 մարդ աշխատողով, որը կազմում էր աշխատուժի 17%-ը։ 2022 թվականին "Մեծածախ և մանրածախ առևտուր, ավտոմեքենաների և մոտոցիկլների նորոգում" ոլորտը դարձավ ամենախոշոր գործատուն, այստեղ աշխատում էր 121953 մարդ կամ 2022թ․ աշխատուժի 17,8%-ը։
+
+Կրթության ոլորտը առաջնահերթ նշանակություն ունի ապագա սերունդներին կրթելու տեսանկյունից և այս ոլոտում աշխատում են աշխատուժի ավելի քան 17 տոկոսը: Այս ոլորտում միջին ամսական անվանական աշխատավարձը (ներառյալ հարկերը) 2022 թվականին կազմել է ընդամենը 132,756 ՀՀ դրամ։ Հաշցի առնելով գնաճը նախորդ տարվա համեմատ այս ոլորտի իրական աշխատավարձը պետական հատվածում իջել է 5 տոկոսով։
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
 ## 2. English Summary
 
-**🍇🚀 **
+**💹💳 76 percent of non-state jobs are in Yerevan**
+
+Analysis of inflation-adjusted wages
 
 
 
