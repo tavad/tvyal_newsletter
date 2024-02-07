@@ -699,11 +699,11 @@ wages_clean |>
 Հուսով եմ լավ եք:
 Ներկայացնում եմ այս շաբաթվա վերլուծությունները և աշխատանքները.
 
-1. 💹💳 Ոչ պետական աշխատատեղերի 76 տոկոսը Երևանում է
+1. 💹💳 Մասնավոր աշխատատեղերի 76 տոկոսը Երևանում է
 2. English summary
 
 
-## 1. 💹💳 Ոչ պետական աշխատատեղերի 76 տոկոսը Երևանում է
+## 1. 💹💳 Մասնավոր աշխատատեղերի 76 տոկոսը Երևանում է
 ### Գնաճով ճշտված աշխատավարձերի վերլուծություն
 
 Հարկ է նշել, որ պետական հատվածում աշխատատեղերի համամասնությունը շարունակաբար նվազել է 2002 թվականից ի վեր, երբ գրանցված աշխատատեղերի մոտավորապես 70 տոկոսը աշխատում էր պետական հատվածում։ 2022 թվականին պետական աշխատատեղերը կազմել են ընդհանուրի 30,3 տոկոսը։ Կրճատումը պայմանավորված է ոչ թե պետական հատվածում աշխատատեղերի թվի նվազմամբ, այլ գրանցված ոչ պետական աշխատատեղերի աճով: Պետական հատվածի աշխատողների թիվը 2020-22 թվականների ընթացքում աճել է 3,2 տոկոսով, մինչդեռ ոչ պետական հոտվածի աշխատատեղերը աճել են 12,8 տոկոսով: 2022 թվականին գրանցված է եղել 684783 աշխատող, որը նախորդ տարվա համեմատ ավել է 5,4 տոկոսով։
@@ -776,30 +776,21 @@ wages_by_sector
 Կրթության ոլորտը առաջնահերթ նշանակություն ունի ապագա սերունդներին կրթելու տեսանկյունից և այս ոլոտում աշխատում են աշխատուժի ավելի քան 17 տոկոսը: Այս ոլորտում միջին ամսական անվանական աշխատավարձը (ներառյալ հարկերը) 2022 թվականին կազմել է ընդամենը 132,756 ՀՀ դրամ։ Հաշցի առնելով գնաճը նախորդ տարվա համեմատ այս ոլորտի իրական աշխատավարձը պետական հատվածում իջել է 5 տոկոսով։
 
 
+\* Այս վերլուծության բոլոր տվյալները վերցված են պաշտոնական աղբյուրներից, մասնավորապես՝ աշխատավարձի, աշխատողների թվաքանակի և կազմակերպությունների [2019](https://www.armstat.am/file/article/lab_market_2020_14.pdf), [2020](https://www.armstat.am/file/article/lab_market_2021_14.pdf), [2021](https://www.armstat.am/file/article/lab_market_2022_14.pdf), [2022](https://www.armstat.am/file/article/lab_market_2023_14.pdf) ՀՀ վիճակագրական կոմիտեի հաշվետվություններից և [Հայաստանի սպառողական գների ամսական ինդեքսը](https://www.cba.am/stat/stat_data_arm/6_CPI_arm.xls): Աշխատավարձերը ճշգրտվել են ամսական կումուլատիվ գնաճով, այսինքն յուրաքանչյուր ցուցանիշ ներկայացնում է 2022 թվականի վերջի գնողունակությունը։ Հաշվարկները ամբողջությամբ հասանելի են github-ում, դրանք կարելի է ստուգել այցելելով [github-ի](https://github.com/tavad/tvyal_newsletter/blob/main/2024/) մեր էջը, որտեղ տրված են տվյալները, հաշվարկների և գծապատկերների կոդը։
 
-
-
-
-
-
-
-
-
-
-
+-----
 
 
 
 ## 2. English Summary
 
-**💹💳 76 percent of non-state jobs are in Yerevan**
+**💹💳 76 Percent of Private Jobs are in Yerevan**
 
 Analysis of inflation-adjusted wages
 
+In 2022, a significant shift is observed, with 76.3 percent of non-state jobs concentrated in Yerevan, indicating a growing disparity in job distribution between the capital and regions. The private sector in Yerevan has seen notable growth, raising concerns about the disproportionate development compared to the regions. Despite a general increase in the number of jobs, the disparity in growth rates between Yerevan and the marzes (regions) is evident, with Yerevan experiencing a 19.5 percent increase compared to the marzes' modest 4.7 percent growth.
 
-
-
-
+This analysis further delves into the impact of inflation on wages, noting a decline in real average salaries in the public sector across all marzes in 2022. We have concerns about a 0.6 percent deflation in 2023 not aligning with the target index mandated by the Law on the State Budget. Additionally, the newsletter highlights specific sectors experiencing rapid wage growth, such as information and communication, and financial services, with the IT sector showing significant increases. The education sector, despite being a major employer, faces challenges with a decrease in real salary and is contrasted with the growing importance of other sectors in the workforce landscape. This detailed analysis forms part of a broader examination of household dynamics.
 
 
 ---
