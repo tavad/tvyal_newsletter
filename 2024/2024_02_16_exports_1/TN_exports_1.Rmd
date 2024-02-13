@@ -10,12 +10,8 @@ knitr::opts_chunk$set(echo = TRUE)
 
 library(tidyverse)
 library(scales)
-
-
-# library(extrafont)
-# font_import(pattern = "DejaVu Serif")  # or another font with Armenian support
-# loadfonts()
-# par(family = "DejaVu Serif") 
+library(RcppRoll)
+library(gt)
 
 rm(list = ls()); gc()
 
@@ -84,21 +80,247 @@ caption_eng <-  "Author: Aghasi Tavadyan   |   tvyal.com   |   tavadyan.com"
 
 doParallel::registerDoParallel(cores = 8)
 
-setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+# setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 ```
-
 
 
 ```{r get raw data download, include=FALSE}
 
+arm_trade_country <- read_csv("arm_trade_country.csv")
 
+EU = c("Austria", "Belgium", "Bulgaria", "Croatia", "Cyprus", "Czech Rep.",
+       "Denmark", "Estonia", "Finland", "France", "Germany", "Greece", "Hungary",
+       "Ireland", "Italy", "Latvia", "Lithuania", "Luxembourg", "Malta", "Netherlands",
+       "Poland", "Portugal", "Romania", "Slovakia", "Slovenia", "Spain", "Sweden")
+
+EAEU = c("Russian Federation", "Kazakhstan", "Belarus", "Armenia", "Kyrgyzstan")
+        
+Middle_East = c("Bahrain", "Egypt", "Iran", "Iraq", "Israel", "Jordan", "Kuwait",
+                "Lebanon", "Oman", "Qatar", "Saudi Arabia", "Syria", "Turkey", 
+                "United Arab Emirates", "Yemen")
+
+China = c("China", "Hong Kong")
+
+arm_trade_country <- 
+  arm_trade_country %>% 
+  mutate(country_region = case_when(
+    country %in% EU ~ "EU",
+    country %in% EAEU ~ "EAEU",
+    country %in% Middle_East ~ "Middle East",
+    country %in% China ~ "Greater China",
+    TRUE ~ "Other countries"
+  ))
+
+rm(EU, EAEU, Middle_East, China)
 
 ```
 
 
 ```{r data cleaning 3, include=FALSE}
+country_chosen = "Russian Federation"
+
+
+# arm_trade_country %>% 
+#   filter(country %in% country_chosen) %>% 
+#   filter(year >= 2022) %>% 
+#   select(-date) %>% 
+#   knitr::kable()
+
+plot_russia <- 
+  arm_trade_country %>% 
+  filter(country %in% country_chosen) %>% 
+  pivot_longer(
+    contains("port"),
+    names_to = "direction"
+  ) %>% 
+  arrange(country, direction, date) %>% 
+  group_by(country, direction) %>% 
+  mutate(
+    value_yoy = roll_sumr(value, 12)
+  ) %>% 
+  filter(
+    direction != "import_consignment",
+    year >= 2015
+  ) %>%
+  ungroup() %>% 
+  na.omit() %>% 
+  ggplot(aes(date, value_yoy / 1e6, color = direction)) +
+  geom_line(linewidth = 1.5) +
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+  scale_y_continuous(limits = c(0, 4), labels = dollar_format()) +
+  scale_color_manual(values = new_palette_colors[c(2,6)]) +
+  labs(
+    x = NULL,
+    y = NULL,
+    color = NULL,
+    title = "Հայաստանից Ռուսաստան ներմուծումը և արտահանումը",
+    subtitle = "Մլրդ դոլար, 12 ամսյա կտրվածքով",
+    caption = paste0(
+      "Հեղինակ` Աղասի Թավադյան   |   tvyal.com   |   tavadyan.com",
+      "   |  Աղբյուր: armstat․am"
+    )
+  )
 
 ```
+
+```{r main table, include=FALSE}
+main_table_generator <- 
+  function(tbl, year_, direction_ = "export", exclude_info_years, language){
+    
+    result_tbl <- 
+      tbl |> 
+      bind_rows(
+        tbl |> 
+          mutate(country_region = "Total")
+      ) |> 
+      group_by(year, country_region) |> 
+      summarise(
+        export = sum(export),
+        import = sum(import_origin),
+        .groups = "drop"
+      ) |> 
+      pivot_longer(c(export, import), names_to = "direction") |> 
+      arrange(country_region, direction, year) |> 
+      group_by(country_region, direction) |> 
+      mutate(pct_growth = value / lag(value) - 1) |> 
+      arrange(direction, year, country_region) |> 
+      group_by(direction, year) |> 
+      mutate(pct_part = value / sum(value) * 2) |> 
+      ungroup() |> 
+      filter(
+        year %in% year_,
+        direction == direction_
+      ) |> 
+      mutate(value = value / 1000) |> 
+      pivot_wider(
+        names_from = c(year, direction),
+        values_from = c(value, pct_growth, pct_part),
+        names_vary = "slowest"
+      ) |> 
+       select(-matches(paste0("pct_.*_", exclude_info_years, collapse = "|")))
+  
+    if(language == "rus"){
+      result_tbl <- result_tbl |>  
+        mutate(
+          country_region = case_match(
+            country_region,
+            "EAEU" ~ "ЕАЭС",
+            "EU" ~ "ЕС",
+            "Greater China" ~ "Большой Китай",
+            "Middle East" ~ "Средней Восток",
+            "Other countries" ~ "Другие страны",
+            "Total" ~ "Всего"
+          )
+        )
+    }
+    
+    return(result_tbl)  
+  }
+
+exports_table <- 
+  main_table_generator(
+    arm_trade_country, year_ = 2021:2023,
+    direction_ = "export", exclude_info_years = 2021, language = "rus"
+  ) |> 
+  gt() |> 
+  fmt_number(
+    columns = contains("value"),
+    decimals = 1, 
+    use_seps = TRUE,
+  ) |> 
+  fmt_number(
+    columns = contains("pct"),
+    scale_by = 100,
+    decimals = 1,
+    pattern = "{x}%"
+  ) |> 
+  cols_label(
+    country_region = "Регионы", 
+    value_2021_export = "Млн дол. США", 
+    value_2022_export = "Млн дол. США", 
+    pct_growth_2022_export = "% рост", 
+    pct_part_2022_export = "% от общего", 
+    value_2023_export = "Млн дол. США", 
+    pct_growth_2023_export = "% рост", 
+    pct_part_2023_export = "% от общего"
+  ) |> 
+  tab_spanner(
+    label = "Экспорт",
+    columns = country_region
+  ) |>
+  tab_spanner(
+    label = "2021",
+    columns = contains("2021")
+  ) |>
+  tab_spanner(
+    label = "2022",
+    columns = contains("2022")
+  ) |>
+  tab_spanner(
+    label = "2023",
+    columns = contains("2023")
+  ) |> 
+  tab_header(
+    title = "Таблица 1. Динамика, соотношение экспорта Армении",
+    # subtitle = "Summary of demographic and income information in 2022"
+  ) |> 
+  tab_footnote(
+    footnote = paste0(caption_eng, "    |    Data Source: armstat.am")
+  )
+
+imports_table <- 
+  main_table_generator(
+    arm_trade_country, year_ = 2021:2023,
+    direction_ = "import", exclude_info_years = 2021, language = "rus"
+  ) |> 
+  gt() |> 
+  fmt_number(
+    columns = contains("value"),
+    decimals = 1, 
+    use_seps = TRUE,
+  ) |> 
+  fmt_number(
+    columns = contains("pct"),
+    scale_by = 100,
+    decimals = 1,
+    pattern = "{x}%"
+  ) |> 
+  cols_label(
+    country_region = "Регионы", 
+    value_2021_import = "Млн дол. США", 
+    value_2022_import = "Млн дол. США", 
+    pct_growth_2022_import = "% рост", 
+    pct_part_2022_import = "% от общего", 
+    value_2023_import = "Млн дол. США", 
+    pct_growth_2023_import = "% рост", 
+    pct_part_2023_import = "% от общего"
+  ) |> 
+  tab_spanner(
+    label = "Импорт",
+    columns = country_region
+  ) |>
+  tab_spanner(
+    label = "2021",
+    columns = contains("2021")
+  ) |>
+  tab_spanner(
+    label = "2022",
+    columns = contains("2022")
+  ) |>
+  tab_spanner(
+    label = "2023",
+    columns = contains("2023")
+  ) |> 
+  tab_header(
+    title = "Таблица 2. Динамика, соотношение импорта Армении",
+    # subtitle = "Summary of demographic and income information in 2022"
+  ) |> 
+  tab_footnote(
+    footnote = paste0(caption_eng, "    |    Data Source: armstat.am")
+  )
+
+```
+
 
 ***English summary below.***
 
@@ -118,13 +340,27 @@ setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 
 Հայաստանում 2023 թվականի առաջին կիսամյակում նախորդ տարվա նույն ժամանակահատվածի համեմատ Հայաստանի արտահանումն աճել է 72,8%-ով (1,891-ից հասնելով 3,267 մլն ԱՄՆ դոլարի), և դեռ շարունակում է աճել։ Հայաստանի ապրանքաշրջանառության վերականգնողական աճ է գրանցվել. 2023 թվականի առաջին կիսամյակում Արտահանումը ԵԱՏՄ երկրներ աճել է ավելի քան 3 անգամ (576-ից հասնելով 1,751 մլն ԱՄՆ դոլարի)։ Վերջին տվյալներով՝ Հայաստանի արտահանման ընդհանուր ծավալի 53,6%-ը ուղղվում է ԵԱՏՄ։ Ռուսաստանը Հայաստանի հիմնական առևտրային գործընկերն է և դեպի Ռուսաստան արտահանման մասնաբաժինը ամենադիվերսիֆիկացվածն է, և հիմնականում պատրաստի արտադրանքն արտահանվում է Ռուսաստան։ Մերձավոր Արևելք արտահանումը 2023 թվականի առաջին կիսամյակում աճել է 2 անգամ (319-ից մինչև 639 մլն ԱՄՆ դոլար)։ Այս աճը հիմնականում պայմանավորված է Հայաստանի տարածքով թանկարժեք քարերի և մետաղների վերաարտահանմամբ Ռուսաստանից ԱՄԷ։
 
-Աղյուսակ 1. Հայաստանի արտահանման դինամիկան
-```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 6}
+**Աղյուսակ 1.** Հայաստանի արտահանման դինամիկան
 
+```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 6}
+exports_table
+```
+
+
+**Աղյուսակ 2.** Հայաստանի արտահանման դինամիկան
+
+```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 6}
+imports_table
 ```
 
 
 2022 թվականից նկատվում է Հայաստանի առևտրային ակտիվության  աճ՝ հիմնականում Միության ուղղությամբ։ 2022 թ Հայաստանի արտահանումը Ռուսաստան զգալիորեն աճել է՝ \$880 մլն-ից հասնելով \$2,564 մլն-ի, այսինքն՝ 2,9 անգամ։ Մինչ կոնյակը եղել է ավանդական հիմնական արտահանումը դեպի Ռուսաստան, 2022 թվականին տեղի է ունեցել տեղաշարժ դեպի տեխնոլոգիական առաջադեմ ապրանքներ՝ որպես հիմնական արտահանում: Հատկանշական է, որ առաջատար դիրք են գրավել այնպիսի ապրանքներ, ինչպիսիք են հեռախոսները, ավտոմեքենաները, բժշկական սարքերը և ռադիոսարքավորումները։ Նույն տարում մեքենաների և սարքավորումների արտահանումը Ռուսաստան աճել է ավելի քան 10 անգամ, մինչդեռ այնպիսի կատեգորիաներ, ինչպիսիք են քիմիական, պլաստմասսա, կերամիկա, ապակի և մետաղներ, աճել են ավելի քան 3 անգամ։ Արտահանման ընդհանուր աճին էապես նպաստել է մեքենաների և սարքավորումների արտահանման ընդհանուր աճը։
+
+**Գծապատկեր 1.** Պետական ոլորտի աշխատողների տեսակարար կշիռը Հայաստանում
+
+```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 6}
+plot_russia
+```
 
 Հայաստանը պետք է ակտիվորեն զարգացնի բարձր ավելացված արժեքով արդյունաբերություն՝ արտահանման հեռանկարով։ Այդ մասին վկայում են ինչպես ՀՀ վիճակագրական կոմիտեի, այնպես էլ խոշորագույն ներքին հարկատուների ցանկը։ 2023 թվականի առաջին կիսամյակում Հայաստանում տնտեսական աճի ցուցանիշները մի փոքր նվազել են նախորդ տարվա նույն ժամանակահատվածի համեմատ։ Մինչդեռ բանկային և շինարարության ոլորտների համեմատությամբ արդյունաբերությունը շատ դանդաղ է աճում, որի աճը հունվար-հունիսին կազմել է ընդամենը 1%, ինչը բավականին ցածր ցուցանիշ է տնտեսական ակտիվության ընդհանուր աճի ֆոնին։ Մինչդեռ արդյունաբերությունը տնտեսական աճի առանցքային գործոնն է։ 
         
@@ -139,11 +375,7 @@ setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 Իհարկե, ԵԱՏՄ-ն ունի իր դրական և բացասական կողմերը, բայց հարցերը լուծվում են, այն էլ ամենաբարձր մակարդակով։ Պետությունների ղեկավարները հավաքվում են և վարչական ձևվով  ինչ-որ բան որոշում են։ Այս մեթոդը միշտ չէ, որ արդյունավետ է, բայց երբեմն այն թույլ է տալիս խուսափել ԵԱՏՄ-ի գործընկերների հետ խնդիրներից։Սակայն ԵԱՏՄ մասին պայմանագրի արդիականացումը`հատկապես 63,64 հոդվածների, որոնք որոշում են մակրոտնտեսական ցուցանիշների ու դրամավարկային քաղաքականության համաձայնեցվածությունը, առաջնահերթ խնդիր է: Հարցն ա ժամանակով չհետաձգելով՝ անհրաժեշտ է նաև զբաղվել մարքեթինգային աշխատանքով՝ դրանով իսկ խթանելով երկրի տնտեսության տարբեր ոլորտների զարգացումը։
 
 
-**Գծապատկեր 1.** Պետական ոլորտի աշխատողների տեսակարար կշիռը Հայաստանում
 
-```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 6}
-
-```
 
 
 
