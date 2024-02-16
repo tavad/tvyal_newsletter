@@ -103,13 +103,16 @@ China = c("China", "Hong Kong")
 
 arm_trade_country <- 
   arm_trade_country %>% 
-  mutate(country_region = case_when(
-    country %in% EU ~ "EU",
-    country %in% EAEU ~ "EAEU",
-    country %in% Middle_East ~ "Middle East",
-    country %in% China ~ "Greater China",
-    TRUE ~ "Other countries"
-  ))
+  mutate(
+    country_region = case_when(
+      country %in% EU ~ "EU",
+      country %in% EAEU ~ "EAEU",
+      country %in% Middle_East ~ "Middle East",
+      country %in% China ~ "Greater China",
+      TRUE ~ "Other countries"
+    ),
+    date = date + months(1) - days(1)
+  )
 
 rm(EU, EAEU, Middle_East, China)
 
@@ -118,26 +121,26 @@ rm(EU, EAEU, Middle_East, China)
 
 
 ```{r, include=FALSE}
-arm_trade_country |>
-  filter(year == 2021) |>
-  group_by(country) |>
-  summarise(
-    export = sum(export),
-    import_origin = sum(import_origin),
-    import_consignment = sum(import_consignment),
-    .groups = "drop"
-  ) |>
-  arrange(desc(export)) |>
-  mutate(
-    export_pct = export/sum(export, na.rm = TRUE),
-    export_cumsum = cumsum(export_pct)
-  ) |>
-   arrange(desc(import_origin)) |>
-  mutate(
-    import_origin_pct = import_origin/sum(import_origin, na.rm = TRUE),
-    import_origin_cumsum = cumsum(import_origin_pct)
-  ) |>
-  view()
+# arm_trade_country |>
+#   filter(year == 2021) |>
+#   group_by(country) |>
+#   summarise(
+#     export = sum(export),
+#     import_origin = sum(import_origin),
+#     import_consignment = sum(import_consignment),
+#     .groups = "drop"
+#   ) |>
+#   arrange(desc(export)) |>
+#   mutate(
+#     export_pct = export/sum(export, na.rm = TRUE),
+#     export_cumsum = cumsum(export_pct)
+#   ) |>
+#    arrange(desc(import_origin)) |>
+#   mutate(
+#     import_origin_pct = import_origin/sum(import_origin, na.rm = TRUE),
+#     import_origin_cumsum = cumsum(import_origin_pct)
+#   ) |>
+#   view()
 
 ```
 
@@ -176,7 +179,7 @@ trade_main_plotter <- function(tbl){
     ggplot(aes(date, value_yoy / 1e6, color = direction)) +
     geom_line(linewidth = 1.5) +
     scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
-    facet_wrap(~country, scales = "free_y") +
+    facet_wrap(~country, scales = "free") +
     scale_y_continuous(labels = dollar_format()) +
     scale_color_manual(
       values = new_palette_colors[c(2,6)],
@@ -424,9 +427,7 @@ plot_russia
 
 
 >
-> Հայաստանի արտահանման կառուցվածքի վերաբերյալ կարող եք կարդալ նաև տվյալ նյութում․
->
-> [Արտահանման այլընտրանքային ուղղություններ](https://www.tvyal.com/newsletter/2023_11_13)
+> Հայաստանի արտահանման կառուցվածքի վերաբերյալ կարող եք կարդալ նաև տվյալ նյութում․ [Արտահանման այլընտրանքային ուղղություններ](https://www.tvyal.com/newsletter/2023_11_13)
 >
 
 
