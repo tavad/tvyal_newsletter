@@ -163,6 +163,103 @@ plot_russia <-
 
 ```
 
+```{r, include=FALSE}
+# arm_trade_country |> 
+#   filter(year == 2023) |> 
+#   group_by(country) |> 
+#   summarise(
+#     export = sum(export),
+#     import_origin = sum(import_origin),
+#     import_consignment = sum(import_consignment),
+#     .groups = "drop"
+#   ) |> 
+#   arrange(desc(export)) |> 
+#   mutate(
+#     export_pct = export/sum(export, na.rm = TRUE),
+#     export_cumsum = cumsum(export_pct)
+#   ) |> 
+#    arrange(desc(import_origin)) |> 
+#   mutate(
+#     import_origin_pct = import_origin/sum(import_origin, na.rm = TRUE),
+#     import_origin_cumsum = cumsum(import_origin_pct)
+#   ) |> 
+#   view()
+#   
+```
+
+
+
+```{r, include=FALSE}
+country_chosen = c("United Arab Emirates", "Russian Federation", "Hong Kong")
+
+trade_main_plotter <- function(tbl){
+  
+  plot <- 
+    tbl |> 
+    pivot_longer(
+      contains("port"),
+      names_to = "direction"
+    ) |> 
+    group_by(country, year, month, date, direction) |> 
+    summarise(value = sum(value), .groups = "drop") |> 
+    arrange(country, direction, date) %>% 
+    group_by(country, direction) %>% 
+    mutate(
+      value_yoy = roll_sumr(value, 12),
+      country = factor(
+        country, 
+        levels = c("Russian Federation", "United Arab Emirates",
+                   "Hong Kong", "Total", "The Rest (Other countries)")
+      )
+    ) %>% 
+    filter(
+      direction != "import_consignment",
+      year >= 2015
+    ) %>%
+    ungroup() %>% 
+    na.omit() %>% 
+    filter(date >= ym("2020-01")) |> 
+    ggplot(aes(date, value_yoy / 1e6, color = direction)) +
+    geom_line(linewidth = 1.5) +
+    scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+    facet_wrap(~country, scales = "free_y") +
+    scale_y_continuous(labels = dollar_format()) +
+    scale_color_manual(
+      values = new_palette_colors[c(2,6)],
+      labels = c("Exports", "Imports")
+    ) +
+    labs(
+      x = NULL,
+      y = NULL,
+      color = NULL,
+      caption = paste0(caption_eng, "   |   Data Source: armstat.am")
+    )
+  
+  return(plot)
+}
+
+
+plot_total <- 
+  arm_trade_country %>% 
+  mutate(country = "Total") |> 
+  trade_main_plotter() +
+  labs(
+    title = "Armenia's Exports Grew 2.8 Times in 2 years",
+    subtitle = "Armenia's Import and Export, Billion dollars, YoY",
+  )
+
+
+plot_russia <- 
+  arm_trade_country %>% 
+  mutate(country = ifelse(country %in% country_chosen, country, "The Rest (Other countries)")) %>%
+  trade_main_plotter() +
+  labs(
+    title = "Russia, UAE & Hong Kong are 75% of Armenia's Exports in 2023",
+    subtitle = "Armenia's Import and Export, Billion dollars, YoY",
+  )
+```
+
+
 ```{r main table, include=FALSE}
 main_table_generator <- 
   function(tbl, year_, direction_ = "export", exclude_info_years, language){
@@ -358,9 +455,17 @@ imports_table
 
 **Գծապատկեր 1.** Պետական ոլորտի աշխատողների տեսակարար կշիռը Հայաստանում
 
-```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 6}
+```{r, echo=FALSE, warning=FALSE, fig.width = 10, fig.height = 8}
+plot_total
+```
+
+
+**Գծապատկեր 2.** Պետական ոլորտի աշխատողների տեսակարար կշիռը Հայաստանում
+
+```{r, echo=FALSE, warning=FALSE, fig.width = 10, fig.height = 8}
 plot_russia
 ```
+
 
 Հայաստանը պետք է ակտիվորեն զարգացնի բարձր ավելացված արժեքով արդյունաբերություն՝ արտահանման հեռանկարով։ Այդ մասին վկայում են ինչպես ՀՀ վիճակագրական կոմիտեի, այնպես էլ խոշորագույն ներքին հարկատուների ցանկը։ 2023 թվականի առաջին կիսամյակում Հայաստանում տնտեսական աճի ցուցանիշները մի փոքր նվազել են նախորդ տարվա նույն ժամանակահատվածի համեմատ։ Մինչդեռ բանկային և շինարարության ոլորտների համեմատությամբ արդյունաբերությունը շատ դանդաղ է աճում, որի աճը հունվար-հունիսին կազմել է ընդամենը 1%, ինչը բավականին ցածր ցուցանիշ է տնտեսական ակտիվության ընդհանուր աճի ֆոնին։ Մինչդեռ արդյունաբերությունը տնտեսական աճի առանցքային գործոնն է։ 
         
@@ -382,7 +487,7 @@ plot_russia
 
 **Գծապատկեր 2.** Զբաղվածությունն ըստ մարզերի
 
-```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 6}
+```{r, echo=FALSE, warning=FALSE, fig.width = 8, fig.height = 8}
 
 ```
 
@@ -390,7 +495,7 @@ plot_russia
 
 **Աղյուսակ 3.** 
 
-```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 6}
+```{r, echo=FALSE, warning=FALSE, fig.width = 8, fig.height = 8}
 
 ```
 
