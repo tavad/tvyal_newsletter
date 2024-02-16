@@ -45,7 +45,7 @@ theme_tvyal <- function(base_size = 12, base_family = "sans")
 theme_set(theme_tvyal())
 
 save_last_plot <-
-  function(filename, extension = "png", width = 1344, height = 756) {
+  function(filename, extension = "png", width = 1008, height = 567) {
 
     filename <- str_replace_all(filename, " ", "_")
     last_plot <- recordPlot()
