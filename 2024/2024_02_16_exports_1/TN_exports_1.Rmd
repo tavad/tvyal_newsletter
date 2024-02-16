@@ -457,6 +457,12 @@ exports_table
 <!-- ``` -->
 
 
+-----
+
+\* Այս վերլուծության բոլոր տվյալները վերցված են պաշտոնական աղբյուրներից, մասնավորապես ԱՎԾ [արտաքին առևտրի տվյալների բազաից](https://armstat.am/am/?nid=717)
+([ՄԱԷ](https://armstat.am/am/?nid=717&thid%5B%5D=784&year%5B%5D=2023&monid%5B%5D=1&monid%5B%5D=2&monid%5B%5D=3&monid%5B%5D=4&monid%5B%5D=5&monid%5B%5D=6&monid%5B%5D=7&monid%5B%5D=8&monid%5B%5D=9&monid%5B%5D=10&monid%5B%5D=11&monid%5B%5D=12&submit=%D5%93%D5%B6%D5%BF%D6%80%D5%A5%D5%AC),
+[Հոնկոնգ](https://armstat.am/am/?nid=717&thid%5B%5D=344&year%5B%5D=2023&monid%5B%5D=1&monid%5B%5D=2&monid%5B%5D=3&monid%5B%5D=4&monid%5B%5D=5&monid%5B%5D=6&monid%5B%5D=7&monid%5B%5D=8&monid%5B%5D=9&monid%5B%5D=10&monid%5B%5D=11&monid%5B%5D=12&submit=%D5%93%D5%B6%D5%BF%D6%80%D5%A5%D5%AC))։ Հաշվարկները ամբողջությամբ հասանելի են github-ում, դրանք կարելի է ստուգել այցելելով [github-ի](https://github.com/tavad/tvyal_newsletter/blob/main/2024/) մեր էջը, որտեղ տրված են տվյալները, հաշվարկների և գծապատկերների կոդը։
+
 
 
 ## English Summary
