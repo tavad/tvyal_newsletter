@@ -31,7 +31,7 @@ caption_eng = "Author: Aghasi Tavadyan   |   tvyal.com   |   tavadyan.com"
 ```
 
 ```{r get databases, include=FALSE}
-# uncomment and run the command below to update the data
+# # uncomment and run the command below to update the data
 # system("curl https://www.cba.am/stat/stat_data_eng/5_Money_transfers_of_individuals_by_countries-eng.xlsx -o transfers_by_countries.xlsx")
 
 transfers_raw <- read_excel("transfers_by_countries.xlsx")
@@ -105,7 +105,7 @@ transfers_total_chart <-
     # type == "non-commercial",
     type == "total",
     country != "Total",
-    year <= 2022
+    # year <= 2022
   ) %>% 
   mutate(
     country = case_when(
