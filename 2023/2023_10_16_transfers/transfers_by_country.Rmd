@@ -202,6 +202,37 @@ chart_3 <-
 ```
 
 ```{r, include=FALSE}
+# # new ideas
+# 
+# transfers_date %>% 
+#   mutate(
+#     date = date + months(1) - days(1),
+#     country = fct_reorder(country, K_USD_YOY, .desc = TRUE),
+#     country = fct_relevel(country, "Others", after = Inf)
+#   ) |> 
+#   filter(date >= ymd("2019-12-30")) |> 
+#   ggplot(aes(date, K_USD_YOY / 1e6, fill = country)) +
+#   geom_area() +
+#   facet_wrap(~direction) +
+#   scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+#   scale_y_continuous(breaks = 0:7, labels = number_format(accuracy = 1)) +
+#   scale_fill_manual(values = colfunc3(11)) +
+#   labs(
+#     x = NULL, 
+#     y = NULL,
+#     fill = NULL,
+#     title = "Transfers made by individuals through the banking system of Armenia",
+#     subtitle = "Year over Year, Billions of USD",
+#     caption =paste0(caption_eng, "   |   Data Source: CBA.am")
+#   ) +
+#   theme(
+#     panel.grid.major = element_line(linetype = "dotted")
+#   )
+
+```
+
+
+```{r, include=FALSE}
 transfers_clean %>% 
   filter(
     direction %in% c("Inflow", "Outflow"),
