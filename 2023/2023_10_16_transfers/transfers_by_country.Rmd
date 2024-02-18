@@ -77,17 +77,6 @@ transfers_clean %>%
   
 ```
 
-```{r}
-transfers_clean %>% 
-  filter(
-    direction == "Inflow",
-    country == "Russian Federation",
-    type == "total"
-  ) %>% 
-  mutate(yay = roll_sumr(K_USD, 12)) %>% 
-  view()
-```
-
 
 
 ```{r chart_1, include=FALSE}
@@ -204,21 +193,40 @@ chart_3 <-
 ```{r, include=FALSE}
 # # new ideas
 # 
-# transfers_date %>% 
+# new_palette_colors <- c(
+#   "#003f5c", "#2f4b7c", "#665191", "#a05195",
+#   "#d45087", "#f95d6a", "#ff7c43", "#ffa600"
+# )
+# colfunc <- colorRampPalette(c("#2f4b7c", "#fffcf5", "#f95d6a"))
+# colfunc2 <- colorRampPalette(new_palette_colors)
+# colfunc3 <- colorRampPalette(c("#005C4B", "#003f5c", "#2f4b7c", "#665191", "#a05195", "#f95d6a", "#ff7c43", "#ffa600", "#FFD17A", "#FFFCF5"))
+# 
+# update_geom_defaults("rect", list(fill  = new_palette_colors[2], alpha = 0.8))
+# update_geom_defaults("line", list(color = new_palette_colors[2], alpha = 0.8))
+# update_geom_defaults("area", list(fill  = new_palette_colors[2], alpha = 0.8))
+# 
+# caption_arm <-  "Հեղինակ` Աղասի Թավադյան   |   tvyal.com   |   tavadyan.com"
+# caption_eng <-  "Author: Aghasi Tavadyan   |   tvyal.com   |   tavadyan.com"
+# 
+# 
+# ################
+# 
+# transfers_date %>%
 #   mutate(
 #     date = date + months(1) - days(1),
 #     country = fct_reorder(country, K_USD_YOY, .desc = TRUE),
 #     country = fct_relevel(country, "Others", after = Inf)
-#   ) |> 
-#   filter(date >= ymd("2019-12-30")) |> 
+#   ) |>
+#   filter(date >= ymd("2019-12-30")) |>
 #   ggplot(aes(date, K_USD_YOY / 1e6, fill = country)) +
 #   geom_area() +
 #   facet_wrap(~direction) +
 #   scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
 #   scale_y_continuous(breaks = 0:7, labels = number_format(accuracy = 1)) +
 #   scale_fill_manual(values = colfunc3(11)) +
+#   # scale_fill_brewer(type = "qual", palette = 3) +
 #   labs(
-#     x = NULL, 
+#     x = NULL,
 #     y = NULL,
 #     fill = NULL,
 #     title = "Transfers made by individuals through the banking system of Armenia",
