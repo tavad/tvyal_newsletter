@@ -34,7 +34,11 @@ theme_tvyal <- function(base_size = 12, base_family = "sans")
         legend.direction = "horizontal",
         legend.box = "vertical",
         panel.grid = element_line(colour = NULL),
-        panel.grid.major = element_line(
+        panel.grid.major.x = element_line(
+          colour = colors["Medium Gray"], 
+          linetype = "dotted"
+        ),
+        panel.grid.major.y = element_line(
           colour = colors["Medium Gray"], 
           linetype = "dotted"
         ),
@@ -190,6 +194,9 @@ transfers_total_chart <-
     title = "Transfers made by individuals through the banking system of Armenia",
     subtitle = "In a Year, Billions of USD",
     caption =paste0(caption_eng, "   |   Data Source: CBA.am")
+  ) |> 
+  theme(
+     panel.grid.major.x = element_blank()
   )
 
 ```
