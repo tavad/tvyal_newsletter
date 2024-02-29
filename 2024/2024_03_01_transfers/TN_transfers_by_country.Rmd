@@ -13,6 +13,7 @@ library(scales)
 library(readxl)
 library(RcppRoll)
 library(hpfilter)
+library(gt)
 
 rm(list = ls()); gc()
 
@@ -97,6 +98,8 @@ setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 # system("curl https://www.cba.am/stat/stat_data_eng/5_Money_transfers_of_individuals_by_countries-eng.xlsx -o transfers_by_countries.xlsx")
 
 transfers_raw <- read_excel("transfers_by_countries.xlsx")
+
+transfers_forecast <- read_csv("transfers_forecast.csv")
 ```
 
 
@@ -307,6 +310,136 @@ transfers_clean |>
   )
 ```
 
+```{r, include=FALSE}
+transfers_forecast_plot <- 
+  transfers_forecast %>%
+  filter(
+    type == "total", 
+    # direction == "Net inflow",
+    !grepl("arima|bats", model_name),
+    date >= ym("2019-01"),
+    period == "YoY"
+  ) |> 
+  mutate(
+    across(where(is.numeric), ~.x / 1e6),
+    direction = factor(direction, levels = c("Inflow", "Outflow", "Net inflow"))
+  ) |> 
+  ggplot(aes(date, K_USD, color = model_name, lty = model_name)) +
+  facet_wrap(~direction, scales = "free_y") +
+  geom_line(linewidth = 1) +
+  geom_ribbon(aes(ymin = ribbon_low, ymax = ribbon_high), alpha = .2) +
+  scale_x_date(date_breaks = "2 year", date_labels = "%Y") +
+  scale_y_continuous(labels = number_format(), n.breaks = 7) +
+  scale_color_manual(values = new_palette_colors[c(2,5,7,8,4)]) +
+  scale_linetype_manual(values = c(1, 2, 2, 2, 2)) +
+  labs(
+    x = NULL,
+    y = NULL,
+    color = "Model name",
+    linetype = "Model name",
+    title = "Transfers made by individuals through the banking system of Armenia",
+    subtitle = "Year over Year, Billions of USD",
+    caption =paste0(caption_eng, "   |   Data Source: CBA.am")
+  ) +
+  theme(
+    panel.grid.minor.x = element_line(
+      colour = "lightgray", 
+      linetype = "dotted"
+    )
+  )
+
+############
+
+last_date_value <- 
+  transfers_forecast |> 
+  filter(date == max(date)) |> 
+  pull(date) |> 
+  unique()
+
+gt_table_transfers <- 
+  transfers_forecast |>
+  filter(
+    month(date) == 12,
+    period == "YoY",
+    type == "total",
+    grepl("stlm|Data", model_name),
+    !c(!grepl("Data", model_name) & date == ymd(last_date_value))
+  ) |>
+  filter(date != max(date)) |>
+  arrange(type, direction, date) |>
+  group_by(type, direction) |>
+  mutate(
+    year = year(date),
+    across(matches("ribbon"), ~ifelse(is.na(.x), K_USD, .x)),
+    pct_change = ifelse(
+      ribbon_low == K_USD,
+      ifelse(
+        K_USD / lag(K_USD) < 2,
+        percent(K_USD / lag(K_USD) - 1, accuracy = 0.1),
+        paste(number(K_USD / lag(K_USD), accuracy = 0.01), "times")
+      ),
+      paste0(
+        percent(K_USD / lag(K_USD) - 1, accuracy = 0.1),
+        " (from\n", percent(ribbon_low / lag(ribbon_low) - 1, accuracy = 0.1),  " to ",
+        percent(ribbon_high / lag(ribbon_high) - 1, accuracy = 0.1), ")"
+      )
+    ),
+    across(matches("K_USD|ribbon"), ~number(.x/1000, accuracy = 0.1)),
+    K_USD = ifelse(
+      ribbon_low == K_USD,
+      K_USD,
+      paste0(
+        K_USD, " (from\n", ribbon_low, " to ", ribbon_high, ")"
+      )
+    ),
+    # year = ifelse(ribbon_low == K_USD, year, paste(year, "\nforecast"))
+  ) |>
+  ungroup() |>
+  filter(
+    date >= ym("2018-01")
+  ) |>
+  select(year, direction, K_USD, pct_change) |>
+  mutate(
+    direction = factor(direction, levels = c("Inflow", "Outflow", "Net inflow"))
+  ) |>
+  arrange(direction) |>
+  pivot_wider(
+    names_from = direction, values_from = c(K_USD, pct_change),
+    names_vary = "slowest"
+  ) |> 
+  gt() |> 
+  cols_label(
+    year = "Year",
+    K_USD_Inflow = "Million USD",
+    pct_change_Inflow = "growth %",
+    K_USD_Outflow = "Million USD",
+    pct_change_Outflow = "growth %",
+    `K_USD_Net inflow` = "Million USD",
+    `pct_change_Net inflow` = "growth %"
+  ) |> 
+  tab_spanner(
+    label = "Inflow",
+    columns = contains("_Inflow")
+  ) |>
+  tab_spanner(
+    label = "Outflow",
+    columns = contains("_Outflow")
+  ) |>
+  tab_spanner(
+    label = "Net Inflow",
+    columns = contains("Net inflow")
+  ) |> 
+  tab_header(
+    title = "Armenia's Household Demographics",
+    subtitle = "Summary of demographic and income information in 2022"
+  ) |> 
+  tab_footnote(
+    footnote = paste0(caption_eng, "    |    Data Source: cba")
+  )
+
+```
+
+
 
 ```{r russia_transfers, include=FALSE}
 
@@ -502,11 +635,23 @@ chart_2
 
 *Գծապատկեր 3.* ՀՀ բանկային համակարգի միջոցով կատարված դրամական փոխանցումներ (ամսական կտրվածքով, մլն ԱՄՆ դոլար)։
 
-```{r, echo=FALSE, fig.width = 12, fig.height = 8}
-chart_3
+<!-- ```{r, echo=FALSE, fig.width = 12, fig.height = 8} -->
+<!-- chart_3 -->
+<!-- ``` -->
+
+```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
+transfers_forecast_plot
 ```
 
+
 Ինչպես երևում է գծապատկերից բանկային փոխանցումները հասել էին իրենց պիկային կետին 2023 թվականի սկզբին և այժմ դրանց ծավալը փոքրանում է։ Այստեղ հնարավոր է երկու սցենար կամ փոխանցումները շարունակում են անկում գրանցել և 2023թ վերջ բանկային փոխանցումները 10-25 տոկոսով ավելի քիչ են լինելու քան նախորդ տարի, կամ էլ առաջին մասում նկարագրված սցենարը իրականանում է և այս տարվա բանկային փոխանցումները հավասարազոր են լինելու կամ որոշ չափով գարազանցելու են նախորդ տարվա ցուացնիշները։
+
+*Աղյուսակ 1.* ՀՀ բանկային համակարգի միջոցով կատարված դրամական փոխանցումներ (ամսական կտրվածքով, մլն ԱՄՆ դոլար)։
+
+```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
+gt_table_transfers
+```
+
 
 Քանի որ բանկային փոխանցումների մոտ 70 տոկոսը գալիս է Ռուսաստանի դաշնությունից, դիտարկենք նաև առանձին ՌԴ-ից կատարված բանկային փոխանցումները
 
