@@ -100,37 +100,38 @@ transfers_raw <- read_excel("transfers_by_countries.xlsx")
 
 transfers_clean <-
   transfers_raw %>%
-  t(.) %>% as_tibble() %>%
+  t(.) |> as_tibble() |>
   # row_to_names is the function that gives the warning
-  janitor::row_to_names(row_number = 1) %>%
+  janitor::row_to_names(row_number = 1) |>
   rename(
     na = 1,
     year = 2,
     month = 3,
     direction = 4
-  ) %>%
-  select(-na) %>%
+  ) |>
+  select(-na) |>
   mutate(
     type = case_when(
       grepl("of which", month) ~ "non-commercial",
       !grepl("of which", month) & !is.na(month) ~ "total"
     ),
-    month = ifelse(grepl("of which", month), NA, month)
-  ) %>%
-  fill(year, month, type, .direction = "down") %>%
+    month = ifelse(grepl("of which", month), NA, month),
+  ) |>
+  fill(year, month, type, .direction = "down") |>
   pivot_longer(
     -c(year, month, direction, type),
     names_to = "country", values_to = "K_USD"
-  ) %>%
+  ) |>
   mutate(
     K_USD = as.numeric(K_USD),
     month_name = month,
     month = c(1:12)[match(month_name, month.name)],
-    date = ym(paste(year, month))
-  ) %>%
+    date = ym(paste(year, month)),
+    date = date + months(1) - days(1)
+  ) |>
   relocate(date, year, month, month_name, country, direction, type, K_USD)
 
-transfers_clean %>%
+transfers_clean |>
   write_excel_csv("transfers_by_countries_clean.csv")
 
 ```
@@ -139,13 +140,13 @@ transfers_clean %>%
 
 ```{r chart_1, include=FALSE}
 max_month <-
-  transfers_clean %>%
-  filter(date == max(date)) %>%
-  pull(month) %>%
+  transfers_clean |>
+  filter(date == max(date)) |>
+  pull(month) |>
   unique()
 
 transfers_total_chart <-
-  transfers_clean %>%
+  transfers_clean |>
   filter(
     # month <= max_month,
     direction %in% c("Inflow", "Outflow"),
@@ -153,9 +154,8 @@ transfers_total_chart <-
     type == "total",
     country != "Total",
     # year <= 2022
-  ) %>%
+  ) |>
   mutate(
-    date = date + months(1) - days(1),
     country = case_when(
       grepl("Emirates", country) ~ "UAE",
       grepl("Kingdom", country) ~ "UK",
@@ -168,15 +168,15 @@ transfers_total_chart <-
     country = fct_reorder(country, K_USD, .desc = TRUE),
     country = fct_relevel(country, "Others", after = Inf)
   ) |>
-  group_by(year, country, direction, type) %>%
-  summarise(K_USD = sum(K_USD), .groups = "drop") %>%
-  group_by(year, direction, type) %>%
+  group_by(year, country, direction, type) |>
+  summarise(K_USD = sum(K_USD), .groups = "drop") |>
+  group_by(year, direction, type) |>
   mutate(
     pct = K_USD / sum(K_USD),
     pct_text = percent(pct, accuracy = 0.1),
     pct_text = ifelse(K_USD <= 1e5, "", pct_text)
-  ) %>%
-  ungroup() %>%
+  ) |>
+  ungroup() |>
   ggplot(aes(year, K_USD / 1e6, fill = country)) +
   geom_col() +
   geom_text(aes(label = pct_text),  position = position_stack(vjust = .5)) +
@@ -196,13 +196,13 @@ transfers_total_chart <-
 
 ```{r charts 2&3, include=FALSE}
 transfers_date <-
-  transfers_clean %>%
+  transfers_clean |>
   filter(
     direction %in% c("Inflow", "Outflow"),
     # type == "non-commercial",
     type == "total",
     country != "Total",
-  ) %>%
+  ) |>
   mutate(
     country = case_when(
       grepl("Emirates", country) ~ "UAE",
@@ -213,20 +213,19 @@ transfers_date <-
       country, n = 10, w = K_USD,
       other_level = "Others"
     )
-  ) %>%
-  group_by(date, country, direction, type) %>%
-  summarise(K_USD = sum(K_USD), .groups = "drop") %>%
-  arrange(country, direction, type, date) %>%
-  group_by(country, direction, type) %>%
-  mutate(K_USD_YOY = roll_sumr(K_USD, 12)) %>%
-  ungroup() %>%
+  ) |>
+  group_by(date, country, direction, type) |>
+  summarise(K_USD = sum(K_USD), .groups = "drop") |>
+  arrange(country, direction, type, date) |>
+  group_by(country, direction, type) |>
+  mutate(K_USD_YOY = roll_sumr(K_USD, 12)) |>
+  ungroup() |>
   na.omit()
 
 
 chart_2 <- 
-  transfers_date %>%
+  transfers_date |>
   mutate(
-    date = date + months(1) - days(1),
     country = fct_reorder(country, K_USD_YOY, .desc = TRUE),
     country = fct_relevel(country, "Others", after = Inf)
   ) |>
@@ -248,9 +247,8 @@ chart_2 <-
   )
 
 chart_3 <-
-  transfers_date %>%
+  transfers_date |>
   mutate(
-    date = date + months(1) - days(1),
     country = fct_reorder(country, K_USD_YOY, .desc = TRUE),
     country = fct_relevel(country, "Others", after = Inf)
   ) |>
@@ -274,21 +272,21 @@ chart_3 <-
 
 
 ```{r, include=FALSE}
-transfers_clean %>%
+transfers_clean |>
   filter(
     direction %in% c("Inflow", "Outflow"),
     direction == "Outflow",
     type == "total",
     country != "Total",
     year >= 2022
-    ) %>%
+    ) |>
   mutate(
     country = fct_lump_n(country, n = 11, w = K_USD,
                          other_level = "Other_countries")
-  ) %>%
-  group_by(date, country, direction, type) %>%
-  summarise(K_USD = sum(K_USD), .groups = "drop") %>%
-  mutate(country = fct_reorder(country, K_USD)) %>%
+  ) |>
+  group_by(date, country, direction, type) |>
+  summarise(K_USD = sum(K_USD), .groups = "drop") |>
+  mutate(country = fct_reorder(country, K_USD)) |>
   ggplot(aes(date, K_USD / 1e3, fill = country)) +
   geom_area() +
   scale_x_date(date_breaks = "2 months", date_labels = "%m %Y") +
@@ -306,18 +304,18 @@ transfers_clean %>%
 ```{r russia_transfers, include=FALSE}
 
 russia_transfers <-
-  transfers_clean %>%
+  transfers_clean |>
   filter(
     # country == "Total",
     country == "Russian Federation",
     direction == "Inflow"
-  ) %>%
+  ) |>
   filter(year >= 2019) |> 
-  arrange(country, direction, type, date) %>%
-  group_by(country, direction, type) %>%
-  mutate(K_USD_YOY = roll_sumr(K_USD, n = 12)) %>%
-  ungroup() %>%
-  mutate(type = fct_rev(type)) %>%
+  arrange(country, direction, type, date) |>
+  group_by(country, direction, type) |>
+  mutate(K_USD_YOY = roll_sumr(K_USD, n = 12)) |>
+  ungroup() |>
+  mutate(type = fct_rev(type)) |>
   ggplot(aes(date, K_USD / 1e3, color = type)) +
   geom_line(linewidth = 1.2) +
   scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
@@ -337,17 +335,17 @@ russia_transfers <-
 
 ```{r, include=FALSE}
 # GDP <-
-#   read_csv("~/R/projects/GDP/GDP_expenditure.csv") %>%
-#   filter(abb_code == "gdp") %>%
-#   transmute(date, gdp_usd = value_usd_yoy) %>%
+#   read_csv("~/R/projects/GDP/GDP_expenditure.csv") |>
+#   filter(abb_code == "gdp") |>
+#   transmute(date, gdp_usd = value_usd_yoy) |>
 #   filter(!is.na(gdp_usd))
 #
-# transfers_clean %>%
+# transfers_clean |>
 #   filter(
 #     country != "Total",
 #     direction == "Inflow",
 #     type == "non-commercial"
-#   ) %>%
+#   ) |>
 #   mutate(
 #     country = case_when(
 #       grepl("Emirates", country) ~ "UAE",
@@ -358,19 +356,19 @@ russia_transfers <-
 #       country, n = 5, w = K_USD,
 #       other_level = "Others"
 #     )
-#   ) %>%
-#   group_by(date, country, direction, type) %>%
-#   summarise(K_USD = sum(K_USD), .groups = "drop") %>%
-#   arrange(country, direction, type, date) %>%
-#   group_by(country, direction, type) %>%
-#   mutate(K_USD_YOY = roll_sumr(K_USD, 12)) %>%
-#   ungroup() %>%
-#   na.omit() %>%
-#   mutate(date = date + months(1) - days(1)) %>%
-#   right_join(GDP) %>%
+#   ) |>
+#   group_by(date, country, direction, type) |>
+#   summarise(K_USD = sum(K_USD), .groups = "drop") |>
+#   arrange(country, direction, type, date) |>
+#   group_by(country, direction, type) |>
+#   mutate(K_USD_YOY = roll_sumr(K_USD, 12)) |>
+#   ungroup() |>
+#   na.omit() |>
+#   mutate(date = date + months(1) - days(1)) |>
+#   right_join(GDP) |>
 #   mutate(
 #     pct = (K_USD_YOY / 1000) / gdp_usd
-#   ) %>%
+#   ) |>
 #   ggplot(aes(date, pct, fill = country)) +
 #   geom_area() +
 #   scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
@@ -386,31 +384,31 @@ russia_transfers <-
 
 
 transfers_commercial_russian <-
-  transfers_clean %>%
+  transfers_clean |>
   filter(
     # country == "Total",
     country == "Russian Federation",
     direction == "Inflow"
-  ) %>%
-  pivot_wider(names_from = type, values_from = K_USD) %>%
-  janitor::clean_names() %>%
-  mutate(commercial = total - non_commercial) %>%
+  ) |>
+  pivot_wider(names_from = type, values_from = K_USD) |>
+  janitor::clean_names() |>
+  mutate(commercial = total - non_commercial) |>
   select(date, commercial)
 
 
-transfers_commercial_russian %>%
-  select(commercial) %>%
-  hp2() %>%
-  rename(commercial_trend = commercial) %>%
-  bind_cols(transfers_commercial_russian) %>%
-  as_tibble() %>%
-  mutate(commercial_cycle = commercial - commercial_trend) %>%
-  pivot_longer(contains("commercial")) %>%
+transfers_commercial_russian |>
+  select(commercial) |>
+  hp2() |>
+  rename(commercial_trend = commercial) |>
+  bind_cols(transfers_commercial_russian) |>
+  as_tibble() |>
+  mutate(commercial_cycle = commercial - commercial_trend) |>
+  pivot_longer(contains("commercial")) |>
   mutate(
     facet = ifelse(name == "commercial_cycle", "cycle", "price"),
     facet = fct_rev(facet)
-  ) %>%
-  filter(date >= as.Date("2020-01-01")) %>%
+  ) |>
+  filter(date >= as.Date("2020-01-01")) |>
   ggplot(aes(date, value, color = name)) +
   geom_line()+
   facet_wrap(~facet, nrow = 2, scales = "free_y")
