@@ -34,8 +34,10 @@ theme_tvyal <- function(base_size = 12, base_family = "sans")
         legend.direction = "horizontal",
         legend.box = "vertical",
         panel.grid = element_line(colour = NULL),
-        panel.grid.major.x = element_line(colour = colors["Medium Gray"]),
-        panel.grid.major.y = element_line(colour = colors["Medium Gray"]),
+        panel.grid.major = element_line(
+          colour = colors["Medium Gray"], 
+          linetype = "dotted"
+        ),
         panel.grid.minor = element_blank(),
         plot.title = element_text(hjust = 0, size = rel(1.5), face = "bold"),
         plot.margin = unit(c(1, 1, 1, 1), "lines"), strip.background = element_rect()
@@ -153,16 +155,19 @@ transfers_total_chart <-
     # year <= 2022
   ) %>%
   mutate(
+    date = date + months(1) - days(1),
     country = case_when(
       grepl("Emirates", country) ~ "UAE",
       grepl("Kingdom", country) ~ "UK",
       TRUE ~ country
     ),
     country = fct_lump_n(
-      country, n = 11, w = K_USD,
+      country, n = 10, w = K_USD,
       other_level = "Others"
-    )
-  ) %>%
+    ),
+    country = fct_reorder(country, K_USD, .desc = TRUE),
+    country = fct_relevel(country, "Others", after = Inf)
+  ) |>
   group_by(year, country, direction, type) %>%
   summarise(K_USD = sum(K_USD), .groups = "drop") %>%
   group_by(year, direction, type) %>%
@@ -176,9 +181,11 @@ transfers_total_chart <-
   geom_col() +
   geom_text(aes(label = pct_text),  position = position_stack(vjust = .5)) +
   facet_wrap(~direction) +
-  scale_y_continuous(labels = number_format(accuracy = 1)) +
-  scale_fill_brewer(type = "qual", palette = 3) +
+  scale_y_continuous(labels = number_format(accuracy = 1), n.breaks = 6) +
+  scale_fill_manual(values = colfunc3(10)) +
   labs(
+    x = NULL,
+    y = NULL,
     fill = NULL,
     title = "Transfers made by individuals through the banking system of Armenia",
     subtitle = "In a Year, Billions of USD",
@@ -238,9 +245,6 @@ chart_2 <-
     title = "Transfers made by individuals through the banking system of Armenia",
     subtitle = "Year over Year, Billions of USD",
     caption =paste0(caption_eng, "   |   Data Source: CBA.am")
-  ) +
-  theme(
-    panel.grid.major = element_line(linetype = "dotted")
   )
 
 chart_3 <-
@@ -258,6 +262,8 @@ chart_3 <-
   scale_y_continuous(labels = number_format(accuracy = 1)) +
   scale_fill_manual(values = colfunc3(10)) +
   labs(
+    x = NULL,
+    y = NULL,
     fill = NULL,
     title = "Transfers made by individuals through the banking system of Armenia",
     subtitle = "On Monthly Basis, Millions of USD",
@@ -315,9 +321,11 @@ russia_transfers <-
   ggplot(aes(date, K_USD / 1e3, color = type)) +
   geom_line(linewidth = 1.2) +
   scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
-  scale_y_continuous(labels = number_format()) +
-  scale_color_manual(values = c("#1F78B4", "#33A02C")) +
+  scale_y_continuous(labels = number_format(), n.breaks = 6) +
+  scale_color_manual(values = new_palette_colors[c(2,6)]) +
   labs(
+    x = NULL,
+    y = NULL,
     color = NULL,
     title = "Transfers Received from Russia",
     subtitle = "On Monthly Basis, Millions of USD",
