@@ -157,13 +157,14 @@ GDP_year_pct <-
     date = as.numeric(date),
     vol_YoY_pct = vol_YoY_pct / 100
   ) |> 
-  bind_rows(
-    tibble(
-      date = 2023, vol_YoY_pct = 1.07032
-    )
-  ) |> 
+  # bind_rows(
+  #   tibble(
+  #     date = 2023, vol_YoY_pct = 1.07032 # 1.087
+  #   )
+  # ) |> 
   select(date, vol_YoY_pct)
 
+GDP_year_pct |> view()
 
 GDP_year_pct |> 
   summarise(
@@ -173,12 +174,13 @@ GDP_year_pct |>
 	
 1.043263
 
+
 GDP_year_pct |> 
   mutate(cum_growth = cumprod(vol_YoY_pct)) |> 
   ggplot(aes(date, cum_growth)) +
   geom_line() +
   geom_smooth(method = "lm") +
   scale_y_log10() +
-  scale_x_continuous(breaks = 2012:2023)
+  scale_x_continuous(breaks = 2012:2024)
 ```
 
