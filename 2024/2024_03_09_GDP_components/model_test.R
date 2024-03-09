@@ -13,7 +13,8 @@ GDP_quarter <- read_csv("GDP_quarter_tidy.csv")
 
 GDP_quarter_model_data <- 
   GDP_quarter |> 
-  transmute(date = yq(date), eng, volume =vol_YoY_pct/100) |> 
+  # transmute(date = yq(date), eng, volume =vol_YoY_pct/100) |> 
+  transmute(date = yq(date), eng, volume = production_month) |> 
   na.omit()
 
 max_date <- GDP_quarter_model_data$date |> max()
@@ -32,7 +33,7 @@ GDP_quarter_time_extended_monthly_tbl <-
   group_by(eng) |> 
   future_frame(.date_var = date, .length_out = 4, .bind_data = TRUE) |>
   tk_augment_lags(volume, .lags = c(4, 6)) |> 
-  tk_augment_slidify(volume_lag4, .period = c(2,4,6), .f = mean, .partial = TRUE) |> 
+  tk_augment_slidify(volume_lag4, .period = c(2,4,6), .f = prod, .partial = TRUE) |> 
   ungroup() |> 
   drop_na(volume_lag6, volume_lag4_roll_6)
 
@@ -144,3 +145,198 @@ modeltime_calib_tbl |>
   modeltime_accuracy(acc_by_id = TRUE) |> 
   group_by(eng) |> 
   table_modeltime_accuracy()
+
+### Test Forecast Visualization
+
+test_forecast_tbl <- modeltime_calib_tbl |> 
+  modeltime_forecast(
+    new_data = testing(splits),
+    actual_data = GDP_actual,
+    conf_by_id = TRUE,
+    conf_method = "conformal_default",
+    keep_data = TRUE
+  )
+
+test_forecast_tbl
+
+
+test_forecast_tbl |> 
+  filter(eng %in% unique(eng)[1:10]) |> 
+  group_by(eng) |> 
+  plot_time_series(
+    date, volume, 
+    .title = NULL,
+    .trelliscope = TRUE
+  )
+
+##7 Performance Evaluation for the next year
+
+total_clv_prediction <- 
+  test_forecast_tbl |> 
+  filter(!is.na(.model_id)) |> 
+  group_by(.model_id, .model_desc, eng) |> 
+  summarise(
+    prediction = mean(.value),
+    actual = mean(volume)
+  ) |> 
+  ungroup()
+  
+total_clv_prediction |> 
+  group_by(.model_id, .model_desc) |> 
+  mae(actual, prediction)
+
+### Prediction Quality
+
+g <- total_clv_prediction |> 
+  ggplot(aes(actual, prediction, color = .model_desc)) +
+  geom_point() +
+  geom_smooth(aes(group = .model_desc), method = "lm", se = FALSE) +
+  geom_abline(slope = 1, intercept = 0) +
+  coord_fixed()
+
+plotly::ggplotly(g)
+
+##8 Ensemble Model
+
+### creating model
+model_ensemble <- modeltime_calib_tbl |> 
+  modeltime.ensemble::ensemble_weighted(loadings = c(0,0.5,1,0))
+
+### Calibrating model
+modeltime_calib_2_tbl <- 
+  modeltime_calib_tbl |> 
+  add_modeltime_model(model_ensemble) |> 
+  modeltime_calibrate(testing(splits), id = "eng")
+
+### Global accuracy
+modeltime_calib_2_tbl |> 
+  modeltime_accuracy(acc_by_id = FALSE) |> 
+  table_modeltime_accuracy()
+
+modeltime_calib_2_tbl |> 
+  modeltime_accuracy(acc_by_id = TRUE) |> 
+  group_by(eng) |> 
+  table_modeltime_accuracy()
+
+# test Forecast
+
+test_forecast_2_tbl <- modeltime_calib_2_tbl |> 
+  modeltime_forecast(
+    new_data = testing(splits),
+    actual_data = GDP_actual,
+    conf_by_id = TRUE,
+    conf_method = "conformal_default",
+    keep_data = TRUE
+  )
+
+total_clv_prediction_2 <- 
+  test_forecast_2_tbl |> 
+  filter(!is.na(.model_id)) |> 
+  group_by(.model_id, .model_desc, eng) |> 
+  summarise(
+    prediction = mean(.value),
+    actual = mean(volume)
+  ) |> 
+  ungroup()
+
+total_clv_prediction_2 |> 
+  group_by(.model_id, .model_desc) |> 
+  mae(actual, prediction)
+
+total_clv_prediction_2 |> 
+  group_by(.model_id, .model_desc) |> 
+  rmse(actual, prediction)
+
+### prediction Quolity
+
+g_2 <- total_clv_prediction_2 |> 
+  ggplot(aes(actual, prediction, color = .model_desc)) +
+  geom_point() +
+  geom_smooth(aes(group = .model_desc), method = "lm", se = FALSE) +
+  geom_abline(slope = 1, intercept = 0) +
+  coord_fixed()
+
+plotly::ggplotly(g_2)
+
+## 9. FUTURE FORECAST
+
+# refit
+refit_table <- modeltime_calib_2_tbl |> 
+  dplyr::slice(5) |> #the best model is 3
+  modeltime_refit(data = GDP_actual)
+
+future_forecast_tbl <- refit_table |> 
+  modeltime_forecast(
+    new_data = GDP_future,
+    actual_data = GDP_actual,
+    conf_by_id = TRUE,
+    conf_method = "conformal_default",
+    keep_data = TRUE
+  )
+
+future_forecast_tbl |> 
+  filter(grepl("Domestic p", eng)) |> 
+  ggplot(aes(date, .value, color = .model_desc)) +
+  geom_ribbon(aes(ymin = .conf_lo, ymax = .conf_hi), alpha = 0.2) +
+  geom_line()
+
+future_forecast_tbl |> 
+  filter(grepl("Domestic p", eng)) |> 
+  select(date, .model_desc, .value, matches("conf")) |> 
+  mutate(
+    gdp_growth = .value / lag(.value, 4),
+    date = ymd(date)
+  ) |> 
+  view()
+  
+future_forecast_tbl |> 
+  filter(grepl("Domestic p", eng)) |> 
+  mutate(
+    gdp_growth = .value / lag(.value, 4),
+    date = ymd(date)
+  ) |> 
+  left_join(
+    GDP_quarter |> 
+      filter(grepl("Domestic p", eng)) |> 
+      transmute(date = yq(date), vol_YoY_pct = vol_YoY_pct / 100),
+    by = "date"
+  ) |> 
+  ggplot(aes(date, gdp_growth, color =  .model_desc)) +
+  geom_line() +
+  # geom_ribbon(aes(ymin = .conf_lo, ymax = .conf_hi), alpha = 0.2) +
+  geom_line(aes(date, vol_YoY_pct), color = "blue")
+  
+future_forecast_tbl |> 
+  write_csv("future_gdp_forecast.csv")
+
+
+future_forecast_tbl |> 
+  filter(grepl("Domestic p", eng)) |> 
+  # filter(eng %in% unique(eng)[1:10]) |> 
+  group_by(eng) |> 
+  plot_modeltime_forecast(
+    .trelliscope = TRUE
+  )
+
+## 11  Feature importance
+
+wflw_xgb |> 
+  extract_fit_engine() %>%
+  xgboost::xgb.importance(model = .) |> 
+  as_tibble()
+
+## 10 business impact
+
+ranked_future_churn <- 
+  future_forecast_tbl |> 
+  filter(!is.na(.model_id)) |> 
+  group_by(eng) |> 
+  summarise(sum_value = sum(.value)) |> 
+  arrange(desc(sum_value))
+
+ranked_future_churn |> head(10)
+
+ranked_future_churn |> tail(10)
+
+
+  

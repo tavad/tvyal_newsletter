@@ -159,6 +159,22 @@ GDP_annual  <-
   mutate(year = as.integer(year))
 
 GDP_annual |> write_excel_csv("GDP_annual_tidy.csv")
+
+# GDP_annual <- 
+#   read_csv("future_gdp_forecast.csv") |> 
+#   group_by(eng) |> 
+#   arrange(eng) |> 
+#   mutate(
+#     vol_YoY_pct = .value / lag(.value, 4),
+#     year = year(date),
+#     month = month(date)
+#   ) |> 
+#   ungroup() |> 
+#   filter(month == max(month)) |> 
+#   left_join(
+#     select(GDP_annual, code, eng) |> unique(), by = "eng"
+#   ) |> 
+#   transmute(code, eng, year, production = .value, vol_YoY_pct = vol_YoY_pct * 100)
 ```
 
 
@@ -520,7 +536,7 @@ GDP_contribution_plot_generator <-
     
   }
 
-# GDP_contribution_plot_generator(GDP_annual_contribution, year_ = 2022)
+GDP_contribution_plot_generator(GDP_annual_contribution, year_ = 2024)
 
 ```
 
