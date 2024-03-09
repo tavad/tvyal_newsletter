@@ -527,32 +527,55 @@ GDP_contribution_plot_generator <-
 
 
 ```{r, include=FALSE}
-# GDP_quarter  |>
-#    # filter(!is.na(code) | grepl("Domestic product .gross", eng)) |>
-#   filter(grepl("Domestic product .gross", eng)) |>
 
+biggest_gdp_contributers <- 
+  GDP_quarter |> 
+  mutate(
+    date = yq(date) + months(3) - days(1),
+    year = year(date)
+  ) |> 
+  filter(
+    !is.na(code),
+    year == max(year)
+  ) |> 
+  group_by(code) |> 
+  summarise(production = sum(production_month)) |> 
+  slice_max(order_by = production, n = 9) |> 
+  pull(code)
 
-#   mutate(
-#     date = yq(date) + months(3) - days(1),
-#     year = year(date),
-#     # eng = str_trunc(eng, 40),
-#     # eng = paste0(code, ". ", eng),
-#   ) |>
-#   group_by(code, eng) |>
-#   mutate(
-#     production_yoy = roll_sumr(production_month, 4) / 1e3,
-#     vol_pct_2 = production_yoy / lag(production_yoy, n = 4)
-#   ) |>
-#   ungroup() |>
-#   slice_head(n = 20) |>
-#   select(-code, -arm, -rus)
-#   view()
-#
-#   ggplot(aes(date, vol_YoY_pct, color = eng)) +
-#   geom_line()
-#
-# plotly::ggplotly(pp)
-  
+GDP_quarter  |>view()
+  # filter(!is.na(code) | grepl("Domestic product .gross", eng)) |> 
+  filter(code %in% biggest_gdp_contributers) |> 
+  # filter(grepl("Domestic product .gross", eng)) |>  
+  mutate(
+    vol_YoY_pct = vol_YoY_pct / 100,
+    date = yq(date) + months(3) - days(1),
+    year = year(date),
+    eng = str_trunc(eng, 40),
+    eng = ifelse(is.na(code), eng, paste0(code, ". ", eng))
+  ) |>
+  group_by(code, eng) |>
+  mutate(
+    production_yoy = roll_sumr(production_month, 4) / 1e3,
+    vol_pct_2 = production_yoy / lag(production_yoy, n = 4) - 1,
+    vol_YoY_pct = vol_YoY_pct - 1
+  ) |>
+  ungroup() |>
+  select(-code, -arm, -rus) |> 
+  ggplot(aes(date, vol_YoY_pct, color = eng)) +
+  facet_wrap(~eng, scales = "free_y") +
+  geom_hline(yintercept = 0, color = "gray") +
+  geom_smooth(method = "glm") +
+  geom_line() +
+  scale_y_continuous(labels = percent_format()) +
+  labs(
+    x = NULL,
+    y = NULL
+  ) +
+  theme(
+    legend.position = "none"
+  )
+
 ```
 
 
