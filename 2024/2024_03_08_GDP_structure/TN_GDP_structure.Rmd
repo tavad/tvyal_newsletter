@@ -1,7 +1,7 @@
 ---
 title: "Tvyal Newsletter"
 author: "Aghasi Tavadyan"
-date: "2023-12-18"
+date: "2024-03-09"
 output: html_document
 ---
 
@@ -16,26 +16,33 @@ library(readxl)
 
 rm(list = ls()); gc()
 
-theme_tvyal <- function(base_size = 12, base_family = "sans") 
+theme_tvyal <- function(base_size = 12, base_family = "sans")
 {
   colors <- deframe(ggthemes::ggthemes_data[["fivethirtyeight"]])
   (ggthemes::theme_foundation(
-    base_size = base_size, base_family = base_family) + 
+    base_size = base_size, base_family = base_family) +
       theme(
-        line = element_line(colour = "black"), 
+        line = element_line(colour = "black"),
         rect = element_rect(fill = "white", linetype = 0, colour = NA),
-        text = element_text(colour = colors["Dark Gray"]), 
+        text = element_text(colour = colors["Dark Gray"]),
         # axis.title = element_blank(),
-        # axis.text = element_text(), 
+        # axis.text = element_text(),
         axis.ticks = element_blank(),
-        axis.line = element_blank(), 
-        legend.background = element_rect(), 
-        legend.position = "bottom", 
-        legend.direction = "horizontal", 
-        legend.box = "vertical", 
-        panel.grid = element_line(colour = NULL), 
-        panel.grid.major = element_line(colour = colors["Medium Gray"]), 
-        panel.grid.minor = element_blank(), 
+        axis.line = element_blank(),
+        legend.background = element_rect(),
+        legend.position = "bottom",
+        legend.direction = "horizontal",
+        legend.box = "vertical",
+        panel.grid = element_line(colour = NULL),
+        panel.grid.major.x = element_line(
+          colour = colors["Medium Gray"], 
+          linetype = "dotted"
+        ),
+        panel.grid.major.y = element_line(
+          colour = colors["Medium Gray"], 
+          linetype = "dotted"
+        ),
+        panel.grid.minor = element_blank(),
         plot.title = element_text(hjust = 0, size = rel(1.5), face = "bold"),
         plot.margin = unit(c(1, 1, 1, 1), "lines"), strip.background = element_rect()
       )
@@ -44,12 +51,12 @@ theme_tvyal <- function(base_size = 12, base_family = "sans")
 
 theme_set(theme_tvyal())
 
-save_last_plot <- 
-  function(filename, extension = "png", width = 1344, height = 756) {
-    
+save_last_plot <-
+  function(filename, extension = "png", width = 1008, height = 567) {
+
     filename <- str_replace_all(filename, " ", "_")
     last_plot <- recordPlot()
-    
+
     if (extension == "png") {
       png(paste0(filename, ".", extension), width = width, height = height)
     } else if (extension == "pdf") {
@@ -57,19 +64,23 @@ save_last_plot <-
     } else {
       stop("Unsupported file extension. Use 'png' or 'pdf'.")
     }
-    
+
     replayPlot(last_plot)
     dev.off()
     paste0(filename, ".", extension)
   }
 
 new_palette_colors <- c(
-  "#003f5c", "#2f4b7c", "#665191", "#a05195", 
+  "#003f5c", "#2f4b7c", "#665191", "#a05195",
   "#d45087", "#f95d6a", "#ff7c43", "#ffa600"
 )
-update_geom_defaults("rect", list(fill  = new_palette_colors[1], alpha = 0.8)) 
-update_geom_defaults("line", list(color = new_palette_colors[1], alpha = 0.8))
-update_geom_defaults("area", list(fill  = new_palette_colors[1], alpha = 0.8))
+colfunc <- colorRampPalette(c("#2f4b7c", "#fffcf5", "#f95d6a"))
+colfunc2 <- colorRampPalette(new_palette_colors)
+colfunc3 <- colorRampPalette(c("#005C4B", new_palette_colors, "#FFD17A", "#FFFCF5"))
+
+update_geom_defaults("rect", list(fill  = new_palette_colors[2], alpha = 0.8))
+update_geom_defaults("line", list(color = new_palette_colors[2], alpha = 0.8))
+update_geom_defaults("area", list(fill  = new_palette_colors[2], alpha = 0.8))
 
 caption_arm <-  "Հեղինակ` Աղասի Թավադյան   |   tvyal.com   |   tavadyan.com"
 caption_eng <-  "Author: Aghasi Tavadyan   |   tvyal.com   |   tavadyan.com"
@@ -77,6 +88,7 @@ caption_eng <-  "Author: Aghasi Tavadyan   |   tvyal.com   |   tavadyan.com"
 doParallel::registerDoParallel(cores = 8)
 
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+
 ```
 
 ```{r downloading GDP data, include=FALSE}
@@ -101,33 +113,59 @@ GDP_services_links <-
   filter(grepl("^ՀՆԱ", text)) |> 
   pull(url)
 
+# Quarterly GDP download
+
 # system(
 #   paste0("curl -A 'Mozilla/5.0' \"", GDP_services_links[4],
-#          "\" -o \"GDP_services.xls\"")
+#          "\" -o \"GDP_quarter.xls\"")
 # )
 
-GDP_services <-
+GDP_quarter  <-
   left_join(
     
-    read_excel("GDP_services.xls", skip = 4) |> 
+    read_excel("GDP_quarter.xls", skip = 4) |> 
       rename(code = 1, arm = 2, eng = 3, rus = 4) |> 
       pivot_longer(matches("\\d{4}"), names_to = "date", values_to = "production_month"),
     
-    read_excel("GDP_services.xls", skip = 4, sheet = 4) |> 
+    read_excel("GDP_quarter.xls", skip = 4, sheet = 4) |> 
       rename(code = 1, arm = 2, eng = 3, rus = 4) |> 
       pivot_longer(matches("\\d{4}"), names_to = "date", values_to = "vol_YoY_pct"),
     
     by = join_by(code, arm, eng, rus, date)
   )
 
-GDP_services |> write_excel_csv("GDP_services_tidy.csv")
+GDP_quarter |> write_excel_csv("GDP_quarter_tidy.csv")
+
+# Annual GDP download
+
+# system(
+#   paste0("curl -A 'Mozilla/5.0' \"", GDP_services_links[1],
+#          "\" -o \"GDP_annual.xls\"")
+# )
+
+GDP_annual  <-
+  left_join(
+    
+    read_excel("GDP_annual.xls", skip = 4) |> 
+      rename(code = 1, arm = 2, eng = 3, rus = 4) |> 
+      pivot_longer(matches("\\d{4}"), names_to = "year", values_to = "production"),
+    
+    read_excel("GDP_annual.xls", skip = 4, sheet = 4) |> 
+      rename(code = 1, arm = 2, eng = 3, rus = 4) |> 
+      pivot_longer(matches("\\d{4}"), names_to = "year", values_to = "vol_YoY_pct"),
+    
+    by = join_by(code, arm, eng, rus, year)
+  ) |> 
+  mutate(year = as.integer(year))
+
+GDP_annual |> write_excel_csv("GDP_annual_tidy.csv")
 ```
 
 
 ```{r constructing the main GDP plot, include=FALSE}
 
 main_GDP_plot_data <- 
-  GDP_services |> 
+  GDP_quarter  |> 
   filter(!is.na(code)) |> 
   mutate(
     date = yq(date) + months(3) - days(1),
@@ -253,7 +291,7 @@ GDP_main_plot <-
 
 ```{r GDP change plot, include=FALSE}
 GDP_change_plot <- 
-  GDP_services |> 
+  GDP_quarter  |> 
   filter(!is.na(code)) |> 
   mutate(
     date = yq(date) + months(3) - days(1),
@@ -265,25 +303,28 @@ GDP_change_plot <-
   mutate(production_yoy = roll_sumr(production_month, 4) / 1e3) |> 
   filter(!is.na(production_yoy)) |> 
   filter(date %in% c(max(date), min(date))) |>
-  # filter(date %in% c(max(date), as.Date("2018-03-31"))) |> 
+  # filter(date %in% c(max(date), as.Date("2022-12-31"))) |> 
   mutate(year = ifelse(year == min(year), "min_year", "max_year")) |> 
   select(code, eng, year, production_yoy) |> 
   pivot_wider(names_from = year, values_from = production_yoy) |> 
   mutate(
     pct_10y_change = number(max_year / min_year, accuracy = 0.01),
-    middle_year = exp((log(min_year) + log(max_year))/2)  # geomean
+    middle_year = exp((log(min_year) + log(max_year))/2),  # geomean
+    color = ifelse(min_year > max_year, "#f95d6a", "#2f4b7c")
   ) |>
   filter(!grepl("^T", eng)) |> 
   ggplot() +
   geom_segment(
-    aes(x = min_year, xend = max_year, y = fct_reorder(eng, max_year), yend = eng),
-    color = new_palette_colors[1]
+    aes(x = min_year, xend = max_year, y = fct_reorder(eng, max_year), color = I(color)),
+    linewidth = 1.2,
+    lineend = 'round', linejoin = 'round',
+    arrow = arrow(length = unit(0.1, "inches"))
   ) +
-  geom_point(aes(x = min_year, y = eng), color = new_palette_colors[3], size = 3) +
-  geom_point(aes(x = max_year, y = eng), color = new_palette_colors[4], size = 3) +
+  geom_point(aes(x = min_year, y = eng), color = new_palette_colors[6], size = 3) +
+  geom_point(aes(x = max_year, y = eng), color = new_palette_colors[2], size = 3) +
   geom_text(aes(x = middle_year, y = eng, label = pct_10y_change), vjust = 0) +
-  geom_point(aes(x = 450, y = 2.5), color = new_palette_colors[3], size = 3) +
-  geom_point(aes(x = 450, y = 1.5), color = new_palette_colors[4], size = 3) +
+  geom_point(aes(x = 450, y = 2.5), color = new_palette_colors[6], size = 3) +
+  geom_point(aes(x = 450, y = 1.5), color = new_palette_colors[2], size = 3) +
   geom_text(aes(x = 600, y = 2.5, label = 2013)) +
   geom_text(aes(x = 600, y = 1.5, label = 2023)) +
   scale_x_log10(labels = number_format()) +
@@ -300,9 +341,195 @@ GDP_change_plot <-
 
 
 ```{r, include=FALSE}
-# GDP_services |>
+GDP_last_2_years_comporations <- 
+  GDP_annual |> 
+  filter(
+    year %in% c(2022,2023),
+    !is.na(code),
+    !grepl("^T$", code)
+  ) |> 
+  mutate(
+    vol_YoY_pct = vol_YoY_pct / 100 - 1,
+    eng = ifelse(is.na(code), eng, paste0(code, ". ", eng)),
+    eng = str_trunc(eng, 40),
+    eng = fct_reorder(eng, vol_YoY_pct, max),
+    year = ifelse(year == min(year), "min_year", "max_year")
+  ) |> 
+  select(eng, year, vol_YoY_pct) |> 
+  pivot_wider(names_from = year, values_from = vol_YoY_pct) |> 
+  mutate(
+    color = ifelse(min_year > max_year, "#f95d6a", "#2f4b7c")
+  ) |> 
+  # ggplot(aes(vol_YoY_pct, eng, fill = as.factor(year))) +
+  # geom_col(position = "dodge")
+  ggplot() +
+  geom_vline(xintercept = 0, color = "gray40") +
+  geom_segment(
+    aes(x = min_year, xend = max_year, y = eng, yend = eng,color = I(color)),
+    linewidth = 1.2,
+    lineend = 'round', linejoin = 'round',
+    arrow = arrow(length = unit(0.1, "inches"))
+  ) +
+  geom_point(aes(x = min_year, y = eng), color = new_palette_colors[6], size = 3) +
+  geom_point(aes(x = max_year, y = eng), color = new_palette_colors[2], size = 3) +
+  # geom_text(aes(x = middle_year, y = eng, label = pct_10y_change), vjust = 0) +
+  geom_point(aes(x = 0.42, y = 2.5), color = new_palette_colors[6], size = 3) +
+  geom_point(aes(x = 0.42, y = 1.5), color = new_palette_colors[2], size = 3) +
+  geom_text(aes(x = 0.47, y = 2.5, label = 2022)) +
+  geom_text(aes(x = 0.47, y = 1.5, label = 2023)) +
+  scale_x_continuous(labels = percent_format()) +
+  labs(
+    x = NULL,
+    y = NULL,
+    title = "The Differences of Growth by GDP Factors in 2022 and 2023",
+    subtitle = "GDP volume indices by NACE 2 classification, growth to the prevous year",
+    captions = paste0(caption_eng, "    |    Data Source: armstat.am")
+  )
+```
+
+
+
+```{r, include=FALSE}
+
+GDP_annual_pct <- 
+  GDP_annual |> 
+  filter(grepl("Domestic product", eng)) |> 
+  transmute(year, GDP_growth = vol_YoY_pct/100 - 1) |> 
+  na.omit()
+
+GDP_annual_pct |> 
+  mutate(GDP_growth = GDP_growth + 1) |> 
+  summarise(GDP_mean_growth = (exp(mean(log(GDP_growth))) - 1)*100) |> 
+  pull(GDP_mean_growth)
+
+
+GDP_annual_contribution <- 
+  GDP_annual |> 
+  left_join(GDP_annual_pct, by = "year") |>
+  group_by(eng) |> 
+  mutate(
+    vol_YoY_pct = vol_YoY_pct/100,
+    contribution = lag(production) * (vol_YoY_pct - 1),
+    contribution = ifelse(grepl("gross,", eng), NA, contribution)
+  ) |> 
+  group_by(year) |> 
+  mutate(
+    contribution = contribution / sum(contribution, na.rm = TRUE) * GDP_growth,
+    contribution = ifelse(grepl("Domestic product", eng), vol_YoY_pct - 1, contribution)
+  ) |> 
+  select(-GDP_growth)
+
+
+GDP_contribution_plot_generator <- 
+  function(tbl, year_, groupped_codes_ = c("H","I","L","M","N","P","Q","S","T")){
+    
+    tbl_groupped <- 
+      tbl |> 
+      filter(year %in% year_) |>
+      filter(!is.na(contribution)) |> 
+      mutate(
+        groupped_codes = case_when(
+          code %in% c("C", "D", "E") ~ "C+D+E",
+          code %in% groupped_codes_ ~ "Servises\n(Other)",  # R հանել
+          grepl("Taxes on products", eng) ~ "TA",
+          grepl("Financial Intermediate", eng) ~ "FISIM",
+          grepl("Domestic product", eng) ~ "GDP\nGrowth",
+          TRUE ~ code
+        ),
+        groupped_eng = case_when(
+          code %in% c("C", "D", "E") ~ "Other industries, including energy",
+          code %in% groupped_codes_ ~ paste(groupped_codes_, collapse = "+"),
+          grepl("Domestic product", eng) ~ NA,
+          TRUE ~ eng
+        ),
+        groupped_eng = str_remove(groupped_eng, "; compulsory social security"),
+        groupped_eng = str_remove(groupped_eng, " .FISIM."),
+      ) |> 
+      group_by(groupped_codes, year, groupped_eng) |> 
+      summarise(
+        contribution = sum(contribution),
+        .groups = "drop"
+      ) |> 
+      group_by(year) |> 
+      arrange(year) |> 
+      mutate(
+        labels = percent(contribution, accuracy = 0.1),
+        groupped_codes = fct_reorder(groupped_codes, contribution),
+        groupped_codes = fct_relevel(
+          groupped_codes, "TA", "FISIM", "GDP\nGrowth", after = Inf
+        ),
+        id = as.numeric(groupped_codes)
+      ) |> 
+      arrange(id) |> 
+      mutate(
+        annotation = paste(groupped_codes, groupped_eng, sep = " — "),
+        annotation = str_replace(annotation, "\n", " "),
+        annotation = ifelse(grepl("GDP", annotation), " ", annotation),
+        annotation = fct_reorder(annotation, id)
+      ) |> 
+      mutate(
+        end = cumsum(contribution),
+        start = end - contribution,
+        end = ifelse(groupped_codes == "GDP\nGrowth", 0, end),
+        start = ifelse(groupped_codes == "GDP\nGrowth", contribution, start),
+        fill_ = case_when(
+          groupped_codes == "GDP\nGrowth" ~ "Total",
+          contribution < 0 ~ "Negative",
+          TRUE ~ "Positive"
+        )
+      )
+    
+    plot <- 
+      tbl_groupped |> 
+      ggplot() +
+      geom_hline(yintercept = 0, color = new_palette_colors[3]) +
+      geom_rect(
+        aes(xmin = id - 0.45, xmax = id + 0.45,
+            ymin = end, ymax = start, fill = fill_, linetype = annotation)
+      ) +
+      geom_text(aes(x = groupped_codes, y = (end+start)/2, label = labels)) +
+      geom_segment(
+        aes(x = id - 0.45, xend = id + 0.45 + 1,
+            y = end, yend = end),
+        linetype = 1, color = new_palette_colors[3]
+      ) +
+      # annotate("text", x = 2, y = 0.05, label = annotation_) +
+      scale_y_continuous(labels = percent_format(), n.breaks = 6) +
+      scale_fill_manual(values = new_palette_colors[c(6,2,8)]) + 
+      # scale_color_manual(values = rep("#FFFFFF00", 50)) +
+      labs(
+        x = NULL,
+        y = NULL,
+        fill = "Growth",
+        linetype = NULL,
+        subtitle = "Percentage Points",
+        captions = paste0(caption_eng, "    |    Data Source: armstat.am"),
+        title = paste("Factors Contributing to", year_, "Economic Growth")
+      ) +
+      guides(
+        linetype = guide_legend(override.aes = list(fill = "#FFFFFF00")),
+        color = guide_legend(order = 2),
+        fill = guide_legend(order = 1),
+      ) +
+      theme(
+        panel.grid.major.x = element_blank(),
+        legend.text = element_text(size = 9),
+      )
+    
+    return(plot)
+    
+  }
+
+# GDP_contribution_plot_generator(GDP_annual_contribution, year_ = 2022)
+
+```
+
+
+
+```{r, include=FALSE}
+# GDP_quarter  |>
 #    # filter(!is.na(code) | grepl("Domestic product .gross", eng)) |>
-#   filter(grepl("Domestic product .gross", eng)) |> 
+#   filter(grepl("Domestic product .gross", eng)) |>
 
 
 #   mutate(
@@ -310,20 +537,20 @@ GDP_change_plot <-
 #     year = year(date),
 #     # eng = str_trunc(eng, 40),
 #     # eng = paste0(code, ". ", eng),
-#   ) |> 
-#   group_by(code, eng) |> 
+#   ) |>
+#   group_by(code, eng) |>
 #   mutate(
 #     production_yoy = roll_sumr(production_month, 4) / 1e3,
 #     vol_pct_2 = production_yoy / lag(production_yoy, n = 4)
 #   ) |>
-#   ungroup() |> 
-#   slice_head(n = 20) |> 
+#   ungroup() |>
+#   slice_head(n = 20) |>
 #   select(-code, -arm, -rus)
 #   view()
-#   
+#
 #   ggplot(aes(date, vol_YoY_pct, color = eng)) +
 #   geom_line()
-# 
+#
 # plotly::ggplotly(pp)
   
 ```
@@ -334,93 +561,102 @@ GDP_change_plot <-
 Հարգելի գործընկեր,
 
 Հուսով եմ լավ եք:
-Ներկայացնում եմ անցած շաբաթվա վերլուծությունները և աշխատանքները.
-
-1. Գյուղատնտեսությունից արդյունաբերություն անցումը
-2. Սխալների ուղղում
-3. ԶԼՄ հաղորդագրություններ
-4. English summary
-5. Նվեր Ամանորի նախօրեին / A little gift before Christmas
+Ներկայացնում եմ այս շաբաթվա վերլուծությունները և աշխատանքները.
 
 
-## 1. Գյուղատնտեսությունից արդյունաբերություն անցումը
+## 🇦🇲📊🏗️ Հայաստանի 2023թ․ 8.7% տնտեսական աճի հիմնական պատճառները
 
-### Կամ գյուղատնտեսությունը կոլապսի է ենթարվել
+2023 թվականին Հայաստանի Հանրապետությունում գրանցվել է 8.7% տնտեսական աճ։ Գնահատենք թե ինչն է հիմնականում ապահովել այդ տնտեսկան աճը։
 
-Ընդհանուր առմամբ այս 10 տարում ՀՆԱ-ն ավելի քան կրկնապատկվել է` 2013-ին կազմելով 6.38 տրիլիոն դրամ, իսկ 2023-ին ակնկալվում է որ ՀՆԱ-ն լինելու է ավելի քան 13 տրլն դրամ:
-10 տարի առաջ 2013 թվականին Հայաստանի ՀՆԱ-ի 19.5 տոկոսը ապահովում էր գյուղատնտեսությունը, որը կազմում էր 1.24 տրիլիոն դրամ, արդյունաբերությունը գտնվում էր երկրորդ տեղում` կազմելով ՀՆԱ-ի 14.3 տոկոսը, կամ 920 մլրդ դրամ:
-
-2023 թվականին պատկերը հակառակն է արդյունաբերությունը արդեն գտնվում է առաջին տեղը` ապահովելով ՀՆԱ-ի 17.3 տոկոսը, իսկ գյուղատնտեսությունը այս 10 տարվա մեջ գրեթե 20 տոկոս բաժնեմասից իջել է 10.2 տոկոսի:
-
-Հուշագրավ է, որ այս 10 տարվա մեջ ՀՆԱ-ն աճել է ավելի քան 2 անգամ, իսկ գյուղատնտեսությունը գրեթե աճ չի արձանագրել աճելով չնչին 5 տոկոսով: Արդյունաբերությունը այս 10 տարվա մեջ աճել է 2.5 անգամ: Գյուղատնտեսությունը արդեն գտնվում է 3-րդ տեղում արդյունաբերությունից և մեծածախ ու մանրածախ առևտրից հետո:
-
-Դիտարկենք նաև շինարարություն ոլորտը, որի մասնաբաժինը այս 10 տարիների ընթացքում 13-ից իջել է 9.1 տոկոս: Այս ոլորտում արձանագրվել է 40 տոկոս աճ: Անշարժ գույքի հետ կապված գործունեությունը (L) աճել է ավելի քան 2 անգամ:
-
-
-**Գծապատկեր 1.**  ՀՆԱ մեջ ապրանքների և ծառայությունների թողարկումն փոփոխությունը
+**Գծապատկեր 1.** ՀՆԱ-ին նպաստող հիմնական ճյուղերը (2023 թվական)
 
 ```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
-GDP_main_plot
+GDP_contribution_plot_generator(GDP_annual_contribution, year_ = 2023)
 ```
 
-Դիտարկենք թե ապրանքների և ծառայությունների թողարկման որ ճյուղերն են ունեցել ամենազգալի աճը այս 10 տարիների ընթացքում:
+️2023 թվականին Հայաստանի ՀՆԱ-ն գրանցել է 8.7% աճ
 
-Ինչպես երևում է միակ ճյուղը որը գրեթե նույն է մնացել այս 10 տարիների ընթացքում` դա գյուղատնտեսությունն է: Այս ճյուղը այս ընթացքում աճ չի արձանագրել: Եթե հաշվի առնենք նաև գնաճը, ապա աճի տենդենցը բացասական է եղել: Փաստացի գրեթե բոլոր ճյուղերը գրանցել են 2 և ավելի անգամ աճ, բացի գյուղատնտեսությունից:
+️ՀՆԱ-ի կառուցվածքում ամենամեծ աճը 2023 թվականին ապահովել է «Մեծածախ և մանրածախ առևտուր. ավտոմեքենաների և մոտոցիկլների նորոգում»՝ 2.9 տոկոսային կետ, «Տեղեկատվություն և կապ»՝ 1.7 տոկոսային կետ, «Շինարարություն»՝ 1.1 տոկոսային կետ։
 
-Ամենամեծ աճը գրանցել է (I) Կացության և հանրային սննդի կազմակերպման և (R) Մշակույթի, զվարճությունների և հանգիստի ոլորտները որոնք այս 10 տարիների ընթացքում աճել են համապատասխանաբար ավելի քան 4.7 և 4 անգամ: Սա առաջին հերթին խոսում է Հայաստանում տուրիզմի զարգացման վերաբերյալ:
+ՀՆԱ-ի իրական ծավալի հավելաճը զսպել են «Ֆինանսական և ապահովագրական գործունեություն» ոլորտը՝ -0.6 տոկոսային կետով, և «Հանքագործական արդյունաբերություն և բացահանքերի շահագործում» ոլորտը՝ -0.2 տոկոսային կետով։
 
-Ֆինանսական և ապահովագրական գործունեությունը աճել է ավելի քան 3.6 անգամ
+Գյուղատնտեսությունը վերջին 4 տարիների ընթացքում ունի բացասական աճ, և բացասապես է նպաստում տնտեսական աճին։
 
-* նշում. Այս հետազոտության մեջ 2023 թվականի տվյալները 2023 թվականի 1-ին, 2-րդ, 3-րդ, ինչպես նաև 2022 թվականի 4-րդ եռամսյակի կումուլատիվ գումարն են, որը ներկայացնում է տարեկան արժեքը:
-
-
-**Գծապատկեր 2.** ՀՆԱ կառուցվածքի 2013-ից մինչև 2023 աճի համեմատություն
+**Գծապատկեր 2.** ՀՆԱ-ին նպաստող հիմնական ճյուղերը (2022 թվական)
 
 ```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
-GDP_change_plot
+GDP_contribution_plot_generator(GDP_annual_contribution, year_ = 2022)
 ```
 
 
-## 2. Սխալների ուղղում
+2022 և 2023 թվականներին ՀՆԱ-ի աճի վրա ազդող բաղադրիչների համեմատությունը ցույց է տալիս էական տարբերություններ: Աչքի են ընկնում «Ֆինանսական և ապահովագրական գործունեությունը»։ Թեև այս ոլորտն ամենաշատը նպաստել է 2022 թվականի տնտեսական աճին՝ զգալի 2,8 տոկոսային կետով, 2023 թվականին նրա ներդրումը բացասական է եղել։ Նշենք որ բանկային համակարգը այս ոլորտի մի մասն է։ Մտահոգիչ է, որ ֆինանսական և բանկային հատվածը, որը 2022 թվականին գրանցել է 48,6% աճ (տես գծապատկեր 3), մինչ այն 2023 թվականին գրանցվել է 8% անկում։
 
-Նախորդ նյութի մեջ առկա է կանխատեսման սխալ, որը պատճառը այն է որ [2023թ հուլիսից վիճակագրական կոմիտեում տեղադրված էլեկտրաէներգիայի արտադրության ծավալներում](https://www.armstat.am/file/article/sv_07_23a_121.pdf) ներառված են նաև էլեկտրաէներգիայի փոխհոսքերի մասով ինքնավար արտադրողների կողմից արտադրված էլեկտրաէներգիայի ծավալները: Տվյալների բազան ստացել է այս հաշվետվությունները համացանցից ավտոմատացված կերպով ներբեռնելով և տվյալների բազայի ավտոմատացված հաշվարկմամբ, որտեղ ամսվա տվյալը ստացվել է տվյալ ամսից հանելով նախորդ ամսվա կումուլատիվ գումարը:
-
-Այս հանգամանքով անցած շաբաթ Ձեզ ուղարկած նյուզլեթերի մեջ 2023 թվականի հունի արևային էլեկտրաէներգիայի արտադրության տվյալը իր մեջ ներառում է այդ ամսվա կոմերցիոն արտադրության ծավալները, ինչպես նաև 2023 թվականի սկզբից մինչև հունիսը ներառյալ ինքնավար արտադրողների կողմից արտադրված էլեկտրաէներգիայի ծավալները: Դա է պատճառը որ տվյալների մեջ առկա է հանկարծակի և չկրկնվող աճ 2023թ. հունիսին, որը ենթադրաբար կազմում էր այդ ամսվա արտադրության մոտ 30 տոկոսը: Սա սխալ է:
-
-Նախորդ վերլուծության մեջ բոլոր գծապատկերները, հաշվարկները, կանխատեսումները և տեքստը արդեն ուղղված են: [Սեղմեք այս հղումը ճշգրտված տարբերակին անցնելու համար](https://www.tvyal.com/newsletter/2023_12_11): [Հին տարբերակը չի ջնջվի և լինելու է այս հղման տակ](https://www.tvyal.com/newsletter/2023_12_11_old):
-
-Գծապատկերում արտացոլված էլեկտրաէներգիայի արտադրության տարեկան ծավալների ճշգրտված կանխատեսումը
+Ֆինանսական և ապահովագրական հատվածի անկումը 2023 թվականին կարելի է պայմանավորել երկու հիմնական պատճառներով։ Նախ՝ 2022 թվականին զգալի կապիտալ ներհոսել է բանկային համակարգ, որը հանգեցրել է ֆինանսական հատվածի 48,8% աճի և մեկ տարվա ընթացքում բանկային հատվածի զուտ շահույթի եռակապատկման։ Այնուամենայնիվ, 2023 թվականին նկատվել է բանկային կապիտալի արտահոսքի աճ և ներհոսքի նվազում, որը բացասաբար է ազդել բանկային համակարգի վրա։ Երկրորդ՝ զգալի նպաստող գործոն էր 2023 թվականին Արցախի կորուստը, որտեղ բանկային համակարգը զգալի ներդրումներ էր կատարել, ինչը հանգեցրեց բանկային հատվածի կրճատմանը 2023 թվականին։ Բանկային համակարգը ստիպված եղեավ դուրս գրել բոլոր ակտիվները, որոնք գտնվում էին Արցախում։
 
 
-**Գծապատկեր 3.** Էլեկտրաէներգիայի արտադրության տարեկան ծավալները և կանխատեսումը
+>
+> Հայաստանից կապիտալի արտահոսքի մասին լրացուցիչ մանրամասների համար տե՛ս հետևյալ նյութը.
+> [💸🔚🏦 Կապիտալի արտահոսք](https://www.tvyal.com/newsletter/2024/2024_03_01)։
+>
+
+**Գծապատկեր 3.** ՀՆԱ աճի տարբերություններն ըստ գործոնների, 2022 և 2023 թթ.
+
+```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
+GDP_last_2_years_comporations
+```
+
+Նշենք որ 2022-ի համեմատ տնտեսական աճը համեմատաբար ավելի փոքր է եղել, որը և արտացոլում է 3-րդ գծապատկերը, սակայն 2022 թվականին ապահովվել է երկնիշ 12.6 տոկոս տնտեսական աճ, իսկ 2023-ին 8.7 տոկոս, որը նույնպես բականին զգալի աճ տեմպ է։ 2023 թվականին ՀՆԱ 8.7 տոկոս աճի 0.6 տոկոսային կոտը ապահովել է «Մշակույթ, զվարճություններ և հանգիստի» ոլորտը, որը գրեթե չի նպաստել 2022 թվականի տնտեսական աճին։ Սա նույնպես երևում է 3-րդ գծապատկերում, որտեղ այս ոլոտը, ինրպես նաև մեծածախ և մանրածախ առևտուրը, պետական կառավարումը եղել են հիմնական ճյուղերը որոնք ապահովվել են մեծ շատ աճ, քան 2022 թվականին։
+
+<!-- Վերջին 10 տարիների ընթացքում Հայաստանի միջին տնտեսակնա ճը կազմլե է 4.473 տոկոս։ Ցանկացած համակարգ ձգտում է վերդառնալ միջին ցուցանիշին եթե համակարգում առկա չէ որակական փոփոխություն։ Ըստ  -->
+
+<!-- Ընդհանուր առմամբ այս 10 տարում ՀՆԱ-ն ավելի քան կրկնապատկվել է` 2013-ին կազմելով 4.14 տրիլիոն դրամ, իսկ 2023-ին արդեն 8.68 տրլն դրամ: Նշենք որ եթե հաշվի առնենք այս 10 տարիների կումուլատիվ գնաճը, ապա այս շրջանում իրական տնտեսական աճը կազմել է 55 տոկոս։ -->
+<!-- 10 տարի առաջ 2013 թվականին Հայաստանի ՀՆԱ-ի 20.3 տոկոսը ապահովում էր գյուղատնտեսությունը, որը կազմում էր 840 մլրդ դրամ, առևտուրը գտնվում էր երկրորդ տեղում` կազմելով ՀՆԱ-ի 13.2 տոկոսը, կամ 550 մլրդ դրամ: -->
+
+<!-- 2023 թվականին պատկերը հակառակն է «Մեծածախ և մանրածախ առևտուր. ավտոմեքենաների և մոտոցիկլների նորոգումը» արդեն գտնվում է առաջին տեղը` ապահովելով ՀՆԱ-ի 13.9 տոկոսը (1 210 մլրդ դրամ), իսկ գյուղատնտեսությունը այս 10 տարվա մեջ 20.3 տոկոս բաժնեմասից իջել է 9.2 տոկոսի (800 մլրդ դրամ): -->
+
+<!-- Հուշագրավ է, որ այս 10 տարվա մեջ ՀՆԱ-ն աճել է ավելի քան 2 անգամ, իսկ գյուղատնտեսությունը գրեթե աճ չի արձանագրել աճելով չնչին 5 տոկոսով: Արդյունաբերությունը այս 10 տարվա մեջ աճել է 2.5 անգամ: Գյուղատնտեսությունը արդեն գտնվում է 3-րդ տեղում արդյունաբերությունից և մեծածախ ու մանրածախ առևտրից հետո: Փաստացի գյուղատնտեսության ծավալը կրճատվել է 5 տոկոսով, իսկ եթե հաշվի առնենք նաև գնաճը ապա գյուղատնտեսության 10 տարվա իրական կրճատումը կազմել է 30 տոկոս։ -->
+
+<!-- Դիտարկենք նաև շինարարություն ոլորտը։ Շինարարարությունը 2013-ին կազմում էր 480 մլրդ դրամ կամ ՀՆԱ-ի 11.5-ը իսկ 2023-ին 650 մլրդ դրամ, սակայն տեսակարարա կշիռը իջել է 7.5 տոկոս։ Եթե հաշվի առնենք գնաճը ապա այս ոլորտում իրական աճը գրեթե զրոյական է։ Անշարժ գույքի հետ կապված գործունեության (L) իրական աճը կազմել է 55 տոկոս: -->
 
 
-![](../2023_12_11_electricity_forecast/plots/electricity_forecast_plot2.png)
+<!-- **Գծապատկեր 1.**  ՀՆԱ մեջ ապրանքների և ծառայությունների թողարկումն փոփոխությունը -->
+
+<!-- ```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8} -->
+<!-- GDP_main_plot -->
+<!-- ``` -->
+
+<!-- Դիտարկենք թե ապրանքների և ծառայությունների թողարկման որ ճյուղերն են ունեցել ամենազգալի աճը այս 10 տարիների ընթացքում: -->
+
+<!-- Ինչպես երևում է միակ ճյուղը որը կրճատվել է այս 10 տարիների ընթացքում` դա գյուղատնտեսությունն է: Եթե հաշվի առնենք նաև գնաճը, ապա աճի տենդենցը բացասական է եղել: Փաստացի գրեթե բոլոր ճյուղերը գրանցել են 2 և ավելի անգամ աճ, բացի գյուղատնտեսությունից: -->
+
+<!-- Ամենամեծ աճը գրանցել է (I) Կացության և հանրային սննդի կազմակերպման և (R) Մշակույթի, զվարճությունների և հանգիստի ոլորտները որոնք այս 10 տարիների ընթացքում աճել են համապատասխանաբար ավելի քան 4.8 և 4.3 անգամ: Սա առաջին հերթին խոսում է Հայաստանում տուրիզմի զարգացման վերաբերյալ: -->
+
+<!-- Ֆինանսական և ապահովագրական գործունեությունը աճել է ավելի քան 3.8 անգամ -->
 
 
-## 3. ԶԼՄ հաղորդագրություններ
+<!-- **Գծապատկեր 2.** ՀՆԱ կառուցվածքի 2013-ից մինչև 2023 աճի համեմատություն -->
 
-[Panorama.am](https://www.youtube.com/watch?v=FV0NqHOHfY4) լրատվամիջոցին տվել եմ հարցազրույց: 
-
-Այս վիդիոնյութը, ըստ իս, դեռևս իմ ամենաանմիջական զրույցներից է: Խորհուրդ եմ տալիս դիտել այն:
-Պետք է հասկանալ, թե 2023 թ.-ին ինչու չունեցանք 2022 թ-ի չափ բարձր տնտեսական աճ:
-
-<a href="https://www.youtube.com/watch?v=FV0NqHOHfY4">
-  <img src="https://i3.ytimg.com/vi/FV0NqHOHfY4/maxresdefault.jpg" alt="YouTube Video" style="width:60%;">
-</a>
+<!-- ```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8} -->
+<!-- GDP_change_plot -->
+<!-- ``` -->
 
 
 
-## 4. English Summary
-
-**The transition from agriculture to industry in Armenia**
-
-In the past decade, Armenia has undergone a transformative shift from an agriculture-dominated economy to one led by industry. In 2013, agriculture contributed 19.5% to the GDP, amounting to 1.24 trillion drams, while industry held the second spot with 14.3% at 920 billion drams. Fast forward to 2023, industry has claimed the top spot, constituting 17.3% of the GDP, while agriculture has seen a decline from nearly 20% to 10.2%. Despite an overall GDP growth of over 2 times, agriculture has only experienced a marginal 5% increase, placing it in 3rd position after industry and wholesale/retail trade. Notably, the construction sector has witnessed a 40% increase, although its share in the GDP has decreased from 13% to 9.1% over the same period.
-
-Examining the growth trajectory of various sectors reveals a stark contrast. While almost all industries recorded a 2-fold or more growth, agriculture remained stagnant, registering minimal positive growth even when adjusted for inflation. Branches like Accommodation and Catering, as well as Culture, Entertainment, and Recreation, stood out with growth rates exceeding 4.7 and 4 times, signaling a burgeoning tourism industry in Armenia. Financial and insurance activities also experienced significant expansion, increasing more than 3.6 times. This dynamic shift underscores Armenia's evolving economic landscape and the rising prominence of diverse sectors beyond traditional agriculture.
 
 
-## 5. Նվեր Ամանորի նախօրեին / A little gift beforе Christmas
+
+
+## English Summary
+
+### 🇦🇲📊🏗️  Main Reasons for Armenia's 8.7% Economic Growth in 2023
+
+
+In 2023, Armenia experienced a noteworthy economic growth of 8.7%, driven by key sectors such as "Wholesale and retail trade, automobile, and motorcycle repair," "Information and communication," and "Construction." These sectors contributed significantly to the GDP structure, with increases of 2.9%, 1.7%, and 1.1%, respectively. However, the real volume of GDP was tempered by declines in the "Financial and insurance activities" sector (-0.6%) and the "Mining industry and exploitation of open pits" sector (-0.2%). Additionally, the agricultural sector exhibited negative growth for the past four years, exerting a consistent adverse impact on overall economic growth. A comparative analysis of 2022 and 2023 highlighted the pronounced influence of the "Financial and insurance activities" sector, which, after being the primary contributor to economic growth in 2022, recorded a negative contribution in 2023. Factors contributing to this decline included increased capital outflow from the banking system and substantial investments in Artsakh that faced losses in 2023.
+
+Furthermore, the third figure illustrated a relative reduction in economic growth in 2023 compared to the previous year, showcasing a growth rate of 8.7% as opposed to the double-digit growth of 12.6% in 2022. Notably, the "Culture, entertainment, and leisure" sector played a role in the 2023 growth, contributing 0.6% to the overall GDP increase, despite having minimal impact in 2022. This shift in contributing sectors, along with concerns surrounding the negative growth in the financial and banking sector, raises important considerations for Armenia's economic landscape. The text underscores the intricate dynamics influencing economic growth and highlights the pivotal role played by specific sectors, capital flows, and geopolitical events in shaping the economic trajectory of Armenia in 2023.
+
+
+## Նվեր գարնան, ծաղկոնքի և գեղեցիկցության տոնի առթիվ / A little gift for the feminine spirit of spring, blossoming and beauty
 
 Ձեզ եմ ընծայում իմ կողմից կոդով ստեղսված նկարը:
 
@@ -432,20 +668,20 @@ Title: **Birds & Snails**
 
 Սպասեք ավելի շատ նվարներ հաջորդ նյուզլեթերին, որը լինելու է մեր կողմից պատրաստած այս տարվա վերջին հաղորդագրությունը:
 
-
 ---
 
-Այս վերլուծությունը առկա է նաև [մեր կայքէջում](https://www.tvyal.com/newsletter/2023_12_18), այս վերլուծության կոդը և տվյալները դրված են նաև [Github-ում](https://github.com/tavad/tvyal_newsletter)։                        
+Այս վերլուծությունը առկա է նաև [մեր կայքէջում](https://www.tvyal.com/newsletter/2024/2024_03_09), այս վերլուծության կոդը և տվյալները դրված են նաև [Github-ում](https://github.com/tavad/tvyal_newsletter)։       
+
 ---                  
 
 Եթե հնարավոր է, խնդրում եմ այս նյութը ուղարկել նաև այն մարդկանց, ում այն կարծում եք կարող է հետաքրքրել:
 
-Սպասեք հաջորդ հաղորդագրությանը մի շաբաթվա ընթացքում:        
+Սպասեք հաջորդ հաղորդագրությանը հաջորդ ուրբաթ օրը:      
 
 
 Հարգանքներով,            
 Աղասի Թավադյան         
-18.12.2023          
+09.03.2024          
 [tvyal.com](https://www.tvyal.com/)      
 [tavadyan.com](https://www.tavadyan.com/)
 
@@ -463,8 +699,6 @@ Title: **Birds & Snails**
 ####### **Ուշադրություն. Ձեր էլ.փոստը մեյլիսթի մեջ է, որի միջոցով ես կիսվում եմ շաբաթական նյութեր, որոնք հիմնականում ներկայացնում են Հայաստանի տնտեսությանը: Նյութերը ներառում են գծապատկերներ, [տվյալների բազաներ](https://github.com/tavad/tvyal_newsletter), տեսանյութեր, հոդվածներ, [առցանց վահանակներ](https://www.tvyal.com/projects), տնտեսական գործիքներ, կանխատեսումներ և հաշվետվություններ: Եթե ցանկանում եք չեղարկել բաժանորդագրությունը, խնդրում եմ տեղեկացրեք ինձ, և ես կհեռացնեմ ձեր էլ. փոստը ցուցակից: Գրեք նաև եթե ունեք մենկնաբանություններ:**
 
 ####### **Important! Your email is part of the mailing list where I share weekly materials primarily focused on the Armenian economy. These materials encompass charts, [databases](https://github.com/tavad/tvyal_newsletter), videos, articles, [online dashboards](https://www.tvyal.com/projects), economic tools, forecasts, and reports. If you wish to unsubscribe, please let me know, and I will remove your email from the list. Please share your comments as well․**
-
-
 
 
 
