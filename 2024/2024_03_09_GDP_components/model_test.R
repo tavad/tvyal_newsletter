@@ -14,7 +14,7 @@ GDP_quarter <- read_csv("GDP_quarter_tidy.csv")
 GDP_quarter_model_data <- 
   GDP_quarter |> 
   # transmute(date = yq(date), eng, volume =vol_YoY_pct/100) |> 
-  transmute(date = yq(date), eng, volume = production_month) |> 
+  transmute(date = yq(date), eng, volume = production) |> 
   na.omit()
 
 max_date <- GDP_quarter_model_data$date |> max()
@@ -292,7 +292,7 @@ future_forecast_tbl |>
 future_forecast_tbl |> 
   filter(grepl("Domestic p", eng)) |> 
   mutate(
-    gdp_growth = .value / lag(.value, 4),
+    gdp_growth = (.value / lag(.value, 4) ),
     date = ymd(date)
   ) |> 
   left_join(
