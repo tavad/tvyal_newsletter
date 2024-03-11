@@ -20,7 +20,7 @@ GDP_quarter_model_data <-
 max_date <- GDP_quarter_model_data$date |> max()
 
 GDP_quarter_model_data |> 
-  filter(eng %in% unique(eng)[1:10]) |> 
+  # filter(eng %in% unique(eng)[1:10]) |> 
   group_by(eng) |> 
   plot_time_series(
     date, volume, 
@@ -40,11 +40,12 @@ GDP_quarter_time_extended_monthly_tbl <-
 # GDP_quarter_time_extended_monthly_tbl |> view()
 
 GDP_quarter_time_extended_monthly_tbl |> 
-    summarise(across(everything(), ~sum(is.na(.))))
+  summarise(across(everything(), ~sum(is.na(.)))) %>%
+  t(.)
 
 GDP_quarter_time_extended_monthly_tbl |> glimpse()
 
-## 4. Data splot
+## 4. Data split
 
 GDP_future <- GDP_quarter_time_extended_monthly_tbl |> filter(is.na(volume))
 GDP_future
@@ -60,6 +61,22 @@ splits <-
     GDP_actual, date_var = date,
     assess = 4, cumulative = TRUE
   )
+
+# splits %>%
+#   tk_time_series_cv_plan() %>%
+#   plot_time_series_cv_plan(date, volume)
+
+
+set.seed(456)
+traning_time_roll <-
+  rolling_origin(
+    data = training(splits),
+    initial = round(nrow(training(splits)) * 0.8),
+    assess = 18,
+    cumulative = TRUE,
+    skip = TRUE
+  )
+
 
 # TODO needs a cross validation
 
@@ -254,6 +271,8 @@ g_2 <- total_clv_prediction_2 |>
   geom_point() +
   geom_smooth(aes(group = .model_desc), method = "lm", se = FALSE) +
   geom_abline(slope = 1, intercept = 0) +
+  scale_x_log10() +
+  scale_y_log10() +
   coord_fixed()
 
 plotly::ggplotly(g_2)
@@ -262,7 +281,7 @@ plotly::ggplotly(g_2)
 
 # refit
 refit_table <- modeltime_calib_2_tbl |> 
-  dplyr::slice(5) |> #the best model is 3
+  dplyr::slice(5) |>                          #the best model is 3
   modeltime_refit(data = GDP_actual)
 
 future_forecast_tbl <- refit_table |> 
