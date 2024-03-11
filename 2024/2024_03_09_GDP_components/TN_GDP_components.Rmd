@@ -612,14 +612,12 @@ GDP_contribution_plot_generator <-
       ) +
       geom_text(aes(x = groupped_codes, y = (end+start)/2, label = labels)) +
       geom_segment(
-        aes(x = id - 0.45, xend = id + 0.45 + 1,
+        aes(x = id - 0.45, xend = ifelse(id == max(id), id + 0.45, id + 0.45 + 1),
             y = end, yend = end),
         linetype = 1, color = new_palette_colors[3]
       ) +
-      # annotate("text", x = 2, y = 0.05, label = annotation_) +
       scale_y_continuous(labels = percent_format(), n.breaks = 6) +
       scale_fill_manual(values = new_palette_colors[c(6,2,8)]) + 
-      # scale_color_manual(values = rep("#FFFFFF00", 50)) +
       labs(
         x = NULL,
         y = NULL,
