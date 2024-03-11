@@ -163,101 +163,101 @@ GDP_annual |> write_excel_csv("GDP_annual_tidy.csv")
 
 
 ```{r, include=FALSE}
-
-arm_inflation <-
-  read_csv("~/R/Gcapatker/2024_03_01_Inflation_forecst/inflation_forecast.csv") |>
-  filter(
-    indicator == "CPI",
-    grepl("Actual|ets", model_name),
-    period == "month"
-  ) |>
-  transmute(
-    date = ym(paste(year(date), month(date))),
-    # inflation = cumprod(value),
-    inflation = roll_prodr(value, 12),
-    inflation_model_name = model_name
-  ) |>
-  na.omit() |>
-  arrange(date) |>
-  group_by(date) |>
-  slice_head(n = 1) |>
-  ungroup()
-
-
-
-GDP_quarter |>
-  group_by(eng) |>
-  mutate(
-    vol_YoY_pct = vol_YoY_pct/100,
-    vol_YoY_pct2 = production/lag(production, 4),
-    # diff = vol_YoY_pct2 - vol_YoY_pct + 1,
-    diff_2 = vol_YoY_pct2 / vol_YoY_pct,
-    date = yq(date)
-  ) |>
-  ungroup() |>
-  left_join(arm_inflation, by = "date") |>
-  arrange(date) |>
-  ggplot() +
-  # geom_boxplot(aes(date, diff, group = date, color = "blue"), alpha = 0.4) +
-  geom_boxplot(aes(date, diff_2, group = date, color = "red"), alpha = 0.4) +
-  geom_line(aes(date, inflation))
-
-
-
-arm_inflation |> view()
-
-GDP_annual <-
-  read_csv("future_gdp_forecast.csv") |>
-  group_by(eng) |>
-  arrange(eng) |>
-  mutate(
-    year = year(date),
-    month = month(date)
-  ) |>
-  ungroup() |>
-  # count(date) |>
-  left_join(arm_inflation, by = "date") |>
-  mutate(.value_inf = .value / inflation) |>
-  group_by(eng, year) |>
-  summarise(
-    production = sum(.value),
-    production_inf = sum(.value_inf)
-  ) |> 
-  ungroup() |>
-  group_by(eng) |>
-  mutate(
-    vol_YoY_pct = production_inf / lag(production) * 100,
-  ) |>
-  ungroup() |>
-  left_join(
-    select(GDP_annual, code, eng) |> unique(), by = "eng"
-  ) |>
-  filter(year >= 2015) |>
-  relocate(code)
-
-# GDP_annual |> view()
-
-GDP_annual |>
-  filter(grepl("Domestic product", eng)) |>
-  transmute(year, GDP_growth = vol_YoY_pct/100 - 1) |>
-  na.omit()
-
-read_csv("future_gdp_forecast.csv") |>
-  filter(eng == "Domestic product (gross, market prices)") |> 
-  select(-contains("volume")) |> 
-  left_join(arm_inflation, by = "date") |> 
-  mutate(
-    gdp_growth = .value,
-    across(matches("value|conf"), ~.x/ inflation),
-    year = year(date)
-  ) |> 
-  group_by(year, .key) |> 
-  view()
-
-
-  summarise(
-    across(matches("value|conf|gdp"), ~sum(.x))
-  )
+# 
+# arm_inflation <-
+#   read_csv("~/R/Gcapatker/2024_03_01_Inflation_forecst/inflation_forecast.csv") |>
+#   filter(
+#     indicator == "CPI",
+#     grepl("Actual|ets", model_name),
+#     period == "month"
+#   ) |>
+#   transmute(
+#     date = ym(paste(year(date), month(date))),
+#     # inflation = cumprod(value),
+#     inflation = roll_prodr(value, 12),
+#     inflation_model_name = model_name
+#   ) |>
+#   na.omit() |>
+#   arrange(date) |>
+#   group_by(date) |>
+#   slice_head(n = 1) |>
+#   ungroup()
+# 
+# 
+# 
+# GDP_quarter |>
+#   group_by(eng) |>
+#   mutate(
+#     vol_YoY_pct = vol_YoY_pct/100,
+#     vol_YoY_pct2 = production/lag(production, 4),
+#     # diff = vol_YoY_pct2 - vol_YoY_pct + 1,
+#     diff_2 = vol_YoY_pct2 / vol_YoY_pct,
+#     date = yq(date)
+#   ) |>
+#   ungroup() |>
+#   left_join(arm_inflation, by = "date") |>
+#   arrange(date) |>
+#   ggplot() +
+#   # geom_boxplot(aes(date, diff, group = date, color = "blue"), alpha = 0.4) +
+#   geom_boxplot(aes(date, diff_2, group = date, color = "red"), alpha = 0.4) +
+#   geom_line(aes(date, inflation))
+# 
+# 
+# 
+# # arm_inflation |> view()
+# 
+# GDP_annual <-
+#   read_csv("future_gdp_forecast.csv") |>
+#   group_by(eng) |>
+#   arrange(eng) |>
+#   mutate(
+#     year = year(date),
+#     month = month(date)
+#   ) |>
+#   ungroup() |>
+#   # count(date) |>
+#   left_join(arm_inflation, by = "date") |>
+#   mutate(.value_inf = .value / inflation) |>
+#   group_by(eng, year) |>
+#   summarise(
+#     production = sum(.value),
+#     production_inf = sum(.value_inf)
+#   ) |> 
+#   ungroup() |>
+#   group_by(eng) |>
+#   mutate(
+#     vol_YoY_pct = production_inf / lag(production) * 100,
+#   ) |>
+#   ungroup() |>
+#   left_join(
+#     select(GDP_annual, code, eng) |> unique(), by = "eng"
+#   ) |>
+#   filter(year >= 2015) |>
+#   relocate(code)
+# 
+# # GDP_annual |> view()
+# 
+# GDP_annual |>
+#   filter(grepl("Domestic product", eng)) |>
+#   transmute(year, GDP_growth = vol_YoY_pct/100 - 1) |>
+#   na.omit()
+# 
+# read_csv("future_gdp_forecast.csv") |>
+#   filter(eng == "Domestic product (gross, market prices)") |> 
+#   select(-contains("volume")) |> 
+#   left_join(arm_inflation, by = "date") |> 
+#   mutate(
+#     gdp_growth = .value,
+#     across(matches("value|conf"), ~.x/ inflation),
+#     year = year(date)
+#   ) |> 
+#   group_by(year, .key) |> 
+#   view()
+# 
+# 
+#   summarise(
+#     across(matches("value|conf|gdp"), ~sum(.x))
+#   )
 
 ```
 
@@ -644,7 +644,7 @@ GDP_contribution_plot_generator <-
     
   }
 
-GDP_contribution_plot_generator(GDP_annual_contribution, year_ = 2024)
+# GDP_contribution_plot_generator(GDP_annual_contribution, year_ = 2024)
 
 ```
 
@@ -667,7 +667,7 @@ biggest_gdp_contributers <-
   slice_max(order_by = production, n = 9) |> 
   pull(code)
 
-GDP_quarter  |>view()
+GDP_quarter |>
   # filter(!is.na(code) | grepl("Domestic product .gross", eng)) |> 
   filter(code %in% biggest_gdp_contributers) |> 
   # filter(grepl("Domestic product .gross", eng)) |>  
