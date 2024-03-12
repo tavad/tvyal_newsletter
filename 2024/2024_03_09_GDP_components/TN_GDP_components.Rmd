@@ -621,7 +621,7 @@ GDP_contribution_plot_generator <-
       labs(
         x = NULL,
         y = NULL,
-        fill = "Growth",
+        fill = NULL,
         linetype = NULL,
         subtitle = "Percentage Points",
         captions = paste0(caption_eng, "    |    Data Source: armstat.am"),
