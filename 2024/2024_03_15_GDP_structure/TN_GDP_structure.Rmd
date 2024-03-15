@@ -1,0 +1,517 @@
+---
+title: "Tvyal Newsletter"
+author: "Aghasi Tavadyan"
+date: "2024-03-15"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(rvest)
+library(RcppRoll)
+library(scales)
+library(readxl)
+
+rm(list = ls()); gc()
+
+theme_tvyal <- function(base_size = 12, base_family = "sans")
+{
+  colors <- deframe(ggthemes::ggthemes_data[["fivethirtyeight"]])
+  (ggthemes::theme_foundation(
+    base_size = base_size, base_family = base_family) +
+      theme(
+        line = element_line(colour = "black"),
+        rect = element_rect(fill = "white", linetype = 0, colour = NA),
+        text = element_text(colour = colors["Dark Gray"]),
+        # axis.title = element_blank(),
+        # axis.text = element_text(),
+        axis.ticks = element_blank(),
+        axis.line = element_blank(),
+        legend.background = element_rect(),
+        legend.position = "bottom",
+        legend.direction = "horizontal",
+        legend.box = "vertical",
+        panel.grid = element_line(colour = NULL),
+        panel.grid.major.x = element_line(
+          colour = colors["Medium Gray"], 
+          linetype = "dotted"
+        ),
+        panel.grid.major.y = element_line(
+          colour = colors["Medium Gray"], 
+          linetype = "dotted"
+        ),
+        panel.grid.minor = element_blank(),
+        plot.title = element_text(hjust = 0, size = rel(1.5), face = "bold"),
+        plot.margin = unit(c(1, 1, 1, 1), "lines"), strip.background = element_rect()
+      )
+  )
+}
+
+theme_set(theme_tvyal())
+
+save_last_plot <-
+  function(filename, extension = "png", width = 1008, height = 567) {
+
+    filename <- str_replace_all(filename, " ", "_")
+    last_plot <- recordPlot()
+
+    if (extension == "png") {
+      png(paste0(filename, ".", extension), width = width, height = height)
+    } else if (extension == "pdf") {
+      pdf(paste0(filename, ".", extension), width = width, height = height)
+    } else {
+      stop("Unsupported file extension. Use 'png' or 'pdf'.")
+    }
+
+    replayPlot(last_plot)
+    dev.off()
+    paste0(filename, ".", extension)
+  }
+
+new_palette_colors <- c(
+  "#003f5c", "#2f4b7c", "#665191", "#a05195",
+  "#d45087", "#f95d6a", "#ff7c43", "#ffa600"
+)
+colfunc <- colorRampPalette(c("#2f4b7c", "#fffcf5", "#f95d6a"))
+colfunc2 <- colorRampPalette(new_palette_colors)
+colfunc3 <- colorRampPalette(c("#005C4B", new_palette_colors, "#FFD17A", "#FFFCF5"))
+
+update_geom_defaults("rect", list(fill  = new_palette_colors[2], alpha = 0.8))
+update_geom_defaults("line", list(color = new_palette_colors[2], alpha = 0.8))
+update_geom_defaults("area", list(fill  = new_palette_colors[2], alpha = 0.8))
+
+caption_arm <-  "Հեղինակ` Աղասի Թավադյան   |   tvyal.com   |   tavadyan.com"
+caption_eng <-  "Author: Aghasi Tavadyan   |   tvyal.com   |   tavadyan.com"
+
+doParallel::registerDoParallel(cores = 8)
+
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+
+```
+
+```{r downloading GDP data, include=FALSE}
+national_account_html_elements <- 
+  read_html("https://www.armstat.am/am/?nid=202") |> 
+  html_elements("a")
+
+national_account_urls <- 
+  tibble(
+    url = html_attr(national_account_html_elements, "href"),
+    text = html_text(national_account_html_elements)
+  ) |> 
+  filter(grepl("^\\.\\./", url)) |> 
+  mutate(
+    text = str_trim(text),
+    url = str_replace(url, "^\\.\\.", "https://www.armstat.am")
+    ) |> 
+  filter(text != "")
+
+GDP_services_links <- 
+  national_account_urls |> 
+  filter(grepl("^ՀՆԱ", text)) |> 
+  pull(url)
+
+# Quarterly GDP download
+
+# system(
+#   paste0("curl -A 'Mozilla/5.0' \"", GDP_services_links[4],
+#          "\" -o \"GDP_quarter.xls\"")
+# )
+
+GDP_quarter  <-
+  left_join(
+    
+    read_excel("GDP_quarter.xls", skip = 4) |> 
+      rename(code = 1, arm = 2, eng = 3, rus = 4) |> 
+      pivot_longer(matches("\\d{4}"), names_to = "date", values_to = "production"),
+    
+    read_excel("GDP_quarter.xls", skip = 4, sheet = 4) |> 
+      rename(code = 1, arm = 2, eng = 3, rus = 4) |> 
+      pivot_longer(matches("\\d{4}"), names_to = "date", values_to = "vol_YoY_pct"),
+    
+    by = join_by(code, arm, eng, rus, date)
+  )
+
+GDP_quarter |> write_excel_csv("GDP_quarter_tidy.csv")
+
+# Annual GDP download
+
+# system(
+#   paste0("curl -A 'Mozilla/5.0' \"", GDP_services_links[1],
+#          "\" -o \"GDP_annual.xls\"")
+# )
+
+GDP_annual  <-
+  left_join(
+    
+    read_excel("GDP_annual.xls", skip = 4) |> 
+      rename(code = 1, arm = 2, eng = 3, rus = 4) |> 
+      pivot_longer(matches("\\d{4}"), names_to = "year", values_to = "production"),
+    
+    read_excel("GDP_annual.xls", skip = 4, sheet = 4) |> 
+      rename(code = 1, arm = 2, eng = 3, rus = 4) |> 
+      pivot_longer(matches("\\d{4}"), names_to = "year", values_to = "vol_YoY_pct"),
+    
+    by = join_by(code, arm, eng, rus, year)
+  ) |> 
+  mutate(year = as.integer(year))
+
+GDP_annual |> write_excel_csv("GDP_annual_tidy.csv")
+```
+
+
+
+```{r constructing the main GDP plot, include=FALSE}
+
+main_GDP_plot_data <- 
+  GDP_quarter  |> 
+  filter(!is.na(code)) |> 
+  mutate(
+    date = yq(date) + months(3) - days(1),
+    year = year(date),
+    eng = str_trunc(eng, 20),
+    eng = paste0(code, ". ", eng),
+    eng = fct_lump(eng, n = 7, w = production)
+  ) |> 
+  group_by(date, year, eng) |> 
+  summarise(production = sum(production), .groups = "drop") |> 
+  group_by(eng) |> 
+  mutate(production_yoy = roll_sumr(production, 4)) |> 
+  ungroup() |> 
+  group_by(date) |>
+  na.omit() |>
+  mutate(
+    pct = production_yoy/ sum(production_yoy),
+  ) |> 
+  ungroup() |>
+  group_by(year) |> 
+  mutate(
+    pct_text = ifelse(
+      eng != "Other" & date == max(date) & year %in% c(2013, 2023), 
+      paste0(
+        "֏ ", number(production_yoy/1e6, accuracy = 0.01), "T (",
+        percent(pct, accuracy = 0.1), ")", " "
+        ),
+      NA
+    ),
+    pct_text = ifelse(
+      year == 2023 & eng != "Other",
+      paste0(" ", eng,  " ", pct_text),
+      pct_text
+    ),
+    production_yoy = production_yoy / 1e6
+  ) |> 
+  ungroup()
+
+factoring_levels <- 
+  main_GDP_plot_data |> 
+  filter(date == max(date)) |> 
+  mutate(
+    eng = fct_reorder(eng, production_yoy),
+    eng = fct_relevel(eng, "Other", after = 0),
+    eng = fct_rev(eng)
+  ) |> 
+  count(eng) |> 
+  pull(eng)
+
+main_GDP_plot_data <- 
+  main_GDP_plot_data %>%
+  mutate(eng = factor(eng, levels = factoring_levels))
+         
+
+segments <- 
+  main_GDP_plot_data |> 
+  # filter(year %in% c(2013, 2017, 2020, 2023)) |> 
+  group_by(year) |> 
+  filter(date == max(date)) |> 
+  ungroup() |> 
+  group_by(date) |> 
+  summarise(
+    production_yoy = sum(production_yoy),
+    production_yoy_text = number(production_yoy, accuracy = 0.01),
+    production_yoy = production_yoy + 1
+  ) |>  
+  ungroup()
+
+
+GDP_main_plot <- 
+  main_GDP_plot_data |> 
+  ggplot(aes(date, production_yoy)) +
+  geom_segment(
+    data = segments,
+    aes(x = date, y = production_yoy - 1, xend = date, yend = production_yoy),color="black"
+  ) +
+  geom_point(
+    data = segments,
+    aes(x = date, y = production_yoy),color="black"
+  ) +
+  geom_text(
+    data = segments,
+    aes(x = date, y = production_yoy + 0.5, label = production_yoy_text)
+  ) +
+  geom_area(aes(fill = eng)) +
+  geom_text(
+    data = main_GDP_plot_data |> filter(date == min(date)),
+    aes(label = pct_text, color = eng),
+    position = position_stack(vjust = 0.5), hjust = 1
+  ) +
+  geom_text(
+    data = main_GDP_plot_data |> filter(date == max(date)),
+    aes(label = pct_text, color = eng),
+    position = position_stack(vjust = 0.5), hjust = -0
+  ) +
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+  scale_y_continuous(breaks = seq(0, 14, 2), labels = number_format()) +
+  scale_fill_manual(values = new_palette_colors) +
+  scale_color_manual(values = new_palette_colors) +
+  coord_cartesian(clip = "off") +
+  ggthemes::theme_fivethirtyeight() +
+  labs(
+    x = NULL,
+    y = NULL,
+    fill = NULL,
+    title = "The Change from Agriculture to Manufacturing",
+    subtitle = "Output of Goods and Service in Armenia",
+    captions = paste0(caption_eng, "    |    Data Source: armstat.am")
+  ) +
+  theme_minimal() +
+  theme(
+    axis.line.x = element_line(linewidth = .75),
+    plot.title = element_text(size = 20),
+    plot.subtitle = element_text(size = 18),
+    panel.grid = element_blank(),
+    axis.text.y=element_blank(),
+    legend.position = "none",
+    plot.margin = margin(10,210,10,100),
+  )
+
+```
+
+
+```{r GDP change plot, include=FALSE}
+
+GDP_change_plot <- 
+  GDP_quarter  |> 
+  filter(!is.na(code)) |> 
+  mutate(
+    date = yq(date) + months(3) - days(1),
+    year = year(date),
+    eng = str_trunc(eng, 40),
+    eng = paste0(code, ". ", eng),
+  ) |> 
+  group_by(code, eng) |> 
+  mutate(production_yoy = roll_sumr(production, 4) / 1e3) |> 
+  filter(!is.na(production_yoy)) |> 
+  filter(date %in% c(max(date), min(date))) |>
+  # filter(date %in% c(max(date), as.Date("2022-12-31"))) |> 
+  mutate(year = ifelse(year == min(year), "min_year", "max_year")) |> 
+  select(code, eng, year, production_yoy) |> 
+  pivot_wider(names_from = year, values_from = production_yoy) |> 
+  mutate(
+    pct_10y_change = number(max_year / min_year, accuracy = 0.01),
+    middle_year = exp((log(min_year) + log(max_year))/2),  # geomean
+    color = ifelse(min_year > max_year, "#f95d6a", "#2f4b7c")
+  ) |>
+  filter(!grepl("^T", eng)) |> 
+  ggplot() +
+  geom_segment(
+    aes(x = min_year, xend = max_year, y = fct_reorder(eng, max_year), color = I(color)),
+    linewidth = 1.2,
+    lineend = 'round', linejoin = 'round',
+    arrow = arrow(length = unit(0.1, "inches"))
+  ) +
+  geom_point(aes(x = min_year, y = eng), color = new_palette_colors[6], size = 3) +
+  geom_point(aes(x = max_year, y = eng), color = new_palette_colors[2], size = 3) +
+  geom_text(aes(x = middle_year, y = eng, label = pct_10y_change), vjust = 0) +
+  geom_point(aes(x = 450, y = 2.5), color = new_palette_colors[6], size = 3) +
+  geom_point(aes(x = 450, y = 1.5), color = new_palette_colors[2], size = 3) +
+  geom_text(aes(x = 600, y = 2.5, label = 2013)) +
+  geom_text(aes(x = 600, y = 1.5, label = 2023)) +
+  scale_x_log10(labels = number_format()) +
+  labs(
+    x = "Billion AMD",
+    y = NULL,
+    title = "From 2013 to 2023, what area had the biggest growth in GDP?",
+    subtitle = "The numbers show the growth rate",
+    captions = paste0(caption_eng, "    |    Data Source: armstat.am")
+  )
+
+```
+
+
+
+
+```{r, include=FALSE}
+
+biggest_gdp_contributers <- 
+  GDP_quarter |> 
+  mutate(
+    date = yq(date) + months(3) - days(1),
+    year = year(date)
+  ) |> 
+  filter(
+    !is.na(code),
+    year == max(year)
+  ) |> 
+  group_by(code) |> 
+  summarise(production = sum(production)) |> 
+  slice_max(order_by = production, n = 9) |> 
+  pull(code)
+
+GDP_quarter |>
+  # filter(!is.na(code) | grepl("Domestic product .gross", eng)) |> 
+  filter(code %in% biggest_gdp_contributers) |> 
+  # filter(grepl("Domestic product .gross", eng)) |>  
+  mutate(
+    vol_YoY_pct = vol_YoY_pct / 100,
+    date = yq(date) + months(3) - days(1),
+    year = year(date),
+    eng = str_trunc(eng, 40),
+    eng = ifelse(is.na(code), eng, paste0(code, ". ", eng))
+  ) |>
+  group_by(code, eng) |>
+  mutate(
+    production_yoy = roll_sumr(production, 4) / 1e3,
+    vol_pct_2 = production_yoy / lag(production_yoy, n = 4) - 1,
+    vol_YoY_pct = vol_YoY_pct - 1
+  ) |>
+  ungroup() |>
+  select(-code, -arm, -rus) |> 
+  ggplot(aes(date, vol_YoY_pct, color = eng)) +
+  facet_wrap(~eng, scales = "free_y") +
+  geom_hline(yintercept = 0, color = "gray") +
+  geom_smooth(method = "glm") +
+  geom_line() +
+  scale_y_continuous(labels = percent_format()) +
+  labs(
+    x = NULL,
+    y = NULL
+  ) +
+  theme(
+    legend.position = "none"
+  )
+
+```
+
+
+***English summary below.***
+
+Հարգելի գործընկեր,
+
+Հուսով եմ լավ եք:
+Ներկայացնում եմ այս շաբաթվա վերլուծությունները և աշխատանքները.
+
+
+## 🚜🌾📉  10 տարվա գյուղատնտեսության կոլափսը
+
+### Գյուղատնտեսությունից սապառողական տնտեսության անցումը
+
+
+Վերջին 10 տարիների ընթացքում Հայաստանի միջին տնտեսակնա ճը կազմլե է 4.473 տոկոս։ Ցանկացած համակարգ ձգտում է վերդառնալ միջին ցուցանիշին եթե համակարգում առկա չէ որակական փոփոխություն։ Ըստ
+
+Ընդհանուր առմամբ այս 10 տարում ՀՆԱ-ն ավելի քան կրկնապատկվել է՝ 2013-ին կազմելով 4.14 տրիլիոն դրամ, իսկ 2023-ին արդեն 8.68 տրլն դրամ: Նշենք որ եթե հաշվի առնենք այս 10 տարիների կումուլատիվ գնաճը, ապա այս շրջանում իրական տնտեսական աճը կազմել է 55 տոկոս։
+10 տարի առաջ 2013 թվականին Հայաստանի ՀՆԱ-ի 20.3 տոկոսը ապահովում էր գյուղատնտեսությունը, որը կազմում էր 840 մլրդ դրամ, առևտուրը գտնվում էր երկրորդ տեղում՝ կազմելով ՀՆԱ-ի 13.2 տոկոսը, կամ 550 մլրդ դրամ:
+
+2023 թվականին պատկերը հակառակն է «Մեծածախ և մանրածախ առևտուր. ավտոմեքենաների և մոտոցիկլների նորոգումը» արդեն գտնվում է առաջին տեղը` ապահովելով ՀՆԱ-ի 13.9 տոկոսը (1 210 մլրդ դրամ), իսկ գյուղատնտեսությունը այս 10 տարվա մեջ 20.3 տոկոս բաժնեմասից իջել է 9.2 տոկոսի (800 մլրդ դրամ):
+
+Հուշագրավ է, որ այս 10 տարվա մեջ ՀՆԱ-ն աճել է ավելի քան 2 անգամ, իսկ գյուղատնտեսությունը գրեթե աճ չի արձանագրել աճելով չնչին 5 տոկոսով: Արդյունաբերությունը այս 10 տարվա մեջ աճել է 2.5 անգամ: Գյուղատնտեսությունը արդեն գտնվում է 3-րդ տեղում արդյունաբերությունից և մեծածախ ու մանրածախ առևտրից հետո: Փաստացի գյուղատնտեսության ծավալը կրճատվել է 5 տոկոսով, իսկ եթե հաշվի առնենք նաև գնաճը ապա գյուղատնտեսության 10 տարվա իրական կրճատումը կազմել է 30 տոկոս։
+
+Դիտարկենք նաև շինարարություն ոլորտը։ Շինարարարությունը 2013-ին կազմում էր 480 մլրդ դրամ կամ ՀՆԱ-ի 11.5-ը իսկ 2023-ին 650 մլրդ դրամ, սակայն տեսակարարա կշիռը իջել է 7.5 տոկոս։ Եթե հաշվի առնենք գնաճը ապա այս ոլորտում իրական աճը գրեթե զրոյական է։ Անշարժ գույքի հետ կապված գործունեության (L) իրական աճը կազմել է 55 տոկոս:
+
+
+**Գծապատկեր 1.**  ՀՆԱ մեջ ապրանքների և ծառայությունների թողարկումն փոփոխությունը
+
+```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
+GDP_main_plot
+```
+
+Գյուղատնտեսությունը վերջին 4 տարիների ընթացքում ունի բացասական աճ և
+բացասապես է նպաստում տնտեսական աճին։
+
+>
+> Կարդացեք թե որ ճյուղերն են նպաստում տնտեսական աճին․
+> [🇦🇲📊🏗️ Հայաստանի 2023թ․ 8.7% տնտեսական աճի հիմնական պատճառները](https://www.tvyal.com/newsletter/2024/2024_03_09)։
+>
+
+
+Դիտարկենք թե ապրանքների և ծառայությունների թողարկման որ ճյուղերն են ունեցել ամենազգալի աճը այս 10 տարիների ընթացքում:
+
+Ինչպես երևում է միակ ճյուղը որը կրճատվել է այս 10 տարիների ընթացքում` դա գյուղատնտեսությունն է: Եթե հաշվի առնենք նաև գնաճը, ապա աճի տենդենցը բացասական է եղել: Փաստացի գրեթե բոլոր ճյուղերը գրանցել են 2 և ավելի անգամ աճ, բացի գյուղատնտեսությունից:
+
+Ամենամեծ աճը գրանցել է (I) Կացության և հանրային սննդի կազմակերպման և (R) Մշակույթի, զվարճությունների և հանգիստի ոլորտները որոնք այս 10 տարիների ընթացքում աճել են համապատասխանաբար ավելի քան 4.8 և 4.3 անգամ: Սա առաջին հերթին խոսում է Հայաստանում տուրիզմի զարգացման վերաբերյալ:
+
+Ֆինանսական և ապահովագրական գործունեությունը աճել է ավելի քան 3.8 անգամ
+
+
+**Գծապատկեր 2.** ՀՆԱ կառուցվածքի 2013-ից մինչև 2023 աճի համեմատություն
+
+```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
+GDP_change_plot
+```
+
+
+
+
+
+
+## ԶԼՄ հաղորդագրություններ
+
+[Դիտեք Նվեր Մնացականյանին տված իմ վերջին հարցազրույցը, որտեղ խոսում եմ 2024 թվականի տնտեսական մարտահրավերների մասին։](https://www.youtube.com/watch?v=4ZI-fFFxr7k)
+
+Հարցազրույցում շոշափվել են հետևյալ թեմաները։
+
+* Երևանը Մոսկվայից ավելի թանկ էր 2023 թվականի ամռանը
+* Վերաբնակները լքում են Հայաստանը
+* Շինարարական բում Հայաստանում. Այս կառավարությունը կրկնում է Քոչարյանի սխալները
+* Ինչ առավելություններ կտա Եվրոպական ուղին Հայաստանի տնտեսության համար
+
+
+<a href="https://www.youtube.com/watch?v=4ZI-fFFxr7k">
+  <img src="https://i3.ytimg.com/vi/4ZI-fFFxr7k/hqdefault.jpg" alt="YouTube Video" style="width:60%;">
+</a>
+
+
+## English Summary
+
+### 🚜🌾📉️ 10 years of agricultural collapse
+
+**Transition from agriculture to consumption economy**
+
+---
+
+Այս վերլուծությունը առկա է նաև [մեր կայքէջում](https://www.tvyal.com/newsletter/2024/2024_03_15), այս վերլուծության կոդը և տվյալները դրված են նաև [Github-ում](https://github.com/tavad/tvyal_newsletter)։       
+
+---                  
+
+Եթե հնարավոր է, խնդրում եմ այս նյութը ուղարկել նաև այն մարդկանց, ում այն կարծում եք կարող է հետաքրքրել:
+
+Սպասեք հաջորդ հաղորդագրությանը հաջորդ ուրբաթ օրը:      
+
+
+Հարգանքներով,            
+Աղասի Թավադյան         
+15.03.2024          
+[tvyal.com](https://www.tvyal.com/)      
+[tavadyan.com](https://www.tavadyan.com/)
+
+---
+
+[Was this email forwarded to you? Subscribe here.](https://www.tvyal.com/subscribe)
+
+[Բաժանորդագրվեք](https://www.tvyal.com/subscribe)
+
+       
+---              
+               
+
+
+####### **Ուշադրություն. Ձեր էլ.փոստը մեյլիսթի մեջ է, որի միջոցով ես կիսվում եմ շաբաթական նյութեր, որոնք հիմնականում ներկայացնում են Հայաստանի տնտեսությանը: Նյութերը ներառում են գծապատկերներ, [տվյալների բազաներ](https://github.com/tavad/tvyal_newsletter), տեսանյութեր, հոդվածներ, [առցանց վահանակներ](https://www.tvyal.com/projects), տնտեսական գործիքներ, կանխատեսումներ և հաշվետվություններ: Եթե ցանկանում եք չեղարկել բաժանորդագրությունը, խնդրում եմ տեղեկացրեք ինձ, և ես կհեռացնեմ ձեր էլ. փոստը ցուցակից: Գրեք նաև եթե ունեք մենկնաբանություններ:**
+
+####### **Important! Your email is part of the mailing list where I share weekly materials primarily focused on the Armenian economy. These materials encompass charts, [databases](https://github.com/tavad/tvyal_newsletter), videos, articles, [online dashboards](https://www.tvyal.com/projects), economic tools, forecasts, and reports. If you wish to unsubscribe, please let me know, and I will remove your email from the list. Please share your comments as well․**
+
+
+
+
+
