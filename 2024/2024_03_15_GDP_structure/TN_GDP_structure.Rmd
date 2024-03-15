@@ -341,8 +341,6 @@ GDP_change_plot <-
 ```
 
 
-
-
 ```{r, include=FALSE}
 
 biggest_gdp_contributers <- 
@@ -359,6 +357,63 @@ biggest_gdp_contributers <-
   summarise(production = sum(production)) |> 
   slice_max(order_by = production, n = 9) |> 
   pull(code)
+
+
+biggest_growth_plot <-
+  GDP_annual |> 
+  filter(
+    code %in% biggest_gdp_contributers,
+    year >= 2018,
+    ) |> 
+  group_by(code) |> 
+  mutate(
+    eng = str_trunc(eng, 30),
+    eng = paste0(code, ". ", eng),
+    vol_YoY_pct = vol_YoY_pct / 100,
+    vol_YoY_pct = ifelse(year == min(year), 1, vol_YoY_pct),
+    pct_cumprod = cumprod(vol_YoY_pct),
+  ) |> 
+  ungroup() |> 
+  mutate(
+    eng = fct_reorder(eng, pct_cumprod, .fun = max, .desc = TRUE),
+    text = percent(pct_cumprod - 1, accuracy = 0.1),
+    text = ifelse(pct_cumprod > 1, paste("↑", text), paste("↓", text)),
+    text = paste(text, eng, sep = ", ")
+  ) |> 
+  ggplot(aes(year, pct_cumprod, color = eng)) +
+  geom_line(size = 1.5) +
+  geom_text(
+    aes(
+      x = max(year) + 0.06, 
+      y = case_when(
+        year == max(year) & code != "F" ~ pct_cumprod,
+        year == max(year) & code == "F" ~ pct_cumprod - 0.025
+        ), 
+      label = text, color = eng),
+    hjust = -0
+  ) +
+  scale_x_continuous(breaks = seq(2010, 2030, 1)) +
+  scale_y_log10(breaks = c(0.9, 1, 1.5, 2, 2.5), labels = percent_format()) +
+  scale_color_manual(values = colfunc3(10)) +
+   labs(
+    x = NULL,
+    y = NULL,
+    fill = NULL,
+    title = "The biggest growth",
+    subtitle = "The biggest growth",
+    captions = paste0(caption_eng, "    |    Data Source: armstat.am")
+  ) +
+  coord_cartesian(clip = "off") +
+  theme(
+    legend.position = "none",
+    plot.margin = margin(10,190,10,10),
+  )
+
+```
+
+
+
+```{r, include=FALSE}
 
 GDP_quarter |>
   # filter(!is.na(code) | grepl("Domestic product .gross", eng)) |> 
@@ -432,6 +487,7 @@ GDP_main_plot
 
 >
 > Կարդացեք թե որ ճյուղերն են նպաստում տնտեսական աճին․
+>
 > [🇦🇲📊🏗️ Հայաստանի 2023թ․ 8.7% տնտեսական աճի հիմնական պատճառները](https://www.tvyal.com/newsletter/2024/2024_03_09)։
 >
 
@@ -452,6 +508,11 @@ GDP_change_plot
 ```
 
 
+**Գծապատկեր 3.** ՀՆԱ աճը
+
+```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
+biggest_growth_plot
+```
 
 
 
