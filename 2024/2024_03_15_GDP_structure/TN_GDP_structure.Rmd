@@ -191,7 +191,7 @@ main_GDP_plot_data <-
     pct_text = ifelse(
       eng != "Other" & date == max(date) & year %in% c(2013, 2023), 
       paste0(
-        "֏ ", number(production_yoy/1e6, accuracy = 0.01), "T (",
+        "", number(production_yoy/1e6, accuracy = 0.01), " (",
         percent(pct, accuracy = 0.1), ")", " "
         ),
       NA
@@ -273,7 +273,7 @@ GDP_main_plot <-
     y = NULL,
     fill = NULL,
     title = "The Change from Agriculture to Manufacturing",
-    subtitle = "Output of Goods and Service in Armenia",
+    subtitle = "Output of Goods and Service in Armenia, Trillion AMD",
     captions = paste0(caption_eng, "    |    Data Source: armstat.am")
   ) +
   theme_minimal() +
