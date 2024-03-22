@@ -148,7 +148,7 @@ fuel_data_for_forecast <-
   select(date, value) |> 
   left_join(crude_oil_opec, by = join_by(date)) |> 
   fill(crude_oil_price, .direction = "down")
-nnnn
+
 
 set.seed(123)
 
