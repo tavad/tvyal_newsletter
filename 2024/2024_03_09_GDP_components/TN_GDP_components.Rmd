@@ -207,7 +207,7 @@ GDP_annual |> write_excel_csv("GDP_annual_tidy.csv")
 # # arm_inflation |> view()
 # 
 # GDP_annual <-
-#   read_csv("future_gdp_forecast.csv") |>
+#   read_csv("future_gdp_forecast_2.csv") |>
 #   group_by(eng) |>
 #   arrange(eng) |>
 #   mutate(
@@ -222,7 +222,7 @@ GDP_annual |> write_excel_csv("GDP_annual_tidy.csv")
 #   summarise(
 #     production = sum(.value),
 #     production_inf = sum(.value_inf)
-#   ) |> 
+#   ) |>
 #   ungroup() |>
 #   group_by(eng) |>
 #   mutate(
@@ -243,18 +243,15 @@ GDP_annual |> write_excel_csv("GDP_annual_tidy.csv")
 #   na.omit()
 # 
 # read_csv("future_gdp_forecast.csv") |>
-#   filter(eng == "Domestic product (gross, market prices)") |> 
-#   select(-contains("volume")) |> 
-#   left_join(arm_inflation, by = "date") |> 
+#   filter(eng == "Domestic product (gross, market prices)") |>
+#   select(-contains("volume")) |>
+#   left_join(arm_inflation, by = "date") |>
 #   mutate(
 #     gdp_growth = .value,
 #     across(matches("value|conf"), ~.x/ inflation),
 #     year = year(date)
-#   ) |> 
-#   group_by(year, .key) |> 
-#   view()
-# 
-# 
+#   ) |>
+#   group_by(year, .key) |>
 #   summarise(
 #     across(matches("value|conf|gdp"), ~sum(.x))
 #   )

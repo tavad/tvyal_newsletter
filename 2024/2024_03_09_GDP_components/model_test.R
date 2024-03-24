@@ -110,59 +110,65 @@ time_cv <-
 
 
 ### model xgboost
+# 
+# model_xgb_tune <-
+#   boost_tree(
+#     tree_depth = tune(),
+#     trees = tune(),
+#     min_n = tune(),
+#     learn_rate = 0.01
+#   ) |>
+#   set_engine("xgboost") |>
+#   set_mode("regression")
+# 
+# 
+# wflw_xgb_tune <- workflow() |>
+#   add_model(model_xgb_tune) |>
+#   add_recipe(rec_spec)
+# 
+# start = Sys.time()
+# 
+# xgb_rs_tune <-
+#   wflw_xgb_tune |>
+#   tune_grid(
+#     resamples = time_cv,
+#     grid = 10,
+#     metrics = metric_set(mae, mape, rsq, mase), # other metrics: mase, smape, rmse, rsq
+#     control = control_grid(save_pred = TRUE, verbose = TRUE, allow_par = TRUE)
+#   )
+# 
+# xgb_rs_tune[1,]$.notes[[1]]$note[1]
+# beepr::beep()
+# 
+# (xgb_tune_time = Sys.time() - start)
+# # Time difference of 2-4 mins
+# 
+# show_best(xgb_rs_tune,  metric = "mae")
+# 
+# autoplot(xgb_rs_tune)
+# 
+# select_best(xgb_rs_tune, metric = "mase")
+# 
+# wflw_xgb <- wflw_xgb_tune %>%
+#   finalize_workflow(select_best(xgb_rs_tune, metric = "mase")) %>%
+#   fit(training(splits))
 
-model_xgb_tune <-
+
+
+model_xgb <-
   boost_tree(
-    tree_depth = tune(),
-    trees = tune(),
-    min_n = tune(),
-    learn_rate = 0.01
-  ) |>
-  set_engine("xgboost") |>
+    tree_depth = 12,
+    trees = 1000,
+    min_n = 6,
+    learn_rate = 0.1
+  ) |>  # tuneable parameter with CV
+  set_engine("xgboost") |> 
   set_mode("regression")
 
-
-wflw_xgb_tune <- workflow() |>
-  add_model(model_xgb_tune) |>
-  add_recipe(rec_spec)
-
-start = Sys.time()
-
-xgb_rs_tune <-
-  wflw_xgb_tune |>
-  tune_grid(
-    resamples = time_cv,
-    grid = 10,
-    metrics = metric_set(mae, mape, rsq, mase), # other metrics: mase, smape, rmse, rsq
-    control = control_grid(save_pred = TRUE, verbose = TRUE, allow_par = TRUE)
-  )
-
-xgb_rs_tune[1,]$.notes[[1]]$note[1]
-beepr::beep()
-
-(xgb_tune_time = Sys.time() - start)
-# Time difference of 2-4 mins
-
-show_best(xgb_rs_tune,  metric = "mae")
-
-autoplot(xgb_rs_tune)
-
-select_best(xgb_rs_tune, metric = "mase")
-
-wflw_xgb <- wflw_xgb_tune %>%
-  finalize_workflow(select_best(xgb_rs_tune, metric = "mase")) %>%
+wflw_xgb <- workflow() |>
+  add_model(model_xgb) |>
+  add_recipe(rec_spec) |>
   fit(training(splits))
-
-
-
-# model_xgb <- 
-#   boost_tree(mode = "regression", learn_rate = 0.1) |>  # tuneable parameter with CV
-#   set_engine("xgboost")
-# 
-# wflw_xgb <- workflow() |> 
-#   add_model(model_xgb) |> 
-#   add_recipe(rec_spec) |> 
-#   fit(training(splits))
 
 ### model glmnet
 
@@ -268,7 +274,9 @@ g <- total_clv_prediction |>
   geom_point() +
   geom_smooth(aes(group = .model_desc), method = "lm", se = FALSE) +
   geom_abline(slope = 1, intercept = 0) +
-  coord_fixed()
+  coord_fixed() +
+  scale_x_log10() +
+  scale_y_log10()
 
 plotly::ggplotly(g)
 
@@ -276,7 +284,7 @@ plotly::ggplotly(g)
 
 ### creating model
 model_ensemble <- modeltime_calib_tbl |> 
-  modeltime.ensemble::ensemble_weighted(loadings = c(0,0.5,1,0))
+  modeltime.ensemble::ensemble_weighted(loadings = c(1,0,0.5,0))
 
 ### Calibrating model
 modeltime_calib_2_tbl <- 
@@ -340,7 +348,7 @@ plotly::ggplotly(g_2)
 
 # refit
 refit_table <- modeltime_calib_2_tbl |> 
-  dplyr::slice(5) |>                          #the best model is 3
+  dplyr::slice(1) |>                          #the best model is 1
   modeltime_refit(data = GDP_actual)
 
 future_forecast_tbl <- refit_table |> 
@@ -385,7 +393,7 @@ future_forecast_tbl |>
   geom_line(aes(date, vol_YoY_pct), color = "blue")
   
 future_forecast_tbl |> 
-  write_csv("future_gdp_forecast.csv")
+  write_csv("future_gdp_forecast_2.csv")
 
 
 future_forecast_tbl |> 
