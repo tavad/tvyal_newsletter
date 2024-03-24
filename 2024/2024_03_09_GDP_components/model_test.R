@@ -87,9 +87,9 @@ traning_time_roll <-
 rec_spec <- recipe(volume ~ ., data = training(splits)) |> 
   step_timeseries_signature(date) |> 
   step_rm(date) |> 
-  step_nzv(all_numeric_predictors()) |> 
   step_mutate(eng = as.factor(eng)) |> 
   step_dummy(all_nominal_predictors(), one_hot = TRUE) |> 
+  step_zv(all_numeric_predictors()) |> 
   step_normalize(all_numeric_predictors())
 
 
@@ -143,7 +143,7 @@ beepr::beep()
 (xgb_tune_time = Sys.time() - start)
 # Time difference of 2-4 mins
 
-show_best(xgb_rs_tune)
+show_best(xgb_rs_tune,  metric = "mae")
 
 autoplot(xgb_rs_tune)
 
