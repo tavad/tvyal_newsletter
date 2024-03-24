@@ -136,7 +136,8 @@ transfers_clean <-
     date = ym(paste(year, month)),
     date = date + months(1) - days(1)
   ) |>
-  relocate(date, year, month, month_name, country, direction, type, K_USD)
+  relocate(date, year, month, month_name, country, direction, type, K_USD) |> 
+  filter(!is.na(K_USD))
 
 transfers_clean |>
   write_excel_csv("transfers_by_countries_clean.csv")
@@ -160,7 +161,7 @@ transfers_total_chart <-
     # type == "non-commercial",
     type == "total",
     country != "Total",
-    # year <= 2022
+    year <= 2023
   ) |>
   mutate(
     country = case_when(
@@ -564,6 +565,15 @@ transfers_commercial_russian |>
 #
 # 
 ```
+
+
+```{r, include=FALSE}
+
+# recrate this:
+# https://media.licdn.com/dms/image/D4E22AQF-OWDT11l-rQ/feedshare-shrink_2048_1536/0/1711187970640?e=1714003200&v=beta&t=ED_S9tLTFwlc59iTZRZVZbDw9jwqfVzlyBW09UzpPvE
+
+```
+
 
 
 ***English summary below.***
