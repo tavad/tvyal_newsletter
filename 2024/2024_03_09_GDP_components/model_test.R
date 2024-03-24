@@ -89,21 +89,80 @@ rec_spec <- recipe(volume ~ ., data = training(splits)) |>
   step_rm(date) |> 
   step_nzv(all_numeric_predictors()) |> 
   step_mutate(eng = as.factor(eng)) |> 
-  step_dummy(all_nominal_predictors(), one_hot = TRUE)
+  step_dummy(all_nominal_predictors(), one_hot = TRUE) |> 
+  step_normalize(all_numeric_predictors())
 
 
 rec_spec |> prep() |> juice()
 
+
+set.seed(456)
+time_cv <- 
+  sliding_period(
+    training(splits),
+    # lookback = 3600 - 1,
+    lookback = 20,
+    assess_stop = 4,
+    index = date,
+    period = "minute",
+    step = 1
+  )
+
+
 ### model xgboost
 
-model_xgb <- 
-  boost_tree(mode = "regression", learn_rate = 0.1) |>  # tuneable parameter with CV
-  set_engine("xgboost")
+model_xgb_tune <-
+  boost_tree(
+    tree_depth = tune(),
+    trees = tune(),
+    min_n = tune(),
+    learn_rate = 0.01
+  ) |>
+  set_engine("xgboost") |>
+  set_mode("regression")
 
-wflw_xgb <- workflow() |> 
-  add_model(model_xgb) |> 
-  add_recipe(rec_spec) |> 
+
+wflw_xgb_tune <- workflow() |>
+  add_model(model_xgb_tune) |>
+  add_recipe(rec_spec)
+
+start = Sys.time()
+
+xgb_rs_tune <-
+  wflw_xgb_tune |>
+  tune_grid(
+    resamples = time_cv,
+    grid = 10,
+    metrics = metric_set(mae, mape, rsq, mase), # other metrics: mase, smape, rmse, rsq
+    control = control_grid(save_pred = TRUE, verbose = TRUE, allow_par = TRUE)
+  )
+
+xgb_rs_tune[1,]$.notes[[1]]$note[1]
+beepr::beep()
+
+(xgb_tune_time = Sys.time() - start)
+# Time difference of 2-4 mins
+
+show_best(xgb_rs_tune)
+
+autoplot(xgb_rs_tune)
+
+select_best(xgb_rs_tune, metric = "mase")
+
+wflw_xgb <- wflw_xgb_tune %>%
+  finalize_workflow(select_best(xgb_rs_tune, metric = "mase")) %>%
   fit(training(splits))
+
+
+
+# model_xgb <- 
+#   boost_tree(mode = "regression", learn_rate = 0.1) |>  # tuneable parameter with CV
+#   set_engine("xgboost")
+# 
+# wflw_xgb <- workflow() |> 
+#   add_model(model_xgb) |> 
+#   add_recipe(rec_spec) |> 
+#   fit(training(splits))
 
 ### model glmnet
 
