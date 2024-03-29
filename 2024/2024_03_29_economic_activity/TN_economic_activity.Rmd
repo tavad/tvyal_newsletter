@@ -144,7 +144,6 @@ economic_activity |> write_csv("economic_activity_celan.csv")
 ```
 
 
-
 ```{r, include=FALSE}
 
 economic_activity_change_plot <- 
@@ -224,6 +223,154 @@ economic_activity_last_2_years_comparation_plot <-
 ```
 
 
+```{r processing economic activity factors data, include=FALSE}
+
+activity_factors <- read_csv("EAI_factors.csv")
+
+factors_dict <- 
+  tibble(
+    order = 1:5,
+    factor = c("industry", "agriculture", "construction",  "trade", "services"),
+    factor_name_arm = c(
+      "Արդյունաբերական արտադրանքի ծավալը", 
+      "Գյուղատնտեսության համախառն արտադրանքի ծավալը",
+      "Շինարարության ծավալը", "Առևտրի շրջանառությունը",
+      "Ծառայությունների ծավալը (առանց առևտրի)"
+    )
+  )
+
+activity_factors_full_year <- 
+  activity_factors |> 
+  filter(!is.na(year)) |> 
+  filter(month == 13) |> 
+  pivot_longer(-c(year, month, name), names_to = "factor") |> 
+  pivot_wider() |> 
+  select(-month) |> 
+  janitor::clean_names() |> 
+  left_join(factors_dict, by = "factor") |> 
+  mutate(
+    factor = fct_reorder(factor, order),
+    factor_name_arm = fct_reorder(factor_name_arm, order)
+  ) |> 
+  group_by(year) |> 
+  mutate(
+    factor_pct = mln_dram / sum(mln_dram)
+  ) |> 
+  ungroup()
+
+##################################
+
+activity_factors_month <- 
+  activity_factors |> 
+  filter(!is.na(year)) |> 
+  filter(month != 13) |> 
+  mutate(date = ym(paste(year, month)) + months(1) - days(1)) |> 
+  pivot_longer(-c(date, year, month, name), names_to = "factor") |> 
+  pivot_wider() |> 
+  janitor::clean_names() |> 
+  left_join(factors_dict, by = "factor") |> 
+  mutate(
+    factor = fct_reorder(factor, order),
+    factor_name_arm = fct_reorder(factor_name_arm, order)
+  ) |> 
+  arrange(factor, date) |> 
+  group_by(factor) |> 
+  mutate(
+    mln_dram_yoy = roll_sumr(mln_dram, 12),
+    across(contains("growth"), ~.x/100)
+  )
+
+```
+
+
+```{r activity_factors_year_plot, include=FALSE}
+
+activity_factors_year_plot_1 <- 
+  activity_factors_full_year |> 
+  ggplot(aes(year, mln_dram, fill = factor_name_arm)) +
+  geom_col() +
+  geom_text(
+    aes(label = number(mln_dram/1000, accuracy = 1)),
+    position = position_stack(vjust = .5)
+  ) +
+  scale_x_continuous(breaks = 2010:2030) +
+  scale_y_continuous(labels = percent_format()) +
+  scale_fill_manual(values = colfunc2(5)) +
+  labs(
+    x = NULL,
+    y = NULL,
+    color = NULL,
+    fill = NULL,
+    title = "Տնտեսական ակտիվության ցուցանիշը 2022 2023 թվականներին",
+    subtitle = "մլրդ․ դրամ",
+    caption =  paste(caption_arm, "   |   Տվյալների աղբյուր՝ armstat.am")
+  ) +
+  guides(fill = guide_legend(nrow = 2, byrow = TRUE)) +
+  theme(
+    panel.grid.major.x = element_blank(),
+    panel.grid.major.y = element_blank(),
+    axis.text.y = element_blank()
+  )
+
+
+activity_factors_year_plot_2 <- 
+  activity_factors_full_year |> 
+  mutate(
+    factor_pct_txt = percent(factor_pct, accuracy = 0.1)
+  ) |> 
+  ggplot(aes(year, factor_pct, fill = factor_name_arm, label = factor_pct_txt)) +
+  geom_col() +
+  geom_text(position = position_stack(vjust = .5)) +
+  scale_x_continuous(breaks = 2010:2030) +
+  scale_y_continuous(labels = percent_format()) +
+  scale_fill_manual(values = colfunc2(5)) +
+  labs(
+    x = NULL,
+    y = NULL,
+    color = NULL,
+    fill = NULL,
+    title = "Տնտեսական ակտիվության ցուցանիշը 2022 2023 թվականներին",
+    subtitle = "մլն․ դրամ",
+    caption =  paste(caption_arm, "   |   Տվյալների աղբյուր՝ armstat.am")
+  ) +
+  guides(fill = guide_legend(nrow = 2, byrow = TRUE)) +
+  theme(
+    panel.grid.major.x = element_blank(),
+    panel.grid.major.y = element_blank(),
+    axis.text.y = element_blank()
+  )
+
+```
+
+```{r activity_factors_month_trend_plot, include=FALSE}
+
+activity_factors_month_trend_plot <- 
+  activity_factors_month |> 
+  filter(factor != "agriculture") |> 
+  ggplot(aes(date, yoy_growth - 1, color = factor_name_arm)) +
+  geom_smooth(size = 1.5) +
+  geom_line(size = 1.2) +
+  geom_hline(yintercept = 0, color = new_palette_colors[1], linetype = "dotted") +
+  facet_wrap(~factor_name_arm, scales = "free_x") +
+  scale_y_continuous(breaks = seq(-0.6, 0.6, 0.2), labels = percent_format()) +
+  scale_color_manual(values = new_palette_colors[c(2,4,6,8)]) +
+  labs(
+    x = NULL,
+    y = NULL,
+    color = NULL,
+    title = "Տնտեսական ակտիվության ցուցանիշը 2022 2023 թվականներին",
+    subtitle = "մլն․ դրամ",
+    caption =  paste(caption_arm, "   |   Տվյալների աղբյուր՝ armstat.am")
+  ) +
+  theme(
+    legend.position = "none",
+    strip.text = element_text(face = "bold")
+  )
+
+```
+
+
+
 ***English summary below.***
 
 Հարգելի գործընկեր,
@@ -236,6 +383,21 @@ economic_activity_last_2_years_comparation_plot <-
 
 ### Գյուղատնտեսությունից սապառողական տնտեսության անցումը
 
+
+🔍 Տնտեսական ակտիվության ցուցանիշը 2024 թվականի փետրվարին կազմել է 16.3%, հիմնականում պայմանավորված հենց փետրվար ամսում գրանցված աճով՝ 11.2%։
+
+🌱 2024 փետրվար ամսին ծառայությունների ծավալը կրճատվել է 0.3%։ Աճը ապահովել են շինարարությունը, որը աճել է 35.5 տոկոս մեկ ամսվա ընթացքում և առևտուրը՝ 21.0%։
+
+📉 Ընդհանուր առմամբ մինչ փետրվար ամիսը տնտեսական ակտիվության միտումը բացասական էր։
+Ճիշտ է մեկ ամիսը դեռ բան չի կարող հիմք լինել որ տնտեսությունը հաղթահարել է անկման միտումը։ Նշեմ նաև որ Հայաստանի արտահանման ավելի քանի 25% ոսկու և ադամանդների վերաարտահանումն է, որը ամենայն հավանականությամբ ապահովում է վերջին ամիսների տնտեսական աճը։
+
+<!-- 🔗 Տվյալների աղբյուր՝ https://www.armstat.am/file/doc/99546023.pdf -->
+
+<!-- 🇦🇲📊🏗️ Իմ կողմից կատարված 2024թ․ ՀՆԱ կանխատեսման սցենարներից մեկը՝ -->
+<!-- https://www.facebook.com/a.tavadyan/posts/7642071095812344 -->
+
+<!-- 🇦🇲📊🏗️ 2023թ․ ՀՆԱ վերլուծությունը -->
+<!-- https://www.facebook.com/a.tavadyan/posts/7632905843395536 See less -->
 
 
 
@@ -250,7 +412,7 @@ economic_activity_change_plot
 
 **Գծապատկեր 2.** 
 
-```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
+```{r, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 12, fig.height = 8}
 economic_activity_last_2_years_comparation_plot
 ```
 
@@ -259,8 +421,23 @@ economic_activity_last_2_years_comparation_plot
 
 **Գծապատկեր 3.** 
 
-```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
-# biggest_growth_plot
+```{r, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 12, fig.height = 8}
+activity_factors_year_plot_1
+```
+
+
+**Գծապատկեր 4.** 
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 12, fig.height = 8}
+activity_factors_year_plot_2
+```
+
+
+
+**Գծապատկեր 5.** 
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 12, fig.height = 8}
+activity_factors_month_trend_plot
 ```
 
 >
