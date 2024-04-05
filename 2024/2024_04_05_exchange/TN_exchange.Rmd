@@ -97,7 +97,132 @@ setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 
 CBA_FX_data <- read_csv("CBA_FX_data_cleaned.csv")
 
+exchange_points <- read_csv("rate_by_exchange_points.csv")
+
 ```
+
+
+
+
+```{r , include=FALSE}
+
+USD_EUR_RUR_plot <- 
+  CBA_FX_data |> 
+  filter(year >= 2010) |> 
+  filter(FX_ISO %in%  c("USD", "EUR", "RUB")) |> 
+  mutate(AMD = ifelse(FX_ISO == "RUB", AMD * 50, AMD)) |> 
+  ggplot(aes(date, AMD, color = FX_ISO)) +
+  geom_line(size = 1.2) +
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+  scale_y_continuous(
+    breaks = seq(200, 700, 100),
+    name = "USD, EUR",
+    sec.axis = sec_axis(
+      transform = ~ . / 50,
+      breaks = seq(4, 14, 2), 
+      name = "RUB"
+    )
+  ) +
+  scale_color_manual(values = new_palette_colors[c(2,6,8)]) +
+  labs(
+    y = NULL,
+    color = NULL,
+    title = "Փոխարժեքները․․․",
+    # subtitle = "USD / AMD, EUR / AMD, RUB / AMD",
+    caption =  paste(
+      caption_arm, "   |   Տվյալների աղբյուր՝ cba.am"
+    )
+  )
+
+```
+
+
+
+```{r story of USD / AMD, include=FALSE}
+
+rect_data_2 <- 
+  tibble(
+    xmin = ymd("2020-09-27", "2020-11-09", "2023-09-19", "2023-09-25"), 
+    xmax = ymd("2020-11-09", "2021-08-01", "2023-09-25", "2024-04-01"), 
+    ymin = c(480, 480, 380, 380), 
+    ymax = c(540, 540, 410, 410),
+    text = c(
+      "2020, 44-օրյա պատերազմի ազդեցությունը",
+      "Հետպատերազմյան շրջան",
+      "2023, Ադրբեջանի Արցախի գրավման ազդեցությունը",
+      "Հետպատերազմյան շրջան"
+    )
+  )
+
+story_of_USD_AMD_plot <- 
+  CBA_FX_data |> 
+  filter(year >= 2012) |> 
+  filter(FX_ISO %in%  c("USD")) |> 
+  mutate(
+    ellips_1 = case_when(
+      date >= ymd("2012-06-01") &  date <= ymd("2014-11-01") ~ "a_stability1",
+      date >= ymd("2015-01-01") &  date <= ymd("2020-08-01") ~ "b_stability2",
+      date >= ymd("2023-02-15") &  date <= ymd("2023-09-18") ~ "c_stability3",
+      TRUE ~ NA
+    ),
+    ellips_1_AMD = ifelse(!is.na(ellips_1), AMD, NA),
+    # ellips_2 = case_when(
+    #   date >= ymd("2020-09-01") &  date <= ymd("2021-09-01") ~ "ellipse_4",
+    #   date >= ymd("2023-09-01") &  date <= ymd("2024-09-01") ~ "ellipse_5",
+    #   TRUE ~ NA
+    # ),
+    # ellips_2_AMD = ifelse(!is.na(ellips_2), AMD, NA),
+    ellips_3 = case_when(
+      date >= ymd("2014-11-01") &  date <= ymd("2014-12-30") ~ "d_crisis1",
+      date >= ymd("2022-03-11") &  date <= ymd("2022-09-15") ~ "e_crisis2",
+      TRUE ~ NA
+    ),
+    ellips_3_AMD = ifelse(!is.na(ellips_3), AMD, NA),
+    peaks = case_when(
+      date == ymd("2014-12-17") ~ "Ցնցում N1",
+      date == ymd("2022-03-11") ~ "Ցնցում N2",
+      date == ymd("2023-10-04") ~ "Ցնցում N3",
+    )
+  ) |> 
+  ggplot() +
+  geom_rect(
+    data = rect_data_2,
+    mapping = aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, fill = text),
+    alpha = 0.5
+  ) +
+  stat_ellipse(aes(date, ellips_3_AMD, color = ellips_3), na.rm = TRUE, linetype = 2) +
+  geom_line(aes(date, AMD), linewidth = 0.8, color = new_palette_colors[1]) +
+  geom_line(aes(date, ellips_1_AMD, color = ellips_1), linewidth = 1.2) +
+  geom_text(aes(date, AMD, label = peaks),  hjust = -0.1) +
+  # stat_ellipse(aes(date, ellips_2_AMD, color = ellips_2), na.rm = TRUE, linetype = 2) +
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+  scale_y_continuous(breaks = seq(340, 600, 20)) +
+  scale_color_manual(
+    values = new_palette_colors[c(4,5,6,7,8)], na.value = "transparent",
+    labels = c(
+      "2.5 տարվա կայունություն (2012-2014)", "5.5 տարվա կայունություն (2015-2020)",
+      "7 ամսվա կայունություն (2023)",
+      "Արժութային ճգնաժամ Ռուսաստանում (2014-2015)",
+      "Ռուսաստանի դեմ պատժամիջոցներ (2022)",
+      "")
+  ) +
+  scale_fill_manual(values = new_palette_colors[c(5,6,2)]) +
+  labs(
+    x = NULL,
+    y = NULL,
+    fill = NULL,
+    color = NULL,
+    title = "ԱՄՆ դոլար ՀՀ դրամ. փոխարժեքի դինամիկայի ուսումնասիրություն",
+    subtitle = "USD / AMD",
+    caption =  paste(
+      caption_arm, "   |   Տվյալների աղբյուր՝ cba.am"
+    )
+  ) +
+  guides(
+    color = guide_legend(nrow = 2, byrow = TRUE, order = 1)
+  )
+```
+
 
 
 ```{r loss of Artsakh and FX, include=FALSE}
@@ -113,7 +238,7 @@ rect_data <-
       # alpha = 0.5, fill = new_palette_colors[6], color = "#FFFFFF00"
   )
 
-artsakh_and_FX <- 
+artsakh_and_FX_plot <- 
   CBA_FX_data |> 
   mutate(year = year(date)) |> 
   filter(FX_ISO %in% c("USD"), year >= 2019) |>
@@ -151,7 +276,7 @@ artsakh_and_FX <-
     y = NULL,
     color = NULL,
     title = "Արցախի կորուստի ազդեցությունը փոխարժեքի վրա",
-    subtitle = "USD-AMD",
+    subtitle = "USD / AMD",
     caption =  paste(
       caption_arm, "   |   Տվյալների աղբյուր՝ cba.am"
     )
@@ -164,21 +289,29 @@ artsakh_and_FX <-
 
 
 
-```{r , include=FALSE}
 
+```{r exchange points plot, include=FALSE}
 
-
-```
-
-
-```{r , include=FALSE}
-
-
-```
-
-
-```{r , include=FALSE}
-
+exchange_points_plot <- 
+  exchange_points |> 
+  mutate(
+    possition_arm = ifelse(possition == "buy", "առք", "վաճառք")
+  ) |> 
+  # filter(FX %in% c("EUR", "RUB")) |> 
+  filter(FX %in% c("USD")) |> 
+  ggplot() +
+  geom_line(aes(date, value, color = possition_arm)) +
+  facet_wrap(~FX, scales = "free_y") +
+  scale_x_datetime(date_breaks = "2 days", date_labels = "%b %d") +
+  scale_color_manual(values = new_palette_colors[c(6,4)]) +
+  labs(
+    x = NULL,
+    y = NULL,
+    color = NULL,
+    title = "Փոխարժեքը կայունանո՞ւմ է",
+    subtitle = "Փոխարժեքը Երևանի փոխանակման կետերում, ապրիլի 4, 18։00 դրությամբ",
+    caption =  caption_arm
+  )
 
 ```
 
@@ -206,7 +339,7 @@ artsakh_and_FX <-
 **Գծապատկեր 1.**  
 
 ```{r, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 12, fig.height = 8}
-
+USD_EUR_RUR_plot
 ```
 
 
@@ -223,7 +356,7 @@ artsakh_and_FX <-
 **Գծապատկեր 2.** 
 
 ```{r, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 12, fig.height = 8}
-
+story_of_USD_AMD_plot
 ```
 
 
@@ -239,7 +372,7 @@ artsakh_and_FX <-
 **Գծապատկեր 3.** 
 
 ```{r, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 12, fig.height = 8}
-artsakh_and_FX
+artsakh_and_FX_plot
 ```
 
 
@@ -247,7 +380,7 @@ artsakh_and_FX
 **Գծապատկեր 4.** 
 
 ```{r, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 12, fig.height = 8}
-
+exchange_points_plot
 ```
 
 
