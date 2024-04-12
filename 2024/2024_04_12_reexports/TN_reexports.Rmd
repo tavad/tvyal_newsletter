@@ -95,9 +95,12 @@ setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 ```
 
 
-```{r}
-reexports_tree_data <- 
+```{r get data, include=FALSE}
+reexports_estimated_data <- 
   read_csv("reexports_estimated_data.csv") 
+
+reexports_estimated_data_month <- 
+  read_csv("reexports_estimated_data_month.csv")
 
 export_import <- 
   read_csv("export_import_by_month.csv") 
@@ -115,6 +118,7 @@ official_RX_plot <-
   geom_text(vjust = -0.5) +
   scale_x_continuous(breaks = 2010:2023) +
   scale_y_continuous(labels = number_format(), n.breaks = 6) +
+  scale_fill_manual(values = new_palette_colors[2]) +
   labs(
     x = NULL,
     y = NULL,
@@ -144,6 +148,7 @@ official_RX_2023_by_hs2_plot <-
   geom_col() +
   geom_text(hjust = -0.2) +
   scale_x_continuous(limits = c(0, 140), n.breaks = 8) +
+  scale_fill_manual(values = new_palette_colors[2]) +
   labs(
     x = NULL,
     y = NULL,
@@ -181,13 +186,14 @@ exports_by_partner_regions_plot <-
     pct = percent(pct, accuracy = 0.1),
     partner_region_arm = fct_inorder(partner_region_arm)
   ) |> 
+  filter(year >= 2015) |> 
   ungroup() |> 
   ggplot(aes(year, trade_value_us/1e9, fill = partner_region_arm, label = pct)) +
   geom_col() +
   geom_text(position = position_stack(vjust = 0.5)) +
   scale_x_continuous(breaks = 2011:2023) +
   scale_y_continuous(breaks = 0:10) +
-  scale_fill_brewer(type = "qual", palette = 3) +
+  scale_fill_manual(values = colfunc2(5)) +
   labs(
     x = NULL,
     y = NULL,
@@ -203,6 +209,208 @@ exports_by_partner_regions_plot <-
 
 ```
 
+```{r, include=FALSE}
+
+reexports_estimated_by_year_plot <- 
+  left_join(
+    reexports_estimated_data %>% 
+      group_by(year) %>% 
+      summarise(RX = sum(reexports)),
+    export_import %>% 
+      mutate(year = year(period)) %>% 
+      group_by(year) %>% 
+      filter(period == max(period)) %>% 
+      select(-period),
+    by = join_by(year)
+  ) %>% 
+  mutate(not_RX = X - RX) %>% 
+  select(year, RX, not_RX) %>% 
+  pivot_longer(c(RX, not_RX), values_to = "exports") %>%
+  group_by(year) %>% 
+  mutate(
+    pct = exports / sum(exports),
+    pct_text = percent(pct),
+    name = ifelse(
+      name == "RX", 
+      "վերաարտահանում, գնահատված",
+      "զուտ արտահանում (առանց վերաարտահանման)"
+    ),
+    name = fct_rev(name),
+    exports_text = number(exports / 1e9, accuracy = 0.1),
+    text = ifelse(
+      exports/1e9 >= 0.5,
+      paste0(pct_text, "\n", exports_text),
+      pct_text
+    )
+  ) %>%
+  ungroup() %>% 
+  filter(year <= 2023, year >= 2015) |> 
+  ggplot(aes(year, exports / 1e9, fill = name, label = text)) +
+  geom_col()+
+  geom_text(position = position_stack(vjust = 0.5)) +
+  scale_x_continuous(breaks = 2011:2023) +
+  scale_y_continuous(breaks = 0:10) +
+  scale_fill_manual(values = new_palette_colors[c(5,2)]) +
+  labs(
+    x = NULL,
+    y = NULL,
+    fill = NULL,
+    title = "Հայաստանի վերաարտահանման գնահատումը",
+    subtitle = "մլն ԱՄՆ դոլար",
+    caption = paste0(
+      caption_arm, 
+      "   |   Գնահատված է հեղինակի կոմղից մշակված մեթոդաբանությամբ"
+      )
+  ) +
+  theme(
+    panel.grid.major.x = element_blank()
+  )
+
+```
+
+
+```{r, include=FALSE}
+
+RX_not_RX_plot_tbl <- 
+  reexports_estimated_data_month %>% 
+  group_by(period) |> 
+  summarise(RX = sum(reexports)) |> 
+  ungroup() |> 
+  mutate(RX = roll_sumr(RX, 12)) |> 
+  na.omit() |> 
+  left_join(
+    export_import,
+    by = join_by(period)
+  )|> 
+  mutate(not_RX = X - RX) |> 
+  select(period, RX, not_RX) |> 
+  pivot_longer(c(RX, not_RX), values_to = "exports")
+
+
+reexports_estimated_by_month_plot_1 <- 
+  RX_not_RX_plot_tbl |> 
+  group_by(period) %>% 
+  mutate(
+    pct = exports / sum(exports),
+    pct_text = percent(pct),
+    name = ifelse(
+      name == "RX", 
+      "վերաարտահանում, գնահատված",
+      "զուտ արտահանում (առանց վերաարտահանման)"
+    ),
+    name = fct_rev(name),
+    exports_text = number(exports / 1e9, accuracy = 0.1),
+    text = ifelse(
+      exports/1e9 >= 0.5,
+      paste0(pct_text, "\n", exports_text),
+      pct_text
+    ),
+  ) %>%
+  ungroup() %>% 
+  mutate(
+    text = ifelse(
+      period == max(period) | period == min(period),
+      text,
+      NA
+    ),
+    period = period + months(1) - days(1)
+  ) |> 
+  filter(period >= ym("2019-12")) |>
+  ggplot(aes(period, exports / 1e9, fill = name, label = text)) +
+  geom_area() +
+  geom_text(position = position_stack(vjust = 0.5), hjust = -0.05) +
+  scale_x_date() +
+  scale_y_continuous(breaks = 0:10) +
+  scale_fill_manual(values = new_palette_colors[c(5,2)]) +
+  labs(
+    x = NULL,
+    y = NULL,
+    fill = NULL,
+    title = "Հայաստանի վերաարտահանման գնահատումը",
+    subtitle = "մլն ԱՄՆ դոլար, 12 ամսյա կտրվածքով",
+    caption = paste0(
+      caption_arm, 
+      "   |   Գնահատված է հեղինակի կոմղից մշակված մեթոդաբանությամբ"
+      )
+  )
+
+
+```
+
+
+```{r, include=FALSE}
+
+
+arm_dict_hs2 <- 
+  read_csv("arm_dict_hs2.csv")
+
+reexports_estimated_by_month_plot_2 <- 
+  reexports_estimated_data_month %>% 
+  mutate(
+    name = floor(commodity_code / 1e4),
+    name = paste(name),
+    name = fct_lump_n(name, 4, w = reexports, other_level = "Այլ վերաարտահանում")
+  ) |> 
+  group_by(period, name) |> 
+  summarise(RX = sum(reexports)) |> 
+  ungroup() |> 
+  complete(name, period, fill = list(RX = 0)) |> 
+  arrange(name, period) |> 
+  group_by(name) |> 
+  mutate(RX = roll_sumr(RX, 12)) |> 
+  ungroup() |> 
+  na.omit() |> 
+  rename(exports = RX) |> 
+  bind_rows(
+    RX_not_RX_plot_tbl |> filter(name == "not_RX")
+  ) |> 
+  group_by(period) |> 
+  left_join(
+    arm_dict_hs2 |> transmute(name = as.character(commodity_code), commodity_arm_short), 
+    by = "name"
+  ) |> 
+  mutate(
+    commodity_arm_short = str_trunc(commodity_arm_short, 30),
+    name = case_when(
+      grepl("\\d", name) ~ paste0("Վերաարտ․,", name, ". ", commodity_arm_short),
+      name == "not_RX" ~ "Զուտ արտահանում (առանց վերաարտահանման)",
+      TRUE ~ name
+    ),
+    name = fct_inorder(name),
+    pct = exports / sum(exports),
+    text = percent(pct, accuracy = 0.1),
+    exports_text = number(exports / 1e9, accuracy = 0.1),
+  ) |> 
+  ungroup() %>% 
+  mutate(
+    text = ifelse(
+      period == max(period) | period == min(period),
+      text,
+      NA
+    ),
+    period = period + months(1) - days(1)
+  ) |> 
+  filter(period >= ym("2019-12")) |>
+  ggplot(aes(period, exports / 1e9, fill = name, label = text)) +
+  geom_area() +
+  geom_text(position = position_stack(vjust = 0.5), hjust = -0.05) +
+  scale_x_date() +
+  scale_y_continuous(breaks = 0:10) +
+  scale_fill_manual(values = new_palette_colors[c(8,7,6,5,4,2)]) +
+  labs(
+    x = NULL,
+    y = NULL,
+    fill = NULL,
+    title = "Հայաստանի վերաարտահանման գնահատումը",
+    subtitle = "մլն ԱՄՆ դոլար, 12 ամսյա կտրվածքով",
+    caption = paste0(
+      caption_arm, 
+      "   |   Գնահատված է հեղինակի կոմղից մշակված մեթոդաբանությամբ"
+      )
+  )
+
+```
+
 
 
 ***English summary below.***
@@ -214,7 +422,7 @@ exports_by_partner_regions_plot <-
 
 **ՈՒՇԱԴՐՈՒԹՅՈՒՆ․ ՄԵՆՔ !!PODCAST!! ՈՒՆԵՆՔ․ ՄԱՆՐԱՄԱՍՆԵՐԸ ՆԵՐՔԵՎՈՒՄ**
 
-## 
+## 🚀♻️🟨 Ոսկու տենդ. Հայաստանի արտահանման կեսը վերաարտահանում է
 
 
 ### Հայաստանի վերաարտահանման պաշտոնական տվյալների վերլուծություն
@@ -240,6 +448,11 @@ official_RX_2023_by_hs2_plot
 Նշենք որ 2022 և 2023 թվականի արտահանման և ներմուծման կառուցվածքում զգալի փոփոխություններ են տեղի ունեցել և վերաարտահանման պաշտոնական տվյալները դժվար է դիտարկել որպես իրականությանը համահունչ: Գնահատենք և ներկայացնենք իրական վերաարտահանման ծավալները:
 
 
+>
+> Ձեզ կարող է հետաքրքրել նաև հետևյալ վերլուծությունը.
+>
+> [📈📉❓ Արտահանման 55.3 տոկոս աճ թե՞ -12.2 տոկոս անկում](https://www.tvyal.com/newsletter/2024/2024_02_16)։
+>
 
 
 ### Վերաարտահանման ճշգրիտ գնահատման մեթոդաբանության մշակում
@@ -277,7 +490,7 @@ exports_by_partner_regions_plot
 **Գծապատկեր 4.** 
 
 ```{r, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 12, fig.height = 8}
-
+reexports_estimated_by_year_plot
 ```
 
 
@@ -290,35 +503,15 @@ exports_by_partner_regions_plot
 2023 թվականին արտահանման կեսը (49.4%) կամ 4.14 մլրդ դոլարը գնահատվել է որպես վերաարտահանում։ Եթե դիտարկենք միայն զուտ արտահանումը ապա իրական արտահանման աճը 2022 թվականին կազմել է մոտ 10%, համեմատած պաշտոնական արտահանման 55% աճին։ Նշենք որ 2023 թվականին գնահատված վերաարտահանումը աճել է 2.8 անգամ (1.5 մլրդ դոլարից 4.1 մլրդ դոլար)։
 
 
->
-> Ձեզ կարող է հետաքրքրել նաև հետևյալ վերլուծությունը.
->
-> [📈📉❓ Արտահանման 55.3 տոկոս աճ թե՞ -12.2 տոկոս անկում](https://www.tvyal.com/newsletter/2024/2024_02_16)։
->
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-**Գծապատկեր 4.** 
+**Գծապատկեր 5.** 
 
 ```{r, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 12, fig.height = 8}
-
+reexports_estimated_by_month_plot_2
 ```
 
 
+Ինչպես երևում է վերջին գծապատկերից, թանկարժեք քարերն ու մետաղները (ԱՏԳ ԱԱ 71)՝ հիմնականում ոսկու արտահանումը, դարձել են արտահանման գերակշռող ճյուղ՝ ընդհանուր արտահանման մոտ 1/3-ը կազմել է թանկարժեք քարերի և մետաղների վերաարտահանումը։ Ոսկու վերաարտահնման սրընթաց աճը սկսվել է 2023 թվականի նոյեմբերից և դեռ շարունակվում է։ Վերաարտահանման մեջ 2/3 մասը զբաղեցնում է այս ապրանքատեսակի վերաարտահանումը։ Նշենք նաև, որ 2024 թվականի հունվարի դրությամբ նախորդ 12 ամիսների վերաարտահանումը կազմում է ընդհանուր արտահանման 51,3 տոկոսը։
 
 >
 > Եթե ուզում եք իմանալ թե ինչու է ոսկու վերաարտահանումը դարձել տնտեսական ակտիվության աճի հիմնապատճառ, ապա կարդացեք հետևյալ վերլուծությունը.
@@ -327,6 +520,7 @@ exports_by_partner_regions_plot
 >
 
 
+**Նշենք, որ սա առաջին հետազոտությունն է վերաարտահանման ուսումնասիրության շարքում: ՀՍպասեք այս հետազոտության շարունակությանը հաջորդ շաբաթների ընթացքում։**
 
 
 
@@ -354,8 +548,11 @@ How2B-ում «խոսում ենք թվերով»՝ տնտեսագետ Աղաս�
 
 ## English Summary
 
-### 
+### 🚀♻️🟨 Gold rush. Half of Armenia's exports are re-exports
 
+This week the newsletter delves deep into the intricacies of Armenia's export landscape, shedding light on a pivotal discovery: by their estimations, half of Armenia's exports are identified as re-exports. This revelation unveils a fundamental aspect of the country's economic activity, showcasing a substantial reliance on re-exporting goods. Such a revelation not only underscores the evolving nature of Armenia's trade dynamics but also hints at the intricate interplay between domestic production and international trade, reshaping the narrative surrounding the country's economic prowess on the global stage.
+
+Furthermore, the analysis presented in the newsletter underscores the importance of accurately assessing re-export data to grasp the true extent of Armenia's economic activities. Through meticulous methodology development, the newsletter offers insights into the complexities involved in distinguishing between pure exports and re-exports, especially within industries where Armenia holds production capabilities. This comprehensive examination not only provides clarity on Armenia's export patterns but also sets the stage for further research into the nuanced dynamics of re-export-driven economies in the region and beyond.
 
 
 ---
