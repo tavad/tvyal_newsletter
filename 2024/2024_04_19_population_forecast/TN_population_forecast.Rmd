@@ -91,7 +91,7 @@ doParallel::registerDoParallel(cores = 8)
 
 Sys.setlocale("LC_TIME", "hy_AM.UTF-8")
 
-# setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 
 ```
 
