@@ -12,7 +12,8 @@ library(tidyverse)
 library(RcppRoll)
 library(scales)
 library(rvest)
-
+library(readxl)
+library(gt)
 
 rm(list = ls()); gc()
 
@@ -78,6 +79,8 @@ colfunc <- colorRampPalette(c("#2f4b7c", "#fffcf5", "#f95d6a"))
 colfunc2 <- colorRampPalette(new_palette_colors)
 colfunc3 <- colorRampPalette(c("#005C4B", new_palette_colors, "#FFD17A", "#FFFCF5"))
 
+test_colors <- c("#005C4B", "#FFD485", "#00415A", "#FFAD16",  "#264876", "#FF8730", "#564F8B", "#FB685B", "#8A5193", "#E45579",  "#BC508D")
+
 update_geom_defaults("rect", list(fill  = new_palette_colors[2], alpha = 0.8))
 update_geom_defaults("line", list(color = new_palette_colors[2], alpha = 0.8))
 update_geom_defaults("area", list(fill  = new_palette_colors[2], alpha = 0.8))
@@ -94,12 +97,365 @@ setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 ```
 
 
-```{r get data, include=FALSE}
+```{r get raw data, include=FALSE}
+
+BoP_url <- read_html("https://www.armstat.am/am/?nid=203") |> 
+  html_element(xpath = '//a[text()="Վճարային հաշվեկշիռ 6"]') |> 
+  html_attr("href") |> 
+  str_replace("\\.{2}", "https://www.armstat.am")
+
+httr::GET(BoP_url, httr::write_disk(BoP_tempfile <- tempfile(fileext = ".xls")))
+
+BoP_raw <- read_excel(BoP_tempfile, sheet = 1, skip = 4, trim_ws = FALSE)
+
+```
+
+
+```{r clean data, include=FALSE}
+
+BoP_levels_dict = read_csv("levels_dict.csv")
+
+BoP_semiraw <- 
+  BoP_raw |> 
+  rename(eng = 1, rus = 2, arm = 3) |>
+  filter(!is.na(eng)) |> 
+  mutate(
+    nrow = row_number(),
+    across(c(eng, rus, arm), ~str_trim(.x)),
+    across(c(eng, rus, arm), ~str_replace_all(.x, "  ", " "))
+  ) |> 
+  left_join(BoP_levels_dict, by = join_by(nrow, eng)) |> 
+  mutate(
+    group = ifelse(grepl("^\\d\\.", eng), eng, NA),
+    account = case_when(
+      grepl("credit", tolower(eng)) ~ "Credit",
+      grepl("debit", tolower(eng)) ~ "Debit",
+      TRUE ~ "account"
+    )
+  ) |> 
+  filter(eng != "") |> 
+  fill(group, .direction = "down") |> 
+  mutate(
+    level = ifelse(is.na(codes), NA, level),
+    across(c(eng, arm, rus), ~ifelse(account == eng, NA, .x))
+  ) |> 
+  fill(c(codes, level, eng, rus, arm), .direction = "down") |> 
+  relocate(codes, level, eng, rus, arm)
+
+BoP_semiraw |>  write_csv("BoP_semiraw.csv")
+  
+services_plot_data <- 
+  BoP_semiraw |> 
+  filter(
+    grepl("^1.1.2.", codes),
+    level == 4,
+    !codes %in% c("1.1.2.X.")
+  ) |>  
+  pivot_longer(matches("\\d{4}"), names_to = "date") |> 
+  mutate(
+    date = yq(date) + months(3) - days(1),
+    across(c(codes, eng, rus, arm), ~fct_inorder(.x)),
+    account = case_when(
+      account == "Credit" ~ "Արտահանում",
+      account == "Debit" ~ "Ներմուծում",
+      TRUE ~ account
+    )
+  ) |> 
+  arrange(codes, account, date) |> 
+  group_by(codes, account) |>  
+  mutate(value_yoy = roll_sumr(value, 4)) |> 
+  ungroup() |> 
+  na.omit()
+
+services_plot_data |> write_csv("services_plot_data.csv")
+
+```
+
+
+```{r, include=FALSE}
+
+plot_data <- 
+  BoP_semiraw |> 
+  filter(codes == "1.1.") |> 
+  pivot_longer(matches("\\d{4}"), names_to = "date") |> 
+  mutate(
+    date = yq(date) + months(3) - days(1),
+    across(c(codes, eng, rus, arm), ~fct_inorder(.x))
+  ) |> 
+  arrange(codes, account, date) |> 
+  group_by(codes, account) |>  
+  mutate(value_yoy = roll_sumr(value, 4)) |> 
+  ungroup() |> 
+  mutate(month = month(date), year = year(date)) |> 
+  filter(
+    account != "account",
+    date >= ymd("2013-12-31"),
+  ) |> 
+  na.omit()
+
+
+plot_data_1 <- 
+  plot_data |> 
+  mutate(
+    account = case_when(
+      account == "Credit" ~ "Արտահանում",
+      account == "Debit" ~ "Ներմուծում",
+      TRUE ~ account
+    )
+  )
+  
+plot_data_2 <- 
+  plot_data |> 
+  filter(
+    month == 12,
+    year >= 2014
+  ) |> 
+  select(date, month, year, account, value_yoy) |> 
+  na.omit() |> 
+  pivot_wider(names_from = account, values_from = value_yoy) |> 
+  mutate(
+    diff = Debit / Credit - 1,
+    diff_text = percent(diff, accuracy = 0.1),
+    date = date + days(1) - months(6)
+  )
+
+import_export_plot <- 
+  plot_data_2 |> 
+  ggplot() +
+  geom_col(
+    mapping = aes(date, diff* 10, fill = "Ներմուծում / Արտահանում"),
+    width = 200
+  ) +
+  geom_text(
+    mapping = aes(date, y = 0, label = diff_text), vjust = -0.5
+  ) +
+  geom_line(
+    data = plot_data_1,
+    aes(date, value_yoy / 1000, color = account), size = 1.2
+  ) +
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+  scale_y_continuous(
+    breaks = seq(0, 14, 2),
+    labels = number_format(accuracy = 1),
+    sec.axis = sec_axis(
+      transform = ~./10,
+      breaks = seq(0, 1.4, 0.2),
+      labels = percent_format(accuracy = 1)
+    )
+  ) +
+  scale_color_manual(values = new_palette_colors[c(6,8)]) +
+  scale_fill_manual(values = new_palette_colors[c(2)]) +
+  guides(
+    color = guide_legend(ncol = 2),
+    fill = guide_legend(ncol = 2)
+  ) +
+  labs(
+    x = NULL,
+    y = NULL,
+    color = NULL,
+    fill = NULL,
+    title = "Ապրանքների և ծառայությունների արտահանման և ներմուծման դինամիկան Հայաստանում",
+    subtitle = "մլրդ ԱՄՆ դոլար, տասյերկուամսյա կտրվածքով",
+    caption = paste0(caption_arm, "   |   տվյալների աղբյուր՝ armstat.am")
+  ) +
+  theme(
+    legend.box = "horizontal",
+  )
+
+
+```
+
+```{r, include=FALSE}
+
+services_plot_data_new |> count(eng)
+
+services_plot_data_new <- 
+  services_plot_data |> 
+  mutate(
+    arm = str_trunc(as.character(arm), 40),
+    arm = case_when(
+      grepl("^Հեռա", arm) ~ "ՏՏ, հեռահաղորդակցություն",
+      TRUE ~ arm
+    )
+  )
+
+second_table <- 
+  services_plot_data_new |> 
+  mutate(
+    year = year(date),
+    month = month(date)
+  ) |> 
+  filter(
+    year == max(year)
+  ) |> 
+  arrange(arm, account, date) |> 
+  group_by(arm, account) |> 
+  mutate(
+    pct_growth = value / lag(value) - 1,
+    text = paste0(
+      "<br><span style='color: gray;'>",
+      percent(pct_growth, accuracy = 0.1), "</span>"
+    )
+  ) |> 
+  filter(
+    month == 12,
+    account == "Արտահանում"
+  ) |> 
+  ungroup() |> 
+  select(year, arm, text) |> 
+  pivot_wider(names_from = year, values_from = text) |>
+  rename(`2023 Q4*` = `2023`)
+
+
+services_growth_gt_table <- 
+  services_plot_data_new |> 
+  mutate(
+    year = year(date),
+    month = month(date)
+  ) |> 
+  filter(month == 12) |> 
+  arrange(arm, account, year) |> 
+  group_by(arm, account) |> 
+  mutate(
+    pct_growth = value_yoy / lag(value_yoy) - 1,
+    text = paste0(
+      number(value_yoy, accuracy = 0.1),
+      "<br><span style='color: gray;'>",
+      percent(pct_growth, accuracy = 0.1), "</span>"
+    )
+  ) |> 
+  filter(
+    year >= 2018,
+    account == "Արտահանում"
+  ) |> 
+  ungroup() |> 
+  mutate(
+    arm = fct_reorder(arm, value_yoy) |> fct_rev()
+  ) |> 
+  mutate(
+    info = "մլն $<br><span style='color: gray;'>աճ</span>"
+  ) |> 
+  select(year, arm, info, text) |> 
+  pivot_wider(names_from = year, values_from = text) |>
+  arrange(arm) |> 
+  left_join(second_table, by = "arm") |> 
+  gt() |> 
+  fmt_markdown(columns = everything()) |> 
+  cols_align(align = "left", columns = c(arm, info)) |> 
+  cols_align(align = "right", columns = -c(arm, info)) |> 
+  cols_label(
+    arm = "Ծառայության անվանումը",
+    info = ""
+  ) |> 
+  tab_header(
+    title = "Հայաստանի ծառայությունների արտահանման միտումը 2018-2023",
+    subtitle = "միլիոն ԱՄՆ դոլար"
+  ) |> 
+  tab_footnote(
+    footnote = "* 2023 Q4 - 2023 թվականի չորրորդ եռամսյակի հարաբերակցությունը երրորդ եռամսյակին"
+  ) |> 
+  tab_footnote(
+    footnote = paste0(caption_eng, "    |    Data Source: armstat.am")
+  )
+
+
 
 
 
 ```
 
+
+
+```{r services charts, include=FALSE}
+
+services_plot_data_2 <- 
+  services_plot_data |> 
+  filter(date >= as.Date("2009-12-31")) |> 
+  mutate(
+    value_lamp = ifelse(account == "account", 0, value_yoy),
+    arm = str_trunc(as.character(arm), 30),
+    arm = case_when(
+      grepl("^Այլ", arm) ~ "Այլ ծառայություննր",
+      grepl("^Հեռա", arm) ~ "ՏՏ, հեռահաղորդակցություն",
+      TRUE ~ arm
+    ),
+    arm = fct_lump_n(arm, 8, w = value_lamp, other_level = "Այլ ծառայություննր"),
+    arm = fct_reorder(arm, value_yoy)
+  ) |> 
+  group_by(date, account, arm) |> 
+  summarise(value_yoy = sum(value_yoy), .groups = "drop")
+
+
+
+services_change_plot_1 <- 
+  services_plot_data_2 |> 
+  filter(account != "account") |> 
+  ggplot(aes(date, value_yoy / 1e3, fill = arm)) +
+  geom_area(alpha = 0.8) +
+  facet_wrap(~account) +
+  scale_x_date(
+    breaks = as.Date(ISOdate(seq(2000, 2024, 2), 1, 1)),
+    date_labels = "%Y"
+  ) +
+  scale_y_continuous(breaks =1:10, labels = number_format()) +
+  scale_fill_manual(values =   rev(colfunc3(9)[-9])) +
+  guides(fill = guide_legend(nrow = 2, reverse = TRUE)) +
+  labs(
+    x = NULL,
+    y = NULL,
+    fill = NULL,
+    title = "Հայաստանի ծառայությունների տասերկուամսյա արտահանումը և ներմուծումը ըստ ոլորտների",
+    subtitle = "մլրդ ԱՄՆ դոլար",
+    caption = paste0(caption_arm, "   |   տվյալների աղբյուր՝ armstat.am")
+  )
+
+services_change_plot_2 <- 
+  services_plot_data_2 |> 
+  filter(account != "account") |> 
+  group_by(date, account) |> 
+  mutate(pct = value_yoy / sum(value_yoy)) |> 
+  ungroup() |> 
+  ggplot(aes(date, pct, fill = arm)) +
+  geom_area(alpha = 0.8) +
+  facet_wrap(~account) +
+  scale_x_date(
+    breaks = as.Date(ISOdate(seq(2000, 2024, 2), 1, 1)),
+    date_labels = "%Y"
+  ) +
+  scale_y_continuous(labels = percent_format()) +
+  scale_fill_manual(values =   rev(colfunc3(9)[-9])) +
+  guides(fill = guide_legend(nrow = 2, reverse = TRUE)) +
+  labs(
+    x = NULL,
+    y = NULL,
+    fill = NULL,
+    title = "Հայաստանի ծառայությունների արտահանումը և ներմուծումը ըստ ոլորտների",
+    subtitle = "տեսակարար կշիռ",
+    caption = paste0(caption_arm, "   |   տվյալների աղբյուր՝ armstat.am")
+  )
+
+services_change_plot_3 <- 
+  services_plot_data_2 |> 
+  filter(account == "account") |> 
+  ggplot(aes(date, value_yoy / 1e3, fill = arm)) +
+  geom_area(alpha = 0.8) +
+  scale_x_date(
+    breaks = as.Date(ISOdate(seq(2000, 2024, 2), 1, 1)),
+    date_labels = "%Y"
+  ) +
+  scale_y_continuous(labels = number_format(), n.breaks = 8) +
+  scale_fill_manual(values =   rev(colfunc3(9)[-9])) +
+  guides(fill = guide_legend(nrow = 2, reverse = TRUE)) +
+  labs(
+    x = NULL,
+    y = NULL,
+    fill = NULL,
+    title = "Հայաստանի ծառայությունների հաշվեկշիռը",
+    subtitle = "մլրդ ԱՄՆ դոլար",
+    caption = caption_arm
+  )
+
+```
 
 
 
@@ -112,9 +468,8 @@ setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 
 **ՈՒՇԱԴՐՈՒԹՅՈՒՆ․ ՄԵՆՔ !!PODCAST!! ՈՒՆԵՆՔ․ ՄԱՆՐԱՄԱՍՆԵՐԸ ՆԵՐՔԵՎՈՒՄ**
 
-## 👫🧭💀 Հայաստանում 2 մլն հայ 2100 թվականին
+## Ծառայությունների ապրանքաշրջանառության փոփոխությունը
 
-### ՀՀ ժողովրդագրության վերլուծություն
 
 
 
@@ -127,7 +482,7 @@ setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 **Գծապատկեր 1.**  
 
 ```{r, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 12, fig.height = 8}
-
+import_export_plot
 ```
 
 
@@ -136,7 +491,7 @@ setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 
 **Գծապատկեր 2.** 
 ```{r, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 12, fig.height = 8}
-
+services_change_plot_1
 ```
 
 
@@ -153,7 +508,7 @@ setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 
 **Գծապատկեր 3.** 
 ```{r, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 12, fig.height = 8}
-
+services_change_plot_2
 ```
 
 
@@ -168,9 +523,14 @@ setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 
 **Գծապատկեր 4.** 
 ```{r, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 12, fig.height = 8}
-
+services_change_plot_3
 ```
 
+
+**Աղյուսակ 1.** 
+```{r, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 12, fig.height = 8}
+services_growth_gt_table
+```
 
 
 
