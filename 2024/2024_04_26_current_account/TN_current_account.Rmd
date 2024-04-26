@@ -1,0 +1,271 @@
+---
+title: "Tvyal Newsletter"
+author: "Aghasi Tavadyan"
+date: "2024-04-26"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(RcppRoll)
+library(scales)
+library(rvest)
+
+
+rm(list = ls()); gc()
+
+theme_tvyal <- function(base_size = 12, base_family = "sans")
+{
+  colors <- deframe(ggthemes::ggthemes_data[["fivethirtyeight"]])
+  (ggthemes::theme_foundation(
+    base_size = base_size, base_family = base_family) +
+      theme(
+        line = element_line(colour = "black"),
+        rect = element_rect(fill = "white", linetype = 0, colour = NA),
+        text = element_text(colour = colors["Dark Gray"]),
+        # axis.title = element_blank(),
+        # axis.text = element_text(),
+        axis.ticks = element_blank(),
+        axis.line = element_blank(),
+        legend.background = element_rect(),
+        legend.position = "bottom",
+        legend.direction = "horizontal",
+        legend.box = "vertical",
+        panel.grid = element_line(colour = NULL),
+        panel.grid.major.x = element_line(
+          colour = colors["Medium Gray"], 
+          linetype = "dotted"
+        ),
+        panel.grid.major.y = element_line(
+          colour = colors["Medium Gray"], 
+          linetype = "dotted"
+        ),
+        panel.grid.minor = element_blank(),
+        plot.title = element_text(hjust = 0, size = rel(1.5), face = "bold"),
+        plot.margin = unit(c(1, 1, 1, 1), "lines"), strip.background = element_rect()
+      )
+  )
+}
+
+theme_set(theme_tvyal())
+
+save_last_plot <-
+  function(filename, extension = "png", width = 1008, height = 567) {
+
+    filename <- str_replace_all(filename, ", ", "_")
+    last_plot <- recordPlot()
+
+    if (extension == "png") {
+      png(paste0(filename, ".", extension), width = width, height = height)
+    } else if (extension == "pdf") {
+      pdf(paste0(filename, ".", extension), width = width, height = height)
+    } else {
+      stop("Unsupported file extension. Use 'png' or 'pdf'.")
+    }
+
+    replayPlot(last_plot)
+    dev.off()
+    paste0(filename, ".", extension)
+  }
+
+new_palette_colors <- c(
+  "#003f5c", "#2f4b7c", "#665191", "#a05195",
+  "#d45087", "#f95d6a", "#ff7c43", "#ffa600"
+)
+colfunc <- colorRampPalette(c("#2f4b7c", "#fffcf5", "#f95d6a"))
+colfunc2 <- colorRampPalette(new_palette_colors)
+colfunc3 <- colorRampPalette(c("#005C4B", new_palette_colors, "#FFD17A", "#FFFCF5"))
+
+update_geom_defaults("rect", list(fill  = new_palette_colors[2], alpha = 0.8))
+update_geom_defaults("line", list(color = new_palette_colors[2], alpha = 0.8))
+update_geom_defaults("area", list(fill  = new_palette_colors[2], alpha = 0.8))
+
+caption_arm <-  "Հեղինակ` Աղասի Թավադյան   |   tvyal.com   |   tavadyan.com"
+caption_eng <-  "Author: Aghasi Tavadyan   |   tvyal.com   |   tavadyan.com"
+
+doParallel::registerDoParallel(cores = 8)
+
+Sys.setlocale("LC_TIME", "hy_AM.UTF-8")
+
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+
+```
+
+
+```{r get data, include=FALSE}
+
+
+
+```
+
+
+
+
+***English summary below.***
+
+Հարգելի գործընկեր,
+
+Հուսով եմ լավ եք:
+Ներկայացնում եմ այս շաբաթվա վերլուծությունները և աշխատանքները.
+
+**ՈՒՇԱԴՐՈՒԹՅՈՒՆ․ ՄԵՆՔ !!PODCAST!! ՈՒՆԵՆՔ․ ՄԱՆՐԱՄԱՍՆԵՐԸ ՆԵՐՔԵՎՈՒՄ**
+
+## 👫🧭💀 Հայաստանում 2 մլն հայ 2100 թվականին
+
+### ՀՀ ժողովրդագրության վերլուծություն
+
+
+
+
+>
+> 2100 թվականին այլ հավասար պայմաններում Հայաստանում բնակվելու է **2 միլիոն** հայ:
+>
+
+
+**Գծապատկեր 1.**  
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 12, fig.height = 8}
+
+```
+
+
+
+
+
+**Գծապատկեր 2.** 
+```{r, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 12, fig.height = 8}
+
+```
+
+
+
+
+>
+> Ձեզ կարող է հետաքրքրել նաև հետևյալ վերլուծությունը.
+>
+> [💹💳 Մասնավոր աշխատատեղերի 76 տոկոսը Երևանում է](https://www.tvyal.com/newsletter/2024/2024_02_09)։
+>
+
+
+
+
+**Գծապատկեր 3.** 
+```{r, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 12, fig.height = 8}
+
+```
+
+
+
+>
+> Հայաստանի ընտանիքների ուսումնասիրությունը ըստ սեռատարիքային կազմի և եկամտի մակարդակի կարող եք կարդալ այստեղ.
+>
+> [👨‍👩‍👧‍👦✨ Ամուր ընտանիք․ հարուստ ընտանիք](https://www.tvyal.com/newsletter/2024/2024_01_26)։
+>
+
+
+
+**Գծապատկեր 4.** 
+```{r, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 12, fig.height = 8}
+
+```
+
+
+
+
+
+
+## PODCAST !!
+
+### Խոսենք թվերով #5
+
+[Ինչքա՞ն հայ կունենանք Հայաստանում 2100 թվականին](https://www.youtube.com/watch?v=-IOVtoBD5gE)
+
+- 🔘 Ինչքա՞ն է Հայաստանի բնակչությունը և ինչպե՞ս է փոխվում վերջին տարիներին
+- 🔘 Ի՞նչ է լինելու արցախահայերի, ռուսների և հնդիկների գալով
+- 🔘 Ինչպիսի՞ն է Հայաստանի բնակչության սեռատարիքային կազմը
+- 🔘 Ինչքա՞ն հայ կունենանք առաջիկայում
+
+How2B-ում «խոսում ենք թվերով»՝ տնտեսագետ Աղասի Թավադյանի հետ:
+
+- 00:00 Ժողովրդագրական ընդհանուր իրավիճակը Հայաստանում
+- 01։53 Դեմոգրաֆիկ փուլերն աշխարհում վերջին 100 տարիներին
+- 03։06 Հայաստանի բնակչության փոփոխությունը վերջին 30 տարիներին
+- 06:57 Հայաստան են եկել ռուսներ, արցախահայեր, հնդիկներ․ Ինչպե՞ս է փոխվում իրավիճակը
+- 10:44 Մենք էլ ենք դառնում ծերացող ազգ 
+- 12։22 Կանայք Հայաստանում ավելի շատ են, թեև աղջիկ երեխաներ ավելի քիչ են ծնվում
+- 17։55 Ամփոփում ենք
+
+Թեմայով վերլուծությունը ներկայացված է tvyal.com կայքում՝
+[👫🧭💀 Հայաստանում 2 մլն հայ 2100 թվականին](https://www.tvyal.com/newsletter/2024/2024_04_19)
+
+<a href="https://www.youtube.com/watch?v=-IOVtoBD5gE">
+  <img src="https://i3.ytimg.com/vi/-IOVtoBD5gE/hqdefault.jpg" alt="YouTube Video" style="width:60%;">
+</a>
+
+
+## ԶԼՄ հաղորդագրություն
+
+
+[Դիտեք Civilnet2-ին տված իմ վերջին հարցազրույցը, որտեղ խոսում եմ 2024 թվականի տնտեսական մարտահրավերների մասին։](https://youtu.be/3HyOvSfikwo)
+
+📺  Ոսկու տենդը Հայաստանում թափ է հավաքում. Աղասի Թավադյան 📺
+
+Հարցազրույցում շոշափվել են հետևյալ թեմաները։
+
+- 🎯 Ոսկին դարձել է Հայաստանից արտահանվող հիմնական ապրանքը, որի տեսակարար կշիռն արտահանման ծավալում շարունակում է աճել.
+
+
+<a href="https://youtu.be/3HyOvSfikwo">
+  <img src="https://i3.ytimg.com/vi/3HyOvSfikwo/hqdefault.jpg" alt="YouTube Video" style="width:60%;">
+</a>
+
+
+
+## English Summary
+
+### 👫🧭💀 2 million Armenians in Armenia in 2100
+
+**Demography Analysis of Armenia**
+
+
+
+
+
+---
+
+Այս վերլուծությունը առկա է նաև [մեր կայքէջում](https://www.tvyal.com/newsletter/2024/2024_04_26), այս վերլուծության կոդը և տվյալները դրված են նաև [Github-ում](https://github.com/tavad/tvyal_newsletter)։       
+
+---                  
+
+Եթե հնարավոր է, խնդրում եմ այս նյութը ուղարկել նաև այն մարդկանց, ում այն կարծում եք կարող է հետաքրքրել:
+
+Սպասեք հաջորդ հաղորդագրությանը հաջորդ ուրբաթ օրը:      
+
+
+Հարգանքներով,            
+Աղասի Թավադյան         
+26.04.2024          
+[tvyal.com](https://www.tvyal.com/)      
+[tavadyan.com](https://www.tavadyan.com/)
+
+---
+
+[Was this email forwarded to you? Subscribe here.](https://www.tvyal.com/subscribe)
+
+[Բաժանորդագրվեք](https://www.tvyal.com/subscribe)
+
+       
+---              
+               
+
+
+####### **Ուշադրություն. Ձեր էլ.փոստը մեյլլիսթի մեջ է, որի միջոցով ես կիսվում եմ շաբաթական նյութեր, որոնք հիմնականում ներկայացնում են Հայաստանի տնտեսությունը: Նյութերը ներառում են գծապատկերներ, [տվյալների բազաներ](https://github.com/tavad/tvyal_newsletter), տեսանյութեր, հոդվածներ, [առցանց վահանակներ](https://www.tvyal.com/projects), տնտեսական գործիքներ, կանխատեսումներ և հաշվետվություններ: Եթե ցանկանում եք չեղարկել բաժանորդագրությունը, խնդրում եմ տեղեկացրեք ինձ, և ես կհեռացնեմ ձեր էլ. փոստը ցուցակից: Գրեք նաև եթե ունեք մենկնաբանություններ:**
+
+####### **Important! Your email is part of the mailing list where I share weekly materials primarily focused on the Armenian economy. These materials encompass charts, [databases](https://github.com/tavad/tvyal_newsletter), videos, articles, [online dashboards](https://www.tvyal.com/projects), economic tools, forecasts, and reports. If you wish to unsubscribe, please let me know, and I will remove your email from the list. Please share your comments as well․**
+
+
+
+
+
