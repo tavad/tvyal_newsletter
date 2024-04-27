@@ -231,7 +231,7 @@ import_export_plot <-
   ) +
   geom_line(
     data = plot_data_1,
-    aes(date, value_yoy / 1000, color = account), size = 1.2
+    aes(date, value_yoy / 1000, color = account), linewidth = 1.2
   ) +
   scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
   scale_y_continuous(
@@ -496,17 +496,17 @@ services_change_plot_3 <-
 Ինչպես երևում է երրորդ գծապատկերից Հայաստանը ավելի շատ ներմուծում` տրանսպորտային ծառայություններ քան արտահանում: Տրանսպորտային ծառայությունների հաշվեկշիռը Հայաստանում պակասուրդային է: Այս ցուցանիշը կոռելացված է ապրանքների ներմուծման և արտահանման հետ:
 
 
-**Գծապատկեր 1.**  
+<!-- **Գծապատկեր 1.**   -->
 
-```{r, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 12, fig.height = 8}
-import_export_plot
-```
-
-
+<!-- ```{r, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 12, fig.height = 8} -->
+<!-- import_export_plot -->
+<!-- ``` -->
 
 
 
-**Գծապատկեր 2.** 
+
+
+**Գծապատկեր 1.** 
 ```{r, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 12, fig.height = 8}
 services_change_plot_1
 ```
@@ -523,7 +523,7 @@ services_change_plot_1
 
 
 
-**Գծապատկեր 3.** 
+**Գծապատկեր 2.** 
 ```{r, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 12, fig.height = 8}
 services_change_plot_2
 ```
@@ -538,7 +538,7 @@ services_change_plot_2
 
 
 
-**Գծապատկեր 4.** 
+**Գծապատկեր 3.** 
 ```{r, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 12, fig.height = 8}
 services_change_plot_3
 ```
