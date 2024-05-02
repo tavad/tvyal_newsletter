@@ -1,0 +1,839 @@
+period,trade_flow,commodity_code,commodity,trade_value_us
+2022-01-01,Export,710231,"Diamonds; non-industrial, unworked or simply sawn, cleaved or bruted, but not mounted or set",1646786.38
+2022-01-01,Export,710239,"Diamonds; non-industrial, (other than unworked or simply sawn, cleaved or bruted), but not mounted or set",10289544.3
+2022-01-01,Export,710391,"Stones; rubies, sapphires and emeralds, worked (other than simply sawn or roughly shaped), not strung, mounted or set",495568.63
+2022-01-01,Export,711011,"Metals; platinum, unwrought or in powder form",17287.27
+2022-01-01,Export,847130,"Automatic data processing machines; portable, weighing not more than 10kg, consisting of at least a central processing unit, a keyboard and a display",3743.45
+2022-01-01,Export,851713,Telephone sets; smartphones for cellular or other wireless networks,28013.76
+2022-01-01,Export,851762,"Communication apparatus (excluding telephone sets or base stations); machines for the reception, conversion and transmission or regeneration of voice, images or other data, including switching and routing apparatus",9283
+2022-01-01,Export,870323,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 1500 but not over 3000cc",104857.89
+2022-01-01,Export,870324,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 3000cc",691837.07
+2022-01-01,Import,710231,"Diamonds; non-industrial, unworked or simply sawn, cleaved or bruted, but not mounted or set",422819.37
+2022-01-01,Import,710239,"Diamonds; non-industrial, (other than unworked or simply sawn, cleaved or bruted), but not mounted or set",1713420.99
+2022-01-01,Import,710391,"Stones; rubies, sapphires and emeralds, worked (other than simply sawn or roughly shaped), not strung, mounted or set",459825.29000000004
+2022-01-01,Import,710812,"Metals; gold, non-monetary, unwrought (but not powder)",4698209.2
+2022-01-01,Import,845011,"Washing machines; household or laundry-type, fully-automatic, (of a dry linen capacity not exceeding 10kg)",1078397.76
+2022-01-01,Import,847130,"Automatic data processing machines; portable, weighing not more than 10kg, consisting of at least a central processing unit, a keyboard and a display",1355193.3900000001
+2022-01-01,Import,850819,"Vacuum cleaners, with self-contained electric motor, n.e.c. in item no. 8508.1",316817.88
+2022-01-01,Import,851713,Telephone sets; smartphones for cellular or other wireless networks,5023083.93
+2022-01-01,Import,851762,"Communication apparatus (excluding telephone sets or base stations); machines for the reception, conversion and transmission or regeneration of voice, images or other data, including switching and routing apparatus",1937306.8699999999
+2022-01-01,Import,852852,Monitors; other than cathode-ray tube; capable of directly connecting to and designed for use with an automatic data processing machine of heading 84.71,204224.51
+2022-01-01,Import,852872,"Reception apparatus for television, whether or not incorporating radio-broadcast receivers or sound or video recording or reproducing apparatus; incorporating a colour video display or screen",1210902.75
+2022-01-01,Import,854239,Electronic integrated circuits; n.e.c. in heading no. 8542,20650.51
+2022-01-01,Import,870322,"Vehicles; with only spark-ignition internal combustion piston engine, cylinder capacity over 1000 but not over 1500cc",524797.08
+2022-01-01,Import,870323,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 1500 but not over 3000cc",6151735.38
+2022-01-01,Import,870324,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 3000cc",4101718.84
+2022-01-01,Import,870333,"Vehicles; with only compression-ignition internal combustion piston engine (diesel or semi-diesel), cylinder capacity over 2500cc",278497.2
+2022-02-01,Export,710231,"Diamonds; non-industrial, unworked or simply sawn, cleaved or bruted, but not mounted or set",228968.23
+2022-02-01,Export,710239,"Diamonds; non-industrial, (other than unworked or simply sawn, cleaved or bruted), but not mounted or set",10212438.5
+2022-02-01,Export,710391,"Stones; rubies, sapphires and emeralds, worked (other than simply sawn or roughly shaped), not strung, mounted or set",410489.43
+2022-02-01,Export,710491,"Stones; diamonds, n.e.c. in heading 7104, worked or graded but not strung, mounted or set; ungraded synthetic or reconstructed precious or semi-precious stones, temporarily strung for convenience of transport",50457.42
+2022-02-01,Export,711011,"Metals; platinum, unwrought or in powder form",2462.33
+2022-02-01,Export,847130,"Automatic data processing machines; portable, weighing not more than 10kg, consisting of at least a central processing unit, a keyboard and a display",1523.8
+2022-02-01,Export,851713,Telephone sets; smartphones for cellular or other wireless networks,144556.7
+2022-02-01,Export,851762,"Communication apparatus (excluding telephone sets or base stations); machines for the reception, conversion and transmission or regeneration of voice, images or other data, including switching and routing apparatus",8471.51
+2022-02-01,Export,870322,"Vehicles; with only spark-ignition internal combustion piston engine, cylinder capacity over 1000 but not over 1500cc",90045.39
+2022-02-01,Export,870323,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 1500 but not over 3000cc",632175.72
+2022-02-01,Export,870324,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 3000cc",690132.24
+2022-02-01,Import,710231,"Diamonds; non-industrial, unworked or simply sawn, cleaved or bruted, but not mounted or set",12492162.08
+2022-02-01,Import,710239,"Diamonds; non-industrial, (other than unworked or simply sawn, cleaved or bruted), but not mounted or set",3433773.22
+2022-02-01,Import,710391,"Stones; rubies, sapphires and emeralds, worked (other than simply sawn or roughly shaped), not strung, mounted or set",410534.02
+2022-02-01,Import,710491,"Stones; diamonds, n.e.c. in heading 7104, worked or graded but not strung, mounted or set; ungraded synthetic or reconstructed precious or semi-precious stones, temporarily strung for convenience of transport",9173.2
+2022-02-01,Import,710691,"Metals; silver, unwrought, (but not powder)",191175.78
+2022-02-01,Import,710812,"Metals; gold, non-monetary, unwrought (but not powder)",5183021.2299999995
+2022-02-01,Import,711011,"Metals; platinum, unwrought or in powder form",33960.4
+2022-02-01,Import,845011,"Washing machines; household or laundry-type, fully-automatic, (of a dry linen capacity not exceeding 10kg)",1146595.06
+2022-02-01,Import,847130,"Automatic data processing machines; portable, weighing not more than 10kg, consisting of at least a central processing unit, a keyboard and a display",2970924.93
+2022-02-01,Import,850819,"Vacuum cleaners, with self-contained electric motor, n.e.c. in item no. 8508.1",186939.99000000002
+2022-02-01,Import,851713,Telephone sets; smartphones for cellular or other wireless networks,8457292.25
+2022-02-01,Import,851762,"Communication apparatus (excluding telephone sets or base stations); machines for the reception, conversion and transmission or regeneration of voice, images or other data, including switching and routing apparatus",1063985.77
+2022-02-01,Import,852852,Monitors; other than cathode-ray tube; capable of directly connecting to and designed for use with an automatic data processing machine of heading 84.71,416913.72000000003
+2022-02-01,Import,852872,"Reception apparatus for television, whether or not incorporating radio-broadcast receivers or sound or video recording or reproducing apparatus; incorporating a colour video display or screen",1013791.48
+2022-02-01,Import,854239,Electronic integrated circuits; n.e.c. in heading no. 8542,9142.42
+2022-02-01,Import,870322,"Vehicles; with only spark-ignition internal combustion piston engine, cylinder capacity over 1000 but not over 1500cc",771044.0700000001
+2022-02-01,Import,870323,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 1500 but not over 3000cc",10464590.44
+2022-02-01,Import,870324,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 3000cc",3691019.8200000003
+2022-02-01,Import,870333,"Vehicles; with only compression-ignition internal combustion piston engine (diesel or semi-diesel), cylinder capacity over 2500cc",141887.27000000002
+2022-03-01,Export,710231,"Diamonds; non-industrial, unworked or simply sawn, cleaved or bruted, but not mounted or set",2302799.69
+2022-03-01,Export,710239,"Diamonds; non-industrial, (other than unworked or simply sawn, cleaved or bruted), but not mounted or set",10282389.47
+2022-03-01,Export,710391,"Stones; rubies, sapphires and emeralds, worked (other than simply sawn or roughly shaped), not strung, mounted or set",231464.3
+2022-03-01,Export,847130,"Automatic data processing machines; portable, weighing not more than 10kg, consisting of at least a central processing unit, a keyboard and a display",11160.630000000001
+2022-03-01,Export,851713,Telephone sets; smartphones for cellular or other wireless networks,13690.26
+2022-03-01,Export,851762,"Communication apparatus (excluding telephone sets or base stations); machines for the reception, conversion and transmission or regeneration of voice, images or other data, including switching and routing apparatus",20741.36
+2022-03-01,Export,852852,Monitors; other than cathode-ray tube; capable of directly connecting to and designed for use with an automatic data processing machine of heading 84.71,4816.28
+2022-03-01,Export,852872,"Reception apparatus for television, whether or not incorporating radio-broadcast receivers or sound or video recording or reproducing apparatus; incorporating a colour video display or screen",22219
+2022-03-01,Export,854239,Electronic integrated circuits; n.e.c. in heading no. 8542,11370.54
+2022-03-01,Export,870323,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 1500 but not over 3000cc",520037.41
+2022-03-01,Export,870324,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 3000cc",1057488.76
+2022-03-01,Import,710231,"Diamonds; non-industrial, unworked or simply sawn, cleaved or bruted, but not mounted or set",10788093.57
+2022-03-01,Import,710239,"Diamonds; non-industrial, (other than unworked or simply sawn, cleaved or bruted), but not mounted or set",15099109.56
+2022-03-01,Import,710391,"Stones; rubies, sapphires and emeralds, worked (other than simply sawn or roughly shaped), not strung, mounted or set",210971.66
+2022-03-01,Import,710491,"Stones; diamonds, n.e.c. in heading 7104, worked or graded but not strung, mounted or set; ungraded synthetic or reconstructed precious or semi-precious stones, temporarily strung for convenience of transport",900
+2022-03-01,Import,710691,"Metals; silver, unwrought, (but not powder)",41442.880000000005
+2022-03-01,Import,710812,"Metals; gold, non-monetary, unwrought (but not powder)",1989630.1600000001
+2022-03-01,Import,845011,"Washing machines; household or laundry-type, fully-automatic, (of a dry linen capacity not exceeding 10kg)",879107.85
+2022-03-01,Import,847130,"Automatic data processing machines; portable, weighing not more than 10kg, consisting of at least a central processing unit, a keyboard and a display",2434706.9
+2022-03-01,Import,850819,"Vacuum cleaners, with self-contained electric motor, n.e.c. in item no. 8508.1",101153.7
+2022-03-01,Import,851713,Telephone sets; smartphones for cellular or other wireless networks,2092757.11
+2022-03-01,Import,851762,"Communication apparatus (excluding telephone sets or base stations); machines for the reception, conversion and transmission or regeneration of voice, images or other data, including switching and routing apparatus",1051336.97
+2022-03-01,Import,852852,Monitors; other than cathode-ray tube; capable of directly connecting to and designed for use with an automatic data processing machine of heading 84.71,377554.52999999997
+2022-03-01,Import,852872,"Reception apparatus for television, whether or not incorporating radio-broadcast receivers or sound or video recording or reproducing apparatus; incorporating a colour video display or screen",804498.46
+2022-03-01,Import,854239,Electronic integrated circuits; n.e.c. in heading no. 8542,138174.32
+2022-03-01,Import,870322,"Vehicles; with only spark-ignition internal combustion piston engine, cylinder capacity over 1000 but not over 1500cc",758863.16
+2022-03-01,Import,870323,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 1500 but not over 3000cc",11640758.139999999
+2022-03-01,Import,870324,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 3000cc",3965736.05
+2022-03-01,Import,870333,"Vehicles; with only compression-ignition internal combustion piston engine (diesel or semi-diesel), cylinder capacity over 2500cc",111581.37
+2022-04-01,Export,710231,"Diamonds; non-industrial, unworked or simply sawn, cleaved or bruted, but not mounted or set",1509304.83
+2022-04-01,Export,710239,"Diamonds; non-industrial, (other than unworked or simply sawn, cleaved or bruted), but not mounted or set",25076675.44
+2022-04-01,Export,710391,"Stones; rubies, sapphires and emeralds, worked (other than simply sawn or roughly shaped), not strung, mounted or set",513630.86
+2022-04-01,Export,710491,"Stones; diamonds, n.e.c. in heading 7104, worked or graded but not strung, mounted or set; ungraded synthetic or reconstructed precious or semi-precious stones, temporarily strung for convenience of transport",18867.8
+2022-04-01,Export,711011,"Metals; platinum, unwrought or in powder form",26279.91
+2022-04-01,Export,847130,"Automatic data processing machines; portable, weighing not more than 10kg, consisting of at least a central processing unit, a keyboard and a display",50725.78
+2022-04-01,Export,850819,"Vacuum cleaners, with self-contained electric motor, n.e.c. in item no. 8508.1",265.84
+2022-04-01,Export,851713,Telephone sets; smartphones for cellular or other wireless networks,8319.16
+2022-04-01,Export,851762,"Communication apparatus (excluding telephone sets or base stations); machines for the reception, conversion and transmission or regeneration of voice, images or other data, including switching and routing apparatus",14460.62
+2022-04-01,Export,852852,Monitors; other than cathode-ray tube; capable of directly connecting to and designed for use with an automatic data processing machine of heading 84.71,2289.57
+2022-04-01,Export,852872,"Reception apparatus for television, whether or not incorporating radio-broadcast receivers or sound or video recording or reproducing apparatus; incorporating a colour video display or screen",7423.45
+2022-04-01,Export,854239,Electronic integrated circuits; n.e.c. in heading no. 8542,548435.76
+2022-04-01,Export,870322,"Vehicles; with only spark-ignition internal combustion piston engine, cylinder capacity over 1000 but not over 1500cc",283130.29
+2022-04-01,Export,870323,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 1500 but not over 3000cc",1457703.3499999999
+2022-04-01,Export,870324,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 3000cc",1905188.19
+2022-04-01,Import,710231,"Diamonds; non-industrial, unworked or simply sawn, cleaved or bruted, but not mounted or set",2808937.81
+2022-04-01,Import,710239,"Diamonds; non-industrial, (other than unworked or simply sawn, cleaved or bruted), but not mounted or set",12091843.469999999
+2022-04-01,Import,710391,"Stones; rubies, sapphires and emeralds, worked (other than simply sawn or roughly shaped), not strung, mounted or set",417362.63999999996
+2022-04-01,Import,710491,"Stones; diamonds, n.e.c. in heading 7104, worked or graded but not strung, mounted or set; ungraded synthetic or reconstructed precious or semi-precious stones, temporarily strung for convenience of transport",63026.08
+2022-04-01,Import,710691,"Metals; silver, unwrought, (but not powder)",213354.72
+2022-04-01,Import,710812,"Metals; gold, non-monetary, unwrought (but not powder)",7530428.67
+2022-04-01,Import,845011,"Washing machines; household or laundry-type, fully-automatic, (of a dry linen capacity not exceeding 10kg)",1247751.51
+2022-04-01,Import,847130,"Automatic data processing machines; portable, weighing not more than 10kg, consisting of at least a central processing unit, a keyboard and a display",3905448.6799999997
+2022-04-01,Import,850819,"Vacuum cleaners, with self-contained electric motor, n.e.c. in item no. 8508.1",150249.64
+2022-04-01,Import,851713,Telephone sets; smartphones for cellular or other wireless networks,4204197.37
+2022-04-01,Import,851762,"Communication apparatus (excluding telephone sets or base stations); machines for the reception, conversion and transmission or regeneration of voice, images or other data, including switching and routing apparatus",2258294.11
+2022-04-01,Import,852852,Monitors; other than cathode-ray tube; capable of directly connecting to and designed for use with an automatic data processing machine of heading 84.71,418133.89
+2022-04-01,Import,852872,"Reception apparatus for television, whether or not incorporating radio-broadcast receivers or sound or video recording or reproducing apparatus; incorporating a colour video display or screen",1587819.05
+2022-04-01,Import,854239,Electronic integrated circuits; n.e.c. in heading no. 8542,501716.63
+2022-04-01,Import,870322,"Vehicles; with only spark-ignition internal combustion piston engine, cylinder capacity over 1000 but not over 1500cc",1093789.86
+2022-04-01,Import,870323,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 1500 but not over 3000cc",11567646.120000001
+2022-04-01,Import,870324,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 3000cc",4446854.8100000005
+2022-04-01,Import,870333,"Vehicles; with only compression-ignition internal combustion piston engine (diesel or semi-diesel), cylinder capacity over 2500cc",47520.51
+2022-05-01,Export,710231,"Diamonds; non-industrial, unworked or simply sawn, cleaved or bruted, but not mounted or set",5808769.23
+2022-05-01,Export,710239,"Diamonds; non-industrial, (other than unworked or simply sawn, cleaved or bruted), but not mounted or set",25848628.18
+2022-05-01,Export,710391,"Stones; rubies, sapphires and emeralds, worked (other than simply sawn or roughly shaped), not strung, mounted or set",655024.72
+2022-05-01,Export,710691,"Metals; silver, unwrought, (but not powder)",175380
+2022-05-01,Export,710812,"Metals; gold, non-monetary, unwrought (but not powder)",4044305.92
+2022-05-01,Export,711011,"Metals; platinum, unwrought or in powder form",7936.79
+2022-05-01,Export,845011,"Washing machines; household or laundry-type, fully-automatic, (of a dry linen capacity not exceeding 10kg)",46511.19
+2022-05-01,Export,847130,"Automatic data processing machines; portable, weighing not more than 10kg, consisting of at least a central processing unit, a keyboard and a display",543711.04
+2022-05-01,Export,851713,Telephone sets; smartphones for cellular or other wireless networks,696710.28
+2022-05-01,Export,851762,"Communication apparatus (excluding telephone sets or base stations); machines for the reception, conversion and transmission or regeneration of voice, images or other data, including switching and routing apparatus",153509.13
+2022-05-01,Export,852852,Monitors; other than cathode-ray tube; capable of directly connecting to and designed for use with an automatic data processing machine of heading 84.71,5460
+2022-05-01,Export,852872,"Reception apparatus for television, whether or not incorporating radio-broadcast receivers or sound or video recording or reproducing apparatus; incorporating a colour video display or screen",286463.57999999996
+2022-05-01,Export,854239,Electronic integrated circuits; n.e.c. in heading no. 8542,699768.03
+2022-05-01,Export,870322,"Vehicles; with only spark-ignition internal combustion piston engine, cylinder capacity over 1000 but not over 1500cc",276693.25
+2022-05-01,Export,870323,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 1500 but not over 3000cc",1017801.1699999999
+2022-05-01,Export,870324,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 3000cc",1362151.6199999999
+2022-05-01,Import,710231,"Diamonds; non-industrial, unworked or simply sawn, cleaved or bruted, but not mounted or set",23635979.18
+2022-05-01,Import,710239,"Diamonds; non-industrial, (other than unworked or simply sawn, cleaved or bruted), but not mounted or set",20575456.46
+2022-05-01,Import,710391,"Stones; rubies, sapphires and emeralds, worked (other than simply sawn or roughly shaped), not strung, mounted or set",531023.43
+2022-05-01,Import,710491,"Stones; diamonds, n.e.c. in heading 7104, worked or graded but not strung, mounted or set; ungraded synthetic or reconstructed precious or semi-precious stones, temporarily strung for convenience of transport",3886.15
+2022-05-01,Import,710691,"Metals; silver, unwrought, (but not powder)",77029.55
+2022-05-01,Import,710812,"Metals; gold, non-monetary, unwrought (but not powder)",3616663.3099999996
+2022-05-01,Import,845011,"Washing machines; household or laundry-type, fully-automatic, (of a dry linen capacity not exceeding 10kg)",1890776.97
+2022-05-01,Import,847130,"Automatic data processing machines; portable, weighing not more than 10kg, consisting of at least a central processing unit, a keyboard and a display",3132779.02
+2022-05-01,Import,850819,"Vacuum cleaners, with self-contained electric motor, n.e.c. in item no. 8508.1",170392.72999999998
+2022-05-01,Import,851713,Telephone sets; smartphones for cellular or other wireless networks,7784936.819999999
+2022-05-01,Import,851762,"Communication apparatus (excluding telephone sets or base stations); machines for the reception, conversion and transmission or regeneration of voice, images or other data, including switching and routing apparatus",1601661.81
+2022-05-01,Import,852852,Monitors; other than cathode-ray tube; capable of directly connecting to and designed for use with an automatic data processing machine of heading 84.71,474957.19999999995
+2022-05-01,Import,852872,"Reception apparatus for television, whether or not incorporating radio-broadcast receivers or sound or video recording or reproducing apparatus; incorporating a colour video display or screen",2297426.77
+2022-05-01,Import,854239,Electronic integrated circuits; n.e.c. in heading no. 8542,654100.36
+2022-05-01,Import,870322,"Vehicles; with only spark-ignition internal combustion piston engine, cylinder capacity over 1000 but not over 1500cc",1072374.69
+2022-05-01,Import,870323,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 1500 but not over 3000cc",13560063.6
+2022-05-01,Import,870324,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 3000cc",3746418.89
+2022-05-01,Import,870333,"Vehicles; with only compression-ignition internal combustion piston engine (diesel or semi-diesel), cylinder capacity over 2500cc",498000
+2022-06-01,Export,710231,"Diamonds; non-industrial, unworked or simply sawn, cleaved or bruted, but not mounted or set",5207790.51
+2022-06-01,Export,710239,"Diamonds; non-industrial, (other than unworked or simply sawn, cleaved or bruted), but not mounted or set",46278604.660000004
+2022-06-01,Export,710391,"Stones; rubies, sapphires and emeralds, worked (other than simply sawn or roughly shaped), not strung, mounted or set",938749.24
+2022-06-01,Export,710491,"Stones; diamonds, n.e.c. in heading 7104, worked or graded but not strung, mounted or set; ungraded synthetic or reconstructed precious or semi-precious stones, temporarily strung for convenience of transport",81874.25
+2022-06-01,Export,710812,"Metals; gold, non-monetary, unwrought (but not powder)",20344101.71
+2022-06-01,Export,845011,"Washing machines; household or laundry-type, fully-automatic, (of a dry linen capacity not exceeding 10kg)",115871.71
+2022-06-01,Export,847130,"Automatic data processing machines; portable, weighing not more than 10kg, consisting of at least a central processing unit, a keyboard and a display",1837172.28
+2022-06-01,Export,850819,"Vacuum cleaners, with self-contained electric motor, n.e.c. in item no. 8508.1",41849.02
+2022-06-01,Export,851713,Telephone sets; smartphones for cellular or other wireless networks,6081223.25
+2022-06-01,Export,851762,"Communication apparatus (excluding telephone sets or base stations); machines for the reception, conversion and transmission or regeneration of voice, images or other data, including switching and routing apparatus",888627.07
+2022-06-01,Export,852852,Monitors; other than cathode-ray tube; capable of directly connecting to and designed for use with an automatic data processing machine of heading 84.71,187946.15
+2022-06-01,Export,852872,"Reception apparatus for television, whether or not incorporating radio-broadcast receivers or sound or video recording or reproducing apparatus; incorporating a colour video display or screen",797628.5
+2022-06-01,Export,854239,Electronic integrated circuits; n.e.c. in heading no. 8542,358250.26999999996
+2022-06-01,Export,870322,"Vehicles; with only spark-ignition internal combustion piston engine, cylinder capacity over 1000 but not over 1500cc",417563.5
+2022-06-01,Export,870323,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 1500 but not over 3000cc",2606419.84
+2022-06-01,Export,870324,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 3000cc",898153.71
+2022-06-01,Export,870333,"Vehicles; with only compression-ignition internal combustion piston engine (diesel or semi-diesel), cylinder capacity over 2500cc",50200
+2022-06-01,Import,710231,"Diamonds; non-industrial, unworked or simply sawn, cleaved or bruted, but not mounted or set",10046089.54
+2022-06-01,Import,710239,"Diamonds; non-industrial, (other than unworked or simply sawn, cleaved or bruted), but not mounted or set",35680702
+2022-06-01,Import,710391,"Stones; rubies, sapphires and emeralds, worked (other than simply sawn or roughly shaped), not strung, mounted or set",911997.68
+2022-06-01,Import,710491,"Stones; diamonds, n.e.c. in heading 7104, worked or graded but not strung, mounted or set; ungraded synthetic or reconstructed precious or semi-precious stones, temporarily strung for convenience of transport",88727.92
+2022-06-01,Import,710691,"Metals; silver, unwrought, (but not powder)",206709.62
+2022-06-01,Import,710812,"Metals; gold, non-monetary, unwrought (but not powder)",14834358.11
+2022-06-01,Import,845011,"Washing machines; household or laundry-type, fully-automatic, (of a dry linen capacity not exceeding 10kg)",1087531.26
+2022-06-01,Import,847130,"Automatic data processing machines; portable, weighing not more than 10kg, consisting of at least a central processing unit, a keyboard and a display",3316027.6
+2022-06-01,Import,850819,"Vacuum cleaners, with self-contained electric motor, n.e.c. in item no. 8508.1",287895.67
+2022-06-01,Import,851713,Telephone sets; smartphones for cellular or other wireless networks,17152274.69
+2022-06-01,Import,851762,"Communication apparatus (excluding telephone sets or base stations); machines for the reception, conversion and transmission or regeneration of voice, images or other data, including switching and routing apparatus",3351564.42
+2022-06-01,Import,852852,Monitors; other than cathode-ray tube; capable of directly connecting to and designed for use with an automatic data processing machine of heading 84.71,540714.69
+2022-06-01,Import,852872,"Reception apparatus for television, whether or not incorporating radio-broadcast receivers or sound or video recording or reproducing apparatus; incorporating a colour video display or screen",1444827.4200000002
+2022-06-01,Import,854239,Electronic integrated circuits; n.e.c. in heading no. 8542,774150.39
+2022-06-01,Import,870322,"Vehicles; with only spark-ignition internal combustion piston engine, cylinder capacity over 1000 but not over 1500cc",2075878.46
+2022-06-01,Import,870323,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 1500 but not over 3000cc",19917854.89
+2022-06-01,Import,870324,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 3000cc",4896473.88
+2022-06-01,Import,870333,"Vehicles; with only compression-ignition internal combustion piston engine (diesel or semi-diesel), cylinder capacity over 2500cc",114047.53
+2022-07-01,Export,710231,"Diamonds; non-industrial, unworked or simply sawn, cleaved or bruted, but not mounted or set",4954814.84
+2022-07-01,Export,710239,"Diamonds; non-industrial, (other than unworked or simply sawn, cleaved or bruted), but not mounted or set",25254536.64
+2022-07-01,Export,710391,"Stones; rubies, sapphires and emeralds, worked (other than simply sawn or roughly shaped), not strung, mounted or set",1236010.67
+2022-07-01,Export,710491,"Stones; diamonds, n.e.c. in heading 7104, worked or graded but not strung, mounted or set; ungraded synthetic or reconstructed precious or semi-precious stones, temporarily strung for convenience of transport",9083.52
+2022-07-01,Export,710691,"Metals; silver, unwrought, (but not powder)",19527
+2022-07-01,Export,710812,"Metals; gold, non-monetary, unwrought (but not powder)",27696078.01
+2022-07-01,Export,845011,"Washing machines; household or laundry-type, fully-automatic, (of a dry linen capacity not exceeding 10kg)",608422
+2022-07-01,Export,847130,"Automatic data processing machines; portable, weighing not more than 10kg, consisting of at least a central processing unit, a keyboard and a display",7036982.100000001
+2022-07-01,Export,850819,"Vacuum cleaners, with self-contained electric motor, n.e.c. in item no. 8508.1",56865.13
+2022-07-01,Export,851713,Telephone sets; smartphones for cellular or other wireless networks,32405361.680000003
+2022-07-01,Export,851762,"Communication apparatus (excluding telephone sets or base stations); machines for the reception, conversion and transmission or regeneration of voice, images or other data, including switching and routing apparatus",2914403.43
+2022-07-01,Export,852852,Monitors; other than cathode-ray tube; capable of directly connecting to and designed for use with an automatic data processing machine of heading 84.71,225707.99
+2022-07-01,Export,852872,"Reception apparatus for television, whether or not incorporating radio-broadcast receivers or sound or video recording or reproducing apparatus; incorporating a colour video display or screen",78720
+2022-07-01,Export,854239,Electronic integrated circuits; n.e.c. in heading no. 8542,428521.54
+2022-07-01,Export,870322,"Vehicles; with only spark-ignition internal combustion piston engine, cylinder capacity over 1000 but not over 1500cc",693702.47
+2022-07-01,Export,870323,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 1500 but not over 3000cc",8390526.15
+2022-07-01,Export,870324,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 3000cc",3567466.44
+2022-07-01,Export,870333,"Vehicles; with only compression-ignition internal combustion piston engine (diesel or semi-diesel), cylinder capacity over 2500cc",270100
+2022-07-01,Import,710231,"Diamonds; non-industrial, unworked or simply sawn, cleaved or bruted, but not mounted or set",6042712.34
+2022-07-01,Import,710239,"Diamonds; non-industrial, (other than unworked or simply sawn, cleaved or bruted), but not mounted or set",21010289.49
+2022-07-01,Import,710391,"Stones; rubies, sapphires and emeralds, worked (other than simply sawn or roughly shaped), not strung, mounted or set",1268357.38
+2022-07-01,Import,710491,"Stones; diamonds, n.e.c. in heading 7104, worked or graded but not strung, mounted or set; ungraded synthetic or reconstructed precious or semi-precious stones, temporarily strung for convenience of transport",37638.67
+2022-07-01,Import,710691,"Metals; silver, unwrought, (but not powder)",349263.57
+2022-07-01,Import,710812,"Metals; gold, non-monetary, unwrought (but not powder)",35282735.09
+2022-07-01,Import,711011,"Metals; platinum, unwrought or in powder form",50522.29
+2022-07-01,Import,845011,"Washing machines; household or laundry-type, fully-automatic, (of a dry linen capacity not exceeding 10kg)",1341166.47
+2022-07-01,Import,847130,"Automatic data processing machines; portable, weighing not more than 10kg, consisting of at least a central processing unit, a keyboard and a display",10161123.75
+2022-07-01,Import,850819,"Vacuum cleaners, with self-contained electric motor, n.e.c. in item no. 8508.1",438171.77
+2022-07-01,Import,851713,Telephone sets; smartphones for cellular or other wireless networks,36009206.38
+2022-07-01,Import,851762,"Communication apparatus (excluding telephone sets or base stations); machines for the reception, conversion and transmission or regeneration of voice, images or other data, including switching and routing apparatus",5647072.97
+2022-07-01,Import,852852,Monitors; other than cathode-ray tube; capable of directly connecting to and designed for use with an automatic data processing machine of heading 84.71,592375.07
+2022-07-01,Import,852872,"Reception apparatus for television, whether or not incorporating radio-broadcast receivers or sound or video recording or reproducing apparatus; incorporating a colour video display or screen",3781679.1399999997
+2022-07-01,Import,854239,Electronic integrated circuits; n.e.c. in heading no. 8542,285910.58
+2022-07-01,Import,870322,"Vehicles; with only spark-ignition internal combustion piston engine, cylinder capacity over 1000 but not over 1500cc",1626791.9
+2022-07-01,Import,870323,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 1500 but not over 3000cc",21968113.62
+2022-07-01,Import,870324,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 3000cc",9875678.790000001
+2022-07-01,Import,870333,"Vehicles; with only compression-ignition internal combustion piston engine (diesel or semi-diesel), cylinder capacity over 2500cc",6149521
+2022-08-01,Export,710231,"Diamonds; non-industrial, unworked or simply sawn, cleaved or bruted, but not mounted or set",14406634.41
+2022-08-01,Export,710239,"Diamonds; non-industrial, (other than unworked or simply sawn, cleaved or bruted), but not mounted or set",22019374.62
+2022-08-01,Export,710391,"Stones; rubies, sapphires and emeralds, worked (other than simply sawn or roughly shaped), not strung, mounted or set",805800.2
+2022-08-01,Export,710491,"Stones; diamonds, n.e.c. in heading 7104, worked or graded but not strung, mounted or set; ungraded synthetic or reconstructed precious or semi-precious stones, temporarily strung for convenience of transport",3311255
+2022-08-01,Export,710691,"Metals; silver, unwrought, (but not powder)",97800
+2022-08-01,Export,710812,"Metals; gold, non-monetary, unwrought (but not powder)",42513542.88999999
+2022-08-01,Export,711011,"Metals; platinum, unwrought or in powder form",2039.38
+2022-08-01,Export,845011,"Washing machines; household or laundry-type, fully-automatic, (of a dry linen capacity not exceeding 10kg)",302888.51
+2022-08-01,Export,847130,"Automatic data processing machines; portable, weighing not more than 10kg, consisting of at least a central processing unit, a keyboard and a display",15797645.75
+2022-08-01,Export,850819,"Vacuum cleaners, with self-contained electric motor, n.e.c. in item no. 8508.1",221571.93
+2022-08-01,Export,851713,Telephone sets; smartphones for cellular or other wireless networks,47932427.58
+2022-08-01,Export,851762,"Communication apparatus (excluding telephone sets or base stations); machines for the reception, conversion and transmission or regeneration of voice, images or other data, including switching and routing apparatus",3473291.1
+2022-08-01,Export,852852,Monitors; other than cathode-ray tube; capable of directly connecting to and designed for use with an automatic data processing machine of heading 84.71,215851.06
+2022-08-01,Export,852872,"Reception apparatus for television, whether or not incorporating radio-broadcast receivers or sound or video recording or reproducing apparatus; incorporating a colour video display or screen",5386067.15
+2022-08-01,Export,854239,Electronic integrated circuits; n.e.c. in heading no. 8542,1537341.37
+2022-08-01,Export,870322,"Vehicles; with only spark-ignition internal combustion piston engine, cylinder capacity over 1000 but not over 1500cc",1980351.8299999998
+2022-08-01,Export,870323,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 1500 but not over 3000cc",16714836.5
+2022-08-01,Export,870324,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 3000cc",6473877.3
+2022-08-01,Export,870333,"Vehicles; with only compression-ignition internal combustion piston engine (diesel or semi-diesel), cylinder capacity over 2500cc",1157235.78
+2022-08-01,Import,710231,"Diamonds; non-industrial, unworked or simply sawn, cleaved or bruted, but not mounted or set",23297542.96
+2022-08-01,Import,710239,"Diamonds; non-industrial, (other than unworked or simply sawn, cleaved or bruted), but not mounted or set",32317752.64
+2022-08-01,Import,710391,"Stones; rubies, sapphires and emeralds, worked (other than simply sawn or roughly shaped), not strung, mounted or set",1138337.8699999999
+2022-08-01,Import,710491,"Stones; diamonds, n.e.c. in heading 7104, worked or graded but not strung, mounted or set; ungraded synthetic or reconstructed precious or semi-precious stones, temporarily strung for convenience of transport",2883666.65
+2022-08-01,Import,710691,"Metals; silver, unwrought, (but not powder)",192461.14
+2022-08-01,Import,710812,"Metals; gold, non-monetary, unwrought (but not powder)",20921841.400000002
+2022-08-01,Import,845011,"Washing machines; household or laundry-type, fully-automatic, (of a dry linen capacity not exceeding 10kg)",2043563.74
+2022-08-01,Import,847130,"Automatic data processing machines; portable, weighing not more than 10kg, consisting of at least a central processing unit, a keyboard and a display",19561539.060000002
+2022-08-01,Import,850819,"Vacuum cleaners, with self-contained electric motor, n.e.c. in item no. 8508.1",952428.5599999999
+2022-08-01,Import,851713,Telephone sets; smartphones for cellular or other wireless networks,72589697.06
+2022-08-01,Import,851762,"Communication apparatus (excluding telephone sets or base stations); machines for the reception, conversion and transmission or regeneration of voice, images or other data, including switching and routing apparatus",6701523.4399999995
+2022-08-01,Import,852852,Monitors; other than cathode-ray tube; capable of directly connecting to and designed for use with an automatic data processing machine of heading 84.71,585053.78
+2022-08-01,Import,852872,"Reception apparatus for television, whether or not incorporating radio-broadcast receivers or sound or video recording or reproducing apparatus; incorporating a colour video display or screen",7998583
+2022-08-01,Import,854239,Electronic integrated circuits; n.e.c. in heading no. 8542,1261695.9
+2022-08-01,Import,870322,"Vehicles; with only spark-ignition internal combustion piston engine, cylinder capacity over 1000 but not over 1500cc",2322531.78
+2022-08-01,Import,870323,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 1500 but not over 3000cc",32129998.47
+2022-08-01,Import,870324,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 3000cc",18174780.72
+2022-08-01,Import,870333,"Vehicles; with only compression-ignition internal combustion piston engine (diesel or semi-diesel), cylinder capacity over 2500cc",1879858.29
+2022-09-01,Export,710231,"Diamonds; non-industrial, unworked or simply sawn, cleaved or bruted, but not mounted or set",6603802.2
+2022-09-01,Export,710239,"Diamonds; non-industrial, (other than unworked or simply sawn, cleaved or bruted), but not mounted or set",31068359.619999997
+2022-09-01,Export,710391,"Stones; rubies, sapphires and emeralds, worked (other than simply sawn or roughly shaped), not strung, mounted or set",954251.37
+2022-09-01,Export,710491,"Stones; diamonds, n.e.c. in heading 7104, worked or graded but not strung, mounted or set; ungraded synthetic or reconstructed precious or semi-precious stones, temporarily strung for convenience of transport",27322.1
+2022-09-01,Export,710691,"Metals; silver, unwrought, (but not powder)",232852.73
+2022-09-01,Export,710812,"Metals; gold, non-monetary, unwrought (but not powder)",19651005.52
+2022-09-01,Export,711011,"Metals; platinum, unwrought or in powder form",8502.66
+2022-09-01,Export,845011,"Washing machines; household or laundry-type, fully-automatic, (of a dry linen capacity not exceeding 10kg)",1001591.81
+2022-09-01,Export,847130,"Automatic data processing machines; portable, weighing not more than 10kg, consisting of at least a central processing unit, a keyboard and a display",11260211.38
+2022-09-01,Export,850819,"Vacuum cleaners, with self-contained electric motor, n.e.c. in item no. 8508.1",491664.49
+2022-09-01,Export,851713,Telephone sets; smartphones for cellular or other wireless networks,76676915.69
+2022-09-01,Export,851762,"Communication apparatus (excluding telephone sets or base stations); machines for the reception, conversion and transmission or regeneration of voice, images or other data, including switching and routing apparatus",5496517.58
+2022-09-01,Export,852852,Monitors; other than cathode-ray tube; capable of directly connecting to and designed for use with an automatic data processing machine of heading 84.71,226710.16999999998
+2022-09-01,Export,852872,"Reception apparatus for television, whether or not incorporating radio-broadcast receivers or sound or video recording or reproducing apparatus; incorporating a colour video display or screen",16077865.12
+2022-09-01,Export,854239,Electronic integrated circuits; n.e.c. in heading no. 8542,773838.25
+2022-09-01,Export,870322,"Vehicles; with only spark-ignition internal combustion piston engine, cylinder capacity over 1000 but not over 1500cc",1736961.36
+2022-09-01,Export,870323,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 1500 but not over 3000cc",18183519.45
+2022-09-01,Export,870324,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 3000cc",9947610.46
+2022-09-01,Export,870333,"Vehicles; with only compression-ignition internal combustion piston engine (diesel or semi-diesel), cylinder capacity over 2500cc",2492547.81
+2022-09-01,Import,710231,"Diamonds; non-industrial, unworked or simply sawn, cleaved or bruted, but not mounted or set",12874076.35
+2022-09-01,Import,710239,"Diamonds; non-industrial, (other than unworked or simply sawn, cleaved or bruted), but not mounted or set",19554585.34
+2022-09-01,Import,710391,"Stones; rubies, sapphires and emeralds, worked (other than simply sawn or roughly shaped), not strung, mounted or set",635819.77
+2022-09-01,Import,710491,"Stones; diamonds, n.e.c. in heading 7104, worked or graded but not strung, mounted or set; ungraded synthetic or reconstructed precious or semi-precious stones, temporarily strung for convenience of transport",59058.71
+2022-09-01,Import,710691,"Metals; silver, unwrought, (but not powder)",171391.55
+2022-09-01,Import,710812,"Metals; gold, non-monetary, unwrought (but not powder)",23484428.119999997
+2022-09-01,Import,711011,"Metals; platinum, unwrought or in powder form",43323.27
+2022-09-01,Import,845011,"Washing machines; household or laundry-type, fully-automatic, (of a dry linen capacity not exceeding 10kg)",1810874.8
+2022-09-01,Import,847130,"Automatic data processing machines; portable, weighing not more than 10kg, consisting of at least a central processing unit, a keyboard and a display",13393654.81
+2022-09-01,Import,850819,"Vacuum cleaners, with self-contained electric motor, n.e.c. in item no. 8508.1",566826.27
+2022-09-01,Import,851713,Telephone sets; smartphones for cellular or other wireless networks,72500470.72
+2022-09-01,Import,851762,"Communication apparatus (excluding telephone sets or base stations); machines for the reception, conversion and transmission or regeneration of voice, images or other data, including switching and routing apparatus",7824810.87
+2022-09-01,Import,852852,Monitors; other than cathode-ray tube; capable of directly connecting to and designed for use with an automatic data processing machine of heading 84.71,1070369.8
+2022-09-01,Import,852872,"Reception apparatus for television, whether or not incorporating radio-broadcast receivers or sound or video recording or reproducing apparatus; incorporating a colour video display or screen",15450905.01
+2022-09-01,Import,854239,Electronic integrated circuits; n.e.c. in heading no. 8542,1142390.84
+2022-09-01,Import,870322,"Vehicles; with only spark-ignition internal combustion piston engine, cylinder capacity over 1000 but not over 1500cc",2564971.82
+2022-09-01,Import,870323,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 1500 but not over 3000cc",33236404.52
+2022-09-01,Import,870324,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 3000cc",16836933.02
+2022-09-01,Import,870333,"Vehicles; with only compression-ignition internal combustion piston engine (diesel or semi-diesel), cylinder capacity over 2500cc",7027120.659999999
+2022-10-01,Export,710231,"Diamonds; non-industrial, unworked or simply sawn, cleaved or bruted, but not mounted or set",2203706.26
+2022-10-01,Export,710239,"Diamonds; non-industrial, (other than unworked or simply sawn, cleaved or bruted), but not mounted or set",41635133.160000004
+2022-10-01,Export,710391,"Stones; rubies, sapphires and emeralds, worked (other than simply sawn or roughly shaped), not strung, mounted or set",1615264.18
+2022-10-01,Export,710491,"Stones; diamonds, n.e.c. in heading 7104, worked or graded but not strung, mounted or set; ungraded synthetic or reconstructed precious or semi-precious stones, temporarily strung for convenience of transport",270287.28
+2022-10-01,Export,710812,"Metals; gold, non-monetary, unwrought (but not powder)",104865326.9
+2022-10-01,Export,711011,"Metals; platinum, unwrought or in powder form",32554.2
+2022-10-01,Export,845011,"Washing machines; household or laundry-type, fully-automatic, (of a dry linen capacity not exceeding 10kg)",523156.02
+2022-10-01,Export,847130,"Automatic data processing machines; portable, weighing not more than 10kg, consisting of at least a central processing unit, a keyboard and a display",5957564.97
+2022-10-01,Export,850819,"Vacuum cleaners, with self-contained electric motor, n.e.c. in item no. 8508.1",888752.2
+2022-10-01,Export,851713,Telephone sets; smartphones for cellular or other wireless networks,30219919.139999997
+2022-10-01,Export,851762,"Communication apparatus (excluding telephone sets or base stations); machines for the reception, conversion and transmission or regeneration of voice, images or other data, including switching and routing apparatus",5519245.3
+2022-10-01,Export,852852,Monitors; other than cathode-ray tube; capable of directly connecting to and designed for use with an automatic data processing machine of heading 84.71,2858541.9699999997
+2022-10-01,Export,852872,"Reception apparatus for television, whether or not incorporating radio-broadcast receivers or sound or video recording or reproducing apparatus; incorporating a colour video display or screen",21302810.43
+2022-10-01,Export,854239,Electronic integrated circuits; n.e.c. in heading no. 8542,476484.38
+2022-10-01,Export,870322,"Vehicles; with only spark-ignition internal combustion piston engine, cylinder capacity over 1000 but not over 1500cc",1083657.77
+2022-10-01,Export,870323,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 1500 but not over 3000cc",13346215.35
+2022-10-01,Export,870324,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 3000cc",17847896.209999997
+2022-10-01,Export,870333,"Vehicles; with only compression-ignition internal combustion piston engine (diesel or semi-diesel), cylinder capacity over 2500cc",3384238.43
+2022-10-01,Import,710231,"Diamonds; non-industrial, unworked or simply sawn, cleaved or bruted, but not mounted or set",9015433.98
+2022-10-01,Import,710239,"Diamonds; non-industrial, (other than unworked or simply sawn, cleaved or bruted), but not mounted or set",25688777.88
+2022-10-01,Import,710391,"Stones; rubies, sapphires and emeralds, worked (other than simply sawn or roughly shaped), not strung, mounted or set",2012937.72
+2022-10-01,Import,710491,"Stones; diamonds, n.e.c. in heading 7104, worked or graded but not strung, mounted or set; ungraded synthetic or reconstructed precious or semi-precious stones, temporarily strung for convenience of transport",977246.44
+2022-10-01,Import,710691,"Metals; silver, unwrought, (but not powder)",264064.22
+2022-10-01,Import,710812,"Metals; gold, non-monetary, unwrought (but not powder)",53965683.769999996
+2022-10-01,Import,845011,"Washing machines; household or laundry-type, fully-automatic, (of a dry linen capacity not exceeding 10kg)",1865313.93
+2022-10-01,Import,847130,"Automatic data processing machines; portable, weighing not more than 10kg, consisting of at least a central processing unit, a keyboard and a display",7293221.739999999
+2022-10-01,Import,850819,"Vacuum cleaners, with self-contained electric motor, n.e.c. in item no. 8508.1",1260481.41
+2022-10-01,Import,851713,Telephone sets; smartphones for cellular or other wireless networks,44656784.849999994
+2022-10-01,Import,851762,"Communication apparatus (excluding telephone sets or base stations); machines for the reception, conversion and transmission or regeneration of voice, images or other data, including switching and routing apparatus",9627962.42
+2022-10-01,Import,852852,Monitors; other than cathode-ray tube; capable of directly connecting to and designed for use with an automatic data processing machine of heading 84.71,3597416.04
+2022-10-01,Import,852872,"Reception apparatus for television, whether or not incorporating radio-broadcast receivers or sound or video recording or reproducing apparatus; incorporating a colour video display or screen",27901176.6
+2022-10-01,Import,854239,Electronic integrated circuits; n.e.c. in heading no. 8542,791176.37
+2022-10-01,Import,870322,"Vehicles; with only spark-ignition internal combustion piston engine, cylinder capacity over 1000 but not over 1500cc",2465603.67
+2022-10-01,Import,870323,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 1500 but not over 3000cc",41240127.52
+2022-10-01,Import,870324,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 3000cc",21730066.97
+2022-10-01,Import,870333,"Vehicles; with only compression-ignition internal combustion piston engine (diesel or semi-diesel), cylinder capacity over 2500cc",3925305.95
+2022-11-01,Export,710231,"Diamonds; non-industrial, unworked or simply sawn, cleaved or bruted, but not mounted or set",7720449.17
+2022-11-01,Export,710239,"Diamonds; non-industrial, (other than unworked or simply sawn, cleaved or bruted), but not mounted or set",39439848.08
+2022-11-01,Export,710391,"Stones; rubies, sapphires and emeralds, worked (other than simply sawn or roughly shaped), not strung, mounted or set",1665681.47
+2022-11-01,Export,710491,"Stones; diamonds, n.e.c. in heading 7104, worked or graded but not strung, mounted or set; ungraded synthetic or reconstructed precious or semi-precious stones, temporarily strung for convenience of transport",2139437.6599999997
+2022-11-01,Export,710812,"Metals; gold, non-monetary, unwrought (but not powder)",28943264.52
+2022-11-01,Export,845011,"Washing machines; household or laundry-type, fully-automatic, (of a dry linen capacity not exceeding 10kg)",12804.56
+2022-11-01,Export,847130,"Automatic data processing machines; portable, weighing not more than 10kg, consisting of at least a central processing unit, a keyboard and a display",5878051.57
+2022-11-01,Export,850819,"Vacuum cleaners, with self-contained electric motor, n.e.c. in item no. 8508.1",127260.41
+2022-11-01,Export,851713,Telephone sets; smartphones for cellular or other wireless networks,31819694.02
+2022-11-01,Export,851762,"Communication apparatus (excluding telephone sets or base stations); machines for the reception, conversion and transmission or regeneration of voice, images or other data, including switching and routing apparatus",6626704.16
+2022-11-01,Export,852852,Monitors; other than cathode-ray tube; capable of directly connecting to and designed for use with an automatic data processing machine of heading 84.71,5003440.15
+2022-11-01,Export,852872,"Reception apparatus for television, whether or not incorporating radio-broadcast receivers or sound or video recording or reproducing apparatus; incorporating a colour video display or screen",29343587.29
+2022-11-01,Export,854239,Electronic integrated circuits; n.e.c. in heading no. 8542,1931334.85
+2022-11-01,Export,870322,"Vehicles; with only spark-ignition internal combustion piston engine, cylinder capacity over 1000 but not over 1500cc",2200048.84
+2022-11-01,Export,870323,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 1500 but not over 3000cc",20045472.59
+2022-11-01,Export,870324,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 3000cc",15411505.65
+2022-11-01,Export,870333,"Vehicles; with only compression-ignition internal combustion piston engine (diesel or semi-diesel), cylinder capacity over 2500cc",4802246.03
+2022-11-01,Import,710231,"Diamonds; non-industrial, unworked or simply sawn, cleaved or bruted, but not mounted or set",12093517.3
+2022-11-01,Import,710239,"Diamonds; non-industrial, (other than unworked or simply sawn, cleaved or bruted), but not mounted or set",31018823.05
+2022-11-01,Import,710391,"Stones; rubies, sapphires and emeralds, worked (other than simply sawn or roughly shaped), not strung, mounted or set",1405706.1199999999
+2022-11-01,Import,710491,"Stones; diamonds, n.e.c. in heading 7104, worked or graded but not strung, mounted or set; ungraded synthetic or reconstructed precious or semi-precious stones, temporarily strung for convenience of transport",1991564.1900000002
+2022-11-01,Import,710691,"Metals; silver, unwrought, (but not powder)",25755.64
+2022-11-01,Import,710812,"Metals; gold, non-monetary, unwrought (but not powder)",44178810.470000006
+2022-11-01,Import,845011,"Washing machines; household or laundry-type, fully-automatic, (of a dry linen capacity not exceeding 10kg)",1567238.17
+2022-11-01,Import,847130,"Automatic data processing machines; portable, weighing not more than 10kg, consisting of at least a central processing unit, a keyboard and a display",11247646.85
+2022-11-01,Import,850819,"Vacuum cleaners, with self-contained electric motor, n.e.c. in item no. 8508.1",565647.85
+2022-11-01,Import,851713,Telephone sets; smartphones for cellular or other wireless networks,16630150.34
+2022-11-01,Import,851762,"Communication apparatus (excluding telephone sets or base stations); machines for the reception, conversion and transmission or regeneration of voice, images or other data, including switching and routing apparatus",7953225.4
+2022-11-01,Import,852852,Monitors; other than cathode-ray tube; capable of directly connecting to and designed for use with an automatic data processing machine of heading 84.71,4695347.95
+2022-11-01,Import,852872,"Reception apparatus for television, whether or not incorporating radio-broadcast receivers or sound or video recording or reproducing apparatus; incorporating a colour video display or screen",30198809.340000004
+2022-11-01,Import,854239,Electronic integrated circuits; n.e.c. in heading no. 8542,2376435.05
+2022-11-01,Import,870322,"Vehicles; with only spark-ignition internal combustion piston engine, cylinder capacity over 1000 but not over 1500cc",5193580
+2022-11-01,Import,870323,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 1500 but not over 3000cc",57797808.82
+2022-11-01,Import,870324,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 3000cc",23399647.38
+2022-11-01,Import,870333,"Vehicles; with only compression-ignition internal combustion piston engine (diesel or semi-diesel), cylinder capacity over 2500cc",9450965.53
+2022-12-01,Export,710231,"Diamonds; non-industrial, unworked or simply sawn, cleaved or bruted, but not mounted or set",4498856.96
+2022-12-01,Export,710239,"Diamonds; non-industrial, (other than unworked or simply sawn, cleaved or bruted), but not mounted or set",48634155.87
+2022-12-01,Export,710391,"Stones; rubies, sapphires and emeralds, worked (other than simply sawn or roughly shaped), not strung, mounted or set",1219128.94
+2022-12-01,Export,710491,"Stones; diamonds, n.e.c. in heading 7104, worked or graded but not strung, mounted or set; ungraded synthetic or reconstructed precious or semi-precious stones, temporarily strung for convenience of transport",1599119.34
+2022-12-01,Export,710691,"Metals; silver, unwrought, (but not powder)",580482.01
+2022-12-01,Export,710812,"Metals; gold, non-monetary, unwrought (but not powder)",18936089.05
+2022-12-01,Export,847130,"Automatic data processing machines; portable, weighing not more than 10kg, consisting of at least a central processing unit, a keyboard and a display",6072564.0200000005
+2022-12-01,Export,850819,"Vacuum cleaners, with self-contained electric motor, n.e.c. in item no. 8508.1",480
+2022-12-01,Export,851713,Telephone sets; smartphones for cellular or other wireless networks,5751159.27
+2022-12-01,Export,851762,"Communication apparatus (excluding telephone sets or base stations); machines for the reception, conversion and transmission or regeneration of voice, images or other data, including switching and routing apparatus",8679015.83
+2022-12-01,Export,852852,Monitors; other than cathode-ray tube; capable of directly connecting to and designed for use with an automatic data processing machine of heading 84.71,22066.55
+2022-12-01,Export,852872,"Reception apparatus for television, whether or not incorporating radio-broadcast receivers or sound or video recording or reproducing apparatus; incorporating a colour video display or screen",6431821.61
+2022-12-01,Export,854239,Electronic integrated circuits; n.e.c. in heading no. 8542,2514520.26
+2022-12-01,Export,870322,"Vehicles; with only spark-ignition internal combustion piston engine, cylinder capacity over 1000 but not over 1500cc",2436028.72
+2022-12-01,Export,870323,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 1500 but not over 3000cc",48383261.71
+2022-12-01,Export,870324,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 3000cc",16955850.68
+2022-12-01,Export,870333,"Vehicles; with only compression-ignition internal combustion piston engine (diesel or semi-diesel), cylinder capacity over 2500cc",3361871.42
+2022-12-01,Import,710231,"Diamonds; non-industrial, unworked or simply sawn, cleaved or bruted, but not mounted or set",18770263.01
+2022-12-01,Import,710239,"Diamonds; non-industrial, (other than unworked or simply sawn, cleaved or bruted), but not mounted or set",28671493.19
+2022-12-01,Import,710391,"Stones; rubies, sapphires and emeralds, worked (other than simply sawn or roughly shaped), not strung, mounted or set",1709667.2
+2022-12-01,Import,710491,"Stones; diamonds, n.e.c. in heading 7104, worked or graded but not strung, mounted or set; ungraded synthetic or reconstructed precious or semi-precious stones, temporarily strung for convenience of transport",1386598.76
+2022-12-01,Import,710691,"Metals; silver, unwrought, (but not powder)",816435.74
+2022-12-01,Import,710812,"Metals; gold, non-monetary, unwrought (but not powder)",18034866.22
+2022-12-01,Import,845011,"Washing machines; household or laundry-type, fully-automatic, (of a dry linen capacity not exceeding 10kg)",2710231.18
+2022-12-01,Import,847130,"Automatic data processing machines; portable, weighing not more than 10kg, consisting of at least a central processing unit, a keyboard and a display",10367396.51
+2022-12-01,Import,850819,"Vacuum cleaners, with self-contained electric motor, n.e.c. in item no. 8508.1",448818.09
+2022-12-01,Import,851713,Telephone sets; smartphones for cellular or other wireless networks,21294404.75
+2022-12-01,Import,851762,"Communication apparatus (excluding telephone sets or base stations); machines for the reception, conversion and transmission or regeneration of voice, images or other data, including switching and routing apparatus",9596751.92
+2022-12-01,Import,852852,Monitors; other than cathode-ray tube; capable of directly connecting to and designed for use with an automatic data processing machine of heading 84.71,2936192.99
+2022-12-01,Import,852872,"Reception apparatus for television, whether or not incorporating radio-broadcast receivers or sound or video recording or reproducing apparatus; incorporating a colour video display or screen",4778015.62
+2022-12-01,Import,854239,Electronic integrated circuits; n.e.c. in heading no. 8542,3248611.5999999996
+2022-12-01,Import,870322,"Vehicles; with only spark-ignition internal combustion piston engine, cylinder capacity over 1000 but not over 1500cc",7117580.61
+2022-12-01,Import,870323,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 1500 but not over 3000cc",71921940.42
+2022-12-01,Import,870324,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 3000cc",31630802.830000002
+2022-12-01,Import,870333,"Vehicles; with only compression-ignition internal combustion piston engine (diesel or semi-diesel), cylinder capacity over 2500cc",10090781.53
+2023-01-01,Export,710231,"Diamonds; non-industrial, unworked or simply sawn, cleaved or bruted, but not mounted or set",5370521.2
+2023-01-01,Export,710239,"Diamonds; non-industrial, (other than unworked or simply sawn, cleaved or bruted), but not mounted or set",23607324.61
+2023-01-01,Export,710391,"Stones; rubies, sapphires and emeralds, worked (other than simply sawn or roughly shaped), not strung, mounted or set",1346952.17
+2023-01-01,Export,710491,"Stones; diamonds, n.e.c. in heading 7104, worked or graded but not strung, mounted or set; ungraded synthetic or reconstructed precious or semi-precious stones, temporarily strung for convenience of transport",58685.56
+2023-01-01,Export,710691,"Metals; silver, unwrought, (but not powder)",247227.38
+2023-01-01,Export,710812,"Metals; gold, non-monetary, unwrought (but not powder)",15359202.59
+2023-01-01,Export,711011,"Metals; platinum, unwrought or in powder form",4874.57
+2023-01-01,Export,845011,"Washing machines; household or laundry-type, fully-automatic, (of a dry linen capacity not exceeding 10kg)",154242.19
+2023-01-01,Export,847130,"Automatic data processing machines; portable, weighing not more than 10kg, consisting of at least a central processing unit, a keyboard and a display",3408195.75
+2023-01-01,Export,850819,"Vacuum cleaners, with self-contained electric motor, n.e.c. in item no. 8508.1",37038.42
+2023-01-01,Export,851713,Telephone sets; smartphones for cellular or other wireless networks,9487283.32
+2023-01-01,Export,851762,"Communication apparatus (excluding telephone sets or base stations); machines for the reception, conversion and transmission or regeneration of voice, images or other data, including switching and routing apparatus",2592393.38
+2023-01-01,Export,852852,Monitors; other than cathode-ray tube; capable of directly connecting to and designed for use with an automatic data processing machine of heading 84.71,3959979.15
+2023-01-01,Export,852872,"Reception apparatus for television, whether or not incorporating radio-broadcast receivers or sound or video recording or reproducing apparatus; incorporating a colour video display or screen",16143568.51
+2023-01-01,Export,854239,Electronic integrated circuits; n.e.c. in heading no. 8542,1607271.95
+2023-01-01,Export,870322,"Vehicles; with only spark-ignition internal combustion piston engine, cylinder capacity over 1000 but not over 1500cc",2415774.08
+2023-01-01,Export,870323,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 1500 but not over 3000cc",16728703.94
+2023-01-01,Export,870324,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 3000cc",17908990.62
+2023-01-01,Export,870333,"Vehicles; with only compression-ignition internal combustion piston engine (diesel or semi-diesel), cylinder capacity over 2500cc",4743226.3
+2023-01-01,Import,710231,"Diamonds; non-industrial, unworked or simply sawn, cleaved or bruted, but not mounted or set",19177805.24
+2023-01-01,Import,710239,"Diamonds; non-industrial, (other than unworked or simply sawn, cleaved or bruted), but not mounted or set",14744964.28
+2023-01-01,Import,710391,"Stones; rubies, sapphires and emeralds, worked (other than simply sawn or roughly shaped), not strung, mounted or set",1284681.67
+2023-01-01,Import,710491,"Stones; diamonds, n.e.c. in heading 7104, worked or graded but not strung, mounted or set; ungraded synthetic or reconstructed precious or semi-precious stones, temporarily strung for convenience of transport",58316
+2023-01-01,Import,710691,"Metals; silver, unwrought, (but not powder)",364820.77
+2023-01-01,Import,710812,"Metals; gold, non-monetary, unwrought (but not powder)",15125941.96
+2023-01-01,Import,711021,"Metals; palladium, unwrought or in powder form",3727045.76
+2023-01-01,Import,845011,"Washing machines; household or laundry-type, fully-automatic, (of a dry linen capacity not exceeding 10kg)",991185.38
+2023-01-01,Import,847130,"Automatic data processing machines; portable, weighing not more than 10kg, consisting of at least a central processing unit, a keyboard and a display",5838545.51
+2023-01-01,Import,850819,"Vacuum cleaners, with self-contained electric motor, n.e.c. in item no. 8508.1",285887.77
+2023-01-01,Import,851713,Telephone sets; smartphones for cellular or other wireless networks,44686534.35
+2023-01-01,Import,851762,"Communication apparatus (excluding telephone sets or base stations); machines for the reception, conversion and transmission or regeneration of voice, images or other data, including switching and routing apparatus",6150471.21
+2023-01-01,Import,852852,Monitors; other than cathode-ray tube; capable of directly connecting to and designed for use with an automatic data processing machine of heading 84.71,3292092.61
+2023-01-01,Import,852872,"Reception apparatus for television, whether or not incorporating radio-broadcast receivers or sound or video recording or reproducing apparatus; incorporating a colour video display or screen",17996203.29
+2023-01-01,Import,854239,Electronic integrated circuits; n.e.c. in heading no. 8542,2037672.42
+2023-01-01,Import,870322,"Vehicles; with only spark-ignition internal combustion piston engine, cylinder capacity over 1000 but not over 1500cc",5298649.41
+2023-01-01,Import,870323,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 1500 but not over 3000cc",49609683.06
+2023-01-01,Import,870324,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 3000cc",27285422.21
+2023-01-01,Import,870333,"Vehicles; with only compression-ignition internal combustion piston engine (diesel or semi-diesel), cylinder capacity over 2500cc",5495201.16
+2023-02-01,Export,710231,"Diamonds; non-industrial, unworked or simply sawn, cleaved or bruted, but not mounted or set",3071139.39
+2023-02-01,Export,710239,"Diamonds; non-industrial, (other than unworked or simply sawn, cleaved or bruted), but not mounted or set",23394696.91
+2023-02-01,Export,710391,"Stones; rubies, sapphires and emeralds, worked (other than simply sawn or roughly shaped), not strung, mounted or set",1028195.23
+2023-02-01,Export,710491,"Stones; diamonds, n.e.c. in heading 7104, worked or graded but not strung, mounted or set; ungraded synthetic or reconstructed precious or semi-precious stones, temporarily strung for convenience of transport",1382126.66
+2023-02-01,Export,710691,"Metals; silver, unwrought, (but not powder)",99087.52
+2023-02-01,Export,710812,"Metals; gold, non-monetary, unwrought (but not powder)",78181080
+2023-02-01,Export,711011,"Metals; platinum, unwrought or in powder form",3012090.18
+2023-02-01,Export,711021,"Metals; palladium, unwrought or in powder form",7695022.48
+2023-02-01,Export,845011,"Washing machines; household or laundry-type, fully-automatic, (of a dry linen capacity not exceeding 10kg)",676288.33
+2023-02-01,Export,847130,"Automatic data processing machines; portable, weighing not more than 10kg, consisting of at least a central processing unit, a keyboard and a display",4447841.590000001
+2023-02-01,Export,850819,"Vacuum cleaners, with self-contained electric motor, n.e.c. in item no. 8508.1",69611.2
+2023-02-01,Export,851713,Telephone sets; smartphones for cellular or other wireless networks,47138085.61
+2023-02-01,Export,851762,"Communication apparatus (excluding telephone sets or base stations); machines for the reception, conversion and transmission or regeneration of voice, images or other data, including switching and routing apparatus",1849632.46
+2023-02-01,Export,852852,Monitors; other than cathode-ray tube; capable of directly connecting to and designed for use with an automatic data processing machine of heading 84.71,3500551.33
+2023-02-01,Export,852872,"Reception apparatus for television, whether or not incorporating radio-broadcast receivers or sound or video recording or reproducing apparatus; incorporating a colour video display or screen",21073929.04
+2023-02-01,Export,854239,Electronic integrated circuits; n.e.c. in heading no. 8542,1922258.91
+2023-02-01,Export,870322,"Vehicles; with only spark-ignition internal combustion piston engine, cylinder capacity over 1000 but not over 1500cc",3883133.98
+2023-02-01,Export,870323,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 1500 but not over 3000cc",21940246.330000002
+2023-02-01,Export,870324,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 3000cc",14778627.06
+2023-02-01,Export,870333,"Vehicles; with only compression-ignition internal combustion piston engine (diesel or semi-diesel), cylinder capacity over 2500cc",6066140.2299999995
+2023-02-01,Import,710231,"Diamonds; non-industrial, unworked or simply sawn, cleaved or bruted, but not mounted or set",11096217.5
+2023-02-01,Import,710239,"Diamonds; non-industrial, (other than unworked or simply sawn, cleaved or bruted), but not mounted or set",19191327.79
+2023-02-01,Import,710391,"Stones; rubies, sapphires and emeralds, worked (other than simply sawn or roughly shaped), not strung, mounted or set",1677814.6199999999
+2023-02-01,Import,710491,"Stones; diamonds, n.e.c. in heading 7104, worked or graded but not strung, mounted or set; ungraded synthetic or reconstructed precious or semi-precious stones, temporarily strung for convenience of transport",1454591.94
+2023-02-01,Import,710691,"Metals; silver, unwrought, (but not powder)",136197.95
+2023-02-01,Import,710812,"Metals; gold, non-monetary, unwrought (but not powder)",79965951.82
+2023-02-01,Import,711011,"Metals; platinum, unwrought or in powder form",2876937.05
+2023-02-01,Import,711021,"Metals; palladium, unwrought or in powder form",3671180.3
+2023-02-01,Import,845011,"Washing machines; household or laundry-type, fully-automatic, (of a dry linen capacity not exceeding 10kg)",882114.0700000001
+2023-02-01,Import,847130,"Automatic data processing machines; portable, weighing not more than 10kg, consisting of at least a central processing unit, a keyboard and a display",5345564.680000001
+2023-02-01,Import,850819,"Vacuum cleaners, with self-contained electric motor, n.e.c. in item no. 8508.1",233492.53
+2023-02-01,Import,851713,Telephone sets; smartphones for cellular or other wireless networks,63918029.199999996
+2023-02-01,Import,851762,"Communication apparatus (excluding telephone sets or base stations); machines for the reception, conversion and transmission or regeneration of voice, images or other data, including switching and routing apparatus",4410053.0200000005
+2023-02-01,Import,852852,Monitors; other than cathode-ray tube; capable of directly connecting to and designed for use with an automatic data processing machine of heading 84.71,4003600.35
+2023-02-01,Import,852872,"Reception apparatus for television, whether or not incorporating radio-broadcast receivers or sound or video recording or reproducing apparatus; incorporating a colour video display or screen",17049092.009999998
+2023-02-01,Import,854239,Electronic integrated circuits; n.e.c. in heading no. 8542,1325124.5
+2023-02-01,Import,870322,"Vehicles; with only spark-ignition internal combustion piston engine, cylinder capacity over 1000 but not over 1500cc",5221975.63
+2023-02-01,Import,870323,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 1500 but not over 3000cc",59692785.53
+2023-02-01,Import,870324,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 3000cc",26108593.79
+2023-02-01,Import,870333,"Vehicles; with only compression-ignition internal combustion piston engine (diesel or semi-diesel), cylinder capacity over 2500cc",5088566.8100000005
+2023-03-01,Export,710231,"Diamonds; non-industrial, unworked or simply sawn, cleaved or bruted, but not mounted or set",3177849.32
+2023-03-01,Export,710239,"Diamonds; non-industrial, (other than unworked or simply sawn, cleaved or bruted), but not mounted or set",50391924.769999996
+2023-03-01,Export,710391,"Stones; rubies, sapphires and emeralds, worked (other than simply sawn or roughly shaped), not strung, mounted or set",1789275.44
+2023-03-01,Export,710491,"Stones; diamonds, n.e.c. in heading 7104, worked or graded but not strung, mounted or set; ungraded synthetic or reconstructed precious or semi-precious stones, temporarily strung for convenience of transport",16922.44
+2023-03-01,Export,710691,"Metals; silver, unwrought, (but not powder)",188931.52
+2023-03-01,Export,710812,"Metals; gold, non-monetary, unwrought (but not powder)",70235765.67
+2023-03-01,Export,711011,"Metals; platinum, unwrought or in powder form",3182795.78
+2023-03-01,Export,711021,"Metals; palladium, unwrought or in powder form",23464155.92
+2023-03-01,Export,845011,"Washing machines; household or laundry-type, fully-automatic, (of a dry linen capacity not exceeding 10kg)",1689341.7
+2023-03-01,Export,847130,"Automatic data processing machines; portable, weighing not more than 10kg, consisting of at least a central processing unit, a keyboard and a display",4859080.88
+2023-03-01,Export,850819,"Vacuum cleaners, with self-contained electric motor, n.e.c. in item no. 8508.1",1147352.68
+2023-03-01,Export,851713,Telephone sets; smartphones for cellular or other wireless networks,16544950.35
+2023-03-01,Export,851762,"Communication apparatus (excluding telephone sets or base stations); machines for the reception, conversion and transmission or regeneration of voice, images or other data, including switching and routing apparatus",1740819.85
+2023-03-01,Export,852852,Monitors; other than cathode-ray tube; capable of directly connecting to and designed for use with an automatic data processing machine of heading 84.71,4842202.58
+2023-03-01,Export,852872,"Reception apparatus for television, whether or not incorporating radio-broadcast receivers or sound or video recording or reproducing apparatus; incorporating a colour video display or screen",14375494.62
+2023-03-01,Export,854239,Electronic integrated circuits; n.e.c. in heading no. 8542,2628829.8899999997
+2023-03-01,Export,870322,"Vehicles; with only spark-ignition internal combustion piston engine, cylinder capacity over 1000 but not over 1500cc",4863666.46
+2023-03-01,Export,870323,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 1500 but not over 3000cc",26677958.94
+2023-03-01,Export,870324,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 3000cc",19269495.419999998
+2023-03-01,Export,870333,"Vehicles; with only compression-ignition internal combustion piston engine (diesel or semi-diesel), cylinder capacity over 2500cc",3809917.65
+2023-03-01,Import,710231,"Diamonds; non-industrial, unworked or simply sawn, cleaved or bruted, but not mounted or set",21862619.79
+2023-03-01,Import,710239,"Diamonds; non-industrial, (other than unworked or simply sawn, cleaved or bruted), but not mounted or set",31039663.99
+2023-03-01,Import,710391,"Stones; rubies, sapphires and emeralds, worked (other than simply sawn or roughly shaped), not strung, mounted or set",2535090.61
+2023-03-01,Import,710491,"Stones; diamonds, n.e.c. in heading 7104, worked or graded but not strung, mounted or set; ungraded synthetic or reconstructed precious or semi-precious stones, temporarily strung for convenience of transport",2927949.5
+2023-03-01,Import,710691,"Metals; silver, unwrought, (but not powder)",704594.9099999999
+2023-03-01,Import,710812,"Metals; gold, non-monetary, unwrought (but not powder)",69353743.02
+2023-03-01,Import,711011,"Metals; platinum, unwrought or in powder form",3077006.1799999997
+2023-03-01,Import,711021,"Metals; palladium, unwrought or in powder form",22185198.740000002
+2023-03-01,Import,845011,"Washing machines; household or laundry-type, fully-automatic, (of a dry linen capacity not exceeding 10kg)",2165647.0100000002
+2023-03-01,Import,847130,"Automatic data processing machines; portable, weighing not more than 10kg, consisting of at least a central processing unit, a keyboard and a display",6226228.99
+2023-03-01,Import,850819,"Vacuum cleaners, with self-contained electric motor, n.e.c. in item no. 8508.1",1508740.78
+2023-03-01,Import,851713,Telephone sets; smartphones for cellular or other wireless networks,45907426.260000005
+2023-03-01,Import,851762,"Communication apparatus (excluding telephone sets or base stations); machines for the reception, conversion and transmission or regeneration of voice, images or other data, including switching and routing apparatus",4490503.98
+2023-03-01,Import,852852,Monitors; other than cathode-ray tube; capable of directly connecting to and designed for use with an automatic data processing machine of heading 84.71,6975694.05
+2023-03-01,Import,852872,"Reception apparatus for television, whether or not incorporating radio-broadcast receivers or sound or video recording or reproducing apparatus; incorporating a colour video display or screen",17131551.15
+2023-03-01,Import,854239,Electronic integrated circuits; n.e.c. in heading no. 8542,2534426.58
+2023-03-01,Import,870322,"Vehicles; with only spark-ignition internal combustion piston engine, cylinder capacity over 1000 but not over 1500cc",6949406.59
+2023-03-01,Import,870323,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 1500 but not over 3000cc",59388322.21
+2023-03-01,Import,870324,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 3000cc",29993383.27
+2023-03-01,Import,870333,"Vehicles; with only compression-ignition internal combustion piston engine (diesel or semi-diesel), cylinder capacity over 2500cc",7022344.989999999
+2023-04-01,Export,710231,"Diamonds; non-industrial, unworked or simply sawn, cleaved or bruted, but not mounted or set",8971569.56
+2023-04-01,Export,710239,"Diamonds; non-industrial, (other than unworked or simply sawn, cleaved or bruted), but not mounted or set",28745725.6
+2023-04-01,Export,710391,"Stones; rubies, sapphires and emeralds, worked (other than simply sawn or roughly shaped), not strung, mounted or set",948033.57
+2023-04-01,Export,710491,"Stones; diamonds, n.e.c. in heading 7104, worked or graded but not strung, mounted or set; ungraded synthetic or reconstructed precious or semi-precious stones, temporarily strung for convenience of transport",1251872.44
+2023-04-01,Export,710691,"Metals; silver, unwrought, (but not powder)",25277.5
+2023-04-01,Export,710812,"Metals; gold, non-monetary, unwrought (but not powder)",42627271.16
+2023-04-01,Export,711011,"Metals; platinum, unwrought or in powder form",4967602.28
+2023-04-01,Export,711021,"Metals; palladium, unwrought or in powder form",14692321.62
+2023-04-01,Export,845011,"Washing machines; household or laundry-type, fully-automatic, (of a dry linen capacity not exceeding 10kg)",2904481.52
+2023-04-01,Export,847130,"Automatic data processing machines; portable, weighing not more than 10kg, consisting of at least a central processing unit, a keyboard and a display",6161669.93
+2023-04-01,Export,850819,"Vacuum cleaners, with self-contained electric motor, n.e.c. in item no. 8508.1",3299733.67
+2023-04-01,Export,851713,Telephone sets; smartphones for cellular or other wireless networks,56289533.57
+2023-04-01,Export,851762,"Communication apparatus (excluding telephone sets or base stations); machines for the reception, conversion and transmission or regeneration of voice, images or other data, including switching and routing apparatus",2325587.77
+2023-04-01,Export,852852,Monitors; other than cathode-ray tube; capable of directly connecting to and designed for use with an automatic data processing machine of heading 84.71,2425713.2899999996
+2023-04-01,Export,852872,"Reception apparatus for television, whether or not incorporating radio-broadcast receivers or sound or video recording or reproducing apparatus; incorporating a colour video display or screen",7461296.97
+2023-04-01,Export,854239,Electronic integrated circuits; n.e.c. in heading no. 8542,3251351.42
+2023-04-01,Export,870322,"Vehicles; with only spark-ignition internal combustion piston engine, cylinder capacity over 1000 but not over 1500cc",3211794.3200000003
+2023-04-01,Export,870323,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 1500 but not over 3000cc",23460294.86
+2023-04-01,Export,870324,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 3000cc",8390232
+2023-04-01,Export,870333,"Vehicles; with only compression-ignition internal combustion piston engine (diesel or semi-diesel), cylinder capacity over 2500cc",2636662.0199999996
+2023-04-01,Import,710231,"Diamonds; non-industrial, unworked or simply sawn, cleaved or bruted, but not mounted or set",17830048.78
+2023-04-01,Import,710239,"Diamonds; non-industrial, (other than unworked or simply sawn, cleaved or bruted), but not mounted or set",20063277.830000002
+2023-04-01,Import,710391,"Stones; rubies, sapphires and emeralds, worked (other than simply sawn or roughly shaped), not strung, mounted or set",999884.06
+2023-04-01,Import,710491,"Stones; diamonds, n.e.c. in heading 7104, worked or graded but not strung, mounted or set; ungraded synthetic or reconstructed precious or semi-precious stones, temporarily strung for convenience of transport",1147483.96
+2023-04-01,Import,710691,"Metals; silver, unwrought, (but not powder)",5861.52
+2023-04-01,Import,710812,"Metals; gold, non-monetary, unwrought (but not powder)",42043871.25
+2023-04-01,Import,711011,"Metals; platinum, unwrought or in powder form",4784381.38
+2023-04-01,Import,711021,"Metals; palladium, unwrought or in powder form",14057688.34
+2023-04-01,Import,845011,"Washing machines; household or laundry-type, fully-automatic, (of a dry linen capacity not exceeding 10kg)",4188861.29
+2023-04-01,Import,847130,"Automatic data processing machines; portable, weighing not more than 10kg, consisting of at least a central processing unit, a keyboard and a display",7163500.050000001
+2023-04-01,Import,850819,"Vacuum cleaners, with self-contained electric motor, n.e.c. in item no. 8508.1",3152905.87
+2023-04-01,Import,851713,Telephone sets; smartphones for cellular or other wireless networks,62847154.080000006
+2023-04-01,Import,851762,"Communication apparatus (excluding telephone sets or base stations); machines for the reception, conversion and transmission or regeneration of voice, images or other data, including switching and routing apparatus",6021578.97
+2023-04-01,Import,852852,Monitors; other than cathode-ray tube; capable of directly connecting to and designed for use with an automatic data processing machine of heading 84.71,1914391.3399999999
+2023-04-01,Import,852872,"Reception apparatus for television, whether or not incorporating radio-broadcast receivers or sound or video recording or reproducing apparatus; incorporating a colour video display or screen",12299973.07
+2023-04-01,Import,854239,Electronic integrated circuits; n.e.c. in heading no. 8542,2725226.19
+2023-04-01,Import,870322,"Vehicles; with only spark-ignition internal combustion piston engine, cylinder capacity over 1000 but not over 1500cc",6335048.13
+2023-04-01,Import,870323,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 1500 but not over 3000cc",62604348.55
+2023-04-01,Import,870324,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 3000cc",26952165.39
+2023-04-01,Import,870333,"Vehicles; with only compression-ignition internal combustion piston engine (diesel or semi-diesel), cylinder capacity over 2500cc",4550018.109999999
+2023-05-01,Export,710231,"Diamonds; non-industrial, unworked or simply sawn, cleaved or bruted, but not mounted or set",11893949.959999999
+2023-05-01,Export,710239,"Diamonds; non-industrial, (other than unworked or simply sawn, cleaved or bruted), but not mounted or set",46693688.23
+2023-05-01,Export,710391,"Stones; rubies, sapphires and emeralds, worked (other than simply sawn or roughly shaped), not strung, mounted or set",1348225.47
+2023-05-01,Export,710491,"Stones; diamonds, n.e.c. in heading 7104, worked or graded but not strung, mounted or set; ungraded synthetic or reconstructed precious or semi-precious stones, temporarily strung for convenience of transport",746723.9
+2023-05-01,Export,710691,"Metals; silver, unwrought, (but not powder)",102071.67
+2023-05-01,Export,710812,"Metals; gold, non-monetary, unwrought (but not powder)",17315193.85
+2023-05-01,Export,711011,"Metals; platinum, unwrought or in powder form",11400.06
+2023-05-01,Export,711021,"Metals; palladium, unwrought or in powder form",18255163.59
+2023-05-01,Export,845011,"Washing machines; household or laundry-type, fully-automatic, (of a dry linen capacity not exceeding 10kg)",1733283.01
+2023-05-01,Export,847130,"Automatic data processing machines; portable, weighing not more than 10kg, consisting of at least a central processing unit, a keyboard and a display",5815447.07
+2023-05-01,Export,850819,"Vacuum cleaners, with self-contained electric motor, n.e.c. in item no. 8508.1",1921129.1
+2023-05-01,Export,851713,Telephone sets; smartphones for cellular or other wireless networks,40134991.47
+2023-05-01,Export,851762,"Communication apparatus (excluding telephone sets or base stations); machines for the reception, conversion and transmission or regeneration of voice, images or other data, including switching and routing apparatus",1126632.03
+2023-05-01,Export,852852,Monitors; other than cathode-ray tube; capable of directly connecting to and designed for use with an automatic data processing machine of heading 84.71,4592314.43
+2023-05-01,Export,852872,"Reception apparatus for television, whether or not incorporating radio-broadcast receivers or sound or video recording or reproducing apparatus; incorporating a colour video display or screen",18646872.49
+2023-05-01,Export,854239,Electronic integrated circuits; n.e.c. in heading no. 8542,3686568.65
+2023-05-01,Export,870322,"Vehicles; with only spark-ignition internal combustion piston engine, cylinder capacity over 1000 but not over 1500cc",4294680.28
+2023-05-01,Export,870323,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 1500 but not over 3000cc",27539618.259999998
+2023-05-01,Export,870324,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 3000cc",14767720.01
+2023-05-01,Export,870333,"Vehicles; with only compression-ignition internal combustion piston engine (diesel or semi-diesel), cylinder capacity over 2500cc",4532487.98
+2023-05-01,Import,710231,"Diamonds; non-industrial, unworked or simply sawn, cleaved or bruted, but not mounted or set",21181675.59
+2023-05-01,Import,710239,"Diamonds; non-industrial, (other than unworked or simply sawn, cleaved or bruted), but not mounted or set",41530705.35
+2023-05-01,Import,710391,"Stones; rubies, sapphires and emeralds, worked (other than simply sawn or roughly shaped), not strung, mounted or set",1707059.92
+2023-05-01,Import,710491,"Stones; diamonds, n.e.c. in heading 7104, worked or graded but not strung, mounted or set; ungraded synthetic or reconstructed precious or semi-precious stones, temporarily strung for convenience of transport",581077.03
+2023-05-01,Import,710812,"Metals; gold, non-monetary, unwrought (but not powder)",27741990.05
+2023-05-01,Import,711021,"Metals; palladium, unwrought or in powder form",19021993.32
+2023-05-01,Import,845011,"Washing machines; household or laundry-type, fully-automatic, (of a dry linen capacity not exceeding 10kg)",3449543.9099999997
+2023-05-01,Import,847130,"Automatic data processing machines; portable, weighing not more than 10kg, consisting of at least a central processing unit, a keyboard and a display",9383505.91
+2023-05-01,Import,850819,"Vacuum cleaners, with self-contained electric motor, n.e.c. in item no. 8508.1",2059856.66
+2023-05-01,Import,851713,Telephone sets; smartphones for cellular or other wireless networks,38563843.93
+2023-05-01,Import,851762,"Communication apparatus (excluding telephone sets or base stations); machines for the reception, conversion and transmission or regeneration of voice, images or other data, including switching and routing apparatus",4754796.64
+2023-05-01,Import,852852,Monitors; other than cathode-ray tube; capable of directly connecting to and designed for use with an automatic data processing machine of heading 84.71,4170966.5300000003
+2023-05-01,Import,852872,"Reception apparatus for television, whether or not incorporating radio-broadcast receivers or sound or video recording or reproducing apparatus; incorporating a colour video display or screen",13808382.12
+2023-05-01,Import,854239,Electronic integrated circuits; n.e.c. in heading no. 8542,3299850.2800000003
+2023-05-01,Import,870322,"Vehicles; with only spark-ignition internal combustion piston engine, cylinder capacity over 1000 but not over 1500cc",7412651.35
+2023-05-01,Import,870323,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 1500 but not over 3000cc",79688735.08
+2023-05-01,Import,870324,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 3000cc",28384008.89
+2023-05-01,Import,870333,"Vehicles; with only compression-ignition internal combustion piston engine (diesel or semi-diesel), cylinder capacity over 2500cc",5543739.36
+2023-06-01,Export,710231,"Diamonds; non-industrial, unworked or simply sawn, cleaved or bruted, but not mounted or set",8593060.72
+2023-06-01,Export,710239,"Diamonds; non-industrial, (other than unworked or simply sawn, cleaved or bruted), but not mounted or set",20414316.43
+2023-06-01,Export,710391,"Stones; rubies, sapphires and emeralds, worked (other than simply sawn or roughly shaped), not strung, mounted or set",1059262.49
+2023-06-01,Export,710491,"Stones; diamonds, n.e.c. in heading 7104, worked or graded but not strung, mounted or set; ungraded synthetic or reconstructed precious or semi-precious stones, temporarily strung for convenience of transport",8272733.33
+2023-06-01,Export,710691,"Metals; silver, unwrought, (but not powder)",21796.97
+2023-06-01,Export,710812,"Metals; gold, non-monetary, unwrought (but not powder)",149681.9
+2023-06-01,Export,711011,"Metals; platinum, unwrought or in powder form",2977354.88
+2023-06-01,Export,711021,"Metals; palladium, unwrought or in powder form",2884674.33
+2023-06-01,Export,845011,"Washing machines; household or laundry-type, fully-automatic, (of a dry linen capacity not exceeding 10kg)",2028266.91
+2023-06-01,Export,847130,"Automatic data processing machines; portable, weighing not more than 10kg, consisting of at least a central processing unit, a keyboard and a display",3705774.98
+2023-06-01,Export,850819,"Vacuum cleaners, with self-contained electric motor, n.e.c. in item no. 8508.1",2267411.84
+2023-06-01,Export,851713,Telephone sets; smartphones for cellular or other wireless networks,31669399.419999998
+2023-06-01,Export,851762,"Communication apparatus (excluding telephone sets or base stations); machines for the reception, conversion and transmission or regeneration of voice, images or other data, including switching and routing apparatus",926129.88
+2023-06-01,Export,852852,Monitors; other than cathode-ray tube; capable of directly connecting to and designed for use with an automatic data processing machine of heading 84.71,4506005.34
+2023-06-01,Export,852872,"Reception apparatus for television, whether or not incorporating radio-broadcast receivers or sound or video recording or reproducing apparatus; incorporating a colour video display or screen",12146588.61
+2023-06-01,Export,854239,Electronic integrated circuits; n.e.c. in heading no. 8542,360020
+2023-06-01,Export,870322,"Vehicles; with only spark-ignition internal combustion piston engine, cylinder capacity over 1000 but not over 1500cc",3154608.0300000003
+2023-06-01,Export,870323,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 1500 but not over 3000cc",26016197.569999997
+2023-06-01,Export,870324,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 3000cc",13591589.3
+2023-06-01,Export,870333,"Vehicles; with only compression-ignition internal combustion piston engine (diesel or semi-diesel), cylinder capacity over 2500cc",5659159.9
+2023-06-01,Import,710231,"Diamonds; non-industrial, unworked or simply sawn, cleaved or bruted, but not mounted or set",20966209.32
+2023-06-01,Import,710239,"Diamonds; non-industrial, (other than unworked or simply sawn, cleaved or bruted), but not mounted or set",17000544.849999998
+2023-06-01,Import,710391,"Stones; rubies, sapphires and emeralds, worked (other than simply sawn or roughly shaped), not strung, mounted or set",1298249.76
+2023-06-01,Import,710491,"Stones; diamonds, n.e.c. in heading 7104, worked or graded but not strung, mounted or set; ungraded synthetic or reconstructed precious or semi-precious stones, temporarily strung for convenience of transport",8763176.42
+2023-06-01,Import,710691,"Metals; silver, unwrought, (but not powder)",20341.32
+2023-06-01,Import,710812,"Metals; gold, non-monetary, unwrought (but not powder)",7421619.260000001
+2023-06-01,Import,711011,"Metals; platinum, unwrought or in powder form",2862841.23
+2023-06-01,Import,711021,"Metals; palladium, unwrought or in powder form",1303137.07
+2023-06-01,Import,845011,"Washing machines; household or laundry-type, fully-automatic, (of a dry linen capacity not exceeding 10kg)",3367223.23
+2023-06-01,Import,847130,"Automatic data processing machines; portable, weighing not more than 10kg, consisting of at least a central processing unit, a keyboard and a display",6217791.04
+2023-06-01,Import,850819,"Vacuum cleaners, with self-contained electric motor, n.e.c. in item no. 8508.1",1952775.77
+2023-06-01,Import,851713,Telephone sets; smartphones for cellular or other wireless networks,38653247.779999994
+2023-06-01,Import,851762,"Communication apparatus (excluding telephone sets or base stations); machines for the reception, conversion and transmission or regeneration of voice, images or other data, including switching and routing apparatus",4655886.779999999
+2023-06-01,Import,852852,Monitors; other than cathode-ray tube; capable of directly connecting to and designed for use with an automatic data processing machine of heading 84.71,5003427.22
+2023-06-01,Import,852872,"Reception apparatus for television, whether or not incorporating radio-broadcast receivers or sound or video recording or reproducing apparatus; incorporating a colour video display or screen",14103039.85
+2023-06-01,Import,854239,Electronic integrated circuits; n.e.c. in heading no. 8542,3008290.85
+2023-06-01,Import,870322,"Vehicles; with only spark-ignition internal combustion piston engine, cylinder capacity over 1000 but not over 1500cc",6500454.43
+2023-06-01,Import,870323,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 1500 but not over 3000cc",72361261.04
+2023-06-01,Import,870324,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 3000cc",28347658.4
+2023-06-01,Import,870333,"Vehicles; with only compression-ignition internal combustion piston engine (diesel or semi-diesel), cylinder capacity over 2500cc",8872267.09
+2023-07-01,Export,710231,"Diamonds; non-industrial, unworked or simply sawn, cleaved or bruted, but not mounted or set",10427668.61
+2023-07-01,Export,710239,"Diamonds; non-industrial, (other than unworked or simply sawn, cleaved or bruted), but not mounted or set",30287250.8
+2023-07-01,Export,710391,"Stones; rubies, sapphires and emeralds, worked (other than simply sawn or roughly shaped), not strung, mounted or set",2705761.55
+2023-07-01,Export,710491,"Stones; diamonds, n.e.c. in heading 7104, worked or graded but not strung, mounted or set; ungraded synthetic or reconstructed precious or semi-precious stones, temporarily strung for convenience of transport",2945443.84
+2023-07-01,Export,710691,"Metals; silver, unwrought, (but not powder)",1026858.26
+2023-07-01,Export,710812,"Metals; gold, non-monetary, unwrought (but not powder)",2319559.1799999997
+2023-07-01,Export,711011,"Metals; platinum, unwrought or in powder form",1553570.88
+2023-07-01,Export,711021,"Metals; palladium, unwrought or in powder form",6642865.85
+2023-07-01,Export,845011,"Washing machines; household or laundry-type, fully-automatic, (of a dry linen capacity not exceeding 10kg)",2014766.22
+2023-07-01,Export,847130,"Automatic data processing machines; portable, weighing not more than 10kg, consisting of at least a central processing unit, a keyboard and a display",4909621.45
+2023-07-01,Export,850819,"Vacuum cleaners, with self-contained electric motor, n.e.c. in item no. 8508.1",4065373.96
+2023-07-01,Export,851713,Telephone sets; smartphones for cellular or other wireless networks,65758724.5
+2023-07-01,Export,851762,"Communication apparatus (excluding telephone sets or base stations); machines for the reception, conversion and transmission or regeneration of voice, images or other data, including switching and routing apparatus",782687.46
+2023-07-01,Export,852852,Monitors; other than cathode-ray tube; capable of directly connecting to and designed for use with an automatic data processing machine of heading 84.71,5906078.3
+2023-07-01,Export,852872,"Reception apparatus for television, whether or not incorporating radio-broadcast receivers or sound or video recording or reproducing apparatus; incorporating a colour video display or screen",12001087.01
+2023-07-01,Export,854239,Electronic integrated circuits; n.e.c. in heading no. 8542,17336.54
+2023-07-01,Export,870322,"Vehicles; with only spark-ignition internal combustion piston engine, cylinder capacity over 1000 but not over 1500cc",3213032.24
+2023-07-01,Export,870323,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 1500 but not over 3000cc",32553327.139999997
+2023-07-01,Export,870324,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 3000cc",20257118.34
+2023-07-01,Export,870333,"Vehicles; with only compression-ignition internal combustion piston engine (diesel or semi-diesel), cylinder capacity over 2500cc",3586420.47
+2023-07-01,Import,710231,"Diamonds; non-industrial, unworked or simply sawn, cleaved or bruted, but not mounted or set",14473957.03
+2023-07-01,Import,710239,"Diamonds; non-industrial, (other than unworked or simply sawn, cleaved or bruted), but not mounted or set",13734569.72
+2023-07-01,Import,710391,"Stones; rubies, sapphires and emeralds, worked (other than simply sawn or roughly shaped), not strung, mounted or set",3006863.92
+2023-07-01,Import,710491,"Stones; diamonds, n.e.c. in heading 7104, worked or graded but not strung, mounted or set; ungraded synthetic or reconstructed precious or semi-precious stones, temporarily strung for convenience of transport",991934.09
+2023-07-01,Import,710691,"Metals; silver, unwrought, (but not powder)",1836966.99
+2023-07-01,Import,710812,"Metals; gold, non-monetary, unwrought (but not powder)",8825801.12
+2023-07-01,Import,711011,"Metals; platinum, unwrought or in powder form",1495752.09
+2023-07-01,Import,711021,"Metals; palladium, unwrought or in powder form",6422937.63
+2023-07-01,Import,845011,"Washing machines; household or laundry-type, fully-automatic, (of a dry linen capacity not exceeding 10kg)",2825696.5799999996
+2023-07-01,Import,847130,"Automatic data processing machines; portable, weighing not more than 10kg, consisting of at least a central processing unit, a keyboard and a display",10855713.32
+2023-07-01,Import,850819,"Vacuum cleaners, with self-contained electric motor, n.e.c. in item no. 8508.1",4085317.44
+2023-07-01,Import,851713,Telephone sets; smartphones for cellular or other wireless networks,50389020.22
+2023-07-01,Import,851762,"Communication apparatus (excluding telephone sets or base stations); machines for the reception, conversion and transmission or regeneration of voice, images or other data, including switching and routing apparatus",11902009.87
+2023-07-01,Import,852852,Monitors; other than cathode-ray tube; capable of directly connecting to and designed for use with an automatic data processing machine of heading 84.71,5129484.7
+2023-07-01,Import,852872,"Reception apparatus for television, whether or not incorporating radio-broadcast receivers or sound or video recording or reproducing apparatus; incorporating a colour video display or screen",13001025.700000001
+2023-07-01,Import,854239,Electronic integrated circuits; n.e.c. in heading no. 8542,820320.21
+2023-07-01,Import,870322,"Vehicles; with only spark-ignition internal combustion piston engine, cylinder capacity over 1000 but not over 1500cc",5465423.09
+2023-07-01,Import,870323,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 1500 but not over 3000cc",58913779.54
+2023-07-01,Import,870324,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 3000cc",23792362.400000002
+2023-07-01,Import,870333,"Vehicles; with only compression-ignition internal combustion piston engine (diesel or semi-diesel), cylinder capacity over 2500cc",2757945.77
+2023-08-01,Export,710231,"Diamonds; non-industrial, unworked or simply sawn, cleaved or bruted, but not mounted or set",35568054.7
+2023-08-01,Export,710239,"Diamonds; non-industrial, (other than unworked or simply sawn, cleaved or bruted), but not mounted or set",46931681.74
+2023-08-01,Export,710391,"Stones; rubies, sapphires and emeralds, worked (other than simply sawn or roughly shaped), not strung, mounted or set",1115778.08
+2023-08-01,Export,710491,"Stones; diamonds, n.e.c. in heading 7104, worked or graded but not strung, mounted or set; ungraded synthetic or reconstructed precious or semi-precious stones, temporarily strung for convenience of transport",1443658.7000000002
+2023-08-01,Export,710691,"Metals; silver, unwrought, (but not powder)",5395553.34
+2023-08-01,Export,710812,"Metals; gold, non-monetary, unwrought (but not powder)",31732194.21
+2023-08-01,Export,711011,"Metals; platinum, unwrought or in powder form",25727798.04
+2023-08-01,Export,711021,"Metals; palladium, unwrought or in powder form",2311446.59
+2023-08-01,Export,845011,"Washing machines; household or laundry-type, fully-automatic, (of a dry linen capacity not exceeding 10kg)",4149137.59
+2023-08-01,Export,847130,"Automatic data processing machines; portable, weighing not more than 10kg, consisting of at least a central processing unit, a keyboard and a display",7784268.180000001
+2023-08-01,Export,850819,"Vacuum cleaners, with self-contained electric motor, n.e.c. in item no. 8508.1",5865354.1
+2023-08-01,Export,851713,Telephone sets; smartphones for cellular or other wireless networks,49218564.1
+2023-08-01,Export,851762,"Communication apparatus (excluding telephone sets or base stations); machines for the reception, conversion and transmission or regeneration of voice, images or other data, including switching and routing apparatus",8620532.15
+2023-08-01,Export,852852,Monitors; other than cathode-ray tube; capable of directly connecting to and designed for use with an automatic data processing machine of heading 84.71,3630155.22
+2023-08-01,Export,852872,"Reception apparatus for television, whether or not incorporating radio-broadcast receivers or sound or video recording or reproducing apparatus; incorporating a colour video display or screen",3903506.29
+2023-08-01,Export,854239,Electronic integrated circuits; n.e.c. in heading no. 8542,11698.25
+2023-08-01,Export,870322,"Vehicles; with only spark-ignition internal combustion piston engine, cylinder capacity over 1000 but not over 1500cc",589975.32
+2023-08-01,Export,870323,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 1500 but not over 3000cc",6874116.17
+2023-08-01,Export,870324,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 3000cc",1925013.6
+2023-08-01,Export,870333,"Vehicles; with only compression-ignition internal combustion piston engine (diesel or semi-diesel), cylinder capacity over 2500cc",1836589.35
+2023-08-01,Import,710231,"Diamonds; non-industrial, unworked or simply sawn, cleaved or bruted, but not mounted or set",46033540.28
+2023-08-01,Import,710239,"Diamonds; non-industrial, (other than unworked or simply sawn, cleaved or bruted), but not mounted or set",17530593.939999998
+2023-08-01,Import,710391,"Stones; rubies, sapphires and emeralds, worked (other than simply sawn or roughly shaped), not strung, mounted or set",1203946.58
+2023-08-01,Import,710491,"Stones; diamonds, n.e.c. in heading 7104, worked or graded but not strung, mounted or set; ungraded synthetic or reconstructed precious or semi-precious stones, temporarily strung for convenience of transport",1247564.49
+2023-08-01,Import,710691,"Metals; silver, unwrought, (but not powder)",5233590.58
+2023-08-01,Import,710812,"Metals; gold, non-monetary, unwrought (but not powder)",23535275.44
+2023-08-01,Import,711011,"Metals; platinum, unwrought or in powder form",26590622.79
+2023-08-01,Import,711021,"Metals; palladium, unwrought or in powder form",2282523.68
+2023-08-01,Import,845011,"Washing machines; household or laundry-type, fully-automatic, (of a dry linen capacity not exceeding 10kg)",5393695.43
+2023-08-01,Import,847130,"Automatic data processing machines; portable, weighing not more than 10kg, consisting of at least a central processing unit, a keyboard and a display",8175093.89
+2023-08-01,Import,850819,"Vacuum cleaners, with self-contained electric motor, n.e.c. in item no. 8508.1",4672889.48
+2023-08-01,Import,851713,Telephone sets; smartphones for cellular or other wireless networks,68067708.87
+2023-08-01,Import,851762,"Communication apparatus (excluding telephone sets or base stations); machines for the reception, conversion and transmission or regeneration of voice, images or other data, including switching and routing apparatus",6750331.04
+2023-08-01,Import,852852,Monitors; other than cathode-ray tube; capable of directly connecting to and designed for use with an automatic data processing machine of heading 84.71,5228544.15
+2023-08-01,Import,852872,"Reception apparatus for television, whether or not incorporating radio-broadcast receivers or sound or video recording or reproducing apparatus; incorporating a colour video display or screen",6244562.59
+2023-08-01,Import,854239,Electronic integrated circuits; n.e.c. in heading no. 8542,1353090.78
+2023-08-01,Import,870322,"Vehicles; with only spark-ignition internal combustion piston engine, cylinder capacity over 1000 but not over 1500cc",3340241.31
+2023-08-01,Import,870323,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 1500 but not over 3000cc",52141820.2
+2023-08-01,Import,870324,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 3000cc",18496339.29
+2023-08-01,Import,870333,"Vehicles; with only compression-ignition internal combustion piston engine (diesel or semi-diesel), cylinder capacity over 2500cc",4080446.76
+2023-09-01,Export,710231,"Diamonds; non-industrial, unworked or simply sawn, cleaved or bruted, but not mounted or set",27019558.950000003
+2023-09-01,Export,710239,"Diamonds; non-industrial, (other than unworked or simply sawn, cleaved or bruted), but not mounted or set",37207631.870000005
+2023-09-01,Export,710391,"Stones; rubies, sapphires and emeralds, worked (other than simply sawn or roughly shaped), not strung, mounted or set",567195.88
+2023-09-01,Export,710491,"Stones; diamonds, n.e.c. in heading 7104, worked or graded but not strung, mounted or set; ungraded synthetic or reconstructed precious or semi-precious stones, temporarily strung for convenience of transport",6664050.63
+2023-09-01,Export,710691,"Metals; silver, unwrought, (but not powder)",3890659.1
+2023-09-01,Export,710812,"Metals; gold, non-monetary, unwrought (but not powder)",58769209.339999996
+2023-09-01,Export,711011,"Metals; platinum, unwrought or in powder form",11184995.82
+2023-09-01,Export,845011,"Washing machines; household or laundry-type, fully-automatic, (of a dry linen capacity not exceeding 10kg)",6751.41
+2023-09-01,Export,847130,"Automatic data processing machines; portable, weighing not more than 10kg, consisting of at least a central processing unit, a keyboard and a display",9568939.27
+2023-09-01,Export,850819,"Vacuum cleaners, with self-contained electric motor, n.e.c. in item no. 8508.1",6016.83
+2023-09-01,Export,851713,Telephone sets; smartphones for cellular or other wireless networks,48994365.46
+2023-09-01,Export,851762,"Communication apparatus (excluding telephone sets or base stations); machines for the reception, conversion and transmission or regeneration of voice, images or other data, including switching and routing apparatus",4788672.680000001
+2023-09-01,Export,852852,Monitors; other than cathode-ray tube; capable of directly connecting to and designed for use with an automatic data processing machine of heading 84.71,33885.23
+2023-09-01,Export,852872,"Reception apparatus for television, whether or not incorporating radio-broadcast receivers or sound or video recording or reproducing apparatus; incorporating a colour video display or screen",12146277.600000001
+2023-09-01,Export,854239,Electronic integrated circuits; n.e.c. in heading no. 8542,171.09
+2023-09-01,Export,870322,"Vehicles; with only spark-ignition internal combustion piston engine, cylinder capacity over 1000 but not over 1500cc",1011833.1399999999
+2023-09-01,Export,870323,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 1500 but not over 3000cc",9044100.43
+2023-09-01,Export,870324,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 3000cc",3456162.05
+2023-09-01,Export,870333,"Vehicles; with only compression-ignition internal combustion piston engine (diesel or semi-diesel), cylinder capacity over 2500cc",2175872.56
+2023-09-01,Import,710231,"Diamonds; non-industrial, unworked or simply sawn, cleaved or bruted, but not mounted or set",42930738.21
+2023-09-01,Import,710239,"Diamonds; non-industrial, (other than unworked or simply sawn, cleaved or bruted), but not mounted or set",20682601.400000002
+2023-09-01,Import,710391,"Stones; rubies, sapphires and emeralds, worked (other than simply sawn or roughly shaped), not strung, mounted or set",773347.69
+2023-09-01,Import,710491,"Stones; diamonds, n.e.c. in heading 7104, worked or graded but not strung, mounted or set; ungraded synthetic or reconstructed precious or semi-precious stones, temporarily strung for convenience of transport",5769972.48
+2023-09-01,Import,710691,"Metals; silver, unwrought, (but not powder)",1148820.62
+2023-09-01,Import,710812,"Metals; gold, non-monetary, unwrought (but not powder)",53854028.28
+2023-09-01,Import,711011,"Metals; platinum, unwrought or in powder form",8931002.21
+2023-09-01,Import,845011,"Washing machines; household or laundry-type, fully-automatic, (of a dry linen capacity not exceeding 10kg)",2961234.8
+2023-09-01,Import,847130,"Automatic data processing machines; portable, weighing not more than 10kg, consisting of at least a central processing unit, a keyboard and a display",11341730.48
+2023-09-01,Import,850819,"Vacuum cleaners, with self-contained electric motor, n.e.c. in item no. 8508.1",2360206.6
+2023-09-01,Import,851713,Telephone sets; smartphones for cellular or other wireless networks,51102193.54
+2023-09-01,Import,851762,"Communication apparatus (excluding telephone sets or base stations); machines for the reception, conversion and transmission or regeneration of voice, images or other data, including switching and routing apparatus",7726508.7
+2023-09-01,Import,852852,Monitors; other than cathode-ray tube; capable of directly connecting to and designed for use with an automatic data processing machine of heading 84.71,4989845.03
+2023-09-01,Import,852872,"Reception apparatus for television, whether or not incorporating radio-broadcast receivers or sound or video recording or reproducing apparatus; incorporating a colour video display or screen",17992627.17
+2023-09-01,Import,854239,Electronic integrated circuits; n.e.c. in heading no. 8542,43885.67
+2023-09-01,Import,870322,"Vehicles; with only spark-ignition internal combustion piston engine, cylinder capacity over 1000 but not over 1500cc",3061335.21
+2023-09-01,Import,870323,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 1500 but not over 3000cc",41498453.75
+2023-09-01,Import,870324,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 3000cc",13023868.9
+2023-09-01,Import,870333,"Vehicles; with only compression-ignition internal combustion piston engine (diesel or semi-diesel), cylinder capacity over 2500cc",2933409.6
+2023-10-01,Export,710231,"Diamonds; non-industrial, unworked or simply sawn, cleaved or bruted, but not mounted or set",10348187.64
+2023-10-01,Export,710239,"Diamonds; non-industrial, (other than unworked or simply sawn, cleaved or bruted), but not mounted or set",21420385.39
+2023-10-01,Export,710391,"Stones; rubies, sapphires and emeralds, worked (other than simply sawn or roughly shaped), not strung, mounted or set",1069029.81
+2023-10-01,Export,710491,"Stones; diamonds, n.e.c. in heading 7104, worked or graded but not strung, mounted or set; ungraded synthetic or reconstructed precious or semi-precious stones, temporarily strung for convenience of transport",552091.61
+2023-10-01,Export,710691,"Metals; silver, unwrought, (but not powder)",3025681.04
+2023-10-01,Export,710812,"Metals; gold, non-monetary, unwrought (but not powder)",175986108.98000002
+2023-10-01,Export,711011,"Metals; platinum, unwrought or in powder form",12757882.56
+2023-10-01,Export,711021,"Metals; palladium, unwrought or in powder form",15009103.02
+2023-10-01,Export,845011,"Washing machines; household or laundry-type, fully-automatic, (of a dry linen capacity not exceeding 10kg)",4750237.89
+2023-10-01,Export,847130,"Automatic data processing machines; portable, weighing not more than 10kg, consisting of at least a central processing unit, a keyboard and a display",9682709.96
+2023-10-01,Export,850819,"Vacuum cleaners, with self-contained electric motor, n.e.c. in item no. 8508.1",1636135.2899999998
+2023-10-01,Export,851713,Telephone sets; smartphones for cellular or other wireless networks,74152224.39
+2023-10-01,Export,851762,"Communication apparatus (excluding telephone sets or base stations); machines for the reception, conversion and transmission or regeneration of voice, images or other data, including switching and routing apparatus",4604444.19
+2023-10-01,Export,852852,Monitors; other than cathode-ray tube; capable of directly connecting to and designed for use with an automatic data processing machine of heading 84.71,6436185.48
+2023-10-01,Export,852872,"Reception apparatus for television, whether or not incorporating radio-broadcast receivers or sound or video recording or reproducing apparatus; incorporating a colour video display or screen",30251928.91
+2023-10-01,Export,854239,Electronic integrated circuits; n.e.c. in heading no. 8542,1500672.6
+2023-10-01,Export,870322,"Vehicles; with only spark-ignition internal combustion piston engine, cylinder capacity over 1000 but not over 1500cc",1048696.1199999999
+2023-10-01,Export,870323,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 1500 but not over 3000cc",10325903.799999999
+2023-10-01,Export,870324,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 3000cc",4503583.96
+2023-10-01,Export,870333,"Vehicles; with only compression-ignition internal combustion piston engine (diesel or semi-diesel), cylinder capacity over 2500cc",1348037.92
+2023-10-01,Import,710231,"Diamonds; non-industrial, unworked or simply sawn, cleaved or bruted, but not mounted or set",17264920.939999998
+2023-10-01,Import,710239,"Diamonds; non-industrial, (other than unworked or simply sawn, cleaved or bruted), but not mounted or set",17556041.009999998
+2023-10-01,Import,710391,"Stones; rubies, sapphires and emeralds, worked (other than simply sawn or roughly shaped), not strung, mounted or set",1682284.06
+2023-10-01,Import,710491,"Stones; diamonds, n.e.c. in heading 7104, worked or graded but not strung, mounted or set; ungraded synthetic or reconstructed precious or semi-precious stones, temporarily strung for convenience of transport",1153357.46
+2023-10-01,Import,710691,"Metals; silver, unwrought, (but not powder)",2133522.01
+2023-10-01,Import,710812,"Metals; gold, non-monetary, unwrought (but not powder)",201680225.61999997
+2023-10-01,Import,711011,"Metals; platinum, unwrought or in powder form",12179283.88
+2023-10-01,Import,711021,"Metals; palladium, unwrought or in powder form",10584606.97
+2023-10-01,Import,845011,"Washing machines; household or laundry-type, fully-automatic, (of a dry linen capacity not exceeding 10kg)",5294173.54
+2023-10-01,Import,847130,"Automatic data processing machines; portable, weighing not more than 10kg, consisting of at least a central processing unit, a keyboard and a display",15802730.48
+2023-10-01,Import,850819,"Vacuum cleaners, with self-contained electric motor, n.e.c. in item no. 8508.1",1540262.75
+2023-10-01,Import,851713,Telephone sets; smartphones for cellular or other wireless networks,81729375.46000001
+2023-10-01,Import,851762,"Communication apparatus (excluding telephone sets or base stations); machines for the reception, conversion and transmission or regeneration of voice, images or other data, including switching and routing apparatus",9163137.549999999
+2023-10-01,Import,852852,Monitors; other than cathode-ray tube; capable of directly connecting to and designed for use with an automatic data processing machine of heading 84.71,5987410.539999999
+2023-10-01,Import,852872,"Reception apparatus for television, whether or not incorporating radio-broadcast receivers or sound or video recording or reproducing apparatus; incorporating a colour video display or screen",28715407.57
+2023-10-01,Import,854239,Electronic integrated circuits; n.e.c. in heading no. 8542,59230.130000000005
+2023-10-01,Import,870322,"Vehicles; with only spark-ignition internal combustion piston engine, cylinder capacity over 1000 but not over 1500cc",2578548.23
+2023-10-01,Import,870323,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 1500 but not over 3000cc",34672295.050000004
+2023-10-01,Import,870324,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 3000cc",14847306.9
+2023-10-01,Import,870333,"Vehicles; with only compression-ignition internal combustion piston engine (diesel or semi-diesel), cylinder capacity over 2500cc",1499385.49
+2023-11-01,Export,710231,"Diamonds; non-industrial, unworked or simply sawn, cleaved or bruted, but not mounted or set",1777739.67
+2023-11-01,Export,710239,"Diamonds; non-industrial, (other than unworked or simply sawn, cleaved or bruted), but not mounted or set",51852722.36
+2023-11-01,Export,710391,"Stones; rubies, sapphires and emeralds, worked (other than simply sawn or roughly shaped), not strung, mounted or set",1071232.32
+2023-11-01,Export,710491,"Stones; diamonds, n.e.c. in heading 7104, worked or graded but not strung, mounted or set; ungraded synthetic or reconstructed precious or semi-precious stones, temporarily strung for convenience of transport",5248400.399999999
+2023-11-01,Export,710691,"Metals; silver, unwrought, (but not powder)",11270475.57
+2023-11-01,Export,710812,"Metals; gold, non-monetary, unwrought (but not powder)",483041427.68
+2023-11-01,Export,711011,"Metals; platinum, unwrought or in powder form",11124281.26
+2023-11-01,Export,711021,"Metals; palladium, unwrought or in powder form",14453412.66
+2023-11-01,Export,845011,"Washing machines; household or laundry-type, fully-automatic, (of a dry linen capacity not exceeding 10kg)",995063.34
+2023-11-01,Export,847130,"Automatic data processing machines; portable, weighing not more than 10kg, consisting of at least a central processing unit, a keyboard and a display",13388286.45
+2023-11-01,Export,850819,"Vacuum cleaners, with self-contained electric motor, n.e.c. in item no. 8508.1",2176887.41
+2023-11-01,Export,851713,Telephone sets; smartphones for cellular or other wireless networks,29169939.849999998
+2023-11-01,Export,851762,"Communication apparatus (excluding telephone sets or base stations); machines for the reception, conversion and transmission or regeneration of voice, images or other data, including switching and routing apparatus",5805823.3100000005
+2023-11-01,Export,852852,Monitors; other than cathode-ray tube; capable of directly connecting to and designed for use with an automatic data processing machine of heading 84.71,5774395.69
+2023-11-01,Export,852872,"Reception apparatus for television, whether or not incorporating radio-broadcast receivers or sound or video recording or reproducing apparatus; incorporating a colour video display or screen",32064244.16
+2023-11-01,Export,854239,Electronic integrated circuits; n.e.c. in heading no. 8542,2666882.02
+2023-11-01,Export,870322,"Vehicles; with only spark-ignition internal combustion piston engine, cylinder capacity over 1000 but not over 1500cc",558677.3
+2023-11-01,Export,870323,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 1500 but not over 3000cc",4750806.83
+2023-11-01,Export,870324,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 3000cc",2557128.1399999997
+2023-11-01,Export,870333,"Vehicles; with only compression-ignition internal combustion piston engine (diesel or semi-diesel), cylinder capacity over 2500cc",691604.9
+2023-11-01,Import,710231,"Diamonds; non-industrial, unworked or simply sawn, cleaved or bruted, but not mounted or set",13447932.129999999
+2023-11-01,Import,710239,"Diamonds; non-industrial, (other than unworked or simply sawn, cleaved or bruted), but not mounted or set",35760296.72
+2023-11-01,Import,710391,"Stones; rubies, sapphires and emeralds, worked (other than simply sawn or roughly shaped), not strung, mounted or set",2965605.6
+2023-11-01,Import,710491,"Stones; diamonds, n.e.c. in heading 7104, worked or graded but not strung, mounted or set; ungraded synthetic or reconstructed precious or semi-precious stones, temporarily strung for convenience of transport",6275869.140000001
+2023-11-01,Import,710691,"Metals; silver, unwrought, (but not powder)",17593137.5
+2023-11-01,Import,710812,"Metals; gold, non-monetary, unwrought (but not powder)",348353139.21
+2023-11-01,Import,711011,"Metals; platinum, unwrought or in powder form",10696424.29
+2023-11-01,Import,711021,"Metals; palladium, unwrought or in powder form",13897512.16
+2023-11-01,Import,845011,"Washing machines; household or laundry-type, fully-automatic, (of a dry linen capacity not exceeding 10kg)",1654934.71
+2023-11-01,Import,847130,"Automatic data processing machines; portable, weighing not more than 10kg, consisting of at least a central processing unit, a keyboard and a display",14685601.77
+2023-11-01,Import,850819,"Vacuum cleaners, with self-contained electric motor, n.e.c. in item no. 8508.1",2356592.26
+2023-11-01,Import,851713,Telephone sets; smartphones for cellular or other wireless networks,29298982.46
+2023-11-01,Import,851762,"Communication apparatus (excluding telephone sets or base stations); machines for the reception, conversion and transmission or regeneration of voice, images or other data, including switching and routing apparatus",5790977.96
+2023-11-01,Import,852852,Monitors; other than cathode-ray tube; capable of directly connecting to and designed for use with an automatic data processing machine of heading 84.71,4917391.09
+2023-11-01,Import,852872,"Reception apparatus for television, whether or not incorporating radio-broadcast receivers or sound or video recording or reproducing apparatus; incorporating a colour video display or screen",24613669.16
+2023-11-01,Import,854239,Electronic integrated circuits; n.e.c. in heading no. 8542,21682.31
+2023-11-01,Import,870322,"Vehicles; with only spark-ignition internal combustion piston engine, cylinder capacity over 1000 but not over 1500cc",1484474.94
+2023-11-01,Import,870323,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 1500 but not over 3000cc",21334395.79
+2023-11-01,Import,870324,"Vehicles; with only spark-ignition internal combustion reciprocating piston engine, cylinder capacity over 3000cc",7930330.43
+2023-11-01,Import,870333,"Vehicles; with only compression-ignition internal combustion piston engine (diesel or semi-diesel), cylinder capacity over 2500cc",2077550.31
