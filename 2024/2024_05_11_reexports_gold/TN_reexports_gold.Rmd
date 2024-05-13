@@ -1,0 +1,519 @@
+---
+title: "Tvyal Newsletter"
+author: "Aghasi Tavadyan"
+date: "2024-05-11"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(RcppRoll)
+library(scales)
+
+rm(list = ls()); gc()
+
+# setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+
+source("../../initial_setup.R")
+
+```
+
+
+```{r get data, include=FALSE}
+
+arm_trade_country <- 
+  read_csv("arm_trade_country.csv") 
+
+arm_trade_commodity <- 
+  read_csv("arm_trade_commodity.csv")
+
+names_dic <- 
+  read_csv("names_en_am_ru_short.csv") |> 
+  mutate(hs2 = as.character(hs2))
+
+commodity_groups_dic <- 
+  read_csv("commodity_groups_dic.csv")
+
+```
+
+```{r, include=FALSE}
+EU = c("Austria", "Belgium", "Bulgaria", "Croatia", "Cyprus", "Czech Rep.",
+       "Denmark", "Estonia", "Finland", "France", "Germany", "Greece", "Hungary",
+       "Ireland", "Italy", "Latvia", "Lithuania", "Luxembourg", "Malta", "Netherlands",
+       "Poland", "Portugal", "Romania", "Slovakia", "Slovenia", "Spain", "Sweden")
+
+EAEU = c("Russian Federation", "Kazakhstan", "Belarus", "Armenia", "Kyrgyzstan")
+        
+Middle_East = c("Bahrain", "Egypt", "Iran", "Iraq", "Israel", "Jordan", "Kuwait",
+                "Lebanon", "Oman", "Qatar", "Saudi Arabia", "Syria", "Turkey", 
+                "United Arab Emirates", "Yemen")
+
+China = c("China", "Hong Kong")
+
+arm_trade_country <- 
+  arm_trade_country %>% 
+  mutate(country_region = case_when(
+    country %in% EU ~ "EU",
+    country %in% EAEU ~ "EAEU",
+    country %in% Middle_East ~ "Middle East",
+    country %in% China ~ "Greater China",
+    TRUE ~ "Other countries"
+  ))
+
+rm(EU, EAEU, Middle_East, China)
+```
+
+
+```{r get FX data, include=FALSE}
+region_dic <- 
+  tibble(
+    country_region = c("EAEU", "EU", "Greater China", "Middle East", "Other countries"),
+    country_region_arm = c("ԵԱՏՄ", "ԵՄ", "Մեծ Չինաստան", "Միջին Արևելք", "այլ պետություններ")
+  )
+
+arm_trade_by_regions_plot <- 
+  arm_trade_country |> 
+  mutate(date = date + months(1) - days(1)) |> 
+  group_by(country_region, date) |> 
+  summarise(export = sum(export, na.rm = TRUE), .groups = "drop") |> 
+  group_by(country_region) |> 
+  mutate(
+    export_yoy = roll_sumr(export, 12)
+  ) |> 
+  na.omit() |> 
+  filter(
+    date >= ym("2017-12")
+  ) |> 
+  left_join(region_dic, by = "country_region") |> 
+  mutate(
+    country_region_arm = fct_inorder(country_region_arm)
+  ) |> 
+  ggplot(aes(date, export_yoy / 1e6, color = country_region_arm)) +
+  geom_line(size = 1.2, alpha = 0.8) +
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+  scale_y_continuous(n.breaks = 6, labels = number_format(), limits = c(0,5)) +
+  scale_color_manual(values = colfunc2(5)) +
+  labs(
+    x = NULL,
+    y = NULL,
+    color = NULL,
+    title = "Հայաստանի Միջին Արևելք արտահանումը ԵԱՏՄ արտահանումից մեծ է",
+    subtitle = "ՀՀ արտահանումը ըստ տարածաշրջանների\nմլրդ ԱՄՆ դոլար, տարեկան (տվյալ ամիսը նախորդ տարվա նույն ամսվա համեմատ)",
+    caption = paste0(caption_arm, "   |   տվյալների աղբյուր՝ Comtrade")
+  )
+```
+
+
+```{r , include=FALSE}
+
+exports_pct_piechart <- 
+  arm_trade_commodity |> 
+  filter(year >= 2021) |> 
+  group_by(year) |> 
+  mutate(
+    hs2 = as.character(hs2),
+    hs2 = fct_lump_prop(hs2, prop = 0.03, w = export, other_level = "Այլ")
+  ) |> 
+  ungroup() |> 
+  mutate(
+    year = ifelse(year == max(year), paste(year, "առաջին 3 ամիսը"), year)
+  ) |> 
+  group_by(year, hs2) |> 
+  summarise(export = sum(export)) |> 
+  ungroup() |> 
+  group_by(year) |> 
+  mutate(
+    pct = export / sum(export),
+    pct_text = percent(pct, accuracy = 0.1)
+  ) |> 
+  ungroup() |> 
+  mutate(hs2 = as.character(hs2)) |> 
+  arrange(hs2) |> 
+  left_join(names_dic, by = "hs2") |> 
+  mutate(
+    name_short_arm = str_trunc(name_short_arm, 30),
+    name_short_arm = paste0(hs2, ". ", name_short_arm),
+    name_short_arm = ifelse(
+      grepl("Այլ", name_short_arm), 
+      "Այլ ապրանքային խմբեր",
+      name_short_arm
+    )
+  ) |> 
+  arrange(as.numeric(hs2)) |> 
+  mutate(name_short_arm = fct_inorder(name_short_arm) |> fct_rev()) |> 
+  ggplot(
+    aes("1", pct, fill = name_short_arm, label = paste0(hs2, ". ", pct_text))
+  ) +
+  facet_wrap(~year, nrow = 2) +
+  geom_col() +
+  geom_text(aes(x = 1.3), position = position_stack(vjust = 0.5)) +
+  coord_polar("y") +
+  ggthemes::scale_fill_stata() +
+  guides(fill = guide_legend(reverse = TRUE, ncol = 1)) +
+  labs(
+    x = NULL,
+    y = NULL,
+    fill = NULL,
+    title = "Արտահանման 75 տոկոսը ոսկի և ադամանդ է",
+    subtitle = "Հայաստանի արտահանման տեսակարար կշիռը ըստ ԱՏԳ ԱԱ երկնիշ ապրանքանիշերի",
+    caption = paste0(caption_arm, "    |    Տվյալների աղբյուր` armstat.am")
+  ) +
+  theme(
+    axis.line = element_blank(),
+    axis.text = element_blank(),
+    axis.title = element_blank(),
+    axis.ticks = element_blank(),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    legend.position = "right"
+  )
+
+```
+
+
+```{r, include=FALSE}
+
+max_date <- 
+  arm_trade_commodity %>% 
+  filter(date == max(date)) %>%  
+  pull(date) %>% 
+  unique()
+
+date_legend <- 
+  tibble(
+    x = 1100, y = c(1.5, 2.5), 
+    color = c("#005C4B", "#f95d6a"), 
+    text = c("2024 առաջի եռամսյակ", "2023 առաջի եռամսյակ"),
+  )
+
+arm_trade_commodity |> 
+  filter(hs2 == 71, year == 2024) |> 
+  group_by(commodity, hs4) |> 
+  summarise(
+    across(contains("port"), ~sum(.x))
+  )
+
+exports_by_chart_1 <- 
+  arm_trade_commodity |>
+  # group_by(year, date, month, hs2) |>
+  # summarise(export = sum(export), .groups = "drop") |>
+  # complete(nesting(year, date, month), hs2, fill = list(export = 0)) |>
+  # arrange(hs2, date) |>
+  # group_by(hs2) |>
+  # mutate(
+  #   export_yoy = roll_sumr(export, 12)
+  # ) |>
+  # ungroup() |>
+  # filter(date %in% c(max_date, max_date - years(1))) |>
+  # # filter(
+  # #   year %in% {year(max_date) - 1:2},
+  # #   month == 12
+  # # ) |>
+  # select(-c(date, month, export)) |> 
+  filter(
+    year %in% {year(max_date) - 0:1},
+    month <= month(max_date)
+  ) |> 
+  group_by(hs2, year) |>
+  summarise(export_yoy = sum(export), .groups = "drop") |> 
+  mutate(
+    year = ifelse(year == max(year), "end", "start")
+  ) |> 
+  pivot_wider(names_from = year, values_from = export_yoy) |> 
+  mutate(
+    hs2 = as.character(hs2),
+    hs2 = fct_lump_n(hs2, 17, w = end)
+  ) |>
+  group_by(hs2) |> 
+  summarise(
+    start = sum(start),
+    end = sum(end),
+    .groups = "drop"
+  ) |> 
+  left_join(names_dic, by = join_by(hs2)) |> 
+  mutate(
+    across(c(end, start), ~.x/1000),
+    change = end / start,
+    change_text = case_when(
+      change > 2 ~ number(change, accuracy = 0.01, suffix = " անգամ"),
+      change < 0.5 ~ number(-1/change, accuracy = 0.01, suffix = " անգամ"),  
+      TRUE ~ percent(change - 1, accuracy = 0.1)
+    ),
+    color = ifelse(start > end, "#f95d6a", "#005C4B"),
+    hs2 = ifelse(
+      hs2 == "Other", 
+      "Այլ ապրանքներ",
+      paste0(hs2, ". ", str_trunc(name_short_arm, 30))
+    ),
+    hs2 = fct_reorder(hs2, sqrt(end * start)),
+    hs2 = fct_relevel(hs2, "Այլ ապրանքներ", after = 0),
+  ) |> 
+  ggplot(aes(y = hs2)) +
+  geom_segment(
+    aes(x = start, xend = end,
+        yend = hs2, group = hs2, color = I(color)),
+    linewidth = 1.2,
+    lineend = "round", linejoin = "round",
+    arrow = arrow(length = unit(0.1, "inches"))
+  ) +
+  geom_point(aes(x=start, color=I("#f95d6a")), size = 3) +
+  geom_point(aes(x=end, color=I("#005C4B")), size = 3) +
+  geom_text(aes(x = sqrt(end * start), label = change_text), vjust = -0.5) +
+  geom_point(data = date_legend, aes(x, y, color = I(color)), size = 3) +
+  geom_text(data = date_legend, aes(x * 2, y, label = text)) +
+  scale_x_log10(
+    breaks = 10^(1:6), minor_breaks = as.vector(c(1:9) %*% t(10^(0:6))),
+    labels = number_format(), 
+    # limits = c(40, 10^4)
+  ) +
+  scale_y_discrete() +
+  labs(
+    x = NULL,
+    y = NULL,
+    color = NULL,
+    title = "Հայաստանի արտահանումը ըստ ապրանքային խմբերի",
+    subtitle = "մլն դոլար, 2024 (կանաչ) և 2023 (կարմիր) առաջին եռամսյակ, լոգարիթմիկ առանց",
+    caption = paste0(caption_arm, "    |    տվյալների աղբյուր` armstat.am")
+  ) +
+  theme(
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor.x =  element_line(
+        colour = "gray", 
+        linetype = "dotted"
+      ),
+    panel.grid.major.x =  element_line(
+      colour = "gray30", 
+      linetype = 2
+    ),
+  )
+
+
+```
+
+
+```{r, include=FALSE}
+
+exports_by_chart_2 <- 
+  arm_trade_commodity |>
+  filter(
+    year %in% {year(max_date) - 0:1},
+    month <= month(max_date)
+  ) |>
+  left_join(commodity_groups_dic) |> 
+  group_by(commodity_code_names_arm, year) |>
+  summarise(export_yoy = sum(export), .groups = "drop") |> 
+  rename(hs2 = commodity_code_names_arm) |> 
+  mutate(
+    year = ifelse(year == max(year), "end", "start")
+  ) |> 
+  pivot_wider(names_from = year, values_from = export_yoy) |> 
+  mutate(
+    across(c(end, start), ~.x/1000),
+    change = end / start,
+    change_text = case_when(
+      change > 2 ~ number(change, accuracy = 0.01, suffix = " անգամ"),
+      change < 0.5 ~ number(-1/change, accuracy = 0.01, suffix = " անգամ"),  
+      TRUE ~ percent(change - 1, accuracy = 0.1)
+    ),
+    color = ifelse(start > end, "#f95d6a", "#005C4B"),
+    hs2 = fct_reorder(hs2, sqrt(end * start)),
+  ) |> 
+  ggplot(aes(y = hs2)) +
+  geom_segment(
+    aes(x = start, xend = end,
+        yend = hs2, group = hs2, color = I(color)),
+    linewidth = 1.2,
+    lineend = "round", linejoin = "round",
+    arrow = arrow(length = unit(0.1, "inches"))
+  ) +
+  geom_point(aes(x=start, color=I("#f95d6a")), size = 3) +
+  geom_point(aes(x=end, color=I("#005C4B")), size = 3) +
+  geom_text(aes(x = sqrt(end * start), label = change_text), vjust = -0.5) +
+  geom_point(data = date_legend, aes(x, y, color = I(color)), size = 3) +
+  geom_text(data = date_legend, aes(x * 1.05, y, label = text), hjust = 0) +
+  scale_x_log10(
+    breaks = 10^(1:6), minor_breaks = as.vector(c(1:9) %*% t(10^(0:6))),
+    labels = number_format(), 
+    limits = c(7, 5000)
+  ) +
+  scale_y_discrete() +
+  labs(
+    x = NULL,
+    y = NULL,
+    color = NULL,
+    title = "Հայաստանի արտահանումը\nըստ խոշորացված ապրանքային խմբերի",
+    subtitle = "մլն դոլար, 2024 (կանաչ) և 2023 (կարմիր) առաջին եռամսյակ, լոգարիթմիկ առանց",
+    caption = paste0(caption_arm, "    |    տվյալների աղբյուր` armstat.am")
+  ) +
+  theme(
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor.x =  element_line(
+      colour = "gray", 
+      linetype = "dotted"
+    ),
+    panel.grid.major.x =  element_line(
+      colour = "gray30", 
+      linetype = 2
+    ),
+  )
+
+
+
+```
+
+
+
+
+***English summary below.***
+
+Հարգելի գործընկեր,
+
+Հուսով եմ լավ եք:
+Ներկայացնում եմ այս շաբաթվա վերլուծությունները և աշխատանքները.
+
+**ՈՒՇԱԴՐՈՒԹՅՈՒՆ․ ՄԵՆՔ !!PODCAST!! ՈՒՆԵՆՔ․ ՄԱՆՐԱՄԱՍՆԵՐԸ ՆԵՐՔԵՎՈՒՄ**
+
+## 🤒🟨♻️ [Ոսկու տենդի շարունակություն.<br>Հայաստանի արտահանման 75%-ը ոսկի և ադամանդ է](https://www.tvyal.com/newsletter/2024/2024_05_11)
+
+Վերջի երկուս ու կես տարիների ընթացքում Հայաստանի առևտրաշրջանառության կառուցվածքը գրանցել է զգալի փոփոխություններ։ 2023 թվականին արտահանումը աճել է 55,3 տոկոսով՝ 5,4 միլիարդ դոլարից (2022) հասնելով 8,4 միլիարդ դոլարի։ Միաժամանակ ներմուծումն աճել է 40,2 տոկոսով՝ նույն ժամանակահատվածում 8,8 միլիարդ դոլարից հասնելով 12,3 միլիարդ դոլարի: Վերջին երկու տարիների ընթացքում արտահանումը և ներմուծումը աճել են համապատասխանաբար 2,8 և 2,3 անգամ։ Առկա են նաև զգալի կառուցվածքային փոփոխություններ առևտրաշրջանառության մեջ։
+
+Թանկարժեք քարերն ու մետաղները (ԱՏԳ ԱԱ 71)՝ հիմնականում ոսկու արտահանումը, դարձել են արտահանման գերակշռող ճյուղ՝ 2023 թվականի ընդհանուր արտահանման մոտ 1/3-ը կազմել է թանկարժեք քարերի և մետաղների վերաարտահանումը։ Ոսկու վերաարտահնման սրընթաց աճը սկսվել է 2023 թվականի նոյեմբերից և դեռ շարունակվում է։ 2023 թվականին վերաարտահանման մեջ 2/3 մասը զբաղեցնում է այս ապրանքատեսակի վերաարտահանումը։
+  
+
+>
+> Կարդացեք այս հետազոտության առաջին հատվածը.
+>
+> [🚀♻🟨 Ոսկու տենդ. Հայաստանի արտահանման կեսը վերաարտահանում է](https://www.tvyal.com/newsletter/2024/2024_04_12)։
+>
+
+
+**Գծապատկեր 1.**  
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 12, fig.height = 8}
+arm_trade_by_regions_plot
+```
+
+
+Հայաստանի արտահանումը 2024 թվականի մարտ ամսին հարաբերած նախորդ տարվա նույն ժամանակահատվածի հետ արդեն կազմել է 11.2 մլրդ դոլար, որից միայն 54.7 տոկոսը կամ 6.1 մլրդ դոլարը թանկարժեք և կիսաթանկարժեք քարերի ու մետաղների արտահանումն է: Նշենք, որ 2023 թվականի մարտ ամիսը հարաբերած 2022 թվականի նույն ժամանակահատվածի հետ, Հայաստանի արտահանումը կազմում էր 6.3 մլրդ դոլար, որից 1.3 մլրդ դոլարն էր կամ 20.2% թանկարժեք և կիսաթանկարժեք քարերի և մետաղների արտահանումը: 6.1 մլրդ դոլարի թանկարժեք և կիսաթանկարժեք քարերը և մետաղները հիմնականում վերաարտահանվել են Ռուսատանից դեպի Միացյալ Արաբական Էմիրություններ և Հոնկոնգ։ Մեր կողմից գնահատված վերաարտահանումը 2024 թվականի մարտին 12-ամսյա կտրվածքով կազմում է 11.2 մլրդ դոլարից մոտ 65%: [Վերաարտահանման մեթոդաբանությունը ներկայացված է այս հղումով](https://www.tvyal.com/newsletter/2024/2024_04_12):
+
+**Գծապատկեր 2.** 
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 12, fig.height = 8}
+exports_pct_piechart
+```
+
+
+>
+> 2024 թվականի առաջին եռամսյակում արտահանման **75%-ը** թանկարժեք և կիսաթանկարժեք քարեր ու մետաղներ է։
+>
+
+Միայն 2024 թվականի առաջի եռամսյակի կտրվածքով ՀՀ արտահանումը կազմել է 4.4 մլրդ դոլար, իսկ ներմուծումը 4.7 մլրդ դոլար: Համեմատության համար 2023 թվականի առաջին եռամսյակում արտահանումը կազմել էր 1.6 մլրդ դոլար (2.72 անգամ աճ), իսկ ներմուծումը 2.7 մլրդ դոլար (1.76 անգամ աճ): 2021թ. Հայաստանի ամբողջական արտահանումը կազմում էր 3.0 մլրդ դոլար, իսկ ներմուծումը 5.4: Այդ ժամանակահատվածում ներմուծումը 1.62 անգամ ավելի մեծ էր արտահանումից, իսկ 2024 թվականի առաջին երեք ամիսների կտրվածքով այդ հարաբերությունը կազմում է 1.07: Այսինքն 2024 թվականի առաջին 3 ամիսների կտրվածքով ներմուծումը ընդամենը 7 տոկոսով է գերազանցում արտահանումը, որը առաջին հայացքից մեծ առաջընթաց է պատմականորեն Հայաստանի բացասական ապրանքային հաշվեկշռի հավասարակշռման տեսանկյունից, սակայն կառուցվածքային փոփոխությունները այլ բանի մասին են խոսում:
+
+Եթե 2024 թվականի հաջորդ եռամսյակներում արտահանումը և ներմուծումը նույն ցուցանիշներն են ցուցաբերելու, ապա տարվա վերջին արտահանումը կազմելու է մոտ 18 մլրդ դոլար, իսկ ներմուծումը 19 մլրդ դոլար, այսինքն համապատասխանաբար մոտ 2 և 1.6 անգամ աճ մեկ տարվա ընթացքում:
+
+
+**Գծապատկեր 3.** 
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 12, fig.height = 8}
+exports_by_chart_1
+```
+
+
+2024 թվականի առաջին եռամսյակում արտահանման արդեն 74.6 տոկոսը թանկարժեք և կիսաթանկարժեք քարեր և մետաղներն են եղել\` կազմելով 3.3 մլրդ դոլար: Թանկարժեք և կիսաթանկարժեք քարերի ու մետաղների մեծ մասը\` 76 տոկոսը, ոսկու վերաարտահանումն է\` 2.5 մլրդ դոլար կամ 37.5 տոննա: Մեկ տոննայի արտահանման արժեքը կազմել է 66.9 մլն դոլար: Նույն ժամանակահատվածում ըստ պաշտոնական վիճակագրության ներմուծվել է 56.2 տոննա ոսկի ընդհանուր 2.2 մլրդ դոլար արժողությամբ: Մեկ տոննայի ներմուծման արժեքը կազմել է 39.6 մլրդ դոլար: Միջազգային շուկայում ոսկու մեկ տոննայի միջին գինը այս ժամանակահատվածում եղել է 73.1 մլն դոլար:
+
+Եթե համեմատենք  2024 թվականի առաջին եռամսյակը 2023 թվականի առաջին եռամսյակի հետ ըստ արտահանման խոշորացված ապրանքային խմբերի (գծապատկեր 4) աճ են արձանագրել հիմնականում\` թանկարժեք քարերը և մետաղները (8.7 անգամ), տեքստիլը և կոշկեղենը (42.7%) ինչպես նաև հանքաքարը և խտանյութը ունեցել է վերականգնողական աճ (18.5%): Մնացած բոլոր ավանդական ապրանքների արտահանումը կրճատվել է\` մետաղների և դրանցից արտադրանքի արտահանումը կրճատվել է 2.3 անգամ, տրանսպորտի և տեխնիկայի արտահանումը, որը մեր գնահատականով եղել է վերաարտահանում այլ երկրներից դեպի ՌԴ, կրճատվել է 12.4% տոկոսով, գյուղատնտեսական արտադրանքի արտահանումը (բացառությամբ ըմպելիքների) կրճատվել է 17.0%, ծխախոտը\` 6.1 տոկոս, ալկոհոլային և ոչ ալկոհոլային խմիչքները\` 1.0%, քիմիական նյութերի արտահանումը\` 31.0%, իսկ էլեկտրոէներգիան\` 35.5%:
+
+>
+> Նշենք, որ մեր կողմից ստեղծվել է օնլայն հարթակ, որը գնահատում և կանխատեսում է Հայաստանի արտահանումը՝ տարբեր տարածաշրջաններով և ապրանքներով։ Հարթակում տրված է ավելի քան 2000 կանխատեսում։
+>
+>[Ավելի քան 2000 կանխատեսում. Հայաստանի արտահանումը](https://tavad.shinyapps.io/exports_forecast/):
+>
+
+
+**Գծապատկեր 4.** 
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 12, fig.height = 8}
+exports_by_chart_2
+```
+
+
+Ընդհանուր առաքմամբ առկա է արտահանման և տնտեսական ակտիվության աճ, սակայն սա իրականում պայմանավորված է ոսկու վերաարտահանման զգալի աճով: Առանց այս ցուցանիշի աճի նշված տնտեսական ցուցանիշները անկում են գրանցում: Ընդհանուր առմամբ այս հանգամանքի մեծ ռիսկեր է պարունակում, քանի որ տնտեսության աճը այս պահին կապված է արտաքին ազդակների հետ և արտաքին ազդակներից որևիցե մեկի փոփոխության պարագայում և ոսկու վերաարտահանման էական նվազման պարագայում տնտեսությունը դառնում է խոցելի:
+
+
+>
+> Ձեզ կարող է հետաքրքրել նաև հետևյալ վերլուծությունը.
+>
+> [📈📉❓ Արտահանման 55.3 տոկոս աճ թե՞ -12.2 տոկոս անկում](https://www.tvyal.com/newsletter/2024/2024_02_16)։
+>
+
+
+## PODCAST !!
+
+### Խոսենք թվերով #7
+
+
+[📱📍🖥 Mobile Centre-ը, ԶՄՊԿ-ն, Vesta-ն, Wildberries-ը և Հայաստանի մյուս խոշոր հարկատուները](https://www.youtube.com/watch?v=7dOYuroAsnQ)
+
+- 🔘 Ի՞նչ իրավիճակ է Հայաստանում՝ կապված հարկահավաքման հետ
+- 🔘 Ինչպե՞ս է փոխվել իրավիճակը՝ Զանգեզուրի կոմբինատի հետ կապված
+- 🔘 Ինչո՞ւ են ցանկում բարձրացել էլեկտրոնիկայի առևտրով զբաղվող ընկերությունները
+
+How2B-ում «խոսում ենք թվերով»՝ տնտեսագետ Աղասի Թավադյանի հետ:
+
+- 04:27 Զանգեզուրի պղնձամոլիբդենային կոմբինատի վճարած հարկերը
+- 08:22 Ֆինանսաբանկային համակարգի հարկերը
+- 10:35 Mobile Centre ընկերությունը՝ Հայաստանի խոշոր հարկատու
+- 15:19 Vesta՝ էլեկտրոնիկայի վերաարտահանմամբ զբաղվող մյուս ընկերությունը
+- 17:35 Wildberries-ի աճը Հայաստանում և հարկատուների ցանկում
+
+Թեմայով վերլուծությունը ներկայացված է tvyal.com կայքում՝
+[📱📍🖥 Mobile Centre-ը Հայաստանի ամենախոշոր հարկատուն է](https://www.tvyal.com/newsletter/2024/2024_05_03)
+
+<a href="https://www.youtube.com/watch?v=7dOYuroAsnQ">
+  <img src="https://i3.ytimg.com/vi/7dOYuroAsnQ/hqdefault.jpg" alt="YouTube Video" style="width:60%;">
+</a>
+
+
+
+## English Summary
+
+### 🤒🟨♻️ Gold Rush 2: Gold and Diamonds are 75% of Armenia's Exports
+
+Armenia's trade dynamics have undergone notable shifts, with exports surging by 55.3% and imports by 40.2% over the last two and a half years. This growth is chiefly driven by the re-export of precious metals, particularly gold, which comprised a third of total exports in 2023. The trend continued into March 2024, with re-exported gold accounting for a significant portion of Armenia's export income, notably to the United Arab Emirates and Hong Kong. While this surge has seemingly improved Armenia's trade balance, the economy's reliance on external factors, particularly the gold rush, poses substantial risks, as any decline in gold re-exports could leave the economy vulnerable.
+
+In the first quarter of 2024, Armenia witnessed a remarkable increase in exports, primarily driven by the re-export of gold, which constituted over three-quarters of total exports. However, this growth masks underlying vulnerabilities, as evidenced by declines in exports of traditional goods and sectors. While the surge in economic activity appears positive, it is heavily contingent on the buoyancy of the gold market, leaving Armenia exposed to external shocks. Thus, while the economic indicators suggest growth, the sustainability of this trajectory hinges on diversifying export sources and reducing reliance on the volatile gold market to mitigate potential risks.
+
+---
+
+Այս վերլուծությունը առկա է նաև [մեր կայքէջում](https://www.tvyal.com/newsletter/2024/2024_05_11), այս վերլուծության կոդը և տվյալները դրված են նաև [Github-ում](https://github.com/tavad/tvyal_newsletter)։       
+
+---                  
+
+Եթե հնարավոր է, խնդրում եմ այս նյութը ուղարկել նաև այն մարդկանց, ում այն կարծում եք կարող է հետաքրքրել:
+
+Սպասեք հաջորդ հաղորդագրությանը հաջորդ ուրբաթ օրը:      
+
+
+Հարգանքներով,            
+Աղասի Թավադյան         
+11.05.2024          
+[tvyal.com](https://www.tvyal.com/)      
+[tavadyan.com](https://www.tavadyan.com/)
+
+---
+
+[Was this email forwarded to you? Subscribe here.](https://www.tvyal.com/subscribe)
+
+[Բաժանորդագրվեք](https://www.tvyal.com/subscribe)
+
+       
+---              
+               
+
+
+####### **Ուշադրություն. Ձեր էլ.փոստը մեյլլիսթի մեջ է, որի միջոցով ես կիսվում եմ շաբաթական նյութեր, որոնք հիմնականում ներկայացնում են Հայաստանի տնտեսությունը: Նյութերը ներառում են գծապատկերներ, [տվյալների բազաներ](https://github.com/tavad/tvyal_newsletter), տեսանյութեր, հոդվածներ, [առցանց վահանակներ](https://www.tvyal.com/projects), տնտեսական գործիքներ, կանխատեսումներ և հաշվետվություններ: Եթե ցանկանում եք չեղարկել բաժանորդագրությունը, խնդրում եմ տեղեկացրեք ինձ, և ես կհեռացնեմ ձեր էլ. փոստը ցուցակից: Գրեք նաև եթե ունեք մենկնաբանություններ:**
+
+####### **Important! Your email is part of the mailing list where I share weekly materials primarily focused on the Armenian economy. These materials encompass charts, [databases](https://github.com/tavad/tvyal_newsletter), videos, articles, [online dashboards](https://www.tvyal.com/projects), economic tools, forecasts, and reports. If you wish to unsubscribe, please let me know, and I will remove your email from the list. Please share your comments as well․**
