@@ -14,7 +14,7 @@ library(scales)
 
 rm(list = ls()); gc()
 
-# setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 
 source("../../initial_setup.R")
 
@@ -91,7 +91,7 @@ arm_trade_by_regions_plot <-
     country_region_arm = fct_inorder(country_region_arm)
   ) |> 
   ggplot(aes(date, export_yoy / 1e6, color = country_region_arm)) +
-  geom_line(size = 1.2, alpha = 0.8) +
+  geom_line(linewidth = 1.2, alpha = 0.8) +
   scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
   scale_y_continuous(n.breaks = 6, labels = number_format(), limits = c(0,5)) +
   scale_color_manual(values = colfunc2(5)) +
@@ -302,7 +302,7 @@ exports_by_chart_2 <-
     year %in% {year(max_date) - 0:1},
     month <= month(max_date)
   ) |>
-  left_join(commodity_groups_dic) |> 
+  left_join(commodity_groups_dic, by = join_by(hs2)) |> 
   group_by(commodity_code_names_arm, year) |>
   summarise(export_yoy = sum(export), .groups = "drop") |> 
   rename(hs2 = commodity_code_names_arm) |> 
