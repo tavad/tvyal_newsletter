@@ -1,0 +1,427 @@
+year,month,period,trade_code,trade_flow,reporter,partner_iso,partner,commodity_code,commodity,IsQtyEstimated,IsNetWgtEstimated,netweight_kg,trade_value_us,partner_region
+2010,10,2010-10-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,87326900,22608692.9,EAEU
+2010,8,2010-08-01,RX,Re-export,Armenia,_X,"Areas, nes",271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,1495800,374973,Other countries
+2010,10,2010-10-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,24713200,6067909.08,Middle East
+2010,1,2010-01-01,RX,Re-export,Armenia,GEO,Georgia,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,1473700,318231.76,Other countries
+2010,11,2010-11-01,RX,Re-export,Armenia,GEO,Georgia,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,2318500,567180,Other countries
+2010,8,2010-08-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,54620100,14157335.8,EAEU
+2010,5,2010-05-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,15396860,3816208.3,Middle East
+2010,7,2010-07-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,7127860,1711766.8,Middle East
+2010,11,2010-11-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,110721500,28678780.9,EAEU
+2010,11,2010-11-01,RX,Re-export,Armenia,_X,"Areas, nes",271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,2327000,577073.7,Other countries
+2010,8,2010-08-01,RX,Re-export,Armenia,GEO,Georgia,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,3545300,871560,Other countries
+2010,4,2010-04-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,10082100,2363980.1,Middle East
+2010,3,2010-03-01,RX,Re-export,Armenia,_X,"Areas, nes",271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,3006000,654107.85,Other countries
+2010,3,2010-03-01,RX,Re-export,Armenia,GEO,Georgia,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,2433300,507147.56,Other countries
+2010,7,2010-07-01,RX,Re-export,Armenia,GEO,Georgia,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,1777800,439020,Other countries
+2010,2,2010-02-01,RX,Re-export,Armenia,_X,"Areas, nes",271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,3355530,746814.91,Other countries
+2010,3,2010-03-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,11070500,2465600.4,Middle East
+2010,2,2010-02-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,13388600,3087652.2,Middle East
+2010,1,2010-01-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,29278200,6875668.8,Middle East
+2010,4,2010-04-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,59824800,15467471,EAEU
+2010,2,2010-02-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,126102490,28099115,EAEU
+2010,4,2010-04-01,RX,Re-export,Armenia,_X,"Areas, nes",271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,1914900,489873.32,Other countries
+2010,7,2010-07-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,80506900,20885653.1,EAEU
+2010,5,2010-05-01,RX,Re-export,Armenia,GEO,Georgia,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,1695500,416880,Other countries
+2010,1,2010-01-01,RX,Re-export,Armenia,_X,"Areas, nes",271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,3507040,787067.1,Other countries
+2010,5,2010-05-01,RX,Re-export,Armenia,_X,"Areas, nes",271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,1641200,429512.7,Other countries
+2010,6,2010-06-01,RX,Re-export,Armenia,_X,"Areas, nes",271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,1457800,379519.2,Other countries
+2010,8,2010-08-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,32342500,7950905.6,Middle East
+2010,6,2010-06-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,6497900,1606089.7,Middle East
+2010,6,2010-06-01,RX,Re-export,Armenia,GEO,Georgia,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,1753500,432900,Other countries
+2010,2,2010-02-01,RX,Re-export,Armenia,GEO,Georgia,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,1926000,416878,Other countries
+2010,11,2010-11-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,29824500,7296028.38,Middle East
+2010,4,2010-04-01,RX,Re-export,Armenia,GEO,Georgia,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,1396600,342720,Other countries
+2010,10,2010-10-01,RX,Re-export,Armenia,_X,"Areas, nes",271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,1663500,418318.1,Other countries
+2010,3,2010-03-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,109027000,24230165.1,EAEU
+2010,7,2010-07-01,RX,Re-export,Armenia,_X,"Areas, nes",271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,1451300,362743.3,Other countries
+2010,10,2010-10-01,RX,Re-export,Armenia,GEO,Georgia,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,1050500,257940,Other countries
+2010,6,2010-06-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,71165700,18456474.8,EAEU
+2010,5,2010-05-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,44756400,11616710.6,EAEU
+2010,1,2010-01-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,129516800,28588326.1,EAEU
+2011,1,2011-01-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,18162406.5,4386466.08,Middle East
+2011,1,2011-01-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,149194000,38886784.3,EAEU
+2011,1,2011-01-01,RX,Re-export,Armenia,_X,"Areas, nes",271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,3275500,822513.8,Other countries
+2011,1,2011-01-01,RX,Re-export,Armenia,GEO,Georgia,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,2318505.8,567180,Other countries
+2011,2,2011-02-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,26591100,6476863.7,Middle East
+2011,2,2011-02-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,128331200,33360107.3,EAEU
+2011,2,2011-02-01,RX,Re-export,Armenia,_X,"Areas, nes",271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,3215500,806009.4,Other countries
+2011,2,2011-02-01,RX,Re-export,Armenia,GEO,Georgia,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,2191900,533880,Other countries
+2011,3,2011-03-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,18837200,4588233.5,Middle East
+2011,3,2011-03-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,108375500,27967187.7,EAEU
+2011,3,2011-03-01,RX,Re-export,Armenia,GEO,Georgia,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,2217700,540180,Other countries
+2011,3,2011-03-01,RX,Re-export,Armenia,_X,"Areas, nes",271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,2918600,729938.8,Other countries
+2011,4,2011-04-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,17577749,4290744,Middle East
+2011,4,2011-04-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,85829195,22108639.84,EAEU
+2011,4,2011-04-01,RX,Re-export,Armenia,_X,"Areas, nes",271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,1959893,470264.7,Other countries
+2011,4,2011-04-01,RX,Re-export,Armenia,GEO,Georgia,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,2577800,630360,Other countries
+2011,5,2011-05-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,9266400,2266319,Middle East
+2011,5,2011-05-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,74784900,19264220.4,EAEU
+2011,5,2011-05-01,RX,Re-export,Armenia,_X,"Areas, nes",271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,1531300,389651.3,Other countries
+2011,5,2011-05-01,RX,Re-export,Armenia,GEO,Georgia,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,3169100,775080,Other countries
+2011,6,2011-06-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,32074500,7844586.6,Middle East
+2011,6,2011-06-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,57734100,14835395.22,EAEU
+2011,6,2011-06-01,RX,Re-export,Armenia,_X,"Areas, nes",271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,1488300,378365.2,Other countries
+2011,6,2011-06-01,RX,Re-export,Armenia,GEO,Georgia,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,1986000,485640,Other countries
+2011,7,2011-07-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,41656200,10199067,Middle East
+2011,7,2011-07-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,54119800,16186873.78,EAEU
+2011,7,2011-07-01,RX,Re-export,Armenia,_X,"Areas, nes",271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,1639600,420214.1,Other countries
+2011,7,2011-07-01,RX,Re-export,Armenia,GEO,Georgia,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,2740700,671040,Other countries
+2011,8,2011-08-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,31681200,7790077.1,Middle East
+2011,8,2011-08-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,59749200,17992798.56,EAEU
+2011,8,2011-08-01,RX,Re-export,Armenia,_X,"Areas, nes",271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,1613900,413343.4,Other countries
+2011,8,2011-08-01,RX,Re-export,Armenia,GEO,Georgia,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,2774500,679320,Other countries
+2011,9,2011-09-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,44064200,10834940,Middle East
+2011,9,2011-09-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,52455000,15603227.8,EAEU
+2011,9,2011-09-01,RX,Re-export,Armenia,GEO,Georgia,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,768200,188100,Other countries
+2011,9,2011-09-01,RX,Re-export,Armenia,_X,"Areas, nes",271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,1715100,430840,Other countries
+2011,10,2011-10-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,27232800,6635768,Middle East
+2011,10,2011-10-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,114273400,34464511.38,EAEU
+2011,10,2011-10-01,RX,Re-export,Armenia,_X,"Areas, nes",271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,1994500,501592,Other countries
+2011,10,2011-10-01,RX,Re-export,Armenia,GEO,Georgia,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,3800700,926100,Other countries
+2011,11,2011-11-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,28381071,6902664.3,Middle East
+2011,11,2011-11-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,134922900,40739899.2,EAEU
+2011,11,2011-11-01,RX,Re-export,Armenia,GEO,Georgia,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,2074500,504540,Other countries
+2011,11,2011-11-01,RX,Re-export,Armenia,_X,"Areas, nes",271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,1579800,396690.7,Other countries
+2011,12,2011-12-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,38433500,9347551.4,Middle East
+2011,12,2011-12-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,144672300,44561787.43,EAEU
+2011,12,2011-12-01,RX,Re-export,Armenia,GEO,Georgia,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,2226200,541440,Other countries
+2011,12,2011-12-01,RX,Re-export,Armenia,_X,"Areas, nes",271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,4047400,984390.1,Other countries
+2012,1,2012-01-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,32097500,7890660.9,Middle East
+2012,1,2012-01-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,162897600,48842767.98,EAEU
+2012,1,2012-01-01,RX,Re-export,Armenia,_X,"Areas, nes",271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,4806200,1181520,Other countries
+2012,2,2012-02-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,36967000,8988081.5,Middle East
+2012,2,2012-02-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,153408200,46285179.6,EAEU
+2012,2,2012-02-01,RX,Re-export,Armenia,_X,"Areas, nes",271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,8786400,2160000,Other countries
+2012,3,2012-03-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,63519300,15433535,Middle East
+2012,3,2012-03-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,130451100,40576452.9,EAEU
+2012,3,2012-03-01,RX,Re-export,Armenia,GEO,Georgia,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,3332200,809640,Other countries
+2012,3,2012-03-01,RX,Re-export,Armenia,_X,"Areas, nes",271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,3863100,939257.3,Other countries
+2012,4,2012-04-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,18664500,4534980.8,Middle East
+2012,4,2012-04-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,113592400,33552943.5,EAEU
+2012,4,2012-04-01,RX,Re-export,Armenia,_X,"Areas, nes",271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,2123400,515938.1,Other countries
+2012,4,2012-04-01,RX,Re-export,Armenia,GEO,Georgia,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,1114200,270720,Other countries
+2012,5,2012-05-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,15590800,3788156.9,Middle East
+2012,5,2012-05-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,87666000,26265376,EAEU
+2012,5,2012-05-01,RX,Re-export,Armenia,_X,"Areas, nes",271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,1988100,483055,Other countries
+2012,6,2012-06-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,6497700,1578763.1,Middle East
+2012,6,2012-06-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,87613300,26281523.5,EAEU
+2012,6,2012-06-01,RX,Re-export,Armenia,GEO,Georgia,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,3340100,810000,Other countries
+2012,6,2012-06-01,RX,Re-export,Armenia,_X,"Areas, nes",271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,2010600,487570.3,Other countries
+2012,7,2012-07-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,30059900,7303765.9,Middle East
+2012,7,2012-07-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,65952000,19762527.2,EAEU
+2012,7,2012-07-01,RX,Re-export,Armenia,GEO,Georgia,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,2229700,540720,Other countries
+2012,7,2012-07-01,RX,Re-export,Armenia,_X,"Areas, nes",271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,2142900,519661.44,Other countries
+2012,8,2012-08-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,30276900,7375022.6,Middle East
+2012,8,2012-08-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,63414400,19077620.8,EAEU
+2012,8,2012-08-01,RX,Re-export,Armenia,_X,"Areas, nes",271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,2171400,526575.96,Other countries
+2012,9,2012-09-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,29017400,7068218,Middle East
+2012,9,2012-09-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,86241500,26040747.15,EAEU
+2012,9,2012-09-01,RX,Re-export,Armenia,_X,"Areas, nes",271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,2156800,523029.96,Other countries
+2012,10,2012-10-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,31597400,7695942.3,Middle East
+2012,10,2012-10-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,128975000,41029056,EAEU
+2012,10,2012-10-01,RX,Re-export,Armenia,_X,"Areas, nes",271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,2230200,540848.52,Other countries
+2012,11,2012-11-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,29875500,7277625.7,Middle East
+2012,11,2012-11-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,154254300,46298949.5,EAEU
+2012,11,2012-11-01,RX,Re-export,Armenia,_X,"Areas, nes",271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,4745400,1155985,Other countries
+2012,12,2012-12-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,30954000,7503593.2,Middle East
+2012,12,2012-12-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,191171900,56213621,EAEU
+2012,12,2012-12-01,RX,Re-export,Armenia,_X,"Areas, nes",271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,4267700,1034533.8,Other countries
+2013,1,2013-01-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,43264200,10463483,Middle East
+2013,1,2013-01-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,194317600,57314887,EAEU
+2013,1,2013-01-01,RX,Re-export,Armenia,_X,"Areas, nes",271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,4098300,991178.64,Other countries
+2013,2,2013-02-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,26330000,6183908.3,Middle East
+2013,2,2013-02-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,157859500,47817196.4,EAEU
+2013,2,2013-02-01,RX,Re-export,Armenia,_X,"Areas, nes",271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,3725300,900409.5,Other countries
+2013,3,2013-03-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,23083151,5566974.66,Middle East
+2013,3,2013-03-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,124516900,39131083.75,EAEU
+2013,3,2013-03-01,RX,Re-export,Armenia,_X,"Areas, nes",271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,3381725,815572.26,Other countries
+2013,4,2013-04-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,22576045.3,5566974.66,Middle East
+2013,4,2013-04-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,60614494.5,18291037.8,EAEU
+2013,4,2013-04-01,RX,Re-export,Armenia,_X,"Areas, nes",271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,3381725,815572.26,Other countries
+2013,5,2013-05-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,23058800,75095.6,Middle East
+2013,5,2013-05-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,57013000,22258338.83,EAEU
+2013,5,2013-05-01,RX,Re-export,Armenia,_X,"Areas, nes",271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,2139200,610668.8,Other countries
+2013,5,2013-05-01,RX,Re-export,Armenia,GEO,Georgia,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,2223200,540180,Other countries
+2013,6,2013-06-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,86464400,33200181.04,EAEU
+2013,6,2013-06-01,RX,Re-export,Armenia,GEO,Georgia,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,2234100,540540,Other countries
+2013,6,2013-06-01,M,Import,Armenia,_X,"Areas, nes",271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,22201400,5371731.54,Other countries
+2013,6,2013-06-01,RX,Re-export,Armenia,_X,"Areas, nes",271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,2073700,501754.14,Other countries
+2013,7,2013-07-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,22504240,5707494.548,Middle East
+2013,7,2013-07-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,74291520,28850785.29,EAEU
+2013,7,2013-07-01,RX,Re-export,Armenia,_X,"Areas, nes",271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,1890787,497950.747,Other countries
+2013,8,2013-08-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,22719431.3,5769762,Middle East
+2013,8,2013-08-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,69439900,26820358.52,EAEU
+2013,8,2013-08-01,RX,Re-export,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,1883150.8,491096.024,Middle East
+2013,9,2013-09-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,22238400,5647607,Middle East
+2013,9,2013-09-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,95346060,36756088.65,EAEU
+2013,9,2013-09-01,RX,Re-export,Armenia,_X,"Areas, nes",271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,1880284.1,484903.571,Other countries
+2013,10,2013-10-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,23493290.7,5935901,Middle East
+2013,10,2013-10-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,143525112,55726241.51,EAEU
+2013,10,2013-10-01,RX,Re-export,Armenia,_X,"Areas, nes",271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,2179027.3,562111.129,Other countries
+2013,11,2013-11-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,22342704,5694826.82,Middle East
+2013,11,2013-11-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,146522834,56813833.96,EAEU
+2013,11,2013-11-01,RX,Re-export,Armenia,GEO,Georgia,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,2235534.93,810270,Other countries
+2013,11,2013-11-01,RX,Re-export,Armenia,_X,"Areas, nes",271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,2866152,740635.344,Other countries
+2013,12,2013-12-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,23793300,6064565,Middle East
+2013,12,2013-12-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,210654520,80737963.4,EAEU
+2013,12,2013-12-01,RX,Re-export,Armenia,_X,"Areas, nes",271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,4030950,1037228.133,Other countries
+2014,1,2014-01-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,23511319,5998020,Middle East
+2014,1,2014-01-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,233275600,61533524.01,EAEU
+2014,1,2014-01-01,RX,Re-export,Armenia,_X,"Areas, nes",271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,3683840,962112.358,Other countries
+2014,2,2014-02-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,21285546,5404462,Middle East
+2014,2,2014-02-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,168765900,44332286.9,EAEU
+2014,2,2014-02-01,RX,Re-export,Armenia,_X,"Areas, nes",271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,3489458.3,906022.945,Other countries
+2014,3,2014-03-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,23249451,5933140,Middle East
+2014,3,2014-03-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,116611500,30619390.07,EAEU
+2014,3,2014-03-01,RX,Re-export,Armenia,_X,"Areas, nes",271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,2935652.2,764862.264,Other countries
+2014,4,2014-04-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,23039113,5821693,Middle East
+2014,4,2014-04-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,77471600,20083767.59,EAEU
+2014,4,2014-04-01,RX,Re-export,Armenia,_X,"Areas, nes",271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,2237150,576249.784,Other countries
+2014,5,2014-05-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,29521581,7535516,Middle East
+2014,5,2014-05-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,51739701,13309403.33,EAEU
+2014,5,2014-05-01,RX,Re-export,Armenia,_X,"Areas, nes",271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,1931560.4,494945.66,Other countries
+2014,6,2014-06-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,22461831,5730291,Middle East
+2014,6,2014-06-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,65994526,16915982.7,EAEU
+2014,6,2014-06-01,RX,Re-export,Armenia,_X,"Areas, nes",271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,1959500,495629.62,Other countries
+2014,7,2014-07-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,23425100,5935397,Middle East
+2014,7,2014-07-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,83329510,21886393.01,EAEU
+2014,7,2014-07-01,RX,Re-export,Armenia,_X,"Areas, nes",271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,1946970,510187.66,Other countries
+2014,8,2014-08-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,26103147,6644621,Middle East
+2014,8,2014-08-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,77793330,20158924.13,EAEU
+2014,8,2014-08-01,RX,Re-export,Armenia,_X,"Areas, nes",271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,1911710,489744.01,Other countries
+2014,9,2014-09-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,22481032.18,5722602,Middle East
+2014,9,2014-09-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,100798015,26120228.33,EAEU
+2014,9,2014-09-01,RX,Re-export,Armenia,_X,"Areas, nes",271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,1914860,494710.82,Other countries
+2014,9,2014-09-01,RX,Re-export,Armenia,GEO,Georgia,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,1480942,544590,Other countries
+2014,10,2014-10-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,22722285,5867294,Middle East
+2014,10,2014-10-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,167783290,43879827.58,EAEU
+2014,10,2014-10-01,RX,Re-export,Armenia,_X,"Areas, nes",271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,2441550,625328.08,Other countries
+2014,11,2014-11-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,22301346,5758606,Middle East
+2014,11,2014-11-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,181833468,47061467.14,EAEU
+2014,11,2014-11-01,RX,Re-export,Armenia,_X,"Areas, nes",271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,3436243.8,860221.44,Other countries
+2014,12,2014-12-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,23684700,6104329,Middle East
+2014,12,2014-12-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,169456550,45380497.11,EAEU
+2014,12,2014-12-01,RX,Re-export,Armenia,_X,"Areas, nes",271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,3685240,919503.36,Other countries
+2015,1,2015-01-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,22584374.56,5975957,Middle East
+2015,1,2015-01-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,181831170.4,48784284.6,EAEU
+2015,1,2015-01-01,RX,Re-export,Armenia,GEO,Georgia,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,31528719,11900790,Other countries
+2015,2,2015-02-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,20235698,5354490,Middle East
+2015,2,2015-02-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,160675187,43108252.8,EAEU
+2015,3,2015-03-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,22207519,5896635,Middle East
+2015,3,2015-03-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,130170620,35032509.45,EAEU
+2015,4,2015-04-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,21413574,5650101,Middle East
+2015,4,2015-04-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,73153700,19612928.1,EAEU
+2015,5,2015-05-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,22117550,5839109,Middle East
+2015,5,2015-05-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,46640777,12571842.3,EAEU
+2015,6,2015-06-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,20890770,5515234,Middle East
+2015,6,2015-06-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,36266100,9775388.1,EAEU
+2015,7,2015-07-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,22528200,5947522,Middle East
+2015,7,2015-07-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,73858390,20877290.39,EAEU
+2015,8,2015-08-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,23438320,5937331,Middle East
+2015,8,2015-08-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,102517124.4,27471181.72,EAEU
+2015,9,2015-09-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,22573230,5774690,Middle East
+2015,9,2015-09-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,122594958.5,33099811.01,EAEU
+2015,10,2015-10-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,21696300,5563154,Middle East
+2015,10,2015-10-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,136702224,36908677.44,EAEU
+2015,10,2015-10-01,RX,Re-export,Armenia,GEO,Georgia,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,3344782,1225195,Other countries
+2015,11,2015-11-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,21969708,5607393.4,Middle East
+2015,11,2015-11-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,138362003,31593870,EAEU
+2015,11,2015-11-01,RX,Re-export,Armenia,GEO,Georgia,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,3924650,1431000,Other countries
+2015,12,2015-12-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,23251900,6054018.5,Middle East
+2015,12,2015-12-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,177087341,41516640,EAEU
+2016,1,2016-01-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,22637337,6053277.6,Middle East
+2016,1,2016-01-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,162175178,37662075,EAEU
+2016,1,2016-01-01,RX,Re-export,Armenia,GEO,Georgia,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,3870900,1485000,Other countries
+2016,2,2016-02-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,20906935,5561450.9,Middle East
+2016,2,2016-02-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,138888618,32519685,EAEU
+2016,2,2016-02-01,RX,Re-export,Armenia,GEO,Georgia,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,3268300,1242000,Other countries
+2016,3,2016-03-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,21977670,5131337,Middle East
+2016,3,2016-03-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,100859388,23655720,EAEU
+2016,3,2016-03-01,RX,Re-export,Armenia,GEO,Georgia,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,3534200,1350270,Other countries
+2016,4,2016-04-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,21486300,4548329,Middle East
+2016,4,2016-04-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,79047370,16033950,EAEU
+2016,4,2016-04-01,RX,Re-export,Armenia,GEO,Georgia,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,2905970,615150,Other countries
+2016,5,2016-05-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,23180060,4698025,Middle East
+2016,5,2016-05-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,60120126,12163500,EAEU
+2016,6,2016-06-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,22449360,4559171,Middle East
+2016,6,2016-06-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,46052738,9246300,EAEU
+2016,7,2016-07-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,46644320,9493417,Middle East
+2016,7,2016-07-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,15875383,3175500,EAEU
+2016,8,2016-08-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,11968010,2435824,Middle East
+2016,8,2016-08-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,97883755,20324700,EAEU
+2016,9,2016-09-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,18140440,3692085,Middle East
+2016,9,2016-09-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,107854953,22244250,EAEU
+2016,10,2016-10-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,8429580,1736864,Middle East
+2016,10,2016-10-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,154625274,31815900,EAEU
+2016,11,2016-11-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,25166000,5173931,Middle East
+2016,11,2016-11-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,170424015,36132300,EAEU
+2016,12,2016-12-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,22339000,4686445,Middle East
+2016,12,2016-12-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,206684290,43616550,EAEU
+2017,1,2017-01-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,22314600,4695179,Middle East
+2017,1,2017-01-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,214100000,45086250,EAEU
+2017,2,2017-02-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,20305100,4255042,Middle East
+2017,2,2017-02-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,188138000,39475050,EAEU
+2017,3,2017-03-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,23305200,4692317,Middle East
+2017,3,2017-03-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,133853000,26957550,EAEU
+2017,4,2017-04-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,83191400,16064250,EAEU
+2017,4,2017-04-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,22860300,4496520,Middle East
+2017,5,2017-05-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,88747700,17385600,EAEU
+2017,5,2017-05-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,24118100,4765172,Middle East
+2017,6,2017-06-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,93294200,18304950,EAEU
+2017,6,2017-06-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,22722000,4497027,Middle East
+2017,7,2017-07-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,88110700,17520900,EAEU
+2017,7,2017-07-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,27186200,5443049,Middle East
+2017,8,2017-08-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,56718000,11493789,Middle East
+2017,8,2017-08-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,5806560,1100700,EAEU
+2017,9,2017-09-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,25576000,5059209,Middle East
+2017,9,2017-09-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,111393000,21339750,EAEU
+2017,10,2017-10-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,1865620,364996,Middle East
+2017,10,2017-10-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,122799000,23903250,EAEU
+2017,11,2017-11-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,156665000,31183350,EAEU
+2017,11,2017-11-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,16754200,3337488,Middle East
+2017,12,2017-12-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,206409000,41084550,EAEU
+2017,12,2017-12-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,17286100,3443453,Middle East
+2018,1,2018-01-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,185770000,38902050,EAEU
+2018,1,2018-01-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,21446800,4476792.9,Middle East
+2018,2,2018-02-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,19957800,4191056.55,Middle East
+2018,2,2018-02-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,145253000,30324150,EAEU
+2018,3,2018-03-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,22637400,4740493.95,Middle East
+2018,3,2018-03-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,105102000,21890250,EAEU
+2018,4,2018-04-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,21772900,4541704.8,Middle East
+2018,4,2018-04-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,81474500,16360350,EAEU
+2018,5,2018-05-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,39156900,7893479.55,Middle East
+2018,5,2018-05-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,61413200,12716700,EAEU
+2018,6,2018-06-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,97749900,20800800,EAEU
+2018,6,2018-06-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,34276900,7038380.7,Middle East
+2018,7,2018-07-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,105520000,22374900,EAEU
+2018,7,2018-07-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,36908700,7727953.2,Middle East
+2018,8,2018-08-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,35033600,7282483.05,Middle East
+2018,8,2018-08-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,113282000,23656350,EAEU
+2018,9,2018-09-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,87377200,18277200,EAEU
+2018,9,2018-09-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,34588900,7166208.9,Middle East
+2018,10,2018-10-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,129547000,26884500,EAEU
+2018,10,2018-10-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,36636200,7474746.45,Middle East
+2018,11,2018-11-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,35402100,7268428.65,Middle East
+2018,11,2018-11-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,138725000,29266950,EAEU
+2018,12,2018-12-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,37426500,7592607.45,Middle East
+2018,12,2018-12-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,140713000,29487150,EAEU
+2019,1,2019-01-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,23776000,5287818.03,Middle East
+2019,1,2019-01-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,161712000,37260795,EAEU
+2019,2,2019-02-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,19070000,4790842.16,Middle East
+2019,2,2019-02-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,148962000,34265715,EAEU
+2019,3,2019-03-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,20662300,5190842.09,Middle East
+2019,3,2019-03-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,150679000,34733160,EAEU
+2019,4,2019-04-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,18625200,5013296.97,Middle East
+2019,4,2019-04-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,96780700,20981235,EAEU
+2019,5,2019-05-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,23431800,5207244.74,Middle East
+2019,5,2019-05-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,63071900,14409945,EAEU
+2019,6,2019-06-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,114100000,26007135,EAEU
+2019,6,2019-06-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,22589700,5020104.54,Middle East
+2019,7,2019-07-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,128554000,28902390,EAEU
+2019,7,2019-07-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,22798600,5235416.84,Middle East
+2019,8,2019-08-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,142898000,32674950,EAEU
+2019,8,2019-08-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,22537000,5175352.22,Middle East
+2019,9,2019-09-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,21929400,5035814.85,Middle East
+2019,9,2019-09-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,121621000,27744255,EAEU
+2019,10,2019-10-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,22891700,5256784.83,Middle East
+2019,10,2019-10-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,91087800,20736045,EAEU
+2019,11,2019-11-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,155552000,35450415,EAEU
+2019,11,2019-11-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,22793800,5065455.12,Middle East
+2019,12,2019-12-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,23213700,5228780.37,Middle East
+2019,12,2019-12-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,197429000,44375100,EAEU
+2020,1,2020-01-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,203405000,46749945,EAEU
+2020,1,2020-01-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,23471100,5220019.86,Middle East
+2020,2,2020-02-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,207657000,48258210,EAEU
+2020,2,2020-02-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,21778100,4872399.02,Middle East
+2020,3,2020-03-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,139712000,31919910,EAEU
+2020,3,2020-03-01,RX,Re-export,Armenia,GEO,Georgia,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,5671350,1303421.13,Other countries
+2020,3,2020-03-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,23416100,5216929.905,Middle East
+2020,4,2020-04-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,92691600,21292095,EAEU
+2020,4,2020-04-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,22679600,5052840.705,Middle East
+2020,5,2020-05-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,57201200,13079550,EAEU
+2020,5,2020-05-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,23448900,5219999.4,Middle East
+2020,5,2020-05-01,RX,Re-export,Armenia,GEO,Georgia,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,1859120,413862.24,Other countries
+2020,6,2020-06-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,50698100,11960520,EAEU
+2020,6,2020-06-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,35800700,7979343.075,Middle East
+2020,6,2020-06-01,RX,Re-export,Armenia,GEO,Georgia,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,2221050,494448.24,Other countries
+2020,7,2020-07-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,115912000,26289285,EAEU
+2020,7,2020-07-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,33795300,7569197.13,Middle East
+2020,7,2020-07-01,RX,Re-export,Armenia,GEO,Georgia,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,2021340,462197.51,Other countries
+2020,8,2020-08-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,23113600,5163465.615,Middle East
+2020,8,2020-08-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,130202000,29055180,EAEU
+2020,8,2020-08-01,RX,Re-export,Armenia,GEO,Georgia,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,2259440,504748.035,Other countries
+2020,9,2020-09-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,123965000,28440225,EAEU
+2020,9,2020-09-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,5868770,1311057,Middle East
+2020,10,2020-10-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,22345600,4991906.205,Middle East
+2020,10,2020-10-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,105908000,23694660,EAEU
+2020,11,2020-11-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,22465800,5051581.92,Middle East
+2020,11,2020-11-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,146424000,33667755,EAEU
+2020,12,2020-12-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,215749000,50011995,EAEU
+2020,12,2020-12-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,23172500,5218318.875,Middle East
+2021,1,2021-01-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,23868200,5367652.8,Middle East
+2021,1,2021-01-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,220866000,51119310,EAEU
+2021,2,2021-02-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,20873300,4696062.525,Middle East
+2021,2,2021-02-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,177592000,41080380,EAEU
+2021,3,2021-03-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,171825000,38810475,EAEU
+2021,3,2021-03-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,27489400,6087918.705,Middle East
+2021,4,2021-04-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,19002700,5009072.805,Middle East
+2021,4,2021-04-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,85533100,18802245,EAEU
+2021,5,2021-05-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,81203000,17938800,EAEU
+2021,5,2021-05-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,23616200,5367652.785,Middle East
+2021,6,2021-06-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,99945400,22147455,EAEU
+2021,6,2021-06-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,14999700,3300814.275,Middle East
+2021,7,2021-07-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,25370600,5583014.085,Middle East
+2021,7,2021-07-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,129765000,29036040,EAEU
+2021,8,2021-08-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,141010000,30800385,EAEU
+2021,8,2021-08-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,11231300,2474167.41,Middle East
+2021,9,2021-09-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,16323300,3592076.235,Middle East
+2021,9,2021-09-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,137857000,30960105,EAEU
+2021,10,2021-10-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,132736000,29155170,EAEU
+2021,10,2021-10-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,31701800,7050540.42,Middle East
+2021,11,2021-11-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,173721000,40554525,EAEU
+2021,11,2021-11-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,17840600,3967775.295,Middle East
+2021,12,2021-12-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,18845800,4167750.015,Middle East
+2021,12,2021-12-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,230727000,53718060,EAEU
+2022,1,2022-01-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,18856400,4194823.71,Middle East
+2022,1,2022-01-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,246563000,57477915,EAEU
+2022,2,2022-02-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,16871300,3753171.345,Middle East
+2022,2,2022-02-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,208501000,48715095,EAEU
+2022,3,2022-03-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,213491000,49523430,EAEU
+2022,3,2022-03-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,20701100,4602112.02,Middle East
+2022,4,2022-04-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,121582000,29425896.5,EAEU
+2022,4,2022-04-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,22545300,5026321.245,Middle East
+2022,5,2022-05-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,111076000,26830381.05,EAEU
+2022,5,2022-05-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,34416800,7745302.155,Middle East
+2022,6,2022-06-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,22327300,5055940.479,Middle East
+2022,6,2022-06-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,107754000,26066420.96,EAEU
+2022,7,2022-07-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,23359100,5293463.756,Middle East
+2022,7,2022-07-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,99375700,24122165.48,EAEU
+2022,8,2022-08-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,23145100,5222988.322,Middle East
+2022,8,2022-08-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,98320600,23847248.25,EAEU
+2022,9,2022-09-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,105273000,25555985.35,EAEU
+2022,9,2022-09-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,22357000,5071149.491,Middle East
+2022,10,2022-10-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,116645000,28371802.52,EAEU
+2022,10,2022-10-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,23078800,5224596.21,Middle East
+2022,11,2022-11-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,22647700,5119073.39,Middle East
+2022,11,2022-11-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,186580000,45372370.94,EAEU
+2022,12,2022-12-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,20401500,4587859.666,Middle East
+2022,12,2022-12-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,238541000,57889712,EAEU
+2023,1,2023-01-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,23194500,5235414.83,Middle East
+2023,1,2023-01-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,240304000,58440115.84,EAEU
+2023,2,2023-02-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,221266000,53764981.22,EAEU
+2023,2,2023-02-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,20784100,4737053.1,Middle East
+2023,3,2023-03-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,146433000,35679626.99,EAEU
+2023,3,2023-03-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,25896200,5684102.063,Middle East
+2023,4,2023-04-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,96863600,23591700.6,EAEU
+2023,4,2023-04-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,22238500,5076690.032,Middle East
+2023,5,2023-05-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,31638800,7207406.973,Middle East
+2023,5,2023-05-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,99044500,24115905.96,EAEU
+2023,6,2023-06-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,119732000,29012295.33,EAEU
+2023,6,2023-06-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,12550400,2827260.999,Middle East
+2023,7,2023-07-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,22579600,5144144.92,Middle East
+2023,7,2023-07-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,115557000,27728260.55,EAEU
+2023,8,2023-08-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,22626700,5135935,Middle East
+2023,8,2023-08-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,106010000,25665248.24,EAEU
+2023,9,2023-09-01,M,Import,Armenia,RUS,Russian Federation,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,71485800,17421365,EAEU
+2023,9,2023-09-01,M,Import,Armenia,IRN,Iran,271121,"Petroleum gases and other gaseous hydrocarbons; in gaseous state, natural gas",FALSE,FALSE,21990500,4974423,Middle East
