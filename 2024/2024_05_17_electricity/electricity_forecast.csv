@@ -102,35 +102,35 @@
 "2023-05-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Actual Data",9018.699999999993,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
 "2023-06-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Actual Data",9033.199999999995,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
 "2023-07-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Actual Data",8997.099999999995,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
-"2023-08-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Actual Data",8984.819672131143,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
+"2023-08-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Actual Data",8927.799999999996,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
 "2023-09-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Actual Data",8845.1,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
 "2023-10-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Actual Data",8810,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
 "2023-11-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Actual Data",8818.300000000001,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
 "2023-12-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Actual Data",8903.7,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
-"2024-01-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",8971.30110646004,"Year-over-year (YoY) production values and forecast",8865.115556541128,9077.486656378951,0.5
-"2024-02-29","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",9042.42439287806,"Year-over-year (YoY) production values and forecast",8828.408674222756,9256.440111533366,0.5
-"2024-03-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",9079.363256505509,"Year-over-year (YoY) production values and forecast",8757.51736911381,9401.20914389721,0.5
-"2024-04-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",8942.304107196916,"Year-over-year (YoY) production values and forecast",8512.628051068823,9371.98016332501,0.5
-"2024-05-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",8853.550553283585,"Year-over-year (YoY) production values and forecast",8316.044328419097,9391.056778148075,0.5
-"2024-06-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",8868.60859005327,"Year-over-year (YoY) production values and forecast",8223.272196452388,9513.944983654152,0.5
-"2024-07-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",8907.015496377247,"Year-over-year (YoY) production values and forecast",8153.848934039971,9660.182058714525,0.5
-"2024-08-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",8837.752186132802,"Year-over-year (YoY) production values and forecast",7976.755455059133,9698.748917206472,0.5
-"2024-09-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",8786.34261294472,"Year-over-year (YoY) production values and forecast",7817.515713134657,9755.169512754785,0.5
-"2024-10-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",8685.704903869024,"Year-over-year (YoY) production values and forecast",7609.047835322566,9762.361972415481,0.5
-"2024-11-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",8602.054545996003,"Year-over-year (YoY) production values and forecast",7417.567308713151,9786.541783278857,0.5
-"2024-12-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",8508.68714360787,"Year-over-year (YoY) production values and forecast",7216.369737588625,9801.00454962712,0.5
-"2025-01-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",8510.182488642691,"Year-over-year (YoY) production values and forecast",7211.585331241621,9808.779646043762,0.5
-"2025-02-28","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",8531.585764975469,"Year-over-year (YoY) production values and forecast",7228.211854579112,9834.959675371829,0.5
-"2025-03-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",8542.70185290468,"Year-over-year (YoY) production values and forecast",7234.551189513035,9850.852516296327,0.5
-"2025-04-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",8501.456362231682,"Year-over-year (YoY) production values and forecast",7188.52894584475,9814.383778618612,0.5
-"2025-05-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",8474.747573372315,"Year-over-year (YoY) production values and forecast",7157.043403990096,9792.451742754536,0.5
-"2025-06-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",8479.279019235437,"Year-over-year (YoY) production values and forecast",7156.798096857931,9801.759941612943,0.5
-"2025-07-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",8490.836888261734,"Year-over-year (YoY) production values and forecast",7163.579212888941,9818.094563634528,0.5
-"2025-08-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",8469.993338370468,"Year-over-year (YoY) production values and forecast",7137.958910002388,9802.027766738549,0.5
-"2025-09-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",8454.522550158747,"Year-over-year (YoY) production values and forecast",7117.711368795379,9791.333731522118,0.5
-"2025-10-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",8424.237438132495,"Year-over-year (YoY) production values and forecast",7082.64950377384,9765.825372491152,0.5
-"2025-11-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",8399.064364515378,"Year-over-year (YoY) production values and forecast",7052.699677161436,9745.429051869321,0.5
-"2025-12-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",8370.967120779454,"Year-over-year (YoY) production values and forecast",7019.825680430226,9722.108561128685,0.5
+"2024-01-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",8971.265396341061,"Year-over-year (YoY) production values and forecast",8865.16046841624,9077.370324265881,0.5
+"2024-02-29","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",9042.012920168827,"Year-over-year (YoY) production values and forecast",8828.102127822956,9255.9237125147,0.5
+"2024-03-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",9078.819557138033,"Year-over-year (YoY) production values and forecast",8757.102900371108,9400.536213904956,0.5
+"2024-04-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",8942.867774084825,"Year-over-year (YoY) production values and forecast",8513.345252896852,9372.390295272802,0.5
+"2024-05-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",8854.87744873973,"Year-over-year (YoY) production values and forecast",8317.549063130704,9392.205834348759,0.5
+"2024-06-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",8869.959141768793,"Year-over-year (YoY) production values and forecast",8224.824891738714,9515.093391798873,0.5
+"2024-07-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",8908.223362836217,"Year-over-year (YoY) production values and forecast",8155.283248385086,9661.16347728735,0.5
+"2024-08-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",8879.161080319176,"Year-over-year (YoY) production values and forecast",8018.4151014469935,9739.907059191359,0.5
+"2024-09-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",8788.672039377132,"Year-over-year (YoY) production values and forecast",7820.120196083896,9757.223882670365,0.5
+"2024-10-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",8688.882223713108,"Year-over-year (YoY) production values and forecast",7612.524515998821,9765.239931427395,0.5
+"2024-11-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",8605.958738328492,"Year-over-year (YoY) production values and forecast",7421.795166193155,9790.12231046383,0.5
+"2024-12-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",8513.387434388991,"Year-over-year (YoY) production values and forecast",7221.417997832601,9805.35687094538,0.5
+"2025-01-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",8515.027844674021,"Year-over-year (YoY) production values and forecast",7216.577020259744,9813.478669088296,0.5
+"2025-02-28","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",8536.670384825682,"Year-over-year (YoY) production values and forecast",7233.287993968949,9840.052775682412,0.5
+"2025-03-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",8547.929989054275,"Year-over-year (YoY) production values and forecast",7239.616031755086,9856.243946353461,0.5
+"2025-04-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",8506.340661764432,"Year-over-year (YoY) production values and forecast",7193.095138022788,9819.586185506076,0.5
+"2025-05-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",8479.42333595279,"Year-over-year (YoY) production values and forecast",7161.24624576869,9797.600426136893,0.5
+"2025-06-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",8484.037011870709,"Year-over-year (YoY) production values and forecast",7160.928355244151,9807.145668497265,0.5
+"2025-07-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",8495.742509053054,"Year-over-year (YoY) production values and forecast",7167.70228598404,9823.782732122065,0.5
+"2025-08-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",8486.851998371643,"Year-over-year (YoY) production values and forecast",7153.880208860174,9819.823787883113,0.5
+"2025-09-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",8459.170284639285,"Year-over-year (YoY) production values and forecast",7121.26692868536,9797.073640593211,0.5
+"2025-10-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",8428.643349202037,"Year-over-year (YoY) production values and forecast",7085.808426805655,9771.478271598417,0.5
+"2025-11-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",8403.276032229625,"Year-over-year (YoY) production values and forecast",7055.509543390787,9751.042521068464,0.5
+"2025-12-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",8374.957328563336,"Year-over-year (YoY) production values and forecast",7022.259273282044,9727.65538384463,0.5
 "2015-01-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Actual Data",649,"Monthly production values and forecast",NA,NA,0.5
 "2015-02-28","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Actual Data",579.5999999999999,"Monthly production values and forecast",NA,NA,0.5
 "2015-03-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Actual Data",1250.6,"Monthly production values and forecast",NA,NA,0.5
@@ -234,179 +234,179 @@
 "2023-05-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Actual Data",819.5999999999995,"Monthly production values and forecast",NA,NA,0.5
 "2023-06-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Actual Data",671.1000000000004,"Monthly production values and forecast",NA,NA,0.5
 "2023-07-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Actual Data",637.6999999999998,"Monthly production values and forecast",NA,NA,0.5
-"2023-08-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Actual Data",791.7196721311475,"Monthly production values and forecast",NA,NA,0.5
-"2023-09-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Actual Data",766.180327868853,"Monthly production values and forecast",NA,NA,0.5
+"2023-08-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Actual Data",734.6999999999998,"Monthly production values and forecast",NA,NA,0.5
+"2023-09-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Actual Data",823.2000000000007,"Monthly production values and forecast",NA,NA,0.5
 "2023-10-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Actual Data",836.6,"Monthly production values and forecast",NA,NA,0.5
 "2023-11-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Actual Data",812.3000000000001,"Monthly production values and forecast",NA,NA,0.5
 "2023-12-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Actual Data",826.1999999999998,"Monthly production values and forecast",NA,NA,0.5
-"2024-01-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",690.5011064600405,"Monthly production values and forecast",584.3155565411291,796.686656378952,0.5
-"2024-02-29","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",662.0232864180186,"Monthly production values and forecast",554.1931176816245,769.8534551544128,0.5
-"2024-03-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",676.7388636274503,"Monthly production values and forecast",568.9086948910561,784.5690323638445,0.5
-"2024-04-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",751.6408506914076,"Monthly production values and forecast",643.8106819550135,859.4710194278018,0.5
-"2024-05-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",730.8464460866688,"Monthly production values and forecast",623.0162773502747,838.676614823063,0.5
-"2024-06-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",686.1580367696837,"Monthly production values and forecast",578.3278680332895,793.9882055060779,0.5
-"2024-07-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",676.1069063239777,"Monthly production values and forecast",568.2767375875835,783.9370750603719,0.5
-"2024-08-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",722.4563618867024,"Monthly production values and forecast",614.6261931503083,830.2865306230966,0.5
-"2024-09-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",714.770754680771,"Monthly production values and forecast",606.9405859443768,822.6009234171652,0.5
-"2024-10-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",735.9622909243037,"Monthly production values and forecast",628.1321221879095,843.7924596606979,0.5
-"2024-11-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",728.6496421269788,"Monthly production values and forecast",620.8194733905847,836.479810863373,0.5
-"2024-12-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",732.8325976118683,"Monthly production values and forecast",625.0024288754742,840.6627663482625,0.5
-"2025-01-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",691.99645149486,"Monthly production values and forecast",579.5311501941253,804.4617527955947,0.5
-"2025-02-28","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",683.4265627507972,"Monthly production values and forecast",570.8196410191158,796.0334844824786,0.5
-"2025-03-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",687.854951556661,"Monthly production values and forecast",575.2480298249797,800.4618732883424,0.5
-"2025-04-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",710.3953600184097,"Monthly production values and forecast",597.7884382867284,823.0022817500911,0.5
-"2025-05-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",704.1376572273015,"Monthly production values and forecast",591.5307354956201,816.7445789589829,0.5
-"2025-06-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",690.6894826328071,"Monthly production values and forecast",578.0825609011257,803.2964043644885,0.5
-"2025-07-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",687.6647753502742,"Monthly production values and forecast",575.0578536185928,800.2716970819556,0.5
-"2025-08-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",701.6128119954357,"Monthly production values and forecast",589.0058902637543,814.219733727117,0.5
-"2025-09-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",699.2999664690502,"Monthly production values and forecast",586.6930447373688,811.9068882007316,0.5
-"2025-10-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",705.6771788980517,"Monthly production values and forecast",593.0702571663703,818.2841006297331,0.5
-"2025-11-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",703.4765685098617,"Monthly production values and forecast",590.8696467781804,816.0834902415431,0.5
-"2025-12-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",704.7353538759457,"Monthly production values and forecast",592.1284321442644,817.3422756076271,0.5
-"2024-01-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",8942.82315807918,"Year-over-year (YoY) production values and forecast",8886.396910591255,9004.504935715648,0.5
-"2024-02-29","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",8970.957035682248,"Year-over-year (YoY) production values and forecast",8861.6957711888,9090.40230506971,0.5
-"2024-03-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",8971.210139721446,"Year-over-year (YoY) production values and forecast",8807.227164961007,9150.491055569486,0.5
-"2024-04-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",8848.427968648524,"Year-over-year (YoY) production values and forecast",8618.83181244013,9099.467222512998,0.5
-"2024-05-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",8780.595743444965,"Year-over-year (YoY) production values and forecast",8486.444364139837,9102.252129538636,0.5
-"2024-06-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",8790.159356598731,"Year-over-year (YoY) production values and forecast",8437.398322261637,9175.945510671765,0.5
-"2024-07-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",8834.337607961743,"Year-over-year (YoY) production values and forecast",8422.685617300553,9284.579596643049,0.5
-"2024-08-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",8816.328629032714,"Year-over-year (YoY) production values and forecast",8337.637383960897,9339.967255604546,0.5
-"2024-09-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",8926.051561848279,"Year-over-year (YoY) production values and forecast",8371.200230129722,9533.10033940637,0.5
-"2024-10-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",8976.879422322958,"Year-over-year (YoY) production values and forecast",8344.574351809732,9668.78567793565,0.5
-"2024-11-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",8979.867469463226,"Year-over-year (YoY) production values and forecast",8276.11869320707,9750.076786246102,0.5
-"2024-12-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",8957.421308147435,"Year-over-year (YoY) production values and forecast",8182.9445124028125,9805.180477402591,0.5
-"2025-01-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",8964.723449205878,"Year-over-year (YoY) production values and forecast",8187.756908407231,9815.401206866898,0.5
-"2025-02-28","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",8970.887952188143,"Year-over-year (YoY) production values and forecast",8191.473553056727,9824.445627483525,0.5
-"2025-03-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",8976.642532025959,"Year-over-year (YoY) production values and forecast",8194.578583063842,9833.327296670957,0.5
-"2025-04-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",8982.859693672466,"Year-over-year (YoY) production values and forecast",8197.491325999972,9843.45533793788,0.5
-"2025-05-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",8988.369721774548,"Year-over-year (YoY) production values and forecast",8199.63515983547,9852.959352670468,0.5
-"2025-06-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",8992.874684906565,"Year-over-year (YoY) production values and forecast",8200.989512085669,9861.211028269972,0.5
-"2025-07-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",8996.949931913909,"Year-over-year (YoY) production values and forecast",8201.814401557993,9869.159663451115,0.5
-"2025-08-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",9001.125436575745,"Year-over-year (YoY) production values and forecast",8202.205087938362,9877.854150847757,0.5
-"2025-09-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",9005.394005141794,"Year-over-year (YoY) production values and forecast",8202.090446323122,9887.365611473799,0.5
-"2025-10-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",9009.299556778587,"Year-over-year (YoY) production values and forecast",8201.465913888756,9896.699013009676,0.5
-"2025-11-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",9012.540027065737,"Year-over-year (YoY) production values and forecast",8200.471871540984,9905.021493406408,0.5
-"2025-12-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",9015.42516185169,"Year-over-year (YoY) production values and forecast",8199.11958845701,9913.000092716191,0.5
-"2024-01-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",662.02315807918,"Monthly production values and forecast",605.596910591256,723.7049357156479,0.5
-"2024-02-29","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",619.0338776030668,"Monthly production values and forecast",566.1988605975434,676.7973693540631,0.5
-"2024-03-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",640.0531040391988,"Monthly production values and forecast",585.3313937722074,699.888750499774,0.5
-"2024-04-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",765.9178289270786,"Monthly production values and forecast",700.3046474791222,837.6761669435125,0.5
-"2024-05-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",751.7677747964404,"Monthly production values and forecast",687.2125516997078,822.3849070256381,0.5
-"2024-06-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",680.6636131537659,"Monthly production values and forecast",622.0539581217994,744.793381133127,0.5
-"2024-07-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",681.8782513630114,"Monthly production values and forecast",622.9872950389179,746.3340859712838,0.5
-"2024-08-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",773.7106932021194,"Monthly production values and forecast",706.6714387914906,847.1073310926463,0.5
-"2024-09-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",875.9032606844161,"Monthly production values and forecast",799.7431740376761,959.313411670676,0.5
-"2024-10-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",887.4278604746793,"Monthly production values and forecast",809.9741216800118,972.2853385292814,0.5
-"2024-11-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",815.2880471402696,"Monthly production values and forecast",743.8443413973388,893.5911083104529,0.5
-"2024-12-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",803.7538386842086,"Monthly production values and forecast",733.0258191957407,881.3036911564878,0.5
-"2025-01-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",669.3252991376231,"Monthly production values and forecast",610.4093065956737,733.9256651799556,0.5
-"2025-02-28","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",625.1983805853303,"Monthly production values and forecast",569.9155052470396,685.8417899706895,0.5
-"2025-03-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",645.8076838770156,"Monthly production values and forecast",588.4364237793212,708.7704196872077,0.5
-"2025-04-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",772.1349905735863,"Monthly production values and forecast",703.2173904152526,847.8042082104341,0.5
-"2025-05-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",757.277802898522,"Monthly production values and forecast",689.356385535207,831.8889217582266,0.5
-"2025-06-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",685.1685762857826,"Monthly production values and forecast",623.4083103719988,753.0450567326293,0.5
-"2025-07-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",685.9534983703568,"Monthly production values and forecast",623.8121845112428,754.2827211524296,0.5
-"2025-08-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",777.8861978639541,"Monthly production values and forecast",707.062125171859,855.8018184892882,0.5
-"2025-09-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",880.1718292504662,"Monthly production values and forecast",799.6285324224365,968.8248722967157,0.5
-"2025-10-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",891.3334121114717,"Monthly production values and forecast",809.3495892456461,981.61874006516,0.5
-"2025-11-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",818.5285174274195,"Monthly production values and forecast",742.8502990495665,901.9135887071844,0.5
-"2025-12-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",806.63897347016,"Monthly production values and forecast",731.6735361117675,889.2822904662698,0.5
-"2024-01-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",8919.208931107425,"Year-over-year (YoY) production values and forecast",8856.453236751384,8981.964625463468,0.5
-"2024-02-29","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",8928.843862586247,"Year-over-year (YoY) production values and forecast",8806.985431635932,9050.702293536562,0.5
-"2024-03-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",8935.557497453934,"Year-over-year (YoY) production values and forecast",8749.995394473197,9121.119600434668,0.5
-"2024-04-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",8916.375294347485,"Year-over-year (YoY) production values and forecast",8645.033440665644,9187.717148029327,0.5
-"2024-05-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",8902.701512222657,"Year-over-year (YoY) production values and forecast",8551.757850947906,9253.645173497405,0.5
-"2024-06-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",8896.89637310708,"Year-over-year (YoY) production values and forecast",8480.16197655193,9313.630769662232,0.5
-"2024-07-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",8899.583525589609,"Year-over-year (YoY) production values and forecast",8419.445009152112,9379.722042027108,0.5
-"2024-08-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",8897.559027181645,"Year-over-year (YoY) production values and forecast",8339.13888778191,9455.979166581381,0.5
-"2024-09-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",8919.035934309753,"Year-over-year (YoY) production values and forecast",8282.441483905533,9555.630384713975,0.5
-"2024-10-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",8929.023320641081,"Year-over-year (YoY) production values and forecast",8208.303717250554,9649.742924031609,0.5
-"2024-11-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",8931.757921498449,"Year-over-year (YoY) production values and forecast",8129.950043394708,9733.565799602187,0.5
-"2024-12-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",8922.415188656376,"Year-over-year (YoY) production values and forecast",8039.2387471493175,9805.591630163435,0.5
-"2025-01-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",8923.184769824386,"Year-over-year (YoY) production values and forecast",8018.422137896263,9827.94740175251,0.5
-"2025-02-28","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",8923.893436687402,"Year-over-year (YoY) production values and forecast",7998.841112605519,9848.945760769282,0.5
-"2025-03-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",8924.64115955339,"Year-over-year (YoY) production values and forecast",7977.762960719431,9871.519358387344,0.5
-"2025-04-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",8925.627876535136,"Year-over-year (YoY) production values and forecast",7949.418725094501,9901.837027975771,0.5
-"2025-05-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",8926.526201567744,"Year-over-year (YoY) production values and forecast",7923.153038907179,9929.899364228308,0.5
-"2025-06-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",8927.255373723849,"Year-over-year (YoY) production values and forecast",7901.476374682095,9953.0343727656,0.5
-"2025-07-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",8927.946202404624,"Year-over-year (YoY) production values and forecast",7880.617779698822,9975.274625110427,0.5
-"2025-08-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",8928.785495762133,"Year-over-year (YoY) production values and forecast",7854.905118813879,10002.66587271039,0.5
-"2025-09-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",8929.61098898526,"Year-over-year (YoY) production values and forecast",7829.268997702726,10029.952980267793,0.5
-"2025-10-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",8930.486670677908,"Year-over-year (YoY) production values and forecast",7801.7268294157475,10059.246511940068,0.5
-"2025-11-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",8931.319404577638,"Year-over-year (YoY) production values and forecast",7775.22360556344,10087.415203591836,0.5
-"2025-12-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",8932.144437298835,"Year-over-year (YoY) production values and forecast",7748.674410058403,10115.614464539267,0.5
-"2024-01-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",638.4089311074265,"Monthly production values and forecast",575.6532367513848,701.1646254634682,0.5
-"2024-02-29","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",600.5349314788203,"Monthly production values and forecast",541.4321948845463,659.6376680730943,0.5
-"2024-03-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",646.5136348676858,"Monthly production values and forecast",582.8099628372662,710.2173068981054,0.5
-"2024-04-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",869.5177968935517,"Monthly production values and forecast",783.7380461924453,955.2975475946581,0.5
-"2024-05-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",805.9262178751717,"Monthly production values and forecast",726.3244102822646,885.5280254680788,0.5
-"2024-06-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",665.294860884424,"Monthly production values and forecast",599.504125604022,731.085596164826,0.5
-"2024-07-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",640.387152482529,"Monthly production values and forecast",576.9830326001824,703.7912723648757,0.5
-"2024-08-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",789.6951737231836,"Monthly production values and forecast",711.4135507609457,867.9767966854216,0.5
-"2024-09-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",787.6572349969618,"Monthly production values and forecast",709.4829239924769,865.8315460014468,0.5
-"2024-10-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",846.5873863313275,"Monthly production values and forecast",762.4622333450202,930.7125393176348,0.5
-"2024-11-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",815.0346008573663,"Monthly production values and forecast",733.9463261441554,896.1228755705772,0.5
-"2024-12-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",816.8572671579283,"Monthly production values and forecast",735.4887037546087,898.2258305612479,0.5
-"2025-01-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",639.178512275436,"Monthly production values and forecast",554.8366274983301,723.5203970525419,0.5
-"2025-02-28","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",601.2435983418354,"Monthly production values and forecast",521.8511695938025,680.6360270898683,0.5
-"2025-03-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",647.2613577336737,"Monthly production values and forecast",561.7318109511783,732.790904516169,0.5
-"2025-04-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",870.5045138752988,"Monthly production values and forecast",755.3938105675139,985.6152171830837,0.5
-"2025-05-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",806.824542907779,"Monthly production values and forecast",700.0587240949429,913.5903617206151,0.5
-"2025-06-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",666.024033040529,"Monthly production values and forecast",577.8274613789386,754.2206047021195,0.5
-"2025-07-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",641.0779811633055,"Monthly production values and forecast",556.1244376169094,726.0315247097016,0.5
-"2025-08-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",790.5344670806933,"Monthly production values and forecast",685.700889876003,895.3680442853836,0.5
-"2025-09-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",788.4827282200874,"Monthly production values and forecast",683.8468028813229,893.118653558852,0.5
-"2025-10-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",847.4630680239753,"Monthly production values and forecast",734.9200650580401,960.0060709899105,0.5
-"2025-11-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",815.8673347570959,"Monthly production values and forecast",707.4431022918488,924.291567222343,0.5
-"2025-12-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",817.6822998791255,"Monthly production values and forecast",708.9395082495714,926.4250915086795,0.5
-"2024-01-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",8968.79872831476,"Year-over-year (YoY) production values and forecast",8883.340586808748,9054.256869820772,0.5
-"2024-02-29","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",9023.350542462595,"Year-over-year (YoY) production values and forecast",8851.526808627388,9195.174276297803,0.5
-"2024-03-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",9048.31833751387,"Year-over-year (YoY) production values and forecast",8789.230460339992,9307.406214687751,0.5
-"2024-04-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",8932.255595910317,"Year-over-year (YoY) production values and forecast",8585.013651736606,9279.497540084029,0.5
-"2024-05-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",8870.209032168821,"Year-over-year (YoY) production values and forecast",8433.931465671718,9306.486598665924,0.5
-"2024-06-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",8887.47615125846,"Year-over-year (YoY) production values and forecast",8361.289528985097,9413.662773531822,0.5
-"2024-07-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",8936.105179414808,"Year-over-year (YoY) production values and forecast",8319.143955026766,9553.066403802848,0.5
-"2024-08-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",8912.008764131058,"Year-over-year (YoY) production values and forecast",8203.415054595453,9620.602473666662,0.5
-"2024-09-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",8993.310920648757,"Year-over-year (YoY) production values and forecast",8192.234292676081,9794.387548621433,0.5
-"2024-10-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",9011.4945292019,"Year-over-year (YoY) production values and forecast",8117.091795286615,9905.897263117182,0.5
-"2024-11-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",8988.854682195924,"Year-over-year (YoY) production values and forecast",8000.289705666922,9977.41965872493,0.5
-"2024-12-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",8942.452466928615,"Year-over-year (YoY) production values and forecast",7858.89597546285,10026.008958394379,0.5
-"2025-01-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",8942.452466928615,"Year-over-year (YoY) production values and forecast",7848.54001552918,10036.364918328049,0.5
-"2025-02-28","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",8942.452466928615,"Year-over-year (YoY) production values and forecast",7838.275434699611,10046.62949915762,0.5
-"2025-03-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",8942.452466928615,"Year-over-year (YoY) production values and forecast",7828.099683967526,10056.805249889703,0.5
-"2025-04-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",8942.452466928615,"Year-over-year (YoY) production values and forecast",7818.010329473839,10066.89460438339,0.5
-"2025-05-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",8942.452466928615,"Year-over-year (YoY) production values and forecast",7808.005045339329,10076.8998885179,0.5
-"2025-06-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",8942.452466928615,"Year-over-year (YoY) production values and forecast",7798.081607062232,10086.823326794996,0.5
-"2025-07-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",8942.452466928615,"Year-over-year (YoY) production values and forecast",7788.2378854273875,10096.667048429843,0.5
-"2025-08-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",8942.452466928615,"Year-over-year (YoY) production values and forecast",7778.471840879164,10106.433092978066,0.5
-"2025-09-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",8942.452466928615,"Year-over-year (YoY) production values and forecast",7768.781518315621,10116.123415541608,0.5
-"2025-10-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",8942.452466928615,"Year-over-year (YoY) production values and forecast",7759.165042265877,10125.73989159135,0.5
-"2025-11-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",8942.452466928615,"Year-over-year (YoY) production values and forecast",7749.620612416683,10135.284321440546,0.5
-"2025-12-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",8942.452466928615,"Year-over-year (YoY) production values and forecast",7740.146499457698,10144.75843439953,0.5
-"2024-01-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",687.9987283147611,"Monthly production values and forecast",602.5405868087483,773.4568698207739,0.5
-"2024-02-29","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",645.4518141478337,"Monthly production values and forecast",559.086221818639,731.8174064770284,0.5
-"2024-03-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",664.7677950512759,"Monthly production values and forecast",577.503651712605,752.0319383899468,0.5
-"2024-04-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",772.6372583964459,"Monthly production values and forecast",684.4831913966137,860.791325396278,0.5
-"2024-05-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",757.5534362585047,"Monthly production values and forecast",668.5178139351126,846.5890585818968,0.5
-"2024-06-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",688.3671190896364,"Monthly production values and forecast",598.4580633133755,778.2761748658972,0.5
-"2024-07-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",686.3290281563491,"Monthly production values and forecast",595.5544260416701,777.103630271028,0.5
-"2024-08-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",767.6232568473981,"Monthly production values and forecast",675.9907716998364,859.2557419949599,0.5
-"2024-09-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",847.4824843865524,"Monthly production values and forecast",754.9995659494817,939.9654028236231,0.5
-"2024-10-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",854.7836085531408,"Monthly production values and forecast",761.4575026105317,948.1097144957498,0.5
-"2024-11-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",789.6601529940275,"Monthly production values and forecast",695.497910380308,883.822395607747,0.5
-"2024-12-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",779.7977847326889,"Monthly production values and forecast",684.8062697959278,874.78929966945,0.5
-"2025-01-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",687.9987283147611,"Monthly production values and forecast",592.1846268750785,783.8128297544438,0.5
-"2025-02-28","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",645.4518141478337,"Monthly production values and forecast",548.8216409890704,742.08198730659706,0.5
-"2025-03-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",664.7677950512759,"Monthly production values and forecast",567.3279009805199,762.207689122032,0.5
-"2025-04-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",772.6372583964459,"Monthly production values and forecast",674.3938369029263,870.8806798899654,0.5
-"2025-05-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",757.5534362585047,"Monthly production values and forecast",658.5125298006027,856.5943427164067,0.5
-"2025-06-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",688.3671190896364,"Monthly production values and forecast",588.5346250362794,788.1996131429934,0.5
-"2025-07-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",686.3290281563491,"Monthly production values and forecast",585.7107044068251,786.947351905873,0.5
-"2025-08-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",767.6232568473981,"Monthly production values and forecast",666.2247271516127,869.0217865431836,0.5
-"2025-09-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",847.4824843865524,"Monthly production values and forecast",745.3092433859385,949.6557253871663,0.5
-"2025-10-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",854.7836085531408,"Monthly production values and forecast",751.8410265607885,957.7261905454931,0.5
-"2025-11-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",789.6601529940275,"Monthly production values and forecast",685.9534805311135,893.3668254569415,0.5
-"2025-12-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",779.7977847326889,"Monthly production values and forecast",675.3321568369443,884.2634126284336,0.5
+"2024-01-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",690.4653963410613,"Monthly production values and forecast",584.3604684162408,796.5703242658817,0.5
+"2024-02-29","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",661.6475238277657,"Monthly production values and forecast",553.8416594067139,769.4533882488174,0.5
+"2024-03-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",676.6066369692046,"Monthly production values and forecast",568.800772548153,784.4125013902562,0.5
+"2024-04-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",752.7482169467945,"Monthly production values and forecast",644.9423525257428,860.5540813678463,0.5
+"2024-05-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",731.6096746549042,"Monthly production values and forecast",623.8038102338526,839.4155390759558,0.5
+"2024-06-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",686.1816930290623,"Monthly production values and forecast",578.3758286080106,793.9875574501141,0.5
+"2024-07-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",675.9642210674249,"Monthly production values and forecast",568.1583566463732,783.7700854884765,0.5
+"2024-08-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",705.6377174829582,"Monthly production values and forecast",597.8318530619065,813.44358190401,0.5
+"2024-09-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",732.7109590579553,"Monthly production values and forecast",624.9050946369036,840.5168234790069,0.5
+"2024-10-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",736.8101843359772,"Monthly production values and forecast",629.0043199149254,844.6160487570289,0.5
+"2024-11-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",729.3765146153848,"Monthly production values and forecast",621.5706501943332,837.1823790364365,0.5
+"2024-12-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",733.6286960604973,"Monthly production values and forecast",625.8228316394457,841.4345604815489,0.5
+"2025-01-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",692.1058066260917,"Monthly production values and forecast",579.5194908433848,804.6921224087987,0.5
+"2025-02-28","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",683.290063979426,"Monthly production values and forecast",570.5526331159182,796.0274948429338,0.5
+"2025-03-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",687.8662411977976,"Monthly production values and forecast",575.1288103342898,800.6036720613055,0.5
+"2025-04-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",711.1588896569529,"Monthly production values and forecast",598.421458793445,823.8963205204607,0.5
+"2025-05-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",704.692348843262,"Monthly production values and forecast",591.9549179797542,817.4297797067699,0.5
+"2025-06-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",690.7953689469803,"Monthly production values and forecast",578.0579380834724,803.5327998104881,0.5
+"2025-07-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",687.6697182497694,"Monthly production values and forecast",574.9322873862616,800.4071491132772,0.5
+"2025-08-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",696.7472068015494,"Monthly production values and forecast",584.0097759380416,809.4846376650572,0.5
+"2025-09-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",705.0292453255963,"Monthly production values and forecast",592.2918144620885,817.7666761891041,0.5
+"2025-10-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",706.2832488987287,"Monthly production values and forecast",593.5458180352209,819.0206797622366,0.5
+"2025-11-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",704.0091976429735,"Monthly production values and forecast",591.2717667794657,816.7466285064813,0.5
+"2025-12-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",705.3099923942079,"Monthly production values and forecast",592.5725615307001,818.0474232577158,0.5
+"2024-01-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",8944.449316404292,"Year-over-year (YoY) production values and forecast",8887.814230268847,9006.360329310468,0.5
+"2024-02-29","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",8974.98795195194,"Year-over-year (YoY) production values and forecast",8865.233867962163,9094.97512895202,0.5
+"2024-03-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",8976.281002810229,"Year-over-year (YoY) production values and forecast",8811.625920561313,9156.303071403767,0.5
+"2024-04-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",8854.037356357234,"Year-over-year (YoY) production values and forecast",8623.612716967502,9105.992832075914,0.5
+"2024-05-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",8786.709513436632,"Year-over-year (YoY) production values and forecast",8491.561787692552,9109.471396491677,0.5
+"2024-06-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",8797.72660598381,"Year-over-year (YoY) production values and forecast",8443.710617053941,9184.908462272313,0.5
+"2024-07-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",8843.132568039822,"Year-over-year (YoY) production values and forecast",8429.970554324002,9295.058283083185,0.5
+"2024-08-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",8869.672066771229,"Year-over-year (YoY) production values and forecast",8390.374233505247,9394.016344070304,0.5
+"2024-09-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",8933.702120998783,"Year-over-year (YoY) production values and forecast",8377.043948750557,9542.784874420759,0.5
+"2024-10-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",8983.115548896561,"Year-over-year (YoY) production values and forecast",8348.88903107875,9677.19758232957,0.5
+"2024-11-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",8986.13834117523,"Year-over-year (YoY) production values and forecast",8280.218629689727,9758.81475538639,0.5
+"2024-12-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",8963.73847524519,"Year-over-year (YoY) production values and forecast",8186.821166471216,9814.280397877405,0.5
+"2025-01-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",8970.899620833874,"Year-over-year (YoY) production values and forecast",8191.342161565696,9824.542299133313,0.5
+"2025-02-28","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",8976.958169349786,"Year-over-year (YoY) production values and forecast",8194.79835968292,9833.66780591105,0.5
+"2025-03-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",8982.60467157889,"Year-over-year (YoY) production values and forecast",8197.632708805946,9842.63853680465,0.5
+"2025-04-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",8988.70231837681,"Year-over-year (YoY) production values and forecast",8200.225788454278,9852.889882854051,0.5
+"2025-05-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",8994.10993497624,"Year-over-year (YoY) production values and forecast",8202.062723201785,9862.539819003774,0.5
+"2025-06-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",8998.541026999905,"Year-over-year (YoY) production values and forecast",8203.146432303627,9870.956801469161,0.5
+"2025-07-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",9002.550744812786,"Year-over-year (YoY) production values and forecast",8203.70416441228,9879.085347232925,0.5
+"2025-08-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",9006.587830308707,"Year-over-year (YoY) production values and forecast",8203.794503783318,9887.840443513074,0.5
+"2025-09-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",9010.838798498395,"Year-over-year (YoY) production values and forecast",8203.341434192469,9897.724591803191,0.5
+"2025-10-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",9014.67501359463,"Year-over-year (YoY) production values and forecast",8202.386685204403,9907.307887785411,0.5
+"2025-11-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",9017.865547248939,"Year-over-year (YoY) production values and forecast",8201.09217236275,9915.887457499033,0.5
+"2025-12-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",9020.708168777473,"Year-over-year (YoY) production values and forecast",8199.447664678526,9924.130153451799,0.5
+"2024-01-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",663.6493164042931,"Monthly production values and forecast",607.0142302688465,725.5603293104681,0.5
+"2024-02-29","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",621.4386355476464,"Monthly production values and forecast",568.3196376933159,679.5147996415528,0.5
+"2024-03-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",641.0930508582885,"Monthly production values and forecast",586.1920525991508,701.1279424517447,0.5
+"2024-04-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",766.4563535470044,"Monthly production values and forecast",700.6867964061881,838.3897606721483,0.5
+"2024-05-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",752.2721570793992,"Monthly production values and forecast",687.5490707250499,823.0785644157633,0.5
+"2024-06-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",682.1170925471778,"Monthly production values and forecast",623.2488293613884,746.5370657806368,0.5
+"2024-07-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",683.1059620560135,"Monthly production values and forecast",623.959937270061,747.849820810871,0.5
+"2024-08-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",761.2394987314052,"Monthly production values and forecast",695.1036791812438,833.6580609871183,0.5
+"2024-09-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",887.2300542275555,"Monthly production values and forecast",809.8697152453107,971.968530350455,0.5
+"2024-10-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",886.0134278977783,"Monthly production values and forecast",808.445082328194,971.0127079088116,0.5
+"2024-11-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",815.3227922786681,"Monthly production values and forecast",743.6295986109776,893.9171730568181,0.5
+"2024-12-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",803.8001340699603,"Monthly production values and forecast",732.8025367814896,881.6656424910159,0.5
+"2025-01-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",670.8104619929763,"Monthly production values and forecast",611.5352253633258,735.8222305663762,0.5
+"2025-02-28","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",627.4971840635598,"Monthly production values and forecast",571.775835810539,688.6403064192928,0.5
+"2025-03-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",646.7395530873919,"Monthly production values and forecast",589.0264017221784,710.098673345342,0.5
+"2025-04-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",772.5540003449249,"Monthly production values and forecast",703.27987605452,848.641106721548,0.5
+"2025-05-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",757.6797736788279,"Monthly production values and forecast",689.3860054725557,832.7285005654894,0.5
+"2025-06-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",686.5481845708409,"Monthly production values and forecast",624.3325384632309,754.9540482460254,0.5
+"2025-07-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",687.1156798688972,"Monthly production values and forecast",624.5176693787151,755.9783665746332,0.5
+"2025-08-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",765.2765842273259,"Monthly production values and forecast",695.19401855228,842.4131572672661,0.5
+"2025-09-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",891.4810224172437,"Monthly production values and forecast",809.4166456544639,981.8526786405733,0.5
+"2025-10-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",889.8496429940137,"Monthly production values and forecast",807.4903333401273,980.5960038910305,0.5
+"2025-11-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",818.5133259329783,"Monthly production values and forecast",742.3350857693254,902.4967427704405,0.5
+"2025-12-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",806.6427555984944,"Monthly production values and forecast",731.1580290972659,889.9083384437795,0.5
+"2024-01-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",8918.474990954373,"Year-over-year (YoY) production values and forecast",8856.741828294498,8980.208153614249,0.5
+"2024-02-29","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",8928.436748964232,"Year-over-year (YoY) production values and forecast",8808.438965296238,9048.434532632224,0.5
+"2024-03-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",8936.169550620194,"Year-over-year (YoY) production values and forecast",8753.278616936543,9119.060484303847,0.5
+"2024-04-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",8920.109800130796,"Year-over-year (YoY) production values and forecast",8652.322755570385,9187.896844691208,0.5
+"2024-05-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",8907.223746735033,"Year-over-year (YoY) production values and forecast",8560.825820003005,9253.621673467062,0.5
+"2024-06-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",8900.828405803124,"Year-over-year (YoY) production values and forecast",8489.55183473248,9312.104976873768,0.5
+"2024-07-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",8902.243149628945,"Year-over-year (YoY) production values and forecast",8428.483697291125,9376.002601966766,0.5
+"2024-08-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",8909.221948004699,"Year-over-year (YoY) production values and forecast",8362.834120338197,9455.6097756712,0.5
+"2024-09-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",8921.547024800931,"Year-over-year (YoY) production values and forecast",8293.20764845235,9549.886401149513,0.5
+"2024-10-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",8931.335159781362,"Year-over-year (YoY) production values and forecast",8219.843668805472,9642.826650757253,0.5
+"2024-11-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",8934.777154189744,"Year-over-year (YoY) production values and forecast",8143.014168398908,9726.54013998058,0.5
+"2024-12-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",8926.680072122863,"Year-over-year (YoY) production values and forecast",8054.282767104913,9799.077377140813,0.5
+"2025-01-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",8927.373760519056,"Year-over-year (YoY) production values and forecast",8032.719859021743,9822.027662016366,0.5
+"2025-02-28","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",8928.021372351304,"Year-over-year (YoY) production values and forecast",8012.418745363847,9843.623999338763,0.5
+"2025-03-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",8928.713424825894,"Year-over-year (YoY) production values and forecast",7990.559766828268,9866.867082823523,0.5
+"2025-04-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",8929.638935705621,"Year-over-year (YoY) production values and forecast",7961.128218541224,9898.149652870017,0.5
+"2025-05-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",8930.488583631912,"Year-over-year (YoY) production values and forecast",7933.945330668677,9927.031836595146,0.5
+"2025-06-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",8931.184247574885,"Year-over-year (YoY) production values and forecast",7911.568810425817,9950.799684723957,0.5
+"2025-07-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",8931.8492987813,"Year-over-year (YoY) production values and forecast",7890.074612766059,9973.623984796544,0.5
+"2025-08-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",8932.61706588398,"Year-over-year (YoY) production values and forecast",7865.155725840088,10000.07840592787,0.5
+"2025-09-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",8933.477904820113,"Year-over-year (YoY) production values and forecast",7837.112022783364,10029.84378685686,0.5
+"2025-10-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",8934.34621173945,"Year-over-year (YoY) production values and forecast",7808.732695951945,10059.959727526953,0.5
+"2025-11-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",8935.17984099264,"Year-over-year (YoY) production values and forecast",7781.409197602815,10088.950484382465,0.5
+"2025-12-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",8936.012953639975,"Year-over-year (YoY) production values and forecast",7754.03525388409,10117.990653395858,0.5
+"2024-01-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",637.6749909543748,"Monthly production values and forecast",575.9418282944996,699.4081536142501,0.5
+"2024-02-29","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",600.861758009856,"Monthly production values and forecast",542.5971370017387,659.1263790179732,0.5
+"2024-03-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",647.5328016559633,"Monthly production values and forecast",584.6396516403036,710.4259516716231,0.5
+"2024-04-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",872.6402495106016,"Monthly production values and forecast",787.7441386338415,957.5363603873617,0.5
+"2024-05-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",806.7139466042379,"Monthly production values and forecast",728.1030644326217,885.324828775854,0.5
+"2024-06-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",664.7046590680893,"Monthly production values and forecast",599.8260147294724,729.58330340670625,0.5
+"2024-07-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",639.1147438258217,"Monthly production values and forecast",576.6318625586467,701.5976250929967,0.5
+"2024-08-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",741.6787983757538,"Monthly production values and forecast",669.0504230470724,814.3071737044352,0.5
+"2024-09-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",835.5250767962328,"Monthly production values and forecast",753.5735281141531,917.4766254783126,0.5
+"2024-10-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",846.3881349804307,"Monthly production values and forecast",763.2360203531222,929.5402496077392,0.5
+"2024-11-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",815.7419944083815,"Monthly production values and forecast",735.4704995934358,896.0134892233273,0.5
+"2024-12-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",818.1029179331192,"Monthly production values and forecast",737.4685987060052,898.7372371602332,0.5
+"2025-01-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",638.3686793505669,"Monthly production values and forecast",554.3789202113296,722.3584384898043,0.5
+"2025-02-28","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",601.5093698421051,"Monthly production values and forecast",522.2960233438413,680.722716340369,0.5
+"2025-03-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",648.2248541305536,"Monthly production values and forecast",562.7806731047249,733.6690351563823,0.5
+"2025-04-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",873.5657603903284,"Monthly production values and forecast",758.3125903467987,988.818930433858,0.5
+"2025-05-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",807.563594530529,"Monthly production values and forecast",700.9201765600756,914.2070125009825,0.5
+"2025-06-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",665.4003230110636,"Monthly production values and forecast",577.4494944866108,753.3511515355165,0.5
+"2025-07-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",639.7797950322366,"Monthly production values and forecast",555.1376648988881,724.4219251655851,0.5
+"2025-08-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",742.4465654784317,"Monthly production values and forecast",644.131536121102,840.7615948357613,0.5
+"2025-09-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",836.3859157323659,"Monthly production values and forecast",725.5298250574307,947.2420064073011,0.5
+"2025-10-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",847.2564418997682,"Monthly production values and forecast",734.8566935217026,959.6561902778338,0.5
+"2025-11-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",816.5756236615714,"Monthly production values and forecast",708.147001244306,925.0042460788368,0.5
+"2025-12-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast ets",818.9360305804536,"Monthly production values and forecast",710.0946549872795,927.7774061736277,0.5
+"2024-01-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",8969.613850625557,"Year-over-year (YoY) production values and forecast",8884.291634002862,9054.93606724825,0.5
+"2024-02-29","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",9024.962149177372,"Year-over-year (YoY) production values and forecast",8853.408291973263,9196.51600638148,0.5
+"2024-03-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",9050.707790725812,"Year-over-year (YoY) production values and forecast",8792.021823656758,9309.393757794867,0.5
+"2024-04-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",8935.40423569778,"Year-over-year (YoY) production values and forecast",8588.694369022072,9282.114102373489,0.5
+"2024-05-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",8874.079386169566,"Year-over-year (YoY) production values and forecast",8438.462248189317,9309.696524149815,0.5
+"2024-06-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",8892.030673259396,"Year-over-year (YoY) production values and forecast",8366.631061531527,9417.430284987266,0.5
+"2024-07-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",8941.306323202854,"Year-over-year (YoY) production values and forecast",8325.256967612022,9557.355678793685,0.5
+"2024-08-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",8964.852984216346,"Year-over-year (YoY) production values and forecast",8257.294321134004,9672.41164729869,0.5
+"2024-09-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",8999.707046203093,"Year-over-year (YoY) production values and forecast",8199.787003020814,9799.627089385374,0.5
+"2024-10-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",9018.439005524275,"Year-over-year (YoY) production values and forecast",8125.312794907234,9911.565216141315,0.5
+"2024-11-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",8996.33488662612,"Year-over-year (YoY) production values and forecast",8009.1648098846235,9983.504963367615,0.5
+"2024-12-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",8950.455769538612,"Year-over-year (YoY) production values and forecast",7868.411028562686,10032.500510514537,0.5
+"2025-01-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",8950.455769538612,"Year-over-year (YoY) production values and forecast",7858.034503406025,10042.8770356712,0.5
+"2025-02-28","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",8950.455769538614,"Year-over-year (YoY) production values and forecast",7847.749872790674,10053.16166628655,0.5
+"2025-03-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",8950.455769538612,"Year-over-year (YoY) production values and forecast",7837.554564870186,10063.35697420704,0.5
+"2025-04-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",8950.455769538614,"Year-over-year (YoY) production values and forecast",7827.446124365111,10073.465414712115,0.5
+"2025-05-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",8950.455769538614,"Year-over-year (YoY) production values and forecast",7817.422205282975,10083.48933379425,0.5
+"2025-06-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",8950.455769538612,"Year-over-year (YoY) production values and forecast",7807.480564214257,10093.430974862966,0.5
+"2025-07-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",8950.455769538612,"Year-over-year (YoY) production values and forecast",7797.619054149456,10103.292484927766,0.5
+"2025-08-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",8950.455769538614,"Year-over-year (YoY) production values and forecast",7787.835618768446,10113.075920308776,0.5
+"2025-09-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",8950.455769538612,"Year-over-year (YoY) production values and forecast",7778.128287158631,10122.783251918594,0.5
+"2025-10-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",8950.455769538612,"Year-over-year (YoY) production values and forecast",7768.495168923103,10132.416370154124,0.5
+"2025-11-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",8950.455769538614,"Year-over-year (YoY) production values and forecast",7758.934449644065,10141.97708943316,0.5
+"2025-12-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",8950.455769538612,"Year-over-year (YoY) production values and forecast",7749.444386670424,10151.4671524068,0.5
+"2024-01-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",688.8138506255576,"Monthly production values and forecast",603.4916340028631,774.1360672482522,0.5
+"2024-02-29","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",646.2482985518141,"Monthly production values and forecast",560.0166579704002,732.479939133228,0.5
+"2024-03-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",665.5456415484401,"Monthly production values and forecast",578.41353168349406,752.6777514133862,0.5
+"2024-04-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",773.3964449719688,"Monthly production values and forecast",685.3725453653149,861.4203445786227,0.5
+"2024-05-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",758.2751504717849,"Monthly production values and forecast",669.3678791672451,847.1824217763246,0.5
+"2024-06-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",689.0512870898308,"Monthly production values and forecast",599.2688133422097,778.8337608374519,0.5
+"2024-07-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",686.9756499434575,"Monthly production values and forecast",596.3259060804957,777.6253938064193,0.5
+"2024-08-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",758.2466610134918,"Monthly production values and forecast",666.7373535219796,849.755968505004,0.5
+"2024-09-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",858.0540619867486,"Monthly production values and forecast",765.6926818868124,950.4154420866848,0.5
+"2024-10-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",855.3319593211799,"Monthly production values and forecast",762.1257918864195,948.5381267559402,0.5
+"2024-11-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",790.195881101846,"Monthly production values and forecast",696.1520149773908,884.2397472263012,0.5
+"2024-12-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",780.3208829124923,"Monthly production values and forecast",685.4462186780617,875.1955471469229,0.5
+"2025-01-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",688.8138506255576,"Monthly production values and forecast",593.1151088462011,784.5125924049141,0.5
+"2025-02-28","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",646.2482985518141,"Monthly production values and forecast",549.73202735505,742.7645697485781,0.5
+"2025-03-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",665.5456415484401,"Monthly production values and forecast",568.2182237630058,762.8730593338745,0.5
+"2025-04-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",773.3964449719688,"Monthly production values and forecast",675.2641048602391,871.5287850836985,0.5
+"2025-05-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",758.2751504717849,"Monthly production values and forecast",659.343960085109,857.2063408584607,0.5
+"2025-06-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",689.0512870898308,"Monthly production values and forecast",589.3271722734924,788.7754019061692,0.5
+"2025-07-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",686.9756499434575,"Monthly production values and forecast",586.4643960156958,787.4869038712192,0.5
+"2025-08-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",758.2466610134918,"Monthly production values and forecast",656.9539181409688,859.5394038860148,0.5
+"2025-09-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",858.0540619867486,"Monthly production values and forecast",755.9853502769964,960.1227736965008,0.5
+"2025-10-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",855.3319593211799,"Monthly production values and forecast",752.4926736508911,958.1712449914686,0.5
+"2025-11-30","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",790.195881101846,"Monthly production values and forecast",686.5912956983537,893.8004665053382,0.5
+"2025-12-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast stlm",780.3208829124923,"Monthly production values and forecast",675.9561557044209,884.6856101205636,0.5
 "2015-01-31","ՀԱԷԿ","Actual Data",NA,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
 "2015-02-28","ՀԱԷԿ","Actual Data",NA,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
 "2015-03-31","ՀԱԷԿ","Actual Data",NA,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
@@ -1663,106 +1663,106 @@
 "2017-06-30","արևային էլեկտրակայաններ","Actual Data",0,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
 "2017-07-31","արևային էլեկտրակայաններ","Actual Data",0,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
 "2017-08-31","արևային էլեկտրակայաններ","Actual Data",0,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
-"2017-09-30","արևային էլեկտրակայաններ","Actual Data",0.3,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
-"2017-10-31","արևային էլեկտրակայաններ","Actual Data",0.5,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
-"2017-11-30","արևային էլեկտրակայաններ","Actual Data",0.8,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
-"2017-12-31","արևային էլեկտրակայաններ","Actual Data",1,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
-"2018-01-31","արևային էլեկտրակայաններ","Actual Data",1.5,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
-"2018-02-28","արևային էլեկտրակայաններ","Actual Data",1.8,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
-"2018-03-31","արևային էլեկտրակայաններ","Actual Data",2.3,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
-"2018-04-30","արևային էլեկտրակայաններ","Actual Data",2.8,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
-"2018-05-31","արևային էլեկտրակայաններ","Actual Data",3.4,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
-"2018-06-30","արևային էլեկտրակայաններ","Actual Data",4.1,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
-"2018-07-31","արևային էլեկտրակայաններ","Actual Data",4.7,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
-"2018-08-31","արևային էլեկտրակայաններ","Actual Data",5.1,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
-"2018-09-30","արևային էլեկտրակայաններ","Actual Data",5.1,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
-"2018-10-31","արևային էլեկտրակայաններ","Actual Data",5.499999999999999,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
-"2018-11-30","արևային էլեկտրակայաններ","Actual Data",5.999999999999999,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
-"2018-12-31","արևային էլեկտրակայաններ","Actual Data",6.699999999999999,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
-"2019-01-31","արևային էլեկտրակայաններ","Actual Data",7.299999999999999,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
-"2019-02-28","արևային էլեկտրակայաններ","Actual Data",8.399999999999999,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
-"2019-03-31","արևային էլեկտրակայաններ","Actual Data",9.2,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
-"2019-04-30","արևային էլեկտրակայաններ","Actual Data",10.1,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
-"2019-05-31","արևային էլեկտրակայաններ","Actual Data",11,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
-"2019-06-30","արևային էլեկտրակայաններ","Actual Data",11.500000000000002,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
-"2019-07-31","արևային էլեկտրակայաններ","Actual Data",12.1,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
-"2019-08-31","արևային էլեկտրակայաններ","Actual Data",12.700000000000001,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
-"2019-09-30","արևային էլեկտրակայաններ","Actual Data",13.4,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
-"2019-10-31","արևային էլեկտրակայաններ","Actual Data",13.899999999999999,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
-"2019-11-30","արևային էլեկտրակայաններ","Actual Data",14.1,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
-"2019-12-31","արևային էլեկտրակայաններ","Actual Data",14.600000000000001,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
-"2020-01-31","արևային էլեկտրակայաններ","Actual Data",15,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
-"2020-02-29","արևային էլեկտրակայաններ","Actual Data",15.400000000000002,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
-"2020-03-31","արևային էլեկտրակայաններ","Actual Data",16.000000000000004,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
-"2020-04-30","արևային էլեկտրակայաններ","Actual Data",16.6,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
-"2020-05-31","արևային էլեկտրակայաններ","Actual Data",17.200000000000003,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
-"2020-06-30","արևային էլեկտրակայաններ","Actual Data",18.200000000000003,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
-"2020-07-31","արևային էլեկտրակայաններ","Actual Data",19.2,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
-"2020-08-31","արևային էլեկտրակայաններ","Actual Data",20.4,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
-"2020-09-30","արևային էլեկտրակայաններ","Actual Data",21.3,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
-"2020-10-31","արևային էլեկտրակայաններ","Actual Data",23.400000000000002,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
-"2020-11-30","արևային էլեկտրակայաններ","Actual Data",27.2,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
-"2020-12-31","արևային էլեկտրակայաններ","Actual Data",31.200000000000003,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
-"2021-01-31","արևային էլեկտրակայաններ","Actual Data",37.6,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
-"2021-02-28","արևային էլեկտրակայաններ","Actual Data",45.3,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
-"2021-03-31","արևային էլեկտրակայաններ","Actual Data",53.2,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
-"2021-04-30","արևային էլեկտրակայաններ","Actual Data",60.50000000000001,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
-"2021-05-31","արևային էլեկտրակայաններ","Actual Data",67.5,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
-"2021-06-30","արևային էլեկտրակայաններ","Actual Data",74.60000000000001,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
-"2021-07-31","արևային էլեկտրակայաններ","Actual Data",80.3,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
-"2021-08-31","արևային էլեկտրակայաններ","Actual Data",84.19999999999999,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
-"2021-09-30","արևային էլեկտրակայաններ","Actual Data",89.6,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
-"2021-10-31","արևային էլեկտրակայաններ","Actual Data",95.6,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
-"2021-11-30","արևային էլեկտրակայաններ","Actual Data",103.1,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
-"2021-12-31","արևային էլեկտրակայաններ","Actual Data",112,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
-"2022-01-31","արևային էլեկտրակայաններ","Actual Data",122.60000000000001,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
-"2022-02-28","արևային էլեկտրակայաններ","Actual Data",135.29999999999998,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
-"2022-03-31","արևային էլեկտրակայաններ","Actual Data",149.79999999999998,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
-"2022-04-30","արևային էլեկտրակայաններ","Actual Data",168.50000000000003,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
-"2022-05-31","արևային էլեկտրակայաններ","Actual Data",188.2,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
-"2022-06-30","արևային էլեկտրակայաններ","Actual Data",205.60000000000002,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
-"2022-07-31","արևային էլեկտրակայաններ","Actual Data",220.70000000000002,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
-"2022-08-31","արևային էլեկտրակայաններ","Actual Data",234.70000000000002,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
-"2022-09-30","արևային էլեկտրակայաններ","Actual Data",241.3,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
-"2022-10-31","արևային էլեկտրակայաններ","Actual Data",255.1,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
-"2022-11-30","արևային էլեկտրակայաններ","Actual Data",267.70000000000005,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
-"2022-12-31","արևային էլեկտրակայաններ","Actual Data",279.6,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
-"2023-01-31","արևային էլեկտրակայաններ","Actual Data",291.3,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
-"2023-02-28","արևային էլեկտրակայաններ","Actual Data",306.3,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
-"2023-03-31","արևային էլեկտրակայաններ","Actual Data",321.9,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
-"2023-04-30","արևային էլեկտրակայաններ","Actual Data",561.1,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
-"2023-05-31","արևային էլեկտրակայաններ","Actual Data",621.7,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
-"2023-06-30","արևային էլեկտրակայաններ","Actual Data",672.3,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
-"2023-07-31","արևային էլեկտրակայաններ","Actual Data",714.8,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
-"2023-08-31","արևային էլեկտրակայաններ","Actual Data",741.149180327869,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
+"2017-09-30","արևային էլեկտրակայաններ","Actual Data",0.619542761940021,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
+"2017-10-31","արևային էլեկտրակայաններ","Actual Data",1.0325712699000351,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
+"2017-11-30","արևային էլեկտրակայաններ","Actual Data",1.652114031840056,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
+"2017-12-31","արևային էլեկտրակայաններ","Actual Data",2.06514253980007,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
+"2018-01-31","արևային էլեկտրակայաններ","Actual Data",3.097713809700105,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
+"2018-02-28","արևային էլեկտրակայաններ","Actual Data",3.7172565716401262,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
+"2018-03-31","արևային էլեկտրակայաններ","Actual Data",4.749827841540161,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
+"2018-04-30","արևային էլեկտրակայաններ","Actual Data",5.782399111440196,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
+"2018-05-31","արևային էլեկտրակայաններ","Actual Data",7.021484635320238,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
+"2018-06-30","արևային էլեկտրակայաններ","Actual Data",8.467084413180286,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
+"2018-07-31","արևային էլեկտրակայաններ","Actual Data",9.706169937060329,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
+"2018-08-31","արևային էլեկտրակայաններ","Actual Data",10.532226952980356,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
+"2018-09-30","արևային էլեկտրակայաններ","Actual Data",10.532226952980356,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
+"2018-10-31","արևային էլեկտրակայաններ","Actual Data",11.358283968900384,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
+"2018-11-30","արևային էլեկտրակայաններ","Actual Data",12.390855238800418,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
+"2018-12-31","արևային էլեկտրակայաններ","Actual Data",13.836455016660466,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
+"2019-01-31","արևային էլեկտրակայաններ","Actual Data",15.07554054054051,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
+"2019-02-28","արևային էլեկտրակայաններ","Actual Data",17.347197334320587,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
+"2019-03-31","արևային էլեկտրակայաններ","Actual Data",18.99931136616064,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
+"2019-04-30","արևային էլեկտրակայաններ","Actual Data",20.857939651980708,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
+"2019-05-31","արևային էլեկտրակայաններ","Actual Data",22.71656793780077,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
+"2019-06-30","արևային էլեկտրակայաններ","Actual Data",23.749139207700804,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
+"2019-07-31","արևային էլեկտրակայաններ","Actual Data",24.988224731580843,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
+"2019-08-31","արևային էլեկտրակայաններ","Actual Data",26.22731025546089,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
+"2019-09-30","արևային էլեկտրակայաններ","Actual Data",27.672910033320935,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
+"2019-10-31","արևային էլեկտրակայաններ","Actual Data",28.70548130322097,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
+"2019-11-30","արևային էլեկտրակայաններ","Actual Data",29.11850981118099,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
+"2019-12-31","արևային էլեկտրակայաններ","Actual Data",30.151081081081024,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
+"2020-01-31","արևային էլեկտրակայաններ","Actual Data",30.977138097001053,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
+"2020-02-29","արևային էլեկտրակայաններ","Actual Data",31.80319511292108,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
+"2020-03-31","արևային էլեկտրակայաններ","Actual Data",33.04228063680112,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
+"2020-04-30","արևային էլեկտրակայաններ","Actual Data",34.28136616068116,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
+"2020-05-31","արևային էլեկտրակայաններ","Actual Data",35.52045168456121,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
+"2020-06-30","արևային էլեկտրակայաններ","Actual Data",37.58559422436127,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
+"2020-07-31","արևային էլեկտրակայաններ","Actual Data",39.650736764161344,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
+"2020-08-31","արևային էլեկտրակայաններ","Actual Data",42.128907811921415,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
+"2020-09-30","արևային էլեկտրակայաններ","Actual Data",43.98753609774149,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
+"2020-10-31","արևային էլեկտրակայաններ","Actual Data",48.32433543132164,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
+"2020-11-30","արևային էլեկտրակայաններ","Actual Data",56.1718770825619,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
+"2020-12-31","արևային էլեկտրակայաններ","Actual Data",64.43244724176218,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
+"2021-01-31","արևային էլեկտրակայաններ","Actual Data",77.64935949648263,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
+"2021-02-28","արևային էլեկտրակայաններ","Actual Data",93.55095705294316,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
+"2021-03-31","արևային էլեկտրակայաններ","Actual Data",109.86558311736371,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
+"2021-04-30","արևային էլեկտրակայաններ","Actual Data",124.94112365790423,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
+"2021-05-31","արևային էլեկտրակայաններ","Actual Data",139.3971214365047,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
+"2021-06-30","արևային էլեկտրակայաններ","Actual Data",154.05963346908518,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
+"2021-07-31","արևային էլեկտրակայաններ","Actual Data",165.83094594594561,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
+"2021-08-31","արևային էլեկտրակայաններ","Actual Data",173.88500185116587,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
+"2021-09-30","արևային էլեկտրակայաններ","Actual Data",185.03677156608623,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
+"2021-10-31","արևային էլեկտրակայաններ","Actual Data",197.42762680488664,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
+"2021-11-30","արևային էլեկտրակայաններ","Actual Data",212.91619585338717,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
+"2021-12-31","արևային էլեկտրակայաններ","Actual Data",231.29596445760782,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
+"2022-01-31","արևային էլեկտրակայաններ","Actual Data",253.18647537948854,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
+"2022-02-28","արևային էլեկտրակայաններ","Actual Data",279.4137856349494,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
+"2022-03-31","արևային էլեկտրակայաններ","Actual Data",309.35835246205045,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
+"2022-04-30","արևային էլեկտրակայաններ","Actual Data",347.9765179563118,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
+"2022-05-31","արևային էլեկտրակայաններ","Actual Data",388.6598259903731,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
+"2022-06-30","արևային էլեկտրակայաններ","Actual Data",424.5933061828943,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
+"2022-07-31","արևային էլեկտրակայաններ","Actual Data",455.7769585338754,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
+"2022-08-31","արևային էլեկտրակայաններ","Actual Data",484.68895409107637,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
+"2022-09-30","արևային էլեկտրակայաններ","Actual Data",498.3188948537569,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
+"2022-10-31","արևային էլեկտրակայաններ","Actual Data",526.8178619029978,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
+"2022-11-30","արևային էլեկտրակայաններ","Actual Data",552.8386579044787,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
+"2022-12-31","արևային էլեկտրակայաններ","Actual Data",577.4138541280996,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
+"2023-01-31","արևային էլեկտրակայաններ","Actual Data",601.5760218437604,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
+"2023-02-28","արևային էլեկտրակայաններ","Actual Data",632.5531599407614,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
+"2023-03-31","արևային էլեկտրակայաններ","Actual Data",664.7693835616425,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
+"2023-04-30","արևային էլեկտրակայաններ","Actual Data",680.9285357275078,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
+"2023-05-31","արևային էլեկտրակայաններ","Actual Data",710.8524305812658,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
+"2023-06-30","արևային էլեկտրակայաններ","Actual Data",733.0131247686039,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
+"2023-07-31","արևային էլեկտրակայաններ","Actual Data",751.0148463532024,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
+"2023-08-31","արևային էլեկտրակայաններ","Actual Data",758.5154813032209,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
 "2023-09-30","արևային էլեկտրակայաններ","Actual Data",772.2,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
-"2023-10-31","արևային էլեկտրակայաններ","Actual Data",786.6,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
-"2023-11-30","արևային էլեկտրակայաններ","Actual Data",821.7,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
-"2023-12-31","արևային էլեկտրակայաններ","Actual Data",862.5000000000001,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
-"2024-01-31","արևային էլեկտրակայաններ","Forecast auto.arima",898.2629360884757,"Year-over-year (YoY) production values and forecast",882.56915909752,913.9567130794316,0.5
-"2024-02-29","արևային էլեկտրակայաններ","Forecast auto.arima",929.6491895414488,"Year-over-year (YoY) production values and forecast",897.5487458073445,961.7496332755532,0.5
-"2024-03-31","արևային էլեկտրակայաններ","Forecast auto.arima",959.7433027590226,"Year-over-year (YoY) production values and forecast",910.9994260393305,1008.4871794787147,0.5
-"2024-04-30","արևային էլեկտրակայաններ","Forecast auto.arima",851.2456446354213,"Year-over-year (YoY) production values and forecast",785.6810534969554,916.8102357738869,0.5
-"2024-05-31","արևային էլեկտրակայաններ","Forecast auto.arima",851.9610835692115,"Year-over-year (YoY) production values and forecast",769.409657064809,934.5125100736138,0.5
-"2024-06-30","արևային էլեկտրակայաններ","Forecast auto.arima",860.5377058023201,"Year-over-year (YoY) production values and forecast",760.8365842873687,960.2388273172714,0.5
-"2024-07-31","արևային էլեկտրակայաններ","Forecast auto.arima",876.7925078959333,"Year-over-year (YoY) production values and forecast",759.7806609890918,993.8043548027749,0.5
-"2024-08-31","արևային էլեկտրակայաններ","Forecast auto.arima",905.1607306153195,"Year-over-year (YoY) production values and forecast",770.678665735428,1039.6427954952107,0.5
-"2024-09-30","արևային էլեկտրակայաններ","Forecast auto.arima",934.9059786602226,"Year-over-year (YoY) production values and forecast",782.7956558510537,1087.0163014693915,0.5
-"2024-10-31","արևային էլեկտրակայաններ","Forecast auto.arima",969.7303968717658,"Year-over-year (YoY) production values and forecast",799.8351822394351,1139.625611504097,0.5
-"2024-11-30","արևային էլեկտրակայաններ","Forecast auto.arima",991.1914634534022,"Year-over-year (YoY) production values and forecast",803.3560909231107,1179.0268359836937,0.5
-"2024-12-31","արևային էլեկտրակայաններ","Forecast auto.arima",1008.8313187092701,"Year-over-year (YoY) production values and forecast",802.9018545579856,1214.7607828605546,0.5
-"2025-01-31","արևային էլեկտրակայաններ","Forecast auto.arima",1027.5660389828315,"Year-over-year (YoY) production values and forecast",817.3606372648898,1237.7714407007732,0.5
-"2025-02-28","արևային էլեկտրակայաններ","Forecast auto.arima",1045.156658166063,"Year-over-year (YoY) production values and forecast",830.9486761047799,1259.3646402273462,0.5
-"2025-03-31","արևային էլեկտրակայաններ","Forecast auto.arima",1062.346642082038,"Year-over-year (YoY) production values and forecast",844.0847256095282,1280.6085585545477,0.5
-"2025-04-30","արևային էլեկտրակայաններ","Forecast auto.arima",1025.7364804826861,"Year-over-year (YoY) production values and forecast",803.3363245901594,1248.1366363752134,0.5
-"2025-05-31","արևային էլեկտրակայաններ","Forecast auto.arima",1031.539775880024,"Year-over-year (YoY) production values and forecast",804.9131030848133,1258.166448675235,0.5
-"2025-06-30","արևային էլեկտրակայաններ","Forecast auto.arima",1040.396370530737,"Year-over-year (YoY) production values and forecast",809.4553668700422,1271.3373741914318,0.5
-"2025-07-31","արևային էլեկտրակայաններ","Forecast auto.arima",1052.2347004867322,"Year-over-year (YoY) production values and forecast",816.8927443684001,1287.5766566050643,0.5
-"2025-08-31","արևային էլեկտրակայաններ","Forecast auto.arima",1068.7769868175883,"Year-over-year (YoY) production values and forecast",828.9487349686028,1308.6052386665738,0.5
-"2025-09-30","արևային էլեկտրակայաններ","Forecast auto.arima",1085.854009291222,"Year-over-year (YoY) production values and forecast",841.4553701594546,1330.252648422989,0.5
-"2025-10-31","արևային էլեկտրակայաններ","Forecast auto.arima",1104.9033978681757,"Year-over-year (YoY) production values and forecast",855.8514872874582,1353.9553084488937,0.5
-"2025-11-30","արևային էլեկտրակայաններ","Forecast auto.arima",1118.7634717867859,"Year-over-year (YoY) production values and forecast",864.9765677989121,1372.5503757746596,0.5
-"2025-12-31","արևային էլեկտրակայաններ","Forecast auto.arima",1131.1396763390771,"Year-over-year (YoY) production values and forecast",872.5371760370696,1389.7421766410848,0.5
+"2023-10-31","արևային էլեկտրակայաններ","Actual Data",762.1017215845984,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
+"2023-11-30","արևային էլեկտրակայաններ","Actual Data",770.6796723435767,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
+"2023-12-31","արևային էլեկտրակայաններ","Actual Data",783.5729378008149,"Year-over-year (YoY) production values and forecast",NA,NA,0.5
+"2024-01-31","արևային էլեկտրակայաններ","Forecast auto.arima",792.302929985668,"Year-over-year (YoY) production values and forecast",789.1453279215003,795.4605320498356,0.5
+"2024-02-29","արևային էլեկտրակայաններ","Forecast auto.arima",793.4090242790088,"Year-over-year (YoY) production values and forecast",785.785907644585,801.0321409134324,0.5
+"2024-03-31","արևային էլեկտրակայաններ","Forecast auto.arima",792.0162062010265,"Year-over-year (YoY) production values and forecast",778.9239772109546,805.1084351910984,0.5
+"2024-04-30","արևային էլեկտրակայաններ","Forecast auto.arima",797.8822317884104,"Year-over-year (YoY) production values and forecast",778.4748179601697,817.289645616651,0.5
+"2024-05-31","արևային էլեկտրակայաններ","Forecast auto.arima",794.9523518386706,"Year-over-year (YoY) production values and forecast",768.4843481539258,821.4203555234153,0.5
+"2024-06-30","արևային էլեկտրակայաններ","Forecast auto.arima",798.0930632172963,"Year-over-year (YoY) production values and forecast",763.8905719151779,832.2955545194146,0.5
+"2024-07-31","արևային էլեկտրակայաններ","Forecast auto.arima",807.2355407233281,"Year-over-year (YoY) production values and forecast",764.6788487841147,849.7922326625414,0.5
+"2024-08-31","արևային էլեկտրակայաններ","Forecast auto.arima",825.8013687173404,"Year-over-year (YoY) production values and forecast",774.3136612778399,877.2890761568411,0.5
+"2024-09-30","արևային էլեկտրակայաններ","Forecast auto.arima",844.5710795688293,"Year-over-year (YoY) production values and forecast",783.6106002304649,905.5315589071939,0.5
+"2024-10-31","արևային էլեկտրակայաններ","Forecast auto.arima",869.990596450654,"Year-over-year (YoY) production values and forecast",799.0449392455997,940.9362536557088,0.5
+"2024-11-30","արևային էլեկտրակայաններ","Forecast auto.arima",881.0346339401897,"Year-over-year (YoY) production values and forecast",799.6164342257458,962.4528336546341,0.5
+"2024-12-31","արևային էլեկտրակայաններ","Forecast auto.arima",887.5312512798861,"Year-over-year (YoY) production values and forecast",795.1748379913477,979.8876645684251,0.5
+"2025-01-31","արևային էլեկտրակայաններ","Forecast auto.arima",891.3636762913036,"Year-over-year (YoY) production values and forecast",790.3726494280819,992.3547031545256,0.5
+"2025-02-28","արևային էլեկտրակայաններ","Forecast auto.arima",892.724276386812,"Year-over-year (YoY) production values and forecast",783.6104012357533,1001.8381515378707,0.5
+"2025-03-31","արևային էլեկտրակայաններ","Forecast auto.arima",892.5070662012705,"Year-over-year (YoY) production values and forecast",775.525234416728,1009.4888979858129,0.5
+"2025-04-30","արևային էլեկտրակայաններ","Forecast auto.arima",888.9624328835785,"Year-over-year (YoY) production values and forecast",764.2498634329788,1013.675002334178,0.5
+"2025-05-31","արևային էլեկտրակայաններ","Forecast auto.arima",884.7998553000423,"Year-over-year (YoY) production values and forecast",752.4271940380155,1017.172516562069,0.5
+"2025-06-30","արևային էլեկտրակայաններ","Forecast auto.arima",882.4539716828813,"Year-over-year (YoY) production values and forecast",742.449959351634,1022.4579840141283,0.5
+"2025-07-31","արևային էլեկտրակայաններ","Forecast auto.arima",882.6641347009971,"Year-over-year (YoY) production values and forecast",735.0293447986558,1030.2989246033383,0.5
+"2025-08-31","արևային էլեկտրակայաններ","Forecast auto.arima",884.636603024824,"Year-over-year (YoY) production values and forecast",729.3518136330254,1039.9213924166222,0.5
+"2025-09-30","արևային էլեկտրակայաններ","Forecast auto.arima",892.1052164908638,"Year-over-year (YoY) production values and forecast",729.1368419293674,1055.07359105236,0.5
+"2025-10-31","արևային էլեկտրակայաններ","Forecast auto.arima",892.7686456344044,"Year-over-year (YoY) production values and forecast",722.0724278071704,1063.4648634616385,0.5
+"2025-11-30","արևային էլեկտրակայաններ","Forecast auto.arima",893.3814816001304,"Year-over-year (YoY) production values and forecast",714.9050901169672,1071.857873083294,0.5
+"2025-12-31","արևային էլեկտրակայաններ","Forecast auto.arima",893.6400168452581,"Year-over-year (YoY) production values and forecast",707.3249335152861,1079.9551001752302,0.5
 "2015-01-31","արևային էլեկտրակայաններ","Actual Data",0,"Monthly production values and forecast",NA,NA,0.5
 "2015-02-28","արևային էլեկտրակայաններ","Actual Data",0,"Monthly production values and forecast",NA,NA,0.5
 "2015-03-31","արևային էլեկտրակայաններ","Actual Data",0,"Monthly production values and forecast",NA,NA,0.5
@@ -1795,250 +1795,250 @@
 "2017-06-30","արևային էլեկտրակայաններ","Actual Data",0,"Monthly production values and forecast",NA,NA,0.5
 "2017-07-31","արևային էլեկտրակայաններ","Actual Data",0,"Monthly production values and forecast",NA,NA,0.5
 "2017-08-31","արևային էլեկտրակայաններ","Actual Data",0,"Monthly production values and forecast",NA,NA,0.5
-"2017-09-30","արևային էլեկտրակայաններ","Actual Data",0.3,"Monthly production values and forecast",NA,NA,0.5
-"2017-10-31","արևային էլեկտրակայաններ","Actual Data",0.2,"Monthly production values and forecast",NA,NA,0.5
-"2017-11-30","արևային էլեկտրակայաններ","Actual Data",0.3,"Monthly production values and forecast",NA,NA,0.5
-"2017-12-31","արևային էլեկտրակայաններ","Actual Data",0.19999999999999996,"Monthly production values and forecast",NA,NA,0.5
-"2018-01-31","արևային էլեկտրակայաններ","Actual Data",0.5,"Monthly production values and forecast",NA,NA,0.5
-"2018-02-28","արևային էլեկտրակայաններ","Actual Data",0.30000000000000004,"Monthly production values and forecast",NA,NA,0.5
-"2018-03-31","արևային էլեկտրակայաններ","Actual Data",0.5,"Monthly production values and forecast",NA,NA,0.5
-"2018-04-30","արևային էլեկտրակայաններ","Actual Data",0.5,"Monthly production values and forecast",NA,NA,0.5
-"2018-05-31","արևային էլեկտրակայաններ","Actual Data",0.6000000000000001,"Monthly production values and forecast",NA,NA,0.5
-"2018-06-30","արևային էլեկտրակայաններ","Actual Data",0.6999999999999997,"Monthly production values and forecast",NA,NA,0.5
-"2018-07-31","արևային էլեկտրակայաններ","Actual Data",0.6000000000000005,"Monthly production values and forecast",NA,NA,0.5
-"2018-08-31","արևային էլեկտրակայաններ","Actual Data",0.39999999999999947,"Monthly production values and forecast",NA,NA,0.5
-"2018-09-30","արևային էլեկտրակայաններ","Actual Data",0.2999999999999998,"Monthly production values and forecast",NA,NA,0.5
-"2018-10-31","արևային էլեկտրակայաններ","Actual Data",0.6,"Monthly production values and forecast",NA,NA,0.5
-"2018-11-30","արևային էլեկտրակայաններ","Actual Data",0.7999999999999997,"Monthly production values and forecast",NA,NA,0.5
-"2018-12-31","արևային էլեկտրակայաններ","Actual Data",0.9000000000000001,"Monthly production values and forecast",NA,NA,0.5
-"2019-01-31","արևային էլեկտրակայաններ","Actual Data",1.0999999999999996,"Monthly production values and forecast",NA,NA,0.5
-"2019-02-28","արևային էլեկտրակայաններ","Actual Data",1.4000000000000004,"Monthly production values and forecast",NA,NA,0.5
-"2019-03-31","արևային էլեկտրակայաններ","Actual Data",1.2999999999999998,"Monthly production values and forecast",NA,NA,0.5
-"2019-04-30","արևային էլեկտրակայաններ","Actual Data",1.4000000000000004,"Monthly production values and forecast",NA,NA,0.5
-"2019-05-31","արևային էլեկտրակայաններ","Actual Data",1.5,"Monthly production values and forecast",NA,NA,0.5
-"2019-06-30","արևային էլեկտրակայաններ","Actual Data",1.200000000000001,"Monthly production values and forecast",NA,NA,0.5
-"2019-07-31","արևային էլեկտրակայաններ","Actual Data",1.1999999999999993,"Monthly production values and forecast",NA,NA,0.5
-"2019-08-31","արևային էլեկտրակայաններ","Actual Data",1,"Monthly production values and forecast",NA,NA,0.5
-"2019-09-30","արևային էլեկտրակայաններ","Actual Data",1,"Monthly production values and forecast",NA,NA,0.5
-"2019-10-31","արևային էլեկտրակայաններ","Actual Data",1.1,"Monthly production values and forecast",NA,NA,0.5
-"2019-11-30","արևային էլեկտրակայաններ","Actual Data",1,"Monthly production values and forecast",NA,NA,0.5
-"2019-12-31","արևային էլեկտրակայաններ","Actual Data",1.4,"Monthly production values and forecast",NA,NA,0.5
-"2020-01-31","արևային էլեկտրակայաններ","Actual Data",1.5,"Monthly production values and forecast",NA,NA,0.5
-"2020-02-29","արևային էլեկտրակայաններ","Actual Data",1.7999999999999998,"Monthly production values and forecast",NA,NA,0.5
-"2020-03-31","արևային էլեկտրակայաններ","Actual Data",1.9000000000000012,"Monthly production values and forecast",NA,NA,0.5
-"2020-04-30","արևային էլեկտրակայաններ","Actual Data",2,"Monthly production values and forecast",NA,NA,0.5
-"2020-05-31","արևային էլեկտրակայաններ","Actual Data",2.1000000000000014,"Monthly production values and forecast",NA,NA,0.5
-"2020-06-30","արևային էլեկտրակայաններ","Actual Data",2.1999999999999975,"Monthly production values and forecast",NA,NA,0.5
-"2020-07-31","արևային էլեկտրակայաններ","Actual Data",2.1999999999999993,"Monthly production values and forecast",NA,NA,0.5
-"2020-08-31","արևային էլեկտրակայաններ","Actual Data",2.1999999999999993,"Monthly production values and forecast",NA,NA,0.5
-"2020-09-30","արևային էլեկտրակայաններ","Actual Data",1.900000000000002,"Monthly production values and forecast",NA,NA,0.5
-"2020-10-31","արևային էլեկտրակայաններ","Actual Data",3.2,"Monthly production values and forecast",NA,NA,0.5
-"2020-11-30","արևային էլեկտրակայաններ","Actual Data",4.8,"Monthly production values and forecast",NA,NA,0.5
-"2020-12-31","արևային էլեկտրակայաններ","Actual Data",5.4,"Monthly production values and forecast",NA,NA,0.5
-"2021-01-31","արևային էլեկտրակայաններ","Actual Data",7.9,"Monthly production values and forecast",NA,NA,0.5
-"2021-02-28","արևային էլեկտրակայաններ","Actual Data",9.5,"Monthly production values and forecast",NA,NA,0.5
-"2021-03-31","արևային էլեկտրակայաններ","Actual Data",9.8,"Monthly production values and forecast",NA,NA,0.5
-"2021-04-30","արևային էլեկտրակայաններ","Actual Data",9.300000000000004,"Monthly production values and forecast",NA,NA,0.5
-"2021-05-31","արևային էլեկտրակայաններ","Actual Data",9.099999999999994,"Monthly production values and forecast",NA,NA,0.5
-"2021-06-30","արևային էլեկտրակայաններ","Actual Data",9.299999999999995,"Monthly production values and forecast",NA,NA,0.5
-"2021-07-31","արևային էլեկտրակայաններ","Actual Data",7.900000000000006,"Monthly production values and forecast",NA,NA,0.5
-"2021-08-31","արևային էլեկտրակայաններ","Actual Data",6.099999999999994,"Monthly production values and forecast",NA,NA,0.5
-"2021-09-30","արևային էլեկտրակայաններ","Actual Data",7.299999999999997,"Monthly production values and forecast",NA,NA,0.5
-"2021-10-31","արևային էլեկտրակայաններ","Actual Data",9.2,"Monthly production values and forecast",NA,NA,0.5
-"2021-11-30","արևային էլեկտրակայաններ","Actual Data",12.3,"Monthly production values and forecast",NA,NA,0.5
-"2021-12-31","արևային էլեկտրակայաններ","Actual Data",14.300000000000011,"Monthly production values and forecast",NA,NA,0.5
-"2022-01-31","արևային էլեկտրակայաններ","Actual Data",18.5,"Monthly production values and forecast",NA,NA,0.5
-"2022-02-28","արևային էլեկտրակայաններ","Actual Data",22.19999999999999,"Monthly production values and forecast",NA,NA,0.5
-"2022-03-31","արևային էլեկտրակայաններ","Actual Data",24.299999999999997,"Monthly production values and forecast",NA,NA,0.5
-"2022-04-30","արևային էլեկտրակայաններ","Actual Data",28.000000000000018,"Monthly production values and forecast",NA,NA,0.5
-"2022-05-31","արևային էլեկտրակայաններ","Actual Data",28.799999999999983,"Monthly production values and forecast",NA,NA,0.5
-"2022-06-30","արևային էլեկտրակայաններ","Actual Data",26.700000000000017,"Monthly production values and forecast",NA,NA,0.5
-"2022-07-31","արևային էլեկտրակայաններ","Actual Data",23,"Monthly production values and forecast",NA,NA,0.5
-"2022-08-31","արևային էլեկտրակայաններ","Actual Data",20.09999999999999,"Monthly production values and forecast",NA,NA,0.5
-"2022-09-30","արևային էլեկտրակայաններ","Actual Data",13.900000000000006,"Monthly production values and forecast",NA,NA,0.5
-"2022-10-31","արևային էլեկտրակայաններ","Actual Data",23,"Monthly production values and forecast",NA,NA,0.5
-"2022-11-30","արևային էլեկտրակայաններ","Actual Data",24.90000000000001,"Monthly production values and forecast",NA,NA,0.5
-"2022-12-31","արևային էլեկտրակայաններ","Actual Data",26.19999999999999,"Monthly production values and forecast",NA,NA,0.5
-"2023-01-31","արևային էլեկտրակայաններ","Actual Data",30.200000000000003,"Monthly production values and forecast",NA,NA,0.5
-"2023-02-28","արևային էլեկտրակայաններ","Actual Data",37.2,"Monthly production values and forecast",NA,NA,0.5
-"2023-03-31","արևային էլեկտրակայաններ","Actual Data",39.900000000000006,"Monthly production values and forecast",NA,NA,0.5
-"2023-04-30","արևային էլեկտրակայաններ","Actual Data",267.20000000000005,"Monthly production values and forecast",NA,NA,0.5
+"2017-09-30","արևային էլեկտրակայաններ","Actual Data",0.619542761940021,"Monthly production values and forecast",NA,NA,0.5
+"2017-10-31","արևային էլեկտրակայաններ","Actual Data",0.413028507960014,"Monthly production values and forecast",NA,NA,0.5
+"2017-11-30","արևային էլեկտրակայաններ","Actual Data",0.6195427619400209,"Monthly production values and forecast",NA,NA,0.5
+"2017-12-31","արևային էլեկտրակայաններ","Actual Data",0.4130285079600138,"Monthly production values and forecast",NA,NA,0.5
+"2018-01-31","արևային էլեկտրակայաններ","Actual Data",1.032571269900035,"Monthly production values and forecast",NA,NA,0.5
+"2018-02-28","արևային էլեկտրակայաններ","Actual Data",0.6195427619400213,"Monthly production values and forecast",NA,NA,0.5
+"2018-03-31","արևային էլեկտրակայաններ","Actual Data",1.032571269900035,"Monthly production values and forecast",NA,NA,0.5
+"2018-04-30","արևային էլեկտրակայաններ","Actual Data",1.032571269900035,"Monthly production values and forecast",NA,NA,0.5
+"2018-05-31","արևային էլեկտրակայաններ","Actual Data",1.239085523880043,"Monthly production values and forecast",NA,NA,0.5
+"2018-06-30","արևային էլեկտրակայաններ","Actual Data",1.445599777860048,"Monthly production values and forecast",NA,NA,0.5
+"2018-07-31","արևային էլեկտրակայաններ","Actual Data",1.239085523880043,"Monthly production values and forecast",NA,NA,0.5
+"2018-08-31","արևային էլեկտրակայաններ","Actual Data",0.8260570159200267,"Monthly production values and forecast",NA,NA,0.5
+"2018-09-30","արևային էլեկտրակայաններ","Actual Data",0.6195427619400213,"Monthly production values and forecast",NA,NA,0.5
+"2018-10-31","արևային էլեկտրակայաններ","Actual Data",1.2390855238800418,"Monthly production values and forecast",NA,NA,0.5
+"2018-11-30","արևային էլեկտրակայաններ","Actual Data",1.6521140318400551,"Monthly production values and forecast",NA,NA,0.5
+"2018-12-31","արևային էլեկտրակայաններ","Actual Data",1.8586282858200631,"Monthly production values and forecast",NA,NA,0.5
+"2019-01-31","արևային էլեկտրակայաններ","Actual Data",2.2716567937800765,"Monthly production values and forecast",NA,NA,0.5
+"2019-02-28","արևային էլեկտրակայաններ","Actual Data",2.891199555720098,"Monthly production values and forecast",NA,NA,0.5
+"2019-03-31","արևային էլեկտրակայաններ","Actual Data",2.6846853017400907,"Monthly production values and forecast",NA,NA,0.5
+"2019-04-30","արևային էլեկտրակայաններ","Actual Data",2.891199555720098,"Monthly production values and forecast",NA,NA,0.5
+"2019-05-31","արևային էլեկտրակայաններ","Actual Data",3.0977138097001067,"Monthly production values and forecast",NA,NA,0.5
+"2019-06-30","արևային էլեկտրակայաններ","Actual Data",2.4781710477600853,"Monthly production values and forecast",NA,NA,0.5
+"2019-07-31","արևային էլեկտրակայաններ","Actual Data",2.478171047760082,"Monthly production values and forecast",NA,NA,0.5
+"2019-08-31","արևային էլեկտրակայաններ","Actual Data",2.065142539800071,"Monthly production values and forecast",NA,NA,0.5
+"2019-09-30","արևային էլեկտրակայաններ","Actual Data",2.0651425398000676,"Monthly production values and forecast",NA,NA,0.5
+"2019-10-31","արևային էլեկտրակայաններ","Actual Data",2.271656793780077,"Monthly production values and forecast",NA,NA,0.5
+"2019-11-30","արևային էլեկտրակայաններ","Actual Data",2.06514253980007,"Monthly production values and forecast",NA,NA,0.5
+"2019-12-31","արևային էլեկտրակայաններ","Actual Data",2.891199555720098,"Monthly production values and forecast",NA,NA,0.5
+"2020-01-31","արևային էլեկտրակայաններ","Actual Data",3.097713809700104,"Monthly production values and forecast",NA,NA,0.5
+"2020-02-29","արևային էլեկտրակայաններ","Actual Data",3.7172565716401262,"Monthly production values and forecast",NA,NA,0.5
+"2020-03-31","արևային էլեկտրակայաններ","Actual Data",3.923770825620134,"Monthly production values and forecast",NA,NA,0.5
+"2020-04-30","արևային էլեկտրակայաններ","Actual Data",4.130285079600142,"Monthly production values and forecast",NA,NA,0.5
+"2020-05-31","արևային էլեկտրակայաններ","Actual Data",4.336799333580149,"Monthly production values and forecast",NA,NA,0.5
+"2020-06-30","արևային էլեկտրակայաններ","Actual Data",4.543313587560146,"Monthly production values and forecast",NA,NA,0.5
+"2020-07-31","արևային էլեկտրակայաններ","Actual Data",4.5433135875601565,"Monthly production values and forecast",NA,NA,0.5
+"2020-08-31","արևային էլեկտրակայաններ","Actual Data",4.543313587560149,"Monthly production values and forecast",NA,NA,0.5
+"2020-09-30","արևային էլեկտրակայաններ","Actual Data",3.9237708256201382,"Monthly production values and forecast",NA,NA,0.5
+"2020-10-31","արևային էլեկտրակայաններ","Actual Data",6.608456127360224,"Monthly production values and forecast",NA,NA,0.5
+"2020-11-30","արևային էլեկտրակայաններ","Actual Data",9.912684191040334,"Monthly production values and forecast",NA,NA,0.5
+"2020-12-31","արևային էլեկտրակայաններ","Actual Data",11.151769714920375,"Monthly production values and forecast",NA,NA,0.5
+"2021-01-31","արևային էլեկտրակայաններ","Actual Data",16.314626064420555,"Monthly production values and forecast",NA,NA,0.5
+"2021-02-28","արևային էլեկտրակայաններ","Actual Data",19.618854128100654,"Monthly production values and forecast",NA,NA,0.5
+"2021-03-31","արևային էլեկտրակայաններ","Actual Data",20.23839689004069,"Monthly production values and forecast",NA,NA,0.5
+"2021-04-30","արևային էլեկտրակայաններ","Actual Data",19.205825620140654,"Monthly production values and forecast",NA,NA,0.5
+"2021-05-31","արևային էլեկտրակայաններ","Actual Data",18.792797112180622,"Monthly production values and forecast",NA,NA,0.5
+"2021-06-30","արևային էլեկտրակայաններ","Actual Data",19.205825620140644,"Monthly production values and forecast",NA,NA,0.5
+"2021-07-31","արևային էլեկտրակայաններ","Actual Data",16.314626064420565,"Monthly production values and forecast",NA,NA,0.5
+"2021-08-31","արևային էլեկտրակայաններ","Actual Data",12.597369492780416,"Monthly production values and forecast",NA,NA,0.5
+"2021-09-30","արևային էլեկտրակայաններ","Actual Data",15.075540540540487,"Monthly production values and forecast",NA,NA,0.5
+"2021-10-31","արևային էլեկտրակայաններ","Actual Data",18.999311366160644,"Monthly production values and forecast",NA,NA,0.5
+"2021-11-30","արևային էլեկտրակայաններ","Actual Data",25.401253239540853,"Monthly production values and forecast",NA,NA,0.5
+"2021-12-31","արևային էլեկտրակայաններ","Actual Data",29.531538319141028,"Monthly production values and forecast",NA,NA,0.5
+"2022-01-31","արևային էլեկտրակայաններ","Actual Data",38.20513698630128,"Monthly production values and forecast",NA,NA,0.5
+"2022-02-28","արևային էլեկտրակայաններ","Actual Data",45.84616438356153,"Monthly production values and forecast",NA,NA,0.5
+"2022-03-31","արևային էլեկտրակայաններ","Actual Data",50.18296371714169,"Monthly production values and forecast",NA,NA,0.5
+"2022-04-30","արևային էլեկտրակայաններ","Actual Data",57.82399111440199,"Monthly production values and forecast",NA,NA,0.5
+"2022-05-31","արևային էլեկտրակայաններ","Actual Data",59.47610514624199,"Monthly production values and forecast",NA,NA,0.5
+"2022-06-30","արևային էլեկտրակայաններ","Actual Data",55.13930581266186,"Monthly production values and forecast",NA,NA,0.5
+"2022-07-31","արևային էլեկտրակայաններ","Actual Data",47.498278415401614,"Monthly production values and forecast",NA,NA,0.5
+"2022-08-31","արևային էլեկտրակայաններ","Actual Data",41.5093650499814,"Monthly production values and forecast",NA,NA,0.5
+"2022-09-30","արևային էլեկտրակայաններ","Actual Data",28.705481303221006,"Monthly production values and forecast",NA,NA,0.5
+"2022-10-31","արևային էլեկտրակայաններ","Actual Data",47.49827841540161,"Monthly production values and forecast",NA,NA,0.5
+"2022-11-30","արևային էլեկտրակայաններ","Actual Data",51.422049241021746,"Monthly production values and forecast",NA,NA,0.5
+"2022-12-31","արևային էլեկտրակայաններ","Actual Data",54.106734542761814,"Monthly production values and forecast",NA,NA,0.5
+"2023-01-31","արևային էլեկտրակայաններ","Actual Data",62.3673047019621,"Monthly production values and forecast",NA,NA,0.5
+"2023-02-28","արևային էլեկտրակայաններ","Actual Data",76.8233024805626,"Monthly production values and forecast",NA,NA,0.5
+"2023-03-31","արևային էլեկտրակայաններ","Actual Data",82.39918733802278,"Monthly production values and forecast",NA,NA,0.5
+"2023-04-30","արևային էլեկտրակայաններ","Actual Data",73.98314328026737,"Monthly production values and forecast",NA,NA,0.5
 "2023-05-31","արևային էլեկտրակայաններ","Actual Data",89.39999999999998,"Monthly production values and forecast",NA,NA,0.5
 "2023-06-30","արևային էլեկտրակայաններ","Actual Data",77.29999999999995,"Monthly production values and forecast",NA,NA,0.5
 "2023-07-31","արևային էլեկտրակայաններ","Actual Data",65.5,"Monthly production values and forecast",NA,NA,0.5
-"2023-08-31","արևային էլեկտրակայաններ","Actual Data",46.44918032786893,"Monthly production values and forecast",NA,NA,0.5
-"2023-09-30","արևային էլեկտրակայաններ","Actual Data",44.95081967213116,"Monthly production values and forecast",NA,NA,0.5
+"2023-08-31","արևային էլեկտրակայաններ","Actual Data",49.00999999999999,"Monthly production values and forecast",NA,NA,0.5
+"2023-09-30","արևային էլեկտրակայաններ","Actual Data",42.3900000000001,"Monthly production values and forecast",NA,NA,0.5
 "2023-10-31","արևային էլեկտրակայաններ","Actual Data",37.4,"Monthly production values and forecast",NA,NA,0.5
 "2023-11-30","արևային էլեկտրակայաններ","Actual Data",60.00000000000001,"Monthly production values and forecast",NA,NA,0.5
 "2023-12-31","արևային էլեկտրակայաններ","Actual Data",67,"Monthly production values and forecast",NA,NA,0.5
-"2024-01-31","արևային էլեկտրակայաններ","Forecast auto.arima",65.96293608847571,"Monthly production values and forecast",50.269159097519946,81.65671307943148,0.5
-"2024-02-29","արևային էլեկտրակայաններ","Forecast auto.arima",68.58625345297308,"Monthly production values and forecast",52.17958670982451,84.99292019612164,0.5
-"2024-03-31","արևային էլեկտրակայաններ","Forecast auto.arima",69.99411321757373,"Monthly production values and forecast",53.350680231986,86.63754620316146,0.5
-"2024-04-30","արևային էլեկտրակայաններ","Forecast auto.arima",158.70234187639863,"Monthly production values and forecast",141.88162745762503,175.52305629517224,0.5
-"2024-05-31","արևային էլեկտրակայաններ","Forecast auto.arima",90.11543893379024,"Monthly production values and forecast",73.12860356785347,107.10227429972701,0.5
-"2024-06-30","արևային էլեկտրակայաններ","Forecast auto.arima",85.87662223310858,"Monthly production values and forecast",68.72692722255965,103.0263172436575,0.5
-"2024-07-31","արևային էլեկտրակայաններ","Forecast auto.arima",81.75480209361322,"Monthly production values and forecast",64.44407670172296,99.06552748550348,0.5
-"2024-08-31","արևային էլեկտրակայաններ","Forecast auto.arima",74.81740304725494,"Monthly production values and forecast",57.34718507420526,92.28762102030463,0.5
-"2024-09-30","արևային էլեկտրակայաններ","Forecast auto.arima",74.69606771703432,"Monthly production values and forecast",57.067809787756744,92.3243256463119,0.5
-"2024-10-31","արևային էլեկտրակայաններ","Forecast auto.arima",72.22441821154334,"Monthly production values and forecast",54.43952638838147,90.00931003470521,0.5
-"2024-11-30","արևային էլեկտրակայաններ","Forecast auto.arima",81.46106658163636,"Monthly production values and forecast",63.52090868367565,99.40122447959706,0.5
-"2024-12-31","արևային էլեկտրակայաններ","Forecast auto.arima",84.63985525586796,"Monthly production values and forecast",66.54576363487485,102.73394687686107,0.5
-"2025-01-31","արևային էլեկտրակայաններ","Forecast auto.arima",84.69765636203708,"Monthly production values and forecast",64.72794180442416,104.66737091965,0.5
-"2025-02-28","արևային էլեկտրակայաններ","Forecast auto.arima",86.17687263620458,"Monthly production values and forecast",65.76762554971457,106.58611972269459,0.5
-"2025-03-31","արևային էլեկտրակայաններ","Forecast auto.arima",87.1840971335486,"Monthly production values and forecast",66.48672973673423,107.88146453036298,0.5
-"2025-04-30","արևային էլեկտրակայաններ","Forecast auto.arima",122.09218027704708,"Monthly production values and forecast",101.1332264382564,143.05113411583775,0.5
-"2025-05-31","արևային էլեկտրակայաններ","Forecast auto.arima",95.91873433112801,"Monthly production values and forecast",74.70538206250737,117.13208659974865,0.5
-"2025-06-30","արևային էլեկտրակայաններ","Forecast auto.arima",94.7332168838214,"Monthly production values and forecast",73.26919100778841,116.19724275985439,0.5
-"2025-07-31","արևային էլեկտրակայաններ","Forecast auto.arima",93.5931320496085,"Monthly production values and forecast",71.88145420008094,115.30480989913606,0.5
-"2025-08-31","արևային էլեկտրակայաններ","Forecast auto.arima",91.35968937811101,"Monthly production values and forecast",69.40317567440795,113.31620308181408,0.5
-"2025-09-30","արևային էլեկտրակայաններ","Forecast auto.arima",91.77309019066789,"Monthly production values and forecast",69.5744449786084,113.97173540272738,0.5
-"2025-10-31","արևային էլեկտրակայաններ","Forecast auto.arima",91.27380678849738,"Monthly production values and forecast",68.83564351638513,113.71197006060963,0.5
-"2025-11-30","արևային էլեկտրակայաններ","Forecast auto.arima",95.32114050024632,"Monthly production values and forecast",72.64598919512957,117.99629180536306,0.5
-"2025-12-31","արևային էլեկտրակայաններ","Forecast auto.arima",97.01605980815923,"Monthly production values and forecast",74.1063718730322,119.92574774328625,0.5
-"2024-01-31","արևային էլեկտրակայաններ","Forecast bats",893.3052709567645,"Year-over-year (YoY) production values and forecast",877.357066004078,909.253475909451,0.5
-"2024-02-29","արևային էլեկտրակայաններ","Forecast bats",917.1105419135289,"Year-over-year (YoY) production values and forecast",884.7281803678613,949.4929034591964,0.5
-"2024-03-31","արևային էլեկտրակայաններ","Forecast bats",938.2158128702933,"Year-over-year (YoY) production values and forecast",888.9273055594801,987.50432018110655,0.5
-"2024-04-30","արևային էլեկտրակայաններ","Forecast bats",732.0210838270577,"Year-over-year (YoY) production values and forecast",665.3672655100436,798.6749021440718,0.5
-"2024-05-31","արևային էլեկտրակայաններ","Forecast bats",703.6263547838222,"Year-over-year (YoY) production values and forecast",619.1598924168132,788.0928171508309,0.5
-"2024-06-30","արևային էլեկտրակայաններ","Forecast bats",687.3316257405867,"Year-over-year (YoY) production values and forecast",584.6161483381974,790.0471031429759,0.5
-"2024-07-31","արևային էլեկտրակայաններ","Forecast bats",682.8368966973511,"Year-over-year (YoY) production values and forecast",561.4462268870838,804.2275665076185,0.5
-"2024-08-31","արևային էլեկտրակայաններ","Forecast bats",697.3929873262466,"Year-over-year (YoY) production values and forecast",556.9104586965506,837.8755159559425,0.5
-"2024-09-30","արևային էլեկտրակայաններ","Forecast bats",713.4474386108799,"Year-over-year (YoY) production values and forecast",553.4652860132522,873.4295912085074,0.5
-"2024-10-31","արևային էլեկտրակայաններ","Forecast bats",737.0527095676443,"Year-over-year (YoY) production values and forecast",557.1715219029473,916.9338972323411,0.5
-"2024-11-30","արևային էլեկտրակայաններ","Forecast bats",738.0579805244088,"Year-over-year (YoY) production values and forecast",537.8862073996964,938.229753649121,0.5
-"2024-12-31","արևային էլեկտրակայաններ","Forecast bats",732.0632514811731,"Year-over-year (YoY) production values and forecast",511.21675659243414,952.909746369912,0.5
-"2025-01-31","արևային էլեկտրակայաններ","Forecast bats",732.0632514811731,"Year-over-year (YoY) production values and forecast",506.11311170408186,958.0133912582643,0.5
-"2025-02-28","արևային էլեկտրակայաններ","Forecast bats",732.0632514811731,"Year-over-year (YoY) production values and forecast",501.1249284752934,963.0015744870528,0.5
-"2025-03-31","արևային էլեկտրակայաններ","Forecast bats",732.0632514811731,"Year-over-year (YoY) production values and forecast",496.24454387993643,967.8819590824098,0.5
-"2025-04-30","արևային էլեկտրակայաններ","Forecast bats",732.0632514811731,"Year-over-year (YoY) production values and forecast",491.4651226263236,972.6613803360226,0.5
-"2025-05-31","արևային էլեկտրակայաններ","Forecast bats",732.0632514811731,"Year-over-year (YoY) production values and forecast",486.78053510066525,977.3459678616812,0.5
-"2025-06-30","արևային էլեկտրակայաններ","Forecast bats",732.0632514811731,"Year-over-year (YoY) production values and forecast",482.18525784500946,981.9412451173367,0.5
-"2025-07-31","արևային էլեկտրակայաններ","Forecast bats",732.0632514811731,"Year-over-year (YoY) production values and forecast",477.6742916234807,986.4522113388656,0.5
-"2025-08-31","արևային էլեկտրակայաններ","Forecast bats",732.0632514811731,"Year-over-year (YoY) production values and forecast",473.2430933776011,990.8834095847453,0.5
-"2025-09-30","արևային էլեկտրակայաններ","Forecast bats",732.0632514811731,"Year-over-year (YoY) production values and forecast",468.8875192661311,995.2389836962153,0.5
-"2025-10-31","արևային էլեկտրակայաններ","Forecast bats",732.0632514811731,"Year-over-year (YoY) production values and forecast",464.6037766367239,999.5227263256224,0.5
-"2025-11-30","արևային էլեկտրակայաններ","Forecast bats",732.0632514811731,"Year-over-year (YoY) production values and forecast",460.38838325836315,1003.7381197039832,0.5
-"2025-12-31","արևային էլեկտրակայաններ","Forecast bats",732.0632514811731,"Year-over-year (YoY) production values and forecast",456.2381325040431,1007.888370458303,0.5
-"2024-01-31","արևային էլեկտրակայաններ","Forecast bats",61.00527095676443,"Monthly production values and forecast",45.05706600407794,76.95347590945092,0.5
-"2024-02-29","արևային էլեկտրակայաններ","Forecast bats",61.00527095676443,"Monthly production values and forecast",44.571114363783366,77.43942754974549,0.5
-"2024-03-31","արևային էլեկտրակայաններ","Forecast bats",61.00527095676443,"Monthly production values and forecast",44.099125191618775,77.91141672191009,0.5
-"2024-04-30","արևային էլեկտրակայաններ","Forecast bats",61.00527095676443,"Monthly production values and forecast",43.63995995056354,78.37058196296532,0.5
-"2024-05-31","արևային էլեկտրակայաններ","Forecast bats",61.00527095676443,"Monthly production values and forecast",43.192626906769746,78.81791500675911,0.5
-"2024-06-30","արևային էլեկտրակայաններ","Forecast bats",61.00527095676443,"Monthly production values and forecast",42.75625592138402,79.25428599214484,0.5
-"2024-07-31","արևային էլեկտրակայաններ","Forecast bats",61.00527095676443,"Monthly production values and forecast",42.33007854888628,79.68046336464258,0.5
-"2024-08-31","արևային էլեկտրակայաններ","Forecast bats",61.00527095676443,"Monthly production values and forecast",41.91341213733569,80.09712977619316,0.5
-"2024-09-30","արևային էլեկտրակայաններ","Forecast bats",61.00527095676443,"Monthly production values and forecast",41.50564698883294,80.50489492469592,0.5
-"2024-10-31","արևային էլեկտրակայաններ","Forecast bats",61.00527095676443,"Monthly production values and forecast",41.106235889695036,80.90430602383381,0.5
-"2024-11-30","արևային էլեկտրակայաններ","Forecast bats",61.00527095676443,"Monthly production values and forecast",40.71468549674907,81.29585641677978,0.5
-"2024-12-31","արևային էլեկտրակայաններ","Forecast bats",61.00527095676443,"Monthly production values and forecast",40.330549192737806,81.67999272079105,0.5
-"2025-01-31","արևային էլեկտրակայաններ","Forecast bats",61.00527095676443,"Monthly production values and forecast",39.95342111572563,82.05712079780322,0.5
-"2025-02-28","արևային էլեկտրակայաններ","Forecast bats",61.00527095676443,"Monthly production values and forecast",39.58293113499485,82.427610778534,0.5
-"2025-03-31","արևային էլեկտրակայաններ","Forecast bats",61.00527095676443,"Monthly production values and forecast",39.218740596261775,82.79180131726707,0.5
-"2025-04-30","արևային էլեկտրակայաններ","Forecast bats",61.00527095676443,"Monthly production values and forecast",38.860538696950734,83.15000321657811,0.5
-"2025-05-31","արևային էլեկտրակայաններ","Forecast bats",61.00527095676443,"Monthly production values and forecast",38.50803938111133,83.50250253241752,0.5
-"2025-06-30","արևային էլեկտրակայաններ","Forecast bats",61.00527095676443,"Monthly production values and forecast",38.16097866572832,83.84956324780053,0.5
-"2025-07-31","արևային էլեկտրակայաններ","Forecast bats",61.00527095676443,"Monthly production values and forecast",37.81911232735751,84.19142958617135,0.5
-"2025-08-31","արևային էլեկտրակայաններ","Forecast bats",61.00527095676443,"Monthly production values and forecast",37.48221389145614,84.52832802207271,0.5
-"2025-09-30","արևային էլեկտրակայաններ","Forecast bats",61.00527095676443,"Monthly production values and forecast",37.15007287736296,84.8604690361659,0.5
-"2025-10-31","արևային էլեկտրակայաններ","Forecast bats",61.00527095676443,"Monthly production values and forecast",36.82249326028777,85.18804865324108,0.5
-"2025-11-30","արևային էլեկտրակայաններ","Forecast bats",61.00527095676443,"Monthly production values and forecast",36.49929211838831,85.51124979514054,0.5
-"2025-12-31","արևային էլեկտրակայաններ","Forecast bats",61.00527095676443,"Monthly production values and forecast",36.180298438417765,85.83024347511109,0.5
-"2024-01-31","արևային էլեկտրակայաններ","Forecast ets",893.3018427610424,"Year-over-year (YoY) production values and forecast",877.203886226255,909.3997992958299,0.5
-"2024-02-29","արևային էլեկտրակայաններ","Forecast ets",917.1036855220847,"Year-over-year (YoY) production values and forecast",884.4160427688213,949.7913282753483,0.5
-"2024-03-31","արևային էլեկտրակայաններ","Forecast ets",938.205528283127,"Year-over-year (YoY) production values and forecast",888.4506311209353,987.9604254453191,0.5
-"2024-04-30","արևային էլեկտրակայաններ","Forecast ets",732.0073710441693,"Year-over-year (YoY) production values and forecast",664.7206554568777,799.2940866314613,0.5
-"2024-05-31","արևային էլեկտրակայաններ","Forecast ets",703.6092138052118,"Year-over-year (YoY) production values and forecast",618.3381121699543,788.8803154404693,0.5
-"2024-06-30","արևային էլեկտրակայաններ","Forecast ets",687.3110565662543,"Year-over-year (YoY) production values and forecast",583.6141136814405,791.007999451068,0.5
-"2024-07-31","արևային էլեկտրակայաններ","Forecast ets",682.8128993272966,"Year-over-year (YoY) production values and forecast",560.2589919469593,805.366806707634,0.5
-"2024-08-31","արևային էլեկտրակայաններ","Forecast ets",697.36556176047,"Year-over-year (YoY) production values and forecast",555.5332054223709,839.1979180985693,0.5
-"2024-09-30","արևային էլեկտրակայաններ","Forecast ets",713.4165848493813,"Year-over-year (YoY) production values and forecast",551.8933149101154,874.9398547886474,0.5
-"2024-10-31","արևային էլեկտրակայաններ","Forecast ets",737.0184276104236,"Year-over-year (YoY) production values and forecast",555.4002438201304,918.6366114007171,0.5
-"2024-11-30","արևային էլեկտրակայաններ","Forecast ets",738.020270371466,"Year-over-year (YoY) production values and forecast",535.9111362149308,940.1294045280013,0.5
-"2024-12-31","արևային էլեկտրակայաններ","Forecast ets",732.0221131325084,"Year-over-year (YoY) production values and forecast",509.03350266205706,955.0107236029597,0.5
-"2025-01-31","արևային էլեկտրակայաններ","Forecast ets",732.0221131325084,"Year-over-year (YoY) production values and forecast",503.87055575002523,960.1736705149917,0.5
-"2025-02-28","արևային էլեկտրակայաններ","Forecast ets",732.0221131325084,"Year-over-year (YoY) production values and forecast",498.82463475246607,965.2195915125508,0.5
-"2025-03-31","արևային էլեկտրակայաններ","Forecast ets",732.0221131325084,"Year-over-year (YoY) production values and forecast",493.8879580617443,970.1562682032726,0.5
-"2025-04-30","արևային էլեկտրակայաններ","Forecast ets",732.0221131325084,"Year-over-year (YoY) production values and forecast",489.0535861972634,974.9906400677534,0.5
-"2025-05-31","արևային էլեկտրակայաններ","Forecast ets",732.0221131325084,"Year-over-year (YoY) production values and forecast",484.3152973960541,979.7289288689626,0.5
-"2025-06-30","արևային էլեկտրակայաններ","Forecast ets",732.0221131325084,"Year-over-year (YoY) production values and forecast",479.66748621403997,984.3767400509767,0.5
-"2025-07-31","արևային էլեկտրակայաններ","Forecast ets",732.0221131325084,"Year-over-year (YoY) production values and forecast",475.10508007829975,988.939146186717,0.5
-"2025-08-31","արևային էլեկտրակայաններ","Forecast ets",732.0221131325084,"Year-over-year (YoY) production values and forecast",470.6234700084394,993.4207562565775,0.5
-"2025-09-30","արևային էլեկտրակայաններ","Forecast ets",732.0221131325084,"Year-over-year (YoY) production values and forecast",466.21845264133515,997.8257736236818,0.5
-"2025-10-31","արևային էլեկտրակայաններ","Forecast ets",732.0221131325084,"Year-over-year (YoY) production values and forecast",461.88618136064343,1002.1580449043735,0.5
-"2025-11-30","արևային էլեկտրակայաններ","Forecast ets",732.0221131325084,"Year-over-year (YoY) production values and forecast",457.62312482515625,1006.4211014398605,0.5
-"2025-12-31","արևային էլեկտրակայաններ","Forecast ets",732.0221131325084,"Year-over-year (YoY) production values and forecast",453.42603155863634,1010.6181947063806,0.5
-"2024-01-31","արևային էլեկտրակայաններ","Forecast ets",61.00184276104237,"Monthly production values and forecast",44.90388622625489,77.09979929582985,0.5
-"2024-02-29","արևային էլեկտրակայաններ","Forecast ets",61.00184276104237,"Monthly production values and forecast",44.41215654256628,77.59152897951846,0.5
-"2024-03-31","արևային էլեկտրակայաններ","Forecast ets",61.00184276104237,"Monthly production values and forecast",43.93458835211402,78.06909716997072,0.5
-"2024-04-30","արևային էլեկտրակայաններ","Forecast ets",61.00184276104237,"Monthly production values and forecast",43.470024335942455,78.53366118614228,0.5
-"2024-05-31","արևային էլեկտրակայաններ","Forecast ets",61.00184276104237,"Monthly production values and forecast",43.01745671307671,78.98622880900803,0.5
-"2024-06-30","արևային էլեկտրակայաններ","Forecast ets",61.00184276104237,"Monthly production values and forecast",42.57600151148607,79.42768401059867,0.5
-"2024-07-31","արևային էլեկտրակայաններ","Forecast ets",61.00184276104237,"Monthly production values and forecast",42.14487826551873,79.85880725656601,0.5
-"2024-08-31","արևային էլեկտրակայաններ","Forecast ets",61.00184276104237,"Monthly production values and forecast",41.723393803280544,80.2802917188042,0.5
-"2024-09-30","արևային էլեկտրակայաններ","Forecast ets",61.00184276104237,"Monthly production values and forecast",41.31092915987554,80.6927563622092,0.5
-"2024-10-31","արևային էլեկտրակայաններ","Forecast ets",61.00184276104237,"Monthly production values and forecast",40.906928910015154,81.09675661206958,0.5
-"2024-11-30","արևային էլեկտրակայաններ","Forecast ets",61.00184276104237,"Monthly production values and forecast",40.51089239480035,81.49279312728439,0.5
-"2024-12-31","արևային էլեկտրակայաններ","Forecast ets",61.00184276104237,"Monthly production values and forecast",40.12236644712628,81.88131907495845,0.5
-"2025-01-31","արևային էլեկտրակայաններ","Forecast ets",61.00184276104237,"Monthly production values and forecast",39.7409393142231,82.26274620786164,0.5
-"2025-02-28","արևային էլեկտրակայաններ","Forecast ets",61.00184276104237,"Monthly production values and forecast",39.36623554500703,82.63744997707771,0.5
-"2025-03-31","արևային էլեկտրակայաններ","Forecast ets",61.00184276104237,"Monthly production values and forecast",38.997911661392266,83.00577386069247,0.5
-"2025-04-30","արևային էլեկտրակայաններ","Forecast ets",61.00184276104237,"Monthly production values and forecast",38.63565247146158,83.36803305062315,0.5
-"2025-05-31","արևային էլեկտրակայաններ","Forecast ets",61.00184276104237,"Monthly production values and forecast",38.279167911867454,83.72451761021728,0.5
-"2025-06-30","արևային էլեկտրակայաններ","Forecast ets",61.00184276104237,"Monthly production values and forecast",37.92819032947196,84.07549519261278,0.5
-"2025-07-31","արևային էլեկտրակայաններ","Forecast ets",61.00184276104237,"Monthly production values and forecast",37.582472129778516,84.42121339230621,0.5
-"2025-08-31","արևային էլեկտրակայաններ","Forecast ets",61.00184276104237,"Monthly production values and forecast",37.241783733420135,84.7619017886646,0.5
-"2025-09-30","արևային էլեկտրակայաններ","Forecast ets",61.00184276104237,"Monthly production values and forecast",36.90591179277136,85.09777372931337,0.5
-"2025-10-31","արևային էլեկտրակայաններ","Forecast ets",61.00184276104237,"Monthly production values and forecast",36.57465762932344,85.4290278927613,0.5
-"2025-11-30","արևային էլեկտրակայաններ","Forecast ets",61.00184276104237,"Monthly production values and forecast",36.24783585931313,85.75584966277161,0.5
-"2025-12-31","արևային էլեկտրակայաններ","Forecast ets",61.00184276104237,"Monthly production values and forecast",35.92527318060638,86.07841234147836,0.5
-"2024-01-31","արևային էլեկտրակայաններ","Forecast stlm",893.6886326469352,"Year-over-year (YoY) production values and forecast",880.0390308172352,907.3382344766352,0.5
-"2024-02-29","արևային էլեկտրակայաններ","Forecast stlm",919.3919045026789,"Year-over-year (YoY) production values and forecast",891.5750562274247,947.2087527779333,0.5
-"2024-03-31","արևային էլեկտրակայաններ","Forecast stlm",942.6122375516097,"Year-over-year (YoY) production values and forecast",900.1287566161709,985.0957184870489,0.5
-"2024-04-30","արևային էլեկտրակայաններ","Forecast stlm",778.2529886622644,"Year-over-year (YoY) production values and forecast",720.6199415505776,835.8860357739517,0.5
-"2024-05-31","արևային էլեկտրակայաններ","Forecast stlm",759.9305752839867,"Year-over-year (YoY) production values and forecast",686.6799548310842,833.1811957368893,0.5
-"2024-06-30","արևային էլեկտրակայաններ","Forecast stlm",750.4867697870493,"Year-over-year (YoY) production values and forecast",661.1641911831321,839.8093483909665,0.5
-"2024-07-31","արևային էլեկտրակայաններ","Forecast stlm",749.1280643353782,"Year-over-year (YoY) production values and forecast",643.2916406144785,854.9644880562781,0.5
-"2024-08-31","արևային էլեկտրակայաններ","Forecast stlm",761.3517419950131,"Year-over-year (YoY) production values and forecast",638.5711062154953,884.1323777745308,0.5
-"2024-09-30","արևային էլեկտրակայաններ","Forecast stlm",772.6213669946297,"Year-over-year (YoY) production values and forecast",632.476815642087,912.7659183471724,0.5
-"2024-10-31","արևային էլեկտրակայաններ","Forecast stlm",790.9964101518287,"Year-over-year (YoY) production values and forecast",633.0781477133348,948.9146725903224,0.5
-"2024-11-30","արևային էլեկտրակայաններ","Forecast stlm",790.4700646034303,"Year-over-year (YoY) production values and forecast",614.3775333348958,966.5625958719645,0.5
-"2024-12-31","արևային էլեկտրակայաններ","Forecast stlm",783.5057568902521,"Year-over-year (YoY) production values and forecast",588.8470389037536,978.1644748767505,0.5
-"2025-01-31","արևային էլեկտրակայաններ","Forecast stlm",783.5057568902521,"Year-over-year (YoY) production values and forecast",583.5466399158802,983.4648738646239,0.5
-"2025-02-28","արևային էլեկտրակայաններ","Forecast stlm",783.505756890252,"Year-over-year (YoY) production values and forecast",578.3876924080004,988.6238213725037,0.5
-"2025-03-31","արևային էլեկտրակայաններ","Forecast stlm",783.505756890252,"Year-over-year (YoY) production values and forecast",573.3591222394382,993.652391541066,0.5
-"2025-04-30","արևային էլեկտրակայաններ","Forecast stlm",783.5057568902519,"Year-over-year (YoY) production values and forecast",568.4512644483567,998.5602493321474,0.5
-"2025-05-31","արևային էլեկտրակայաններ","Forecast stlm",783.505756890252,"Year-over-year (YoY) production values and forecast",563.6556190834267,1003.3558946970774,0.5
-"2025-06-30","արևային էլեկտրակայաններ","Forecast stlm",783.505756890252,"Year-over-year (YoY) production values and forecast",558.9646598169721,1008.046853963532,0.5
-"2025-07-31","արևային էլեկտրակայաններ","Forecast stlm",783.505756890252,"Year-over-year (YoY) production values and forecast",554.3716818327779,1012.6398319477264,0.5
-"2025-08-31","արևային էլեկտրակայաններ","Forecast stlm",783.505756890252,"Year-over-year (YoY) production values and forecast",549.8706794330581,1017.140834347446,0.5
-"2025-09-30","արևային էլեկտրակայաններ","Forecast stlm",783.5057568902521,"Year-over-year (YoY) production values and forecast",545.4562464712694,1021.5552673092348,0.5
-"2025-10-31","արևային էլեկտրակայաններ","Forecast stlm",783.5057568902522,"Year-over-year (YoY) production values and forecast",541.123494551042,1025.8880192294623,0.5
-"2025-11-30","արևային էլեկտրակայաններ","Forecast stlm",783.5057568902521,"Year-over-year (YoY) production values and forecast",536.8679852193782,1030.143528561126,0.5
-"2025-12-31","արևային էլեկտրակայաններ","Forecast stlm",783.5057568902521,"Year-over-year (YoY) production values and forecast",532.6856733028612,1034.3258404776432,0.5
-"2024-01-31","արևային էլեկտրակայաններ","Forecast stlm",61.38863264693513,"Monthly production values and forecast",47.739030817235154,75.03823447663511,0.5
-"2024-02-29","արևային էլեկտրակայաններ","Forecast stlm",62.90327185574386,"Monthly production values and forecast",48.736025410189505,77.07051830129821,0.5
-"2024-03-31","արևային էլեկտրակայաններ","Forecast stlm",63.12033304893078,"Monthly production values and forecast",48.45370038874609,77.78696570911548,0.5
-"2024-04-30","արևային էլեկտրակայաններ","Forecast stlm",102.84075111065481,"Monthly production values and forecast",87.69118493440673,117.99031728690288,0.5
-"2024-05-31","արևային էլեկտրակայաններ","Forecast stlm",71.0775866217222,"Monthly production values and forecast",55.46001328050676,86.69515996293764,0.5
-"2024-06-30","արևային էլեկտրակայաններ","Forecast stlm",67.85619450306254,"Monthly production values and forecast",51.78423635204786,83.92815265407721,0.5
-"2024-07-31","արևային էլեկտրակայաններ","Forecast stlm",64.14129454832894,"Monthly production values and forecast",47.627449431346335,80.65513966531155,0.5
-"2024-08-31","արևային էլեկտրակայաններ","Forecast stlm",58.672857987503654,"Monthly production values and forecast",41.728645928885705,75.61707004612161,0.5
-"2024-09-30","արևային էլեկտրակայաններ","Forecast stlm",56.2204446717478,"Monthly production values and forecast",38.85652909872287,73.58436024477272,0.5
-"2024-10-31","արևային էլեկտրակայաններ","Forecast stlm",55.77504315719894,"Monthly production values and forecast",38.001332071247845,73.54875424315004,0.5
-"2024-11-30","արևային էլեկտրակայաններ","Forecast stlm",59.47365445160155,"Monthly production values and forecast",41.29938562156097,77.64792328164212,0.5
-"2024-12-31","արևային էլեկտրակայաններ","Forecast stlm",60.03569228682186,"Monthly production values and forecast",41.46950556885772,78.601879004786,0.5
-"2025-01-31","արևային էլեկտրակայաններ","Forecast stlm",61.38863264693513,"Monthly production values and forecast",42.43863182936175,80.3386334645085,0.5
-"2025-02-28","արևային էլեկտրակայաններ","Forecast stlm",62.90327185574386,"Monthly production values and forecast",43.57707790230969,82.22946580917802,0.5
-"2025-03-31","արևային էլեկտրակայաններ","Forecast stlm",63.12033304893078,"Monthly production values and forecast",43.42513022018391,82.81553587767766,0.5
-"2025-04-30","արևային էլեկտրակայաններ","Forecast stlm",102.84075111065481,"Monthly production values and forecast",82.78332714332535,122.89817507798428,0.5
-"2025-05-31","արևային էլեկտրակայաններ","Forecast stlm",71.0775866217222,"Monthly production values and forecast",50.66436791557676,91.49080532786765,0.5
-"2025-06-30","արևային էլեկտրակայաններ","Forecast stlm",67.85619450306254,"Monthly production values and forecast",47.09327708559324,88.61911192053182,0.5
-"2025-07-31","արևային էլեկտրակայաններ","Forecast stlm",64.14129454832894,"Monthly production values and forecast",43.034471447152086,85.2481176495058,0.5
-"2025-08-31","արևային էլեկտրակայաններ","Forecast stlm",58.672857987503654,"Monthly production values and forecast",37.22764352916595,80.11807244584136,0.5
-"2025-09-30","արևային էլեկտրակայաններ","Forecast stlm",56.2204446717478,"Monthly production values and forecast",34.44209613693414,77.99879320656146,0.5
-"2025-10-31","արևային էլեկտրակայաններ","Forecast stlm",55.77504315719894,"Monthly production values and forecast",33.66858015102032,77.88150616337755,0.5
-"2025-11-30","արևային էլեկտրակայաններ","Forecast stlm",59.47365445160155,"Monthly production values and forecast",37.04387628989724,81.90343261330585,0.5
-"2025-12-31","արևային էլեկտրակայաններ","Forecast stlm",60.03569228682186,"Monthly production values and forecast",37.28719365234071,82.78419092130301,0.5
+"2024-01-31","արևային էլեկտրակայաններ","Forecast auto.arima",71.0972968868152,"Monthly production values and forecast",67.93969482264758,74.25489895098282,0.5
+"2024-02-29","արևային էլեկտրակայաններ","Forecast auto.arima",77.92939677390335,"Monthly production values and forecast",73.46388220364727,82.39491134415942,0.5
+"2024-03-31","արևային էլեկտրակայաններ","Forecast auto.arima",81.00636926004067,"Monthly production values and forecast",75.53725690439255,86.47548161568879,0.5
+"2024-04-30","արևային էլեկտրակայաններ","Forecast auto.arima",79.84916886765119,"Monthly production values and forecast",73.53398402948243,86.16435370581995,0.5
+"2024-05-31","արևային էլեկտրակայաններ","Forecast auto.arima",86.47012005026014,"Monthly production values and forecast",79.40953019375591,93.53070990676436,0.5
+"2024-06-30","արևային էլեկտրակայաններ","Forecast auto.arima",80.44071137862562,"Monthly production values and forecast",72.70622376125212,88.17519899599912,0.5
+"2024-07-31","արևային էլեկտրակայաններ","Forecast auto.arima",74.64247750603181,"Monthly production values and forecast",66.28827686893686,82.99667814312676,0.5
+"2024-08-31","արևային էլեկտրակայաններ","Forecast auto.arima",67.5758279940124,"Monthly production values and forecast",58.64481249372514,76.50684349429966,0.5
+"2024-09-30","արևային էլեկտրակայաններ","Forecast auto.arima",61.159710851489,"Monthly production values and forecast",51.686938952625134,70.63248275035286,0.5
+"2024-10-31","արևային էլեկտրակայաններ","Forecast auto.arima",62.819516881824825,"Monthly production values and forecast",52.83433901513469,72.80469474851496,0.5
+"2024-11-30","արևային էլեկտրակայաններ","Forecast auto.arima",71.04403748953565,"Monthly production values and forecast",60.57149498014605,81.51657999892527,0.5
+"2024-12-31","արևային էլեկտրակայաններ","Forecast auto.arima",73.4966173396964,"Monthly production values and forecast",62.55840376560187,84.43483091379093,0.5
+"2025-01-31","արևային էլեկտրակայաններ","Forecast auto.arima",74.92972189823259,"Monthly production values and forecast",63.13750625938177,86.7219375370834,0.5
+"2025-02-28","արևային էլեկտրակայաններ","Forecast auto.arima",79.28999686941164,"Monthly production values and forecast",66.7016340113188,91.87835972750447,0.5
+"2025-03-31","արևային էլեկտրակայաններ","Forecast auto.arima",80.78915907449911,"Monthly production values and forecast",67.45209008536717,94.12622806363105,0.5
+"2025-04-30","արևային էլեկտրակայաններ","Forecast auto.arima",76.30453554995913,"Monthly production values and forecast",62.25861304573328,90.35045805418497,0.5
+"2025-05-31","արևային էլեկտրակայաններ","Forecast auto.arima",82.30754246672402,"Monthly production values and forecast",67.58686079879261,97.02822413465542,0.5
+"2025-06-30","արևային էլեկտրակայաններ","Forecast auto.arima",78.09482776146461,"Monthly production values and forecast",62.72898907487073,93.46066644805849,0.5
+"2025-07-31","արևային էլեկտրակայաններ","Forecast auto.arima",74.85264052414765,"Monthly production values and forecast",58.867662315958604,90.8376187323367,0.5
+"2025-08-31","արևային էլեկտրակայաններ","Forecast auto.arima",69.54829631783927,"Monthly production values and forecast",52.967281328094764,86.12931130758378,0.5
+"2025-09-30","արևային էլեկտրակայաններ","Forecast auto.arima",68.62832431752888,"Monthly production values and forecast",51.47196724896722,85.78468138609054,0.5
+"2025-10-31","արևային էլեկտրակայաններ","Forecast auto.arima",63.482946025365564,"Monthly production values and forecast",45.76992489293761,81.19596715779352,0.5
+"2025-11-30","արևային էլեկտրակայաններ","Forecast auto.arima",71.65687345526165,"Monthly production values and forecast",53.40415728994277,89.90958962058052,0.5
+"2025-12-31","արևային էլեկտրակայաններ","Forecast auto.arima",73.75515258482403,"Monthly production values and forecast",54.97824716392077,92.5320580057273,0.5
+"2024-01-31","արևային էլեկտրակայաններ","Forecast bats",798.2860895731072,"Year-over-year (YoY) production values and forecast",795.7474460644823,800.8247330817321,0.5
+"2024-02-29","արևային էլեկտրակայաններ","Forecast bats",804.3290629782538,"Year-over-year (YoY) production values and forecast",798.1320034030043,810.5261225535032,0.5
+"2024-03-31","արևային էլեկտրակայաններ","Forecast bats",805.1572628060445,"Year-over-year (YoY) production values and forecast",794.3847413837016,815.9297842283873,0.5
+"2024-04-30","արևային էլեկտրակայաններ","Forecast bats",810.762227184649,"Year-over-year (YoY) production values and forecast",794.9268976736366,826.5975566956611,0.5
+"2024-05-31","արևային էլեկտրակայաններ","Forecast bats",799.7638204814991,"Year-over-year (YoY) production values and forecast",778.6678558972516,820.8597850657467,0.5
+"2024-06-30","արևային էլեկտրակայաններ","Forecast bats",794.3511371026497,"Year-over-year (YoY) production values and forecast",767.9196658990907,820.7826083062087,0.5
+"2024-07-31","արևային էլեկտրակայաններ","Forecast bats",793.6612632337095,"Year-over-year (YoY) production values and forecast",761.8471016015037,825.4754248659153,0.5
+"2024-08-31","արևային էլեկտրակայաններ","Forecast bats",802.1965412314752,"Year-over-year (YoY) production values and forecast",764.9268811900126,839.4662012729377,0.5
+"2024-09-30","արևային էլեկտրակայաններ","Forecast bats",812.1396985922742,"Year-over-year (YoY) production values and forecast",769.2565698440595,855.0228273404889,0.5
+"2024-10-31","արևային էլեկտրակայաններ","Forecast bats",828.4195492389734,"Year-over-year (YoY) production values and forecast",779.6168575291938,877.2222409487533,0.5
+"2024-11-30","արևային էլեկտրակայաններ","Forecast bats",826.9794440824843,"Year-over-year (YoY) production values and forecast",771.7752362819634,882.1836518830053,0.5
+"2024-12-31","արևային էլեկտրակայաններ","Forecast bats",820.7236245275299,"Year-over-year (YoY) production values and forecast",758.4857458998771,882.9615031551829,0.5
+"2025-01-31","արևային էլեկտրակայաններ","Forecast bats",806.6975085773151,"Year-over-year (YoY) production values and forecast",739.3519468368496,874.0430703177809,0.5
+"2025-02-28","արևային էլեկտրակայաններ","Forecast bats",790.2078823769194,"Year-over-year (YoY) production values and forecast",718.2273171375554,862.1884476162837,0.5
+"2025-03-31","արևային էլեկտրակայաններ","Forecast bats",774.6571607572487,"Year-over-year (YoY) production values and forecast",698.3095463133908,851.0047752011068,0.5
+"2025-04-30","արևային էլեկտրակայաններ","Forecast bats",762.0850095417318,"Year-over-year (YoY) production values and forecast",681.1932683466754,842.9767507367882,0.5
+"2025-05-31","արևային էլեկտրակայաններ","Forecast bats",753.1618828441658,"Year-over-year (YoY) production values and forecast",667.2400382205433,839.0837274677881,0.5
+"2025-06-30","արևային էլեկտրակայաններ","Forecast bats",747.529106564239,"Year-over-year (YoY) production values and forecast",655.9520649651678,839.1061481633096,0.5
+"2025-07-31","արևային էլեկտրակայաններ","Forecast bats",744.2677195516612,"Year-over-year (YoY) production values and forecast",646.3739113529913,842.1615277503306,0.5
+"2025-08-31","արևային էլեկտրակայաններ","Forecast bats",742.3294616110528,"Year-over-year (YoY) production values and forecast",637.482579402085,847.1763438200205,0.5
+"2025-09-30","արևային էլեկտրակայաններ","Forecast bats",740.8365272590522,"Year-over-year (YoY) production values and forecast",628.4922914077401,853.1807631103642,0.5
+"2025-10-31","արևային էլեկտրակայաններ","Forecast bats",739.2252478312887,"Year-over-year (YoY) production values and forecast",618.9992978030657,859.4511978595117,0.5
+"2025-11-30","արևային էլեկտրակայաններ","Forecast bats",737.2573860976498,"Year-over-year (YoY) production values and forecast",608.9555384477202,865.5592337475795,0.5
+"2025-12-31","արևային էլեկտրակայաններ","Forecast bats",734.9467626397378,"Year-over-year (YoY) production values and forecast",598.5399669496521,871.3535583298235,0.5
+"2024-01-31","արևային էլեկտրակայաններ","Forecast bats",77.08045647425446,"Monthly production values and forecast",74.54181296562953,79.61909998287939,0.5
+"2024-02-29","արևային էլեկտրակայաններ","Forecast bats",82.8662758857091,"Monthly production values and forecast",79.20785981908459,86.52469195233361,0.5
+"2024-03-31","արևային էլեկտրակայաններ","Forecast bats",83.22738716581361,"Monthly production values and forecast",78.65192531872012,87.8028490129071,0.5
+"2024-04-30","արևային էլեկտրակայաններ","Forecast bats",79.58810765887173,"Monthly production values and forecast",74.52529957020242,84.65091574754105,0.5
+"2024-05-31","արևային էլեկտրակայաններ","Forecast bats",78.40159329685018,"Monthly production values and forecast",73.14095822361492,83.66222837008544,0.5
+"2024-06-30","արևային էլեկտրակայաններ","Forecast bats",71.88731662115052,"Monthly production values and forecast",66.55181000183904,77.22282324046199,0.5
+"2024-07-31","արևային էլեկտրակայաններ","Forecast bats",64.81012613105985,"Monthly production values and forecast",59.42743570241304,70.19281655970664,0.5
+"2024-08-31","արևային էլեկտրակայաններ","Forecast bats",57.54527799776565,"Monthly production values and forecast",52.08977958850896,63.00077640702234,0.5
+"2024-09-30","արևային էլեկտրակայաններ","Forecast bats",52.3331573607991,"Monthly production values and forecast",46.71968865404688,57.94662606755132,0.5
+"2024-10-31","արևային էլեկտրակայաններ","Forecast bats",53.679850646699286,"Monthly production values and forecast",47.76028768513425,59.59941360826432,0.5
+"2024-11-30","արևային էլեկտրակայաններ","Forecast bats",58.559894843510776,"Monthly production values and forecast",52.15837875276962,64.96141093425193,0.5
+"2024-12-31","արևային էլեկտրակայաններ","Forecast bats",60.74418044504573,"Monthly production values and forecast",53.710509617913736,67.77785127217773,0.5
+"2025-01-31","արևային էլեկտրակայաններ","Forecast bats",63.05434052403972,"Monthly production values and forecast",55.408013902601994,70.70066714547745,0.5
+"2025-02-28","արևային էլեկտրակայաններ","Forecast bats",66.37664968531337,"Monthly production values and forecast",58.083230119790386,74.67006925083635,0.5
+"2025-03-31","արևային էլեկտրակայաններ","Forecast bats",67.67666554614286,"Monthly production values and forecast",58.73415449455551,76.6191765977302,0.5
+"2025-04-30","արևային էլեկտրակայաններ","Forecast bats",67.01595644335471,"Monthly production values and forecast",57.409021603487076,76.62289128322234,0.5
+"2025-05-31","արևային էլեկտրակայաններ","Forecast bats",69.47846659928412,"Monthly production values and forecast",59.187728097482854,79.76920510108539,0.5
+"2025-06-30","արևային էլեկտրակայաններ","Forecast bats",66.25454034122366,"Monthly production values and forecast",55.26383674646356,77.24524393598375,0.5
+"2025-07-31","արևային էլեկտրակայաններ","Forecast bats",61.548739118482104,"Monthly production values and forecast",49.84928209023649,73.24819614672771,0.5
+"2025-08-31","արևային էլեկտրակայաններ","Forecast bats",55.60702005715735,"Monthly production values and forecast",43.19844763760264,68.01559247671206,0.5
+"2025-09-30","արևային էլեկտրակայաններ","Forecast bats",50.840223008798496,"Monthly production values and forecast",37.72940065970203,63.95104535789496,0.5
+"2025-10-31","արևային էլեկտրակայաններ","Forecast bats",52.06857121893591,"Monthly production values and forecast",38.26729408045979,65.86984835741202,0.5
+"2025-11-30","արևային էլեկտրակայաններ","Forecast bats",56.592033109871814,"Monthly production values and forecast",42.11461939742413,71.0694468223195,0.5
+"2025-12-31","արևային էլեկտրակայաններ","Forecast bats",58.433556987133635,"Monthly production values and forecast",43.29493811984558,73.57217585442169,0.5
+"2024-01-31","արևային էլեկտրակայաններ","Forecast ets",788.2049327555201,"Year-over-year (YoY) production values and forecast",784.7165864791559,791.6932790318843,0.5
+"2024-02-29","արևային էլեկտրակայաններ","Forecast ets",778.3809299316248,"Year-over-year (YoY) production values and forecast",769.9595637394549,786.8022961237949,0.5
+"2024-03-31","արևային էլեկտրակայաններ","Forecast ets",762.9810422502692,"Year-over-year (YoY) production values and forecast",748.518085933335,777.4439985672037,0.5
+"2024-04-30","արևային էլեկտրակայաններ","Forecast ets",755.9971986266692,"Year-over-year (YoY) production values and forecast",734.5580730900584,777.4363241632803,0.5
+"2024-05-31","արևային էլեկտրակայաններ","Forecast ets",733.5964982833366,"Year-over-year (YoY) production values and forecast",704.3578174563597,762.8351791103137,0.5
+"2024-06-30","արևային էլեկտրակայաններ","Forecast ets",723.2957979400039,"Year-over-year (YoY) production values and forecast",685.5131608588442,761.0784350211637,0.5
+"2024-07-31","արևային էլեկտրակայաններ","Forecast ets",724.7950975966713,"Year-over-year (YoY) production values and forecast",677.783954990818,771.8062402025249,0.5
+"2024-08-31","արևային էլեկտրակայաններ","Forecast ets",742.7843972533386,"Year-over-year (YoY) production values and forecast",685.9075848797901,799.6612096268875,0.5
+"2024-09-30","արևային էլեկտրակայաններ","Forecast ets",767.3936969100059,"Year-over-year (YoY) production values and forecast",700.052776083697,834.734617736315,0.5
+"2024-10-31","արևային էլեկտրակայաններ","Forecast ets",796.9929965666732,"Year-over-year (YoY) production values and forecast",718.6219492017864,875.3640439315603,0.5
+"2024-11-30","արևային էլեկտրակայաններ","Forecast ets",803.9922962233405,"Year-over-year (YoY) production values and forecast",714.0527650683041,893.9318273783773,0.5
+"2024-12-31","արևային էլեկտրակայաններ","Forecast ets",803.9915958800078,"Year-over-year (YoY) production values and forecast",701.9691866345134,906.0140051255025,0.5
+"2025-01-31","արևային էլեկտրակայաններ","Forecast ets",803.9915958800078,"Year-over-year (YoY) production values and forecast",692.8812827267099,915.1019090333062,0.5
+"2025-02-28","արևային էլեկտրակայաններ","Forecast ets",803.9915958800078,"Year-over-year (YoY) production values and forecast",684.7633182183163,923.2198735416998,0.5
+"2025-03-31","արևային էլեկտրակայաններ","Forecast ets",803.9915958800078,"Year-over-year (YoY) production values and forecast",677.295862477935,930.687329282081,0.5
+"2025-04-30","արևային էլեկտրակայաններ","Forecast ets",803.9915958800078,"Year-over-year (YoY) production values and forecast",670.3199549370529,937.6632368229632,0.5
+"2025-05-31","արևային էլեկտրակայաններ","Forecast ets",803.9915958800078,"Year-over-year (YoY) production values and forecast",663.7380439712115,944.2451477888047,0.5
+"2025-06-30","արևային էլեկտրակայաններ","Forecast ets",803.9915958800078,"Year-over-year (YoY) production values and forecast",657.4835983716686,950.4995933883474,0.5
+"2025-07-31","արևային էլեկտրակայաններ","Forecast ets",803.9915958800078,"Year-over-year (YoY) production values and forecast",651.5081957418694,956.4749960181468,0.5
+"2025-08-31","արևային էլեկտրակայաններ","Forecast ets",803.9915958800078,"Year-over-year (YoY) production values and forecast",645.7749889821933,962.2082027778227,0.5
+"2025-09-30","արևային էլեկտրակայաններ","Forecast ets",803.9915958800078,"Year-over-year (YoY) production values and forecast",640.2550092638353,967.7281824961807,0.5
+"2025-10-31","արևային էլեկտրակայաններ","Forecast ets",803.9915958800078,"Year-over-year (YoY) production values and forecast",634.9249035177542,973.0582882422619,0.5
+"2025-11-30","արևային էլեկտրակայաններ","Forecast ets",803.9915958800078,"Year-over-year (YoY) production values and forecast",629.7654667511247,978.2177250088914,0.5
+"2025-12-31","արևային էլեկտրակայաններ","Forecast ets",803.9915958800078,"Year-over-year (YoY) production values and forecast",624.7606459941712,983.2225457658449,0.5
+"2024-01-31","արևային էլեկտրակայաններ","Forecast ets",66.99929965666733,"Monthly production values and forecast",63.51095338030316,70.48764593303152,0.5
+"2024-02-29","արևային էլեկտրակայաններ","Forecast ets",66.99929965666733,"Monthly production values and forecast",62.0662797408615,71.93231957247316,0.5
+"2024-03-31","արևային էլեկտրակայաններ","Forecast ets",66.99929965666733,"Monthly production values and forecast",60.957709531902985,73.04088978143169,0.5
+"2024-04-30","արևային էլեկտրակայաններ","Forecast ets",66.99929965666733,"Monthly production values and forecast",60.023130436990726,73.97546887634394,0.5
+"2024-05-31","արևային էլեկտրակայաններ","Forecast ets",66.99929965666733,"Monthly production values and forecast",59.199744366301324,74.79885494703335,0.5
+"2024-06-30","արևային էլեկտրակայաններ","Forecast ets",66.99929965666733,"Monthly production values and forecast",58.45534340248452,75.54325591085015,0.5
+"2024-07-31","արևային էլեկտրակայաններ","Forecast ets",66.99929965666733,"Monthly production values and forecast",57.7707941319736,76.22780518136106,0.5
+"2024-08-31","արևային էլեկտրակայաններ","Forecast ets",66.99929965666733,"Monthly production values and forecast",57.133629888972095,76.86496942436257,0.5
+"2024-09-30","արևային էլեկտրակայաններ","Forecast ets",66.99929965666733,"Monthly production values and forecast",56.53519120390706,77.4634081094276,0.5
+"2024-10-31","արևային էլեկտրակայաններ","Forecast ets",66.99929965666733,"Monthly production values and forecast",55.96917311808936,78.0294261952453,0.5
+"2024-11-30","արևային էլեկտրակայաններ","Forecast ets",66.99929965666733,"Monthly production values and forecast",55.430815866517676,78.56778344681699,0.5
+"2024-12-31","արևային էլեկտրակայաններ","Forecast ets",66.99929965666733,"Monthly production values and forecast",54.916421566209394,79.08217774712527,0.5
+"2025-01-31","արևային էլեկտրակայաններ","Forecast ets",66.99929965666733,"Monthly production values and forecast",54.42304947249949,79.57554984083518,0.5
+"2025-02-28","արևային էլեկտրակայաններ","Forecast ets",66.99929965666733,"Monthly production values and forecast",53.948315232467955,80.0502840808667,0.5
+"2025-03-31","արևային էլեկտրակայաններ","Forecast ets",66.99929965666733,"Monthly production values and forecast",53.49025379152171,80.50834552181296,0.5
+"2025-04-30","արևային էլեկտրակայաններ","Forecast ets",66.99929965666733,"Monthly production values and forecast",53.04722289610867,80.95137641722599,0.5
+"2025-05-31","արևային էլեկտրակայաններ","Forecast ets",66.99929965666733,"Monthly production values and forecast",52.61783340045986,81.380765912874807,0.5
+"2025-06-30","արևային էլեկտրակայաններ","Forecast ets",66.99929965666733,"Monthly production values and forecast",52.200897802941796,81.79770151039287,0.5
+"2025-07-31","արևային էլեկտրակայաններ","Forecast ets",66.99929965666733,"Monthly production values and forecast",51.795391502174276,82.2032078111604,0.5
+"2025-08-31","արևային էլեկտրակայաններ","Forecast ets",66.99929965666733,"Monthly production values and forecast",51.40042312929609,82.59817618403858,0.5
+"2025-09-30","արևային էլեկտրակայաններ","Forecast ets",66.99929965666733,"Monthly production values and forecast",51.015211485548946,82.98338782778572,0.5
+"2025-10-31","արևային էլեկտրակայաններ","Forecast ets",66.99929965666733,"Monthly production values and forecast",50.63906737200829,83.35953194132637,0.5
+"2025-11-30","արևային էլեկտրակայաններ","Forecast ets",66.99929965666733,"Monthly production values and forecast",50.27137909988822,83.72722021344644,0.5
+"2025-12-31","արևային էլեկտրակայաններ","Forecast ets",66.99929965666733,"Monthly production values and forecast",49.911600809255894,84.08699850407876,0.5
+"2024-01-31","արևային էլեկտրակայաններ","Forecast stlm",789.9409391777115,"Year-over-year (YoY) production values and forecast",787.2376409972263,792.6442373581967,0.5
+"2024-02-29","արևային էլեկտրակայաններ","Forecast stlm",785.6989501909161,"Year-over-year (YoY) production values and forecast",779.1728024673265,792.2250979145059,0.5
+"2024-03-31","արևային էլեկտրակայաններ","Forecast stlm",777.0474002027989,"Year-over-year (YoY) production values and forecast",765.8393152513288,788.2554851542693,0.5
+"2024-04-30","արևային էլեկտրակայաններ","Forecast stlm",775.837433099819,"Year-over-year (YoY) production values and forecast",759.2231578277614,792.4517083718767,0.5
+"2024-05-31","արևային էլեկտրակայաններ","Forecast stlm",761.4441311217267,"Year-over-year (YoY) production values and forecast",738.7855815872771,784.1026806561762,0.5
+"2024-06-30","արևային էլեկտրակայաններ","Forecast stlm",755.5485057143786,"Year-over-year (YoY) production values and forecast",726.2688075684256,784.8282038603314,0.5
+"2024-07-31","արևային էլեկտրակայաններ","Forecast stlm",756.7754055014497,"Year-over-year (YoY) production values and forecast",720.34406652893006,793.206744473969,0.5
+"2024-08-31","արևային էլեկտրակայաններ","Forecast stlm",768.9041719717034,"Year-over-year (YoY) production values and forecast",724.8274210358682,812.9809229075386,0.5
+"2024-09-30","արևային էլեկտրակայաններ","Forecast stlm",783.6715541554526,"Year-over-year (YoY) production values and forecast",731.4856305327514,835.8574777781537,0.5
+"2024-10-31","արևային էլեկտրակայաններ","Forecast stlm",806.067822384218,"Year-over-year (YoY) production values and forecast",745.3340897298402,866.8015550385956,0.5
+"2024-11-30","արևային էլեկտրակայաններ","Forecast stlm",811.2487734338462,"Year-over-year (YoY) production values and forecast",741.550031196729,880.9475156709633,0.5
+"2024-12-31","արևային էլեկտրակայաններ","Forecast stlm",811.2482544104835,"Year-over-year (YoY) production values and forecast",732.1858721549115,890.3106366660556,0.5
+"2025-01-31","արևային էլեկտրակայաններ","Forecast stlm",811.2482544104835,"Year-over-year (YoY) production values and forecast",725.1431910633169,897.3533177576504,0.5
+"2025-02-28","արևային էլեկտրակայաններ","Forecast stlm",811.2482544104835,"Year-over-year (YoY) production values and forecast",718.8521655059265,903.6443433150407,0.5
+"2025-03-31","արևային էլեկտրակայաններ","Forecast stlm",811.2482544104836,"Year-over-year (YoY) production values and forecast",713.0652524089141,909.431256412053,0.5
+"2025-04-30","արևային էլեկտրակայաններ","Forecast stlm",811.2482544104835,"Year-over-year (YoY) production values and forecast",707.6592651180484,914.8372437029187,0.5
+"2025-05-31","արևային էլեկտրակայաններ","Forecast stlm",811.2482544104836,"Year-over-year (YoY) production values and forecast",702.5586059002347,919.9379029207324,0.5
+"2025-06-30","արևային էլեկտրակայաններ","Forecast stlm",811.2482544104836,"Year-over-year (YoY) production values and forecast",697.7117163248986,924.7847924960687,0.5
+"2025-07-31","արևային էլեկտրակայաններ","Forecast stlm",811.2482544104836,"Year-over-year (YoY) production values and forecast",693.081071404149,929.4154374168183,0.5
+"2025-08-31","արևային էլեկտրակայաններ","Forecast stlm",811.2482544104836,"Year-over-year (YoY) production values and forecast",688.638116438553,933.8583923824143,0.5
+"2025-09-30","արևային էլեկտրակայաններ","Forecast stlm",811.2482544104836,"Year-over-year (YoY) production values and forecast",684.3604020029571,938.1361068180101,0.5
+"2025-10-31","արևային էլեկտրակայաններ","Forecast stlm",811.2482544104836,"Year-over-year (YoY) production values and forecast",680.2298306112037,942.2666782097633,0.5
+"2025-11-30","արևային էլեկտրակայաններ","Forecast stlm",811.2482544104835,"Year-over-year (YoY) production values and forecast",676.2315193332298,946.264989487737,0.5
+"2025-12-31","արևային էլեկտրակայաններ","Forecast stlm",811.2482544104835,"Year-over-year (YoY) production values and forecast",672.3530279026164,950.1434809183506,0.5
+"2024-01-31","արևային էլեկտրակայաններ","Forecast stlm",68.73530607885873,"Monthly production values and forecast",66.03200789837355,71.4386042593439,0.5
+"2024-02-29","արևային էլեկտրակայաններ","Forecast stlm",72.58131349376723,"Monthly production values and forecast",68.75846395066274,76.40416303687171,0.5
+"2024-03-31","արևային էլեկտրակայաններ","Forecast stlm",73.74763734990576,"Monthly production values and forecast",69.0657001220252,78.42957457778631,0.5
+"2024-04-30","արևային էլեկտրակայաններ","Forecast stlm",72.77317617728735,"Monthly production values and forecast",67.3669858566999,78.17936649787481,0.5
+"2024-05-31","արևային էլեկտրակայաններ","Forecast stlm",75.00669802190758,"Monthly production values and forecast",68.96242375951569,81.05097228429948,0.5
+"2024-06-30","արևային էլեկտրակայաններ","Forecast stlm",71.40437459265186,"Monthly production values and forecast",64.7832259811485,78.0255232041552,0.5
+"2024-07-31","արևային էլեկտրակայաններ","Forecast stlm",66.72689978707099,"Monthly production values and forecast",59.57525896050451,73.87854061363747,0.5
+"2024-08-31","արևային էլեկտրակայաններ","Forecast stlm",61.138766470253735,"Monthly production values and forecast",53.493354506937955,68.78417843356952,0.5
+"2024-09-30","արևային էլեկտրակայաններ","Forecast stlm",57.157382183749284,"Monthly production values and forecast",49.048209496883395,65.26655487061517,0.5
+"2024-10-31","արևային էլեկտրակայաններ","Forecast stlm",59.79626822876541,"Monthly production values and forecast",51.248459197088856,68.34407726044198,0.5
+"2024-11-30","արևային էլեկտրակայաններ","Forecast stlm",65.18095104962823,"Monthly production values and forecast",56.21594146688873,74.14596063236773,0.5
+"2024-12-31","արևային էլեկտրակայաններ","Forecast stlm",66.9994809766374,"Monthly production values and forecast",57.63584095818247,76.36312099509233,0.5
+"2025-01-31","արևային էլեկտրակայաններ","Forecast stlm",68.73530607885873,"Monthly production values and forecast",58.98932680677887,78.48128535093859,0.5
+"2025-02-28","արևային էլեկտրակայաններ","Forecast stlm",72.58131349376723,"Monthly production values and forecast",62.46743839327235,82.69518859426209,0.5
+"2025-03-31","արևային էլեկտրակայաններ","Forecast stlm",73.74763734990576,"Monthly production values and forecast",63.27878702501289,84.21648767479863,0.5
+"2025-04-30","արևային էլեկտրակայաններ","Forecast stlm",72.77317617728735,"Monthly production values and forecast",61.960998565834174,83.58535378874053,0.5
+"2025-05-31","արևային էլեկտրակայաններ","Forecast stlm",75.00669802190758,"Monthly production values and forecast",63.86176454170193,86.15163150211323,0.5
+"2025-06-30","արևային էլեկտրակայաններ","Forecast stlm",71.40437459265186,"Monthly production values and forecast",59.93633640581238,82.87241277949134,0.5
+"2025-07-31","արևային էլեկտրակայաններ","Forecast stlm",66.72689978707099,"Monthly production values and forecast",54.94461403975489,78.5091855343871,0.5
+"2025-08-31","արևային էլեկտրակայաններ","Forecast stlm",61.138766470253735,"Monthly production values and forecast",49.05039954134196,73.22713339916551,0.5
+"2025-09-30","արևային էլեկտրակայաններ","Forecast stlm",57.157382183749284,"Monthly production values and forecast",44.77049506128758,69.54426930621098,0.5
+"2025-10-31","արևային էլեկտրակայաններ","Forecast stlm",59.79626822876541,"Monthly production values and forecast",47.11788780533564,72.47464865219519,0.5
+"2025-11-30","արևային էլեկտրակայաններ","Forecast stlm",65.18095104962823,"Monthly production values and forecast",52.21763018891484,78.14427191034162,0.5
+"2025-12-31","արևային էլեկտրակայաններ","Forecast stlm",66.9994809766374,"Monthly production values and forecast",53.757349527569,80.24161242570581,0.5
 "2023-12-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",8903.7,"Year-over-year (YoY) production values and forecast",8903.7,8903.7,0.5
 "2023-12-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast auto.arima",826.1999999999998,"Monthly production values and forecast",826.1999999999998,826.1999999999998,0.5
 "2023-12-31","Էլեկտրաէներգիա, ընդամենը, մլն.կՎտ. ժամ","Forecast bats",8903.7,"Year-over-year (YoY) production values and forecast",8903.7,8903.7,0.5
@@ -2071,11 +2071,11 @@
 "2023-12-31","ՋԷԿ","Forecast ets",320.19999999999993,"Monthly production values and forecast",320.19999999999993,320.19999999999993,0.5
 "2023-12-31","ՋԷԿ","Forecast stlm",3656.1,"Year-over-year (YoY) production values and forecast",3656.1,3656.1,0.5
 "2023-12-31","ՋԷԿ","Forecast stlm",320.19999999999993,"Monthly production values and forecast",320.19999999999993,320.19999999999993,0.5
-"2023-12-31","արևային էլեկտրակայաններ","Forecast auto.arima",862.5000000000001,"Year-over-year (YoY) production values and forecast",862.5000000000001,862.5000000000001,0.5
+"2023-12-31","արևային էլեկտրակայաններ","Forecast auto.arima",783.5729378008149,"Year-over-year (YoY) production values and forecast",783.5729378008149,783.5729378008149,0.5
 "2023-12-31","արևային էլեկտրակայաններ","Forecast auto.arima",67,"Monthly production values and forecast",67,67,0.5
-"2023-12-31","արևային էլեկտրակայաններ","Forecast bats",862.5000000000001,"Year-over-year (YoY) production values and forecast",862.5000000000001,862.5000000000001,0.5
+"2023-12-31","արևային էլեկտրակայաններ","Forecast bats",783.5729378008149,"Year-over-year (YoY) production values and forecast",783.5729378008149,783.5729378008149,0.5
 "2023-12-31","արևային էլեկտրակայաններ","Forecast bats",67,"Monthly production values and forecast",67,67,0.5
-"2023-12-31","արևային էլեկտրակայաններ","Forecast ets",862.5000000000001,"Year-over-year (YoY) production values and forecast",862.5000000000001,862.5000000000001,0.5
+"2023-12-31","արևային էլեկտրակայաններ","Forecast ets",783.5729378008149,"Year-over-year (YoY) production values and forecast",783.5729378008149,783.5729378008149,0.5
 "2023-12-31","արևային էլեկտրակայաններ","Forecast ets",67,"Monthly production values and forecast",67,67,0.5
-"2023-12-31","արևային էլեկտրակայաններ","Forecast stlm",862.5000000000001,"Year-over-year (YoY) production values and forecast",862.5000000000001,862.5000000000001,0.5
+"2023-12-31","արևային էլեկտրակայաններ","Forecast stlm",783.5729378008149,"Year-over-year (YoY) production values and forecast",783.5729378008149,783.5729378008149,0.5
 "2023-12-31","արևային էլեկտրակայաններ","Forecast stlm",67,"Monthly production values and forecast",67,67,0.5

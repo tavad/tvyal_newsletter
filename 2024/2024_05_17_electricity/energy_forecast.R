@@ -22,6 +22,8 @@ electricity_production <-
 electricity_production |> 
   count(type, wt = month_value, sort = TRUE)
 
+electricity_production |> view()
+
 #### forecasting
 
 electricity_ts <-
