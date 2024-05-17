@@ -1,8 +1,16 @@
+library(tidyverse)
 library(geomtextpath)
 
-arm_trade_commodity |> 
-  filter(year >= 2018) |> 
-  write_csv("C:/Users/Administrator/Desktop/newsletter/2024/2024_05_11_reexports_gold/arm_trade_commodity.csv")
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+
+source("../../initial_setup.R")
+
+# arm_trade_commodity |> 
+#   filter(year >= 2018) |> 
+#   write_csv("arm_trade_commodity.csv")
+
+arm_trade_commodity <- read_csv("arm_trade_commodity.csv")
+
 
 
 
@@ -506,3 +514,49 @@ arm_trade_commodity |>
     ),
   )
 
+
+###########################################
+# electricity
+
+
+
+comtrade_data <- read_csv("~/proj/2021 CBA grant/comtrade_data_raw/comtrade_data_clean.csv")
+
+# 1000 kWh 
+
+comtrade_data_electricity <- 
+  comtrade_data |> 
+  filter(
+    commodity_code == "2716",
+    year >= 2017
+  ) |> 
+  group_by(period, commodity_code, commodity) |> 
+  summarise(
+    mWh = sum(Qty),
+    trade_value_us = sum(trade_value_us),
+    .groups = "drop"
+  )
+
+comtrade_data_electricity |> write_csv("~/R/newsletter/2024/2024_05_17_electricity/electricity_exports.R")
+
+comtrade_data_electricity |> 
+  pivot_longer(c(mWh, trade_value_us)) |> 
+  arrange(name, period) |> 
+  group_by(name) |> 
+  mutate(
+    period = period + months(1) - days(1),
+    value = ifelse(name == "mWh", value * 50, value),
+    value_yoy = roll_sumr(value, 12)
+  ) |> 
+  ungroup() |> 
+  ggplot(aes(period, value_yoy / 1e6, color = name)) +
+  geom_line() +
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+  scale_y_continuous(
+    breaks = seq(40, 100, 10),
+    labels = number_format(),
+    sec.axis = sec_axis(
+      transform = ~. / 50,
+      breaks = seq(0.8, 2, 0.2)
+    )
+  )
