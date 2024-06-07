@@ -1,0 +1,580 @@
+---
+title: "Tvyal Newsletter"
+author: "Aghasi Tavadyan"
+date: "2024-05-31"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(RcppRoll)
+library(scales)
+library(readxl)
+library(janitor)
+library(rvest)
+
+# rm(list = ls()); gc()
+
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+
+source("../../initial_setup.R")
+
+```
+
+
+
+```{r reading data, include=FALSE}
+
+# system("curl --insecure 'https://www.cba.am/stat/stat_data_arm/7_loans%20by%20branches_arm.xlsx' -o '7_loans_by_branches_arm.xlsx'")
+
+readxl::excel_sheets("7_loans_by_branches_arm.xlsx")
+
+loans_by_branches_row <- read_excel("7_loans_by_branches_arm.xlsx", sheet = 1)
+
+arm_month_names <- c(
+  "Հունվար", "Փետրվար", "Մարտ", "Ապրիլ", "Մայիս", "Հունիս", "Հուլիս",
+  "Օգոստոս", "Սեպտեմբեր", "Հոկտեմբեր", "Նոյեմբեր", "Դեկտեմբեր"
+  )
+
+```
+
+
+```{r, include=FALSE}
+
+loans_by_branches <- 
+  loans_by_branches_row  |> 
+  rename(sphere = 1, temp = 2) |> 
+  mutate(
+    task = ifelse(grepl("ՀՀ առևտրային", sphere), sphere, NA),
+    task = str_remove_all(task, "ՀՀ առևտրային բանկերի կողմից ռեզիդենտներին տրամադրված *"),
+    task = str_remove_all(task, "ն ըստ ոլորտների ?1,2")
+  ) |> 
+  relocate(task) |> 
+  fill(task, .direction = "down") |>
+  filter(
+    !is.na(temp) |
+      sphere %in% c("Սպասարկման ոլորտ", "Սպառողական վարկեր", "Հիպոթեքային վարկեր", "Այլ")
+  ) |>
+  t() |>  as_tibble(header = TRUE) |>
+  fill(V1, .direction = "down") |>
+  mutate(date = paste(V2, V1)) |> 
+  relocate(date) |> 
+  t() |>  as_tibble(header = TRUE) |> 
+  row_to_names(row_number = 1) |> 
+  rename(bank_loans = 1, sphere = 2) |> 
+  filter(!grepl("լորտ", sphere), !is.na(sphere)) |>
+  pivot_longer(-c(bank_loans, sphere), names_to = "date", values_to = "dram") |> 
+  extract(date, into = c("month_name", "year"), regex = "(.*) (\\d{4})") |> 
+  mutate(
+    month = c(1:12)[match(month_name, arm_month_names)],
+    date = ym(paste(year, month)),
+    date = date + months(1) - days(1),
+    dram = as.numeric(dram),
+    sphere = fct_inorder(sphere),
+    bank_loans = fct_inorder(bank_loans)
+  ) |> 
+  filter(sphere != "Ընդամենը") |> 
+  relocate(-dram) |> 
+  group_by(date, bank_loans) |> 
+  mutate(pct_dram = dram / sum(dram)) |> 
+  ungroup()
+
+loans_by_branches |> 
+  write_csv("loans_by_branches_clean.csv")
+
+```
+
+
+
+```{r, include=FALSE}
+
+GDP_per_capita_url <- read_html("https://armstat.am/en/?nid=202") |> 
+  html_element(xpath = '//a[text()="Gross domestic product (GDP) and GDP per capita"]') |> 
+  html_attr("href") |> 
+  str_replace("\\.{2}", "https://www.armstat.am")
+
+GDP_per_capita <- 
+  rio::import(GDP_per_capita_url, skip = 11) |> 
+  as_tibble() |> 
+  rename(year = 1, GDP_AMD = 2) |> 
+  transmute(year = parse_number(year), GDP_AMD) |> 
+  filter(!is.na(GDP_AMD))
+
+loans_to_GDP_chart <- 
+  loans_by_branches |> 
+  filter(
+    year >= 2012,
+    bank_loans != "ընդհանուր վարկեր",
+    sphere %in% c("Սպառողական վարկեր", "Հիպոթեքային վարկեր"),
+    grepl("ՀՀ", bank_loans),
+    month == 12
+  ) |> 
+  mutate(
+    year = parse_number(year),
+    sphere = paste(sphere, "/ ՀՆԱ")
+  ) |> 
+  left_join(GDP_per_capita, by = join_by(year)) |> 
+  mutate(vark_GDP = dram / GDP_AMD) |> 
+  ggplot(aes(year, vark_GDP, color = sphere)) +
+  geom_line(size = 1.3) +
+  scale_x_continuous(breaks = 2012:2024) +
+  scale_y_continuous(labels = percent_format()) +
+  scale_color_manual(values = new_palette_colors[c(2,6)]) +
+  labs(
+    x = NULL,
+    y = NULL,
+    color = NULL,
+    title = "Սպառողական և հիպոթեքային վարկերի կշիռը ՀՆԱ-ին",
+    subtitle = "Տոկոս",
+    caption = paste0(caption_arm, "   |    տվյալների աղբյուր՝ cba.am")
+  )
+
+```
+
+
+
+
+```{r, include=FALSE}
+
+loans_chart_1 <- 
+  loans_by_branches |> 
+  filter(
+    year >= 2011,
+    bank_loans != "ընդհանուր վարկեր",
+    !sphere %in% c("Այլ", "Տրանսպորտ և կապ")
+  ) |> 
+  ggplot(aes(date, dram / 1000, color = bank_loans)) +
+  geom_line(size = 1) +
+  facet_wrap(~sphere, nrow = 2, scales = "free_x") +
+  scale_x_date(date_breaks = "2 years", date_labels = "%Y") +
+  scale_y_continuous(labels = scales::comma_format()) +
+  scale_color_manual(values = new_palette_colors[c(2,6)]) +
+  labs(
+    x = NULL, 
+    y = NULL,
+    color = NULL,
+    title = "ՀՀ առևտրային բանկերի կողմից ռեզիդենտներին տրամադրված վարկերն ըստ ոլորտների",
+    subtitle = "Չի ներառում ֆինանսական և ապահովագրական գործունեությանը\nմլրդ ՀՀ դրամ",
+    caption = paste0(caption_arm, "   |    տվյալների աղբյուր՝ cba.am")
+  )
+
+
+# loans_by_branches |> 
+#   filter(year >= 2005) |> 
+#   ggplot(aes(date, pct_dram, fill = sphere)) + 
+#   geom_area(stat="identity") +
+#   facet_wrap(~ bank_loans)
+
+loans_chart_2 <- 
+  loans_by_branches |> 
+  filter(year >= 2015, month == 12, bank_loans == "ընդհանուր վարկեր") |> 
+  mutate(
+    pct_txt = percent(pct_dram, accuracy = 0.1)
+  ) |> 
+  ggplot(aes(year, pct_dram, fill = sphere, label = pct_txt)) + 
+  geom_col(stat="identity") +
+  geom_text(position = position_stack(vjust = .5)) +
+  scale_y_continuous(labels = number_format()) +
+  # scale_fill_brewer(type = "qual", palette = 3) +
+  scale_fill_manual(values = colfunc3(9)) +
+  labs(
+    x = NULL,
+    y = NULL,
+    fill = NULL,
+    title = "Բանկային վարկավորումները ըստ ճյուղերի",
+    subtitle = "տեսակարար կշիռ",
+    caption = paste0(caption_arm, "   |    տվյալների աղբյուր՝ cba.am")
+  ) +
+  theme(
+    panel.grid.major.x = element_blank()
+  )
+
+
+# loans_by_branches |> 
+#   filter(year >= 2015, month == 12, bank_loans == "ընդհանուր վարկեր") |> 
+#   mutate(
+#     dram = dram / 1000,
+#     dram_text = number(dram,  accuracy = 1)
+#   ) |> 
+#   ggplot(aes(year, dram, fill = sphere, label = dram_text)) + 
+#   geom_col(stat="identity") +
+#   geom_text(position = position_stack(vjust = .5)) +
+#   scale_y_continuous(labels = number_format()) +
+#   # scale_fill_brewer(type = "qual", palette = 3) +
+#   scale_fill_manual(values = colfunc3(9)) +
+#   labs(
+#     x = NULL,
+#     y = NULL,
+#     fill = NULL,
+#     title = "Բանկային վարկավորումները ըստ ճյուղերի",
+#     subtitle = "մլրդ դրամ",
+#     caption = paste0(caption_arm, "   |    տվյալների աղբյուր՝ cba.am")
+#   ) +
+#   theme(
+#     panel.grid.major.x = element_blank()
+#   )
+
+
+# loans_by_branches |> 
+#   filter(bank_loans != "ընդհանուր վարկեր") |> 
+#   group_by(sphere, date) |> 
+#   mutate(pct = dram/sum(dram), .groups = "drop") |>
+#   ggplot(aes(date, pct, fill = bank_loans)) +
+#   geom_area(stat="identity", alpha = 0.5) +
+#   facet_wrap(~ sphere)
+
+
+```
+
+
+```{r, include=FALSE}
+loans_by_banks <- read_excel("7_loans_by_branches_arm.xlsx", sheet = 2, skip = 1)
+loans_by_credit <- read_excel("7_loans_by_branches_arm.xlsx", sheet = 3, skip = 1)
+
+
+
+loans_by_banks_clean <- 
+  loans_by_banks |> 
+   rename(indicator = 1, temp = 2) |> 
+  filter(!is.na(temp)) |> 
+  mutate(
+    indicator = str_trim(indicator),
+    indicator = ifelse(grepl("^K.\\d", indicator), paste(row_number(), indicator), indicator)
+  ) |>
+  t() |> as.tibble() |> 
+  mutate(
+    V1 = ifelse(row_number() == 1, "date", V1),
+    V2 = ifelse(row_number() == 1, "FX", V2)
+  ) |> 
+  janitor::row_to_names(row_number = 1) |> 
+  fill(date, .direction = "down") |> 
+  extract(
+    date, into = c("month", "year"), regex = "([ա-ֆԱ-Ֆ]+)[\\s\\t-]+(\\d{2,4}.?)",
+    remove = FALSE, convert = TRUE
+  ) |> 
+  relocate(month, year) |> 
+  mutate(
+    year = ifelse(year < 100, 2000 + year, year)
+  ) |> 
+  mutate(
+    month = c(1:12)[match(month, arm_month_names)],
+    date = ym(paste(year, month))
+  ) |> 
+  pivot_longer(-c(date, year, month, FX), names_to = "indicator") |> 
+  mutate(
+    value = parse_number(value)
+  )
+
+loans_by_banks_clean |> write_csv("loans_by_banks_clean.csv")
+
+loans_chart_3 <- 
+  loans_by_banks_clean |> 
+  filter(grepl("^[A-Z]\\. ", indicator)) |> 
+  mutate(
+    indicator = str_replace(indicator, "(.*), ?այդ թ.*$", "\\1"),
+    indicator = str_trunc(indicator, 30),
+    indicator = fct_lump_n(indicator, n = 8, w = value, other_level = "Այլ")
+  ) |> 
+  group_by(date, indicator, FX) |> 
+  summarise(value = sum(value), .groups = "drop") |> 
+  ggplot(aes(date, value / 1e6, color = FX)) +
+  geom_line(size = 1) +
+  facet_wrap(~indicator, scales = "free") +
+  scale_x_date(date_breaks = "2 years", date_labels = "%Y") +
+  scale_y_continuous(labels = number_format()) +
+  scale_color_manual(values = new_palette_colors[c(2,6)]) +
+  labs(
+    x = NULL,
+    y = NULL,
+    color = NULL,
+    title = "ՀՀ ԱՌԵՎՏՐԱՅԻՆ ԲԱՆԿԵՐի կողմից տրված վարկերը ըստ NACE դասակարգի",
+    subtitle = "մլրդ դրամ",
+    caption = paste0(caption_arm, "   |    տվյալների աղբյուր՝ cba.am")
+  )
+
+
+loans_chart_4 <- 
+  loans_by_banks_clean |> 
+  filter(
+    grepl("^[A-Z]\\. ", indicator),
+    year >= 2015
+  ) |> 
+  mutate(
+    indicator = str_trunc(indicator, 30),
+    indicator = fct_lump_n(indicator, n = 6, w = value, other_level = "Այլ")
+  ) |> 
+  group_by(date, indicator) |> 
+  summarise(value = sum(value), .groups = "drop") |> 
+  mutate(
+    indicator = fct_reorder(indicator, value, .fun = max)
+  ) |> 
+  ggplot(aes(date, value / 1e6, fill = indicator)) +
+  geom_area() +
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+  scale_y_continuous(n.breaks = 8, labels = number_format()) +
+  scale_fill_manual(values = colfunc2(7)) +
+  labs(
+    x = NULL,
+    y = NULL,
+    fill = NULL,
+    title = "ՀՀ առևտրային բանկերի կողմից տրված վարկերը ըստ ՏԳՏԴ դասակարգի",
+    subtitle = "մլրդ դրամ",
+    caption = paste0(caption_arm, "   |    տվյալների աղբյուր՝ cba.am")
+  )
+
+
+
+
+
+loans_by_banks_clean |> 
+  filter(grepl("^[A-Z]\\. ", indicator)) |> 
+  mutate(
+    indicator = str_trunc(indicator, 30),
+    indicator = fct_lump_n(indicator, n = 7, w = value, other_level = "Այլ")
+  ) |> 
+  group_by(date, indicator) |> 
+  summarise(value = sum(value), .groups = "drop") |> 
+  mutate(year = year(date), month = month(date)) |> 
+  group_by(year) |> 
+  filter(
+    year >= 2015, month == 4
+  ) |> 
+  group_by(date) |> 
+  mutate(
+    pct = value/sum(value),
+    pct_text = percent(pct, accuracy = 0.1),
+    indicator = fct_reorder(indicator, value, .fun = max),
+    text = number(value / 1e6, accuracy = 1),
+    # text = paste0(text, "\n", pct_text)
+  ) |> 
+  ungroup() |> 
+  ggplot(aes(year, value / 1e6, fill = indicator, label = text)) +
+  geom_col() +
+  geom_text(position = position_stack(vjust = .5)) +
+  scale_y_continuous(labels = number_format()) +
+  scale_x_continuous(breaks = seq(2015, 2024, 1)) +
+  scale_fill_manual(values = colfunc2(8))
+
+
+
+
+# loans_by_credit |> 
+#   rename(indicator = 1, temp = 2) |> 
+#   filter(!is.na(temp)) |> 
+#   mutate(
+#     indicator = str_trim(indicator),
+#     indicator = ifelse(grepl("^K.\\d", indicator), paste(row_number(), indicator), indicator)
+#   ) |>
+#   t() |> as.tibble() |> 
+#   mutate(
+#     V1 = ifelse(row_number() == 1, "date", V1),
+#     V2 = ifelse(row_number() == 1, "FX", V2)
+#   ) |> 
+#   janitor::row_to_names(row_number = 1) |> 
+#   fill(date, .direction = "down") |> 
+#   extract(
+#     date, into = c("month", "year"), regex = "([ա-ֆԱ-Ֆ]+)[\\s\\t-]+(\\d{2,4}.?)",
+#     remove = FALSE, convert = TRUE
+#   ) |> 
+#   relocate(month, year) |> 
+#   mutate(
+#     year = ifelse(year < 100, 2000 + year, year)
+#   ) |> 
+#   mutate(
+#     month = c(1:12)[match(month, arm_month_names)],
+#     date = ym(paste(year, month))
+#   ) |> 
+#   pivot_longer(-c(date, year, month, FX), names_to = "indicator") |> 
+#   mutate(
+#     value = parse_number(value),
+#   ) |> 
+#   # count(indicator) |> 
+#   extract(
+#     indicator, into = c("code", "indicator_2"), 
+#     # regex = "^((?:[A-Z]\\. |\\([^\\)]+\\) )?)\\s*([ա-ֆԱ-Ֆ ,՝]+)$",
+#     
+#     regex = "^([\\(\\)\\+\\ \\-\\d\\.\\/ A-Z]+)\\s*(.+)",
+#     remove = FALSE
+#   ) |> 
+#   mutate(
+#     indicator_2 = ifelse(is.na(indicator_2), indicator, indicator_2),
+#     indicator_2 = str_trim(indicator_2)
+#   )
+  
+```
+
+
+
+
+***English summary below.***
+
+Հարգելի գործընկեր,
+
+Հուսով եմ՝ լավ եք: 
+Ներկայացնում եմ այս շաբաթվա վերլուծությունները և աշխատանքները.
+
+**ՈՒՇԱԴՐՈՒԹՅՈՒՆ․ ՄԵՆՔ !!PODCAST!! ՈՒՆԵՆՔ․ ՄԱՆՐԱՄԱՍՆԵՐԸ ՆԵՐՔԵՎՈՒՄ**
+
+## [🔌⚡🇦🇲 էլեկտրիկ Հայաստան․ էլեկտրականության արտադրության և արտահանման կրճատում](https://www.tvyal.com/newsletter/2024/2024_05_31)
+
+Մեր հետազոտությունների շրջանակում վերջերս մենք ընդգծել ու քնարկման աղբյուր ենք սարքել տնտեսության որոշ որոշ խնդիրներ, որոնք ցույց են տալիս իրական տնտեսության վիճակը։ Մենք քնարկել ենք որ տնային տնտեսությունները իրականում աղքատացել են վերջին շրջանում, որ ապրուստի տեսանկյունից Երևանը նույնիսկ Մոսկվայից թանկ է, որ այս պահին առկա է կապիտալի արտահոսք, այն որ այս պահին ՀՀ արտահանման 75 տոկոսը ոսկու և ադամանդների վերաարտահանում է, որը միակ ուղղությունն է որը ապահովում է արտահանման աճը և ՀՆԱ-ի աճը իրական տնտեսության ու արտահանման անկման ֆոնին, այն որ նույնիսկ էլեկտրականության արտադրությունը ու արտահանումն է անկել։ Ինրպես նաև առկա է տուրիստական և ՏՏ ծառայությունների անկման միտում։
+
+Այս ամենի ֆոնին բավականին մտահոգություն է առաջացնում այն որ ՀՆԱ-ի և արտհանման ցուցանիշները շարունակվում են ուրճացված աճ արձանագրել ընդհանուր իրական տնտեսության անկման ֆոնին։ Այլ հավասար պայմաններում սպասվում է որ Հայաստանի 2024 թվականի արտահանումը լինելու է մոտ 16-18 մլրդ դոլար, որից մեր մեթոդաբանությամբ գնահատված վերաարտահանումը լինելու է մոտ 85 տոկոս (զուտ արտահանումը կազմելու է մոտ 2.8 մլրդ դոլար), համեմատած 2021 թվականի երբ արտահանումը 3 մլրդ դոլար էր, որից մեր մեթոդաբանությամբ գնահատված վերաարտահանումը ընդամենը 6 տոկոս։ 2023 թվականին արտահանումը հրանցեց սկընթաց աճ։ Այս տարի արտահանմվել է 5.4 մլրդ դոլար ապրանք, որից մեր գնահատականով վերաարտահանումը կազմել է 26 տոկոս։ 2023 թվականին արտահանումը կազմել է 8.4 մլրդ դոլար՝ գնահատված վերաարտահանումը՝ 49 տոկոս։ Ինչպես նշեցինք 2024 թվականին սպասվում է որ արտահանումը կազմելու է 16-18 մլրդ դոլար, որից վեարաարտահանումը լինելու է մոտ 85 տոկոս։ Փաստացի այս պահին տնտեսական աճը պայմանավորում է միայն Ռուսատանից եկող արտաքին ազդակներով ու եթե Ռուսաստանից ոսկու վերաարտահանումը խզվի կամ միջազգային դրության կտրուկ փոփոխություն լինի ապա Հայաստանի տնտեսական գումարային ցուցանիշների աճի ապահովումը չի ստացվի։ Փաստացի իրական տնտեսությունը անկում է ապրում։
+
+Այս վերլուծությունում մենք կուսումնասիրենք դրամավարկային քաղաքականության որոշ ցուցանիշներ, որոնք նույնպես ընդգծում են տնտեսությունում առկա խնդիրները։
+
+**Գծապատկեր 1.** 
+
+```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
+loans_chart_1
+```
+
+Առաջին գծապատկերում ներկայացված է առևտրային բանկերի կողմից տրամադրված վարկերը ըստ ոլորտների։ Ինչպես երևում է արդյումաբերության ոլորտին տրամադրվող արտարժույթով վարկերը 2021 թվականից ունեն անկման միտում։ 2020 թվականի դեկտեմբերին արդյունաբերության ոլորտին տրամադրվել էր 484 մլրդ դրամին համարժեք արտարժույթով վարկ, 2023 թվականի ապրիլին արդեն 255 մլդր դրամ։ Այս շրջանում անկումը կզմել է 47 տոկոս։ Այս ոլորտին ՀՀ դրամով տրամադրված վարկերը նույնպես ունեն անկման միտում, որը սկսել է 2023 թվականի սկզբից։ Այս հանգամանքը վկայում է նրա մասին, որ իրական արդյունաբերությունը այս պահին նվազում է։ Զարհուրելին այն է որ ՀՆԱ-ի աճի և տնտեսական ակտիվության հիմնական աճը վերջին շրջանում ապահովելն է հենց արյունաբերությունը, որի մեծ մասը պաշտոնապես պայմանավորված է ոսկու արտադրությամբ որը թանկարժեք և կիսաթանկարժեք քարերի և մետաղների վերջին ամսիներին գրանցած զգալի վերաարտահանման արդյունքն է։
+
+
+Առևտրի ոլորտին արտարժույթով տրամադրվող վարկերը նույնպես ունեն անկման միտում, սակայն սա կոմպենսացվում է դրամով տրամադրվող վարկերով, որը դրական է։ Գյուղատնտեսության վարակավորումն առևտրի ոլորտի պես նույնպես ունի որոշակի դրական միտում, այստեղ արտարժույթով վարկերը նվազել են, իսկ ՀՀ դրամով վարկավորումը բավականին աճ է արձանագրել։ Գյուղատնտեսության ոլորտին դրամով տրամադրված վարկերը 2022 թվականից գրեթեդ կրկնապատկվել էն։ Շինարարության վարկավորումը և դրամով և արտարժույթով աճում է, որը նույնպես ցույց է տալիս որոշակի դրական միտում։ 2020 թվականից այս ոլորտին դրամով դրամադրված վարկերը աճել են ավելի քան 3 անգամ, իսկ արտարժույթով՝ 1.5 անգամ։
+
+
+**Գծապատկեր 2.**  
+
+```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
+loans_to_GDP_chart
+```
+
+
+Որոշակի մտահոգություն է առաջացնում հիպոթեքային և սպառողական վարկերի կտրուկ աճը որը գրանցվել է վերջին շրջանում։ ՀՀ դրամով տրամադրված հիպոթեքային վարկերը 2024 թվականի ապրիլի դրությամբ գերազանցել են 1 տրիլիոն դրամը։ 2023 թվականի վերջի դրությամբ այս ցուցանիշը կազմում էր 951 մլն դրամ, իսկ ՀՆԱ-ն 9 505 մլն դրամ, այսպես հիպոթեքային վարկեր ՀՆԱ հարաբերությունը արդեն կազմում է 10 տոկոս և ունի հստակ աճի միտում, համեմատած 2018 թվականի երբ հիպոթեքային վարկեր ՀՆԱ հարաբերությունը կազմում էր 2.5 տոկոս։ Ինչպես երևում է գծապատկերում սպառողական վարկեր ՀՆԱ հարաբերությունը նույնպես ունի աչի միտում։
+
+Հաջորդ գծապատկերը ցույց է տալիս ըստ ճյուղերի բանկային վարկերի տեսակարար կիշիռը։ 2018 թվականին ընդհանուր վարկերի 20.3 տոկոսը տրվում էր արդյունաբերությանը, 17.1 տոկոսը առևտրին։ 2023 թվականին այս ցուցանիշների տեսակարար կշիռը նվազել է համապատասխանաբար 11.8 տոկոս և 13.3 տոկոս։ Փոխարենը աճել է սպառողական և հիպոթեքային վարկերի տեսակարար կշիռը։ 2018 թվականին հիփեոթեքային վարկերը կազմում էին ընդհանուր վարկերի տոկոսը, իսկ 2023-ին արդեն 25 տոկոսը։ Այս երկու վարկերը միասին 2018 թվականին ընդհանուր վարկերի 37.5 տոկոսն էին, իսկ 2023-ին արդեն՝ 50.3 տոկոսը։
+
+
+**Գծապատկեր 3.**
+
+```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
+loans_chart_2
+```
+
+Հետաքրքիր և նաև ուսումնասիրել բանկային վարկավորումը ըստ ՀՆԱ-ի արտադրությունն ըստ ՏՆՏԵՍԱԿԱՆ ԳՈՐԾՈՒՆԵՈՒԹՅԱՆ ՏԵՍԱԿՆԵՐԻ ԴԱՍԱԿԱՐԳԻՉ (ՏԳՏԴ խմբ.2) դասակարգման: Ինպրես երևում է 2023 թվականի վերջին տնտեսությանը ըստ տարբեր ճյուղերի տրամադրված ընդհանուր վարկերը կազմել են 2.7 տրիլիոն դրամ, որը 11.8 տոկոսով ավել է 2022 թվականի 2.3 տրիլիոն դրամ ցուցանիշից։ Սակային ինչպես երևում է գծապատկերում արդեն առկա է վարկավորման անկման միտում։ Վերջին անգամ այսպիսի անկման միտում առկա էր 2021 թվականի սկզբից, երբ ընդհանուր տրամադրված վերկերը կրճատվեցին 9.2 տոկոսով, որը հիմնականում 2020 թվականի -7.2 տոկոս տնտեսական անկման հետևանք էր։ Նույն տենդենցը նկատվում է 2024 թվականի սկզբից, որը նույնպես վկայում է տնտեսությթունում առկա առանցքային խնդիրների մաիսն։
+
+
+
+**Գծապատկեր 5.**
+
+```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
+loans_chart_4
+```
+
+
+Վերջին գծապատկերում ներկայացված է տնտեսության վարկավորումը ըստ առանձին ճյուղերի։
+
+**Գծապատկեր 4.** 
+
+```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
+loans_chart_3
+```
+
+
+
+
+
+>
+> Ձեզ կարող է հետաքրքրել նաև հետևյալ վերլուծությունները.
+>
+> - [💸🔚🏦 Կապիտալի արտահոսք](https://www.tvyal.com/newsletter/2024/2024_03_01)։
+> - [🤒🟨♻️ Ոսկու տենդի շարունակություն. Հայաստանի արտահանման 75%-ը ոսկի և ադամանդ է](https://www.tvyal.com/newsletter/2024/2024_05_11)։
+>
+
+
+
+-----
+
+
+<small>\* Այս և մեր բոլոր այլ վերլուծությունների տվյալները վերցված են պաշտոնական աղբյուրներից։ Հաշվարկները ամբողջությամբ հասանելի են github-ում, դրանք կարելի է ստուգել այցելելով [github-ի](https://github.com/tavad/tvyal_newsletter/blob/main/2024/) մեր էջը, որտեղ տրված են տվյալները, հաշվարկների և գծապատկերների կոդը։<\small>
+
+
+
+
+
+
+
+<!-- ## PODCAST !! -->
+
+<!-- ### Խոսենք թվերով #6 -->
+
+<!-- [Ինչքա՞ն հայ կունենանք Հայաստանում 2100 թվականին](https://www.youtube.com/watch?v=WHMZs1PZ9jo) -->
+
+<!-- - 🔘 Ի՞նչ է ծառայությունների արտահանումը, և ինչո՞ւ է այն կարևոր -->
+<!-- - 🔘 Որոնք են Հայաստանից արտահանվող ծառայությունները -->
+<!-- - 🔘 Ինչպիսի դինամիկա կա ծառայությունների արտահանման ծավալներում -->
+
+<!-- How2B-ում «խոսում ենք թվերով»՝ տնտեսագետ Աղասի Թավադյանի հետ: -->
+
+<!-- Թեմայով վերլուծությունը ներկայացված է tvyal.com կայքում՝ -->
+<!-- [💼✈🥶️ Հայաստանի հյուրընկալության սառչում․ Ծառայությունների արտահանման ուսումնասիրություն](https://www.tvyal.com/newsletter/2024/2024_04_26) -->
+
+<!-- <a href="https://www.youtube.com/watch?v=WHMZs1PZ9jo"> -->
+<!--   <img src="https://i3.ytimg.com/vi/WHMZs1PZ9jo/hqdefault.jpg" alt="YouTube Video" style="width:60%;"> -->
+<!-- </a> -->
+
+
+<!-- ## ԶԼՄ հաղորդագրություն -->
+
+
+<!-- [Դիտեք 1in.am լրատվամիջոցին տված իմ վերջին հարցազրույցը, եթե ուզում եք իմանալ ապագա տնտեսական աճի պատճառների մասին։](https://youtu.be/6zQQjlQImMI) -->
+
+<!-- 📺  Ոսկու առեղծվածը․ 9 անգամ աճել է ոսկու արտահանումը. Աղասի Թավադյան 📺 -->
+
+<!-- <a href="https://youtu.be/6zQQjlQImMI"> -->
+<!--   <img src="https://i3.ytimg.com/vi/6zQQjlQImMI/hqdefault.jpg" alt="YouTube Video" style="width:60%;"> -->
+<!-- </a> -->
+
+
+
+## English Summary
+
+### 🔌⚡🇦🇲  Electric Armenia: Reduction in Electricity Production and Exports
+
+Armenia's energy landscape faces notable shifts, as evidenced by recent statistics. Analysis reveals a concerning trend of decreasing electricity production and exports. In 2023, total electricity production witnessed a 3.5% decline compared to the previous year, with reductions across major production types such as CHP, NPP, and HEC. Only solar electricity production saw a remarkable increase of approximately 55%, albeit accounting for a modest 8.7% of total electricity generated. Moreover, the export of electricity experienced a significant downturn, plummeting by 23.4% to 68.0 million dollars in 2023. This trend underscores challenges in maintaining production demand amid geopolitical and economic uncertainties.
+
+The decline in production and exports poses multifaceted challenges for Armenia's energy security and economic stability. While solar energy adoption offers promise in reducing reliance on imported fossil fuels and enhancing energy resilience, the overall shrinkage in electricity metrics raises concerns about the nation's economic vitality. Notably, the shift towards electric vehicles and heating solutions globally may amplify electricity demand, further straining Armenia's energy infrastructure. Addressing these challenges necessitates strategic planning and investment to bolster production capacity and electrification infrastructure, ensuring readiness to meet future demand projections. Thus, amidst shrinking production and export figures, proactive measures are imperative to fortify Armenia's energy sector and sustain its economic growth trajectory.
+
+
+---
+
+Այս վերլուծությունը առկա է նաև [մեր կայքէջում](https://www.tvyal.com/newsletter/2024/2024_05_31), այս վերլուծության կոդը և տվյալները դրված են նաև [Github-ում](https://github.com/tavad/tvyal_newsletter)։       
+
+---                  
+
+Եթե հնարավոր է, խնդրում եմ այս նյութը ուղարկել նաև այն մարդկանց, ում այն կարծում եք կարող է հետաքրքրել:
+
+Սպասեք հաջորդ հաղորդագրությանը հաջորդ ուրբաթ օրը:      
+
+
+Հարգանքներով,            
+Աղասի Թավադյան         
+31.05.2024          
+[tvyal.com](https://www.tvyal.com/)      
+[tavadyan.com](https://www.tavadyan.com/)
+
+---
+
+[Was this email forwarded to you? Subscribe here.](https://www.tvyal.com/subscribe)
+
+[Բաժանորդագրվեք](https://www.tvyal.com/subscribe)
+
+       
+---              
+               
+
+
+####### **Ուշադրություն. Ձեր էլ.փոստը մեյլլիսթի մեջ է, որի միջոցով ես կիսվում եմ շաբաթական նյութեր, որոնք հիմնականում ներկայացնում են Հայաստանի տնտեսությունը: Նյութերը ներառում են գծապատկերներ, [տվյալների բազաներ](https://github.com/tavad/tvyal_newsletter), տեսանյութեր, հոդվածներ, [առցանց վահանակներ](https://www.tvyal.com/projects), տնտեսական գործիքներ, կանխատեսումներ և հաշվետվություններ: Եթե ցանկանում եք չեղարկել բաժանորդագրությունը, խնդրում եմ տեղեկացրեք ինձ, և ես կհեռացնեմ ձեր էլ. փոստը ցուցակից: Գրեք նաև եթե ունեք մենկնաբանություններ:**
+
+####### **Important! Your email is part of the mailing list where I share weekly materials primarily focused on the Armenian economy. These materials encompass charts, [databases](https://github.com/tavad/tvyal_newsletter), videos, articles, [online dashboards](https://www.tvyal.com/projects), economic tools, forecasts, and reports. If you wish to unsubscribe, please let me know, and I will remove your email from the list. Please share your comments as well․**
+
+
+
+
+
+
+
