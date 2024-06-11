@@ -162,9 +162,9 @@ money_base |>
     x = NULL,
     y = NULL,
     fill = NULL,
-    title = "Փողի բազան Հայաստանում",
+    title = "Փողի բազան Հայաստանում (Monetary Base)",
     subtitle = "Մլրդ դրամ, 2024-ը ապրիլի դրությամբ",
-    caption = caption_arm
+    caption = paste0(caption_arm, "   |   տվյալների աղբյուր՝ cba.am")
   )
 
 data1 <- 
@@ -271,7 +271,10 @@ bind_rows(
   labs(
     x = NULL,
     y = NULL,
-    color = NULL
+    color = NULL,
+    title = "Արտարժույթով թղթակցային հաշիվների\nև ԱՄՆ դոլար / ՀՀ դրամ փոխարժեքի համադրություն",
+    # subtitle = "Մլրդ դրամ",
+    caption = paste0(caption_arm, "   |   տվյալների աղբյուր՝ cba.am")
   )
 
 
@@ -502,6 +505,7 @@ rec_spec <-
 # 
 rec_spec_date <-
   recipe(value ~ ., data = training(splits)) |>
+  step_log(all_numeric_predictors(), offset = 1) |> 
   step_timeseries_signature(date) |>
   step_mutate(across(all_nominal_predictors(), ~factor(.x))) |>
   step_dummy(all_nominal_predictors(), one_hot = TRUE) |>
@@ -877,13 +881,13 @@ wflw_win_median_6 <- workflow() |>
 modeltime_calib_tbl <- 
   modeltime_table(
     wflw_xgb
-    # # # wflw_xgb_h2o,
+    # # wflw_xgb_h2o,
     # wflw_glmnet,
     # wflw_poisson_reg_glmnet,
     # wflw_bag_tree,
     # # model_prophet_reg_prophet,
     # wflw_exp_smoothing_ets,
-    # wflw_seasonal_reg_stlm_ets,
+    # # wflw_seasonal_reg_stlm_ets,
     # wflw_win_median_4,
     # wflw_win_median_6
   ) |> 
@@ -960,6 +964,10 @@ g <- total_clv_prediction |>
 
 plotly::ggplotly(g)
 
+total_clv_prediction |> 
+  filter( indicator == "Correspondent accounts in dram") |>
+  rsq(prediction, actual)
+
 
 
 modeltime_calib_tbl |> 
@@ -970,15 +978,19 @@ modeltime_calib_tbl |>
 
 ###########################################     ????????????????
 
+price_future$date |> max()
+
 future_forecast_tbl <- modeltime_calib_tbl |> 
-  filter(.model_id %in% c(1,5,6)) |> 
+  # filter(.model_id %in% c(1,4)) |> 
   modeltime_forecast(
     new_data = price_future,
     actual_data = price_actual,
-    # conf_by_id = TRUE,
+    conf_by_id = TRUE,
     conf_method = "conformal_default",
+    id = "indicator", # Specify the appropriate column name if 'id' column exists in calibration data
     keep_data = TRUE
   )
+
 
 future_forecast_tbl |> view()
 
@@ -988,35 +1000,58 @@ future_forecast_tbl |> write_rds("~/R/newsletter/2024/2024_05_31_CB_loans/2_Mone
 future_forecast_tbl <- read_rds("~/R/newsletter/2024/2024_05_31_CB_loans/2_Money_Base_forecast_rds")
 
 
-future_forecast_tbl |> 
+future_forecast_tbl
+
+future_forecast_tbl |>
   filter(
-    !indicator %in% c(
-      "Government",
-      "CBA foreign currency swap (FX attraction)", "Deposits (-)", "Reverse repo (-)", 
-      "CBA foreign currency swap (FX allocation) (-)", "Securities issued by the CBA (-)",
-      "Other assets, net"
-    ),
-    !grepl("Other accounts", indicator)
+    indicator == "Correspondent accounts in FX"
+  ) |>  
+  bind_rows(
+    transmute(
+      data1, .value = value, .index = date, 
+      indicator = indicator,
+      .model_id = NA, .model_desc = "ACTUAL", .key = "actual"
+    )
   ) |> 
+  unique() |> 
   mutate(
     across(matches("conf|value"), ~.x/1000),
-    indicator = factor(indicator, levels = indicator_names_dict$indicator)
-  ) |> 
-  ggplot(aes(.index, .value, color = .model_desc, )) +
-  geom_line() +
-  geom_ribbon(aes(ymin = .conf_lo, ymax = .conf_hi), alpha = 0.1) +
-  geom_hline(yintercept = 363.9, color = "gray80") +
-  facet_wrap(~indicator, scale = "free_y") +
-  
+    across(matches("conf|value"), ~ifelse(grepl("FX|NET", indicator) & .key == "prediction", .x - 130, .x)),
+    indicator = factor(indicator, levels = indicator_names_dict$indicator),
+    .model_desc = ifelse(.model_desc == "ACTUAL", "Թղթակցային հաշիվներ արտարժույթով", "կանխատեսում (XG-BOOST)")
+  ) |> view()
+  ggplot() +
+  geom_rect(
+    data = rect_data,
+    mapping = aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax),
+    fill = new_palette_colors[4],
+    alpha = 0.3
+  ) +
+  geom_line(aes(.index, .value, color = .model_desc), size = 1.2) +
+  geom_ribbon(
+    aes(.index, .value, ymin = .conf_lo, ymax = .conf_hi), alpha = 0.1,
+    color = new_palette_colors[3], fill = new_palette_colors[3]
+  ) +
+  geom_line(
+    data = data2,
+    aes(date, value, color = "ԱՄՆ դոլար / ՀՀ դրամ փոխարժեք"),  size = 1.2
+  ) +
+  geom_hline(yintercept = 363.9, color = new_palette_colors[4]) +
   scale_x_date(date_breaks = "2 year", date_labels = "%Y") +
-  scale_y_continuous(labels = number_format(), n.breaks = 8) +
+  scale_y_continuous(
+    name = "մլրդ դրամ",
+    sec.axis = sec_axis(
+      ~ .,
+      name = "USD / AMD",  
+    )
+  ) +
+  scale_color_manual(values = new_palette_colors[c(6,2,3)]) +
   labs(
-    x = NULL, y = NULL, color = NULL, lty = NULL
+    x = NULL, y = NULL, color = NULL, lty = NULL,
+    title = "Արտարժույթով թղթակցային հաշիվների\nև ԱՄՆ դոլար / ՀՀ դրամ փոխարժեքի համադրություն",
+    # subtitle = "մլրդ դրամ",
+    caption = paste0(caption_arm, "   |   տվյալների աղբյուր՝ cba.am")
   )
-
-
-
-
 
 
 
