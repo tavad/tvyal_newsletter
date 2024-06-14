@@ -95,13 +95,19 @@ money_base_daily |>
 
 money_base_daily |> 
   filter(indicator == "Net international reserves (NIR)") |> 
-  ggplot(aes(date, value)) +
+  ggplot(aes(date, value / 1000)) +
   geom_line()
 
 money_base_daily |> 
   filter(indicator == "Correspondent accounts (in FX)") |> 
-  ggplot(aes(date, value)) +
-  geom_line()
+  ggplot(aes(date, value / 1000)) +
+  geom_line() +
+  geom_smooth() +
+  labs(
+    x = NULL, y = NULL,
+    title = "Correspondent accounts (in FX)",
+    subtitle = "billion AMD"
+  )
 
 money_base_daily |> 
   filter(value != 0) |> 
