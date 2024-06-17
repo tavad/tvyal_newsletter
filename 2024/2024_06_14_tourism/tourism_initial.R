@@ -92,7 +92,93 @@ tourism_monthly |>
   theme(
     panel.grid.major.x = element_blank()
   )
+
+##############################################
+
+tourism_quarter <- 
+  read_excel("tourism_data_raw.xls", skip = 1) |> 
+  janitor::clean_names() |> 
+  mutate(
+    across(contains("x20"), ~ ifelse(.x == "-", 0, .x)),
+    across(contains("x20"), ~ as.numeric(.x)),
+    tourism_direction = ifelse(grepl("visitors", x3), "visitors", "outbonds")
+  ) %>% 
+  select(-c(x1, x2, x3)) |> 
+  pivot_longer(contains("x20"), names_to = "date") |> 
+  # pivot_wider(names_from = tourism_direction) %>% 
+  mutate(
+    date = str_replace(date, "x(\\d{4})q(\\d)", "\\1.\\2"),
+    date = lubridate::yq(date) + months(3) - days(1)
+  )
+
+# tourism_quarter_diff <- 
+tourism_quarter |> 
+  pivot_wider(names_from = tourism_direction) |> 
+  mutate(
+    value = visitors - outbonds,
+    year = year(date),
+    month = month(date)
+  ) |> 
+  filter(year >= 2018) |> 
   
+  mutate(
+    period = ifelse(month <= max_month, "start_of_the_year", "rest_of_the_year")
+  ) |> 
+  group_by(year, period) |> 
+  summarise(value = sum(value), .groups = "drop") |> 
+  group_by(year) |> 
+  mutate(
+    text = sum(value),
+    text = ifelse(period == "start_of_the_year", value, text),
+    text = ifelse(
+      text >= 1e6,
+      number(text/1e6, accuracy = 0.01, suffix = " M"),
+      number(text/1000, accuracy = 1, suffix = " K")
+    ),
+    text_start = ifelse(
+      period == "start_of_the_year",
+      paste0(text, "*"),
+      NA
+    ),
+    text_rest = ifelse(period == "rest_of_the_year", text, NA),
+  ) |> 
+  ungroup() |> 
+  ggplot() +
+  geom_col(aes(year, value, fill = period), width = 0.3) +
+  geom_text(
+    aes(year + 0.45, y = 0, fill = period, label = text_start), 
+    position = position_dodge(),
+    # size = 2,
+    vjust = - 0.1, color = new_palette_colors[6]
+  ) +
+  geom_text(
+    aes(year, value, fill = period, label = text_rest), 
+    position = "stack", vjust = -0.3, color = new_palette_colors[2]
+  ) +
+  geom_segment(
+    mapping = aes(x = year - 0.15, xend = year + 0.75, y = 0, yend = 0),
+    linetype = 3, color = new_palette_colors[6]
+  ) +
+  scale_x_continuous(breaks = 2018:2024) +
+  scale_y_continuous(breaks = NULL) +
+  scale_fill_manual(
+    values = new_palette_colors[c(2,6)],
+    labels = c("", "* հունվարից մինչև մարտ")
+  ) +
+  coord_cartesian(clip = "off") +
+  labs(
+    x = NULL,
+    y = NULL,
+    fill = NULL,
+    title = "Զուտ զբոսաշրջային դեպի Հայաստան",
+    subtitle = "ըստ տարիների, ժամանումների և մեկնումների տարբերությունը",
+    captions = paste0(caption_arm, "    |    Տվյալների աղբյուր՝ mineconomy.am")
+  ) +
+  guides(fill = guide_legend(override.aes = list(alpha = c(0, 1)))) +
+  theme(
+    panel.grid.major.x = element_blank()
+  )
+
 
 
 ###############################################
@@ -107,7 +193,7 @@ ggplot() +
   theme_void()
 
 
-data <- read_csv("transport_map_data.csv")
+m_data <- read_csv("transport_map_data.csv")
 
 ggplot() +
   geom_sf(data = armenia_map, fill = new_palette_colors[7]) +
@@ -124,19 +210,19 @@ ggplot() +
     ),
     aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, fill = fill),
   ) +
-  geom_point(data = data, aes(x = longitude, y = latitude), color = "black", size = 2) +
+  geom_point(data = m_data, aes(x = longitude, y = latitude), color = "black", size = 2) +
   geom_segment(
-    data = data, 
+    data = m_data, 
     aes(x = longitude, xend = long_line_1, y = latitude, yend = lat_line_1),
     linetype = 3
   ) +
   geom_segment(
-    data = data, 
+    data = m_data, 
     aes(x = long_line_1, xend = long_line_2, y = lat_line_1, yend = lat_line_2),
     linetype = 3
   ) +
   geom_text(
-    data = data, 
+    data = m_data, 
     aes(
       x = long_line_2, y = lat_line_2,
       label = paste0(
@@ -147,7 +233,7 @@ ggplot() +
     ),
   ) +
   geom_rect(
-    data = data,
+    data = m_data,
     aes(
       xmin = long_line_2 + ifelse(long_line_2 == min(long_line_2), 0 , -0.32), 
       xmax = long_line_2 + ifelse(long_line_2 == min(long_line_2), 0.12, -0.2), 
@@ -157,7 +243,7 @@ ggplot() +
     fill = new_palette_colors[2], alpha = 1
   ) +
   geom_rect(
-    data = data,
+    data = m_data,
     aes(
       xmin = long_line_2 + ifelse(long_line_2 == min(long_line_2), 0.2, 0), 
       xmax = long_line_2 + ifelse(long_line_2 == min(long_line_2), 0.32, -0.12), 
