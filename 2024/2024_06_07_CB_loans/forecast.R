@@ -98,6 +98,8 @@ money_base_daily |>
   ggplot(aes(date, value / 1000)) +
   geom_line()
 
+max_date <- money_base_daily$date |> max()
+
 money_base_daily |> 
   filter(indicator == "Correspondent accounts (in FX)") |> 
   ggplot(aes(date, value / 1000)) +
@@ -106,7 +108,7 @@ money_base_daily |>
   labs(
     x = NULL, y = NULL,
     title = "Correspondent accounts (in FX)",
-    subtitle = "billion AMD"
+    subtitle = paste("billion AMD, max date:", max_date)
   )
 
 money_base_daily |> 
