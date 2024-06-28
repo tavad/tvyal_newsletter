@@ -69,13 +69,18 @@ update_geom_defaults("area", list(fill  = new_palette_colors[2], alpha = 0.8))
 caption_arm <-  "Հեղինակ` Աղասի Թավադյան   |   tvyal.com   |   tavadyan.com"
 caption_eng <-  "Author: Aghasi Tavadyan   |   tvyal.com   |   tavadyan.com"
 
-caption_f <- function(source = NULL, language = "arm"){
+caption_f <- function(source = NULL, language = "arm", suffix_text = NULL){
   caption <- case_when(
     language == "arm" & is.null(source) ~ caption_arm, 
     language == "eng" & is.null(source) ~ caption_eng, 
     language == "arm" & !is.null(source) ~ paste0(caption_arm, "    |    Տվյալների աղբյուր՝ ", source), 
     language == "eng" & !is.null(source) ~ paste0(caption_eng, "    |    Data Source: ", source), 
   )
+  
+  if (!is.null(suffix_text)) {
+    caption = paste0(suffix_text, "\n\n", caption)
+  }
+  
   return(caption)
 }
 

@@ -21,10 +21,308 @@ source("../../initial_setup.R")
 
 ```
 
-```{r reading data, include=FALSE}
+```{r scraping data, include=FALSE}
+
+arm_month_names <- c(
+  "Հունվար", "Փետրվար", "Մարտ", "Ապրիլ", "Մայիս", "Հունիս", "Հուլիս",
+  "Օգոստոս", "Սեպտեմբեր", "Հոկտեմբեր", "Նոյեմբեր", "Դեկտեմբեր"
+)
+
+xlsx_elements <- 
+  read_html("https://minfin.am/hy/page/amsakan_vichakagrakan_teghekagrer/") |> 
+  html_elements(".doc_title > a")
+
+max_avalable_date_in_dbs <- 
+  tibble(db_name =html_text(xlsx_elements)) |> 
+  extract(
+    db_name, into = c("year", "month_arm"), 
+    regex = ".* (\\d{4}) թվական ?\\(?([Ա-Ֆա-ֆ]*)?\\)?"
+  ) |> 
+  mutate(
+    month_arm = ifelse(month_arm == "", "Դեկտեմբեր", month_arm),
+    month = c(1:12)[match(month_arm, arm_month_names)],
+    date = ym(paste(year, month)) + months(1) - days(1)
+  ) |> 
+  filter(date == max(date)) |> 
+  pull(date)
+
+```
+
+```{r deciding to download data or not, include=FALSE}
+
+dept_clean <-  
+  read_csv("dept_clean.csv")
+
+if (max_avalable_date_in_dbs != max(dept_clean$date)) {
+  
+  dept_dict <- read_csv("dept_dict.csv")
+  
+  initial_data <- 
+    tibble(
+      title = html_text(xlsx_elements),
+      link = html_attr(xlsx_elements, "href")
+    ) |> 
+    mutate(
+      data = map(link, ~rio::import(URLencode(.x), which = 1))
+    )
+  
+  # the convoluted function below just adjusts 2 out-of-pace values in 2017 database
+  dept_data_initial_setup <- function(tbl){
+    
+    rnumber_of_rows <- nrow(tbl)
+    
+    result_tbl <-
+      tbl |> 
+      rename(indicator = 1) |> 
+      mutate(
+        indicator = ifelse(
+          lag(indicator) %in% c("մլրդ դրամ", "մլն ԱՄՆ դոլար") & is.na(indicator), 
+          lag(indicator),
+          indicator
+        ),
+        indicator = ifelse(is.na(indicator), "NA", indicator),
+        indicator = ifelse(
+          lead(indicator) != indicator | row_number() == rnumber_of_rows, 
+          indicator,
+          NA
+        ),
+        indicator = ifelse(indicator == "NA", NA, indicator)
+      )
+    
+    return(result_tbl)
+  }
+  
+  
+  dept_data_get_colnames <- function(tbl){
+    colnames <- 
+      tbl |> 
+      filter(indicator == "մլրդ դրամ") |> 
+      mutate(indicator = "indicator")
+    
+    colnames <- unlist(colnames[1,], use.names = FALSE)
+    
+    return(colnames)
+  }
+  
+  
+  dept_data_manipulate <- function(tbl, colnames){
+    
+    FX_units <- c("մլրդ դրամ", "մլն ԱՄՆ դոլար")
+    
+    tbl_result <- 
+      tbl |> 
+      set_names(colnames) |> 
+      mutate(
+        unit_FX = ifelse(
+          is.na(lag(indicator)) | grepl("անվանական արժեքով", lag(indicator)),
+          indicator, 
+          NA
+        )
+      ) |> 
+      fill(unit_FX, .direction = "down") |> 
+      filter(!indicator %in% FX_units, !is.na(indicator)) |> 
+      pivot_longer(-c(indicator, unit_FX), names_to = "date") |> 
+      mutate(
+        value = parse_number(value),
+        date = dmy(date)
+      )
+    
+    return(tbl_result)
+  }
+  
+  dept_clean <- 
+    initial_data |> 
+    # filter(!grepl("2017", title)) |> 
+    mutate(
+      data = map(data, dept_data_initial_setup),
+      colnames = map(data, dept_data_get_colnames),
+      data = map2(data, colnames, dept_data_manipulate)
+    ) |> 
+    select(-colnames) |> 
+    unnest(data) |> 
+    mutate(
+      year = year(date),
+      month = month(date),
+      year_report = str_replace(title, ".*(\\d{4}).*", "\\1"),
+      indicator = str_remove_all(indicator, "\\*")
+    ) |> 
+    filter(
+      !is.na(value),
+      year_report == year | year_report == 2017
+    ) |> 
+    unique() |> 
+    left_join(dept_dict, by = join_by(unit_FX, indicator)) |> 
+    select(date, year, month, unit_FX, indicator, code, value) |> 
+    arrange(code, unit_FX, indicator, date)
+  
+  dept_clean |> 
+     write_excel_csv("dept_clean.csv")
+  
+}
+
+```
+
+```{r dept plot 1, include=FALSE}
+
+dept_plot_1 <- 
+  dept_clean |> 
+  filter(code %in% c("FX", "USD.", "AMD.")) |> 
+  mutate(
+    value = ifelse(code !=  "FX", value / 1000, value),
+    unit_FX = case_when(
+      unit_FX == "մլրդ դրամ" ~ "տրիլիոն դրամ",
+      unit_FX == "մլն ԱՄՆ դոլար" ~ "մլրդ ԱՄՆ դոլար",
+      TRUE ~ "ԱՄՆ դոլար / ՀՀ դրամ փոխարժեքը"
+    ),
+    unit_FX = fct_inorder(unit_FX)
+  ) |> 
+  ggplot(aes(date, value, color = unit_FX)) +
+  geom_line(size = 1.2) +
+  facet_grid(unit_FX~., scales = "free_y") +
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+  scale_y_continuous(
+    label = function(x) {
+      ifelse(
+        x < 5, 
+        scales::label_number(accuracy = 0.1)(x),
+        scales::label_number(accuracy = 1)(x)
+      )
+    }
+  ) +
+  scale_color_manual(values = new_palette_colors[c(2,6,3)]) +
+  labs(
+    x = NULL,
+    y = NULL,
+    color = NULL,
+    title = "Պետական պարտքի սպասարկման և փոխարժեքի փոխկապվածությունը",
+    subtitle = "Դրամի արժեզրկման պարագայում դոլարային պետական պարտքը մեծանալու է",
+    caption = caption_f("cba.am")
+  ) +
+  theme(
+    legend.position = "none"
+  )
+
+```
 
 
+```{r dept plot 2, include=FALSE}
 
+dept_plot_2 <-
+  dept_clean |> 
+  filter(indicator %in% c(
+    "արտաքին պարտք", "ներքին պարտք" 
+    # "ՀՀ կենտրոնական բանկի արտաքին պարտք"
+  )) |>
+  group_by(date, unit_FX) |> 
+  mutate(
+    pct = value / sum(value, na.rm = TRUE)
+  ) |> 
+  group_by(year) |> 
+  mutate(
+    pct_text = percent(pct, accuracy = 0.1),
+    value_text = number(value/1000, accuracy = 0.1),
+    text = ifelse(
+      month == max(month),
+      paste0(value_text, "\n", pct_text),
+      NA
+    ),
+  ) |>
+  group_by(unit_FX, indicator) |> 
+  mutate(
+    text_correcton = ifelse(date == max(date), text, lead(text, 6)),
+    text_correcton = ifelse(
+      date == (max(date) + days(1) - months(6) - days(1)),
+      NA, 
+      text_correcton
+    ),
+    
+    value = value / 1000,
+    unit_FX = case_when(
+      unit_FX == "մլրդ դրամ" ~ "տրիլիոն դրամ",
+      unit_FX == "մլն ԱՄՆ դոլար" ~ "մլրդ ԱՄՆ դոլար",
+    ),
+  ) |> 
+  ungroup() |> 
+  mutate(
+    indicator = fct_rev(indicator),
+    unit_FX = fct_rev(unit_FX),
+  ) |> 
+  ggplot(aes(date, value, fill = indicator, label = text_correcton)) +
+  geom_area() +
+  geom_text(
+    position = position_stack(vjust = .5)
+    ) +
+  facet_wrap(~unit_FX, scales = "free_y") +
+  # facet_grid(unit_FX~indicator, scales = "free_y") +
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+  scale_y_continuous(labels = number_format(accuracy = 1)) +
+  scale_fill_manual(values = colfunc3(10)[c(8, 1)]) +
+  labs(
+    x = NULL,
+    y = NULL,
+    fill = NULL,
+    title = "ՀՀ պետական պարտք",
+    subtitle = "Ներքին և արտաքին պարտքի հարաբերությունը ՀՀ դրամով և արտարժույթով*",
+    caption = caption_f("cba.am", suffix_text = "2024 թվականի տվյալները մայիս ամսվա կտրվածքով")
+  )
+
+```
+
+```{r dept plot 3, include=FALSE}
+
+dept_plot_3 <- 
+  dept_clean |> 
+  filter(
+    grepl("AMD", code), 
+    !grepl("Dept", code),
+    grepl("[A-Z]{3}\\.1\\.\\d\\.\\d", code),
+    # value != 0
+  ) |>
+  mutate(
+    dept_posstion = ifelse(
+      str_replace(code, "AMD.1.(\\d).\\d.", "\\1") == 1,
+      "արտաքին պարտք",
+      "ներքին պարտք"
+    ),
+    indicator = str_trunc(indicator, 60),
+    indicator = fct_inorder(indicator)
+  ) |> 
+  arrange(desc(dept_posstion), code) |> 
+  mutate(indicator = fct_inorder(indicator)) |> 
+  group_by(date) |> 
+  mutate(pct = value / sum(value) * 1000) |> 
+  ungroup() |> 
+  pivot_longer(c(value, pct)) |> 
+  mutate(name = fct_rev(name)) |> 
+  ggplot(aes(date, value, fill = indicator)) +
+  geom_area() +
+  facet_grid(
+    name ~ ., scales = "free_y", space = "free", 
+    labeller = as_labeller(c(value = "մլրդ դրամ", pct = "կշիռ"))
+  ) +
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+  scale_y_continuous(
+    labels = function(x) {
+      if(max(x, na.rm = TRUE) > 1000) {  # For the value facet
+        number(x, big.mark = " ")
+      } else {  # For the percentage facet
+        percent(x/1000, accuracy = 1)
+      }
+    },
+    breaks = breaks_pretty(n = 4)
+  ) +
+  scale_fill_manual(
+    values = colfunc3(10)[c(10:7, 1:5)]
+  ) +
+  guides(fill = guide_legend(nrow = 4)) +
+  labs(
+    x = NULL,
+    y = NULL,
+    fill = NULL,
+    title = "Պետական պարտքի կառուցվածքն ըստ ներքին և արտաքին պարտքի տեսակների",
+    subtitle = "բայց երագներով պատկերված է ներքին պարտքը, մուգ երանգենրով՝ արտաքին",
+    caption = caption_f("cba.am")
+  )
 
 ```
 
@@ -46,7 +344,7 @@ source("../../initial_setup.R")
 **Գծապատկեր 1.**
 
 ```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
-
+dept_plot_1
 ```
 
 
@@ -56,7 +354,7 @@ source("../../initial_setup.R")
 **Գծապատկեր 2.** 
 
 ```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
-
+dept_plot_2
 ```
 
 
@@ -65,7 +363,7 @@ source("../../initial_setup.R")
 **Գծապատկեր 3.**  
 
 ```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
-
+dept_plot_3
 ```
 
 
