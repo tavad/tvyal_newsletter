@@ -294,7 +294,7 @@ dept_plot_3 <-
     unit_FX = case_when(
       unit_FX == "մլրդ դրամ" ~ "տրիլիոն դրամ",
       unit_FX == "մլն ԱՄՆ դոլար" ~ "մլրդ ԱՄՆ դոլար",
-      TRUE ~ "ԱՄՆ դոլար / ՀՀ դրամ փոխարժեքը"
+      TRUE ~ "դոլար / դրամ փոխարժեք"
     ),
     unit_FX = fct_inorder(unit_FX)
   ) |> 
