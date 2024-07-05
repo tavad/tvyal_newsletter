@@ -11,6 +11,8 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(scales)
 library(RcppRoll)
+library(countrycode)
+library(tidyquant)
 
 # rm(list = ls()); gc()
 
@@ -20,13 +22,311 @@ source("../../initial_setup.R")
 
 ```
 
-```{r scraping data, include=FALSE}
+```{r get and estimate gold data, include=FALSE}
+
+world_gold_monthly <- read_csv("7108_world_gold_data_monthly.csv")
+
+# Determine the last available period for each country
+last_periods <- world_gold_monthly |> 
+  group_by(reporter_iso) |> 
+  summarize(last_period = max(period))
+
+
+estimated_gold_data <- 
+  bind_rows(
+    
+    world_gold_monthly |> 
+      inner_join(last_periods, by = join_by(reporter_iso)) |> 
+      filter(trade_code %in% c("X", "M"), period <= last_period) |> 
+      select(
+        period, reporter, reporter_iso,  partner, partner_iso, 
+        trade_code, trade_value_us, netweight_kg, 
+      ) |> 
+      mutate(estimate = FALSE),
+    
+    world_gold_monthly |> 
+      inner_join(last_periods, by = c("partner_iso" = "reporter_iso")) |> 
+      filter(trade_code %in% c("X", "M"), period > last_period) |> 
+      rename(
+        reporter = partner,
+        reporter_iso = partner_iso,
+        partner = reporter,
+        partner_iso = reporter_iso
+      ) |> 
+      transmute(
+        period,
+        reporter,
+        reporter_iso,
+        partner,
+        partner_iso,
+        trade_code = ifelse(trade_code == "M", "X", "M"),
+        trade_value_us,
+        netweight_kg,
+        estimate = TRUE
+      )
+  )
 
 ```
 
-```{r deciding to download data or not, include=FALSE}
+```{r plot constructing functions, include=FALSE}
+
+plot_data_preparation <- function(tbl, reporter_iso_, trade_code_ = "X", period_from, lump_n = 6, fct.reorder = FALSE){
+  
+  tbl <- tbl |> 
+    filter(
+      reporter_iso == reporter_iso_,
+      trade_code == trade_code_, 
+      period >= period_from,
+      !is.na(netweight_kg), 
+      !is.na(partner)
+    ) |> 
+    left_join(
+      countrycode::codelist |> transmute(partner_iso = iso3c, partner_arm = cldr.name.hy),
+      by = join_by(partner_iso)
+    ) |> 
+    mutate(
+      period = period + days(15),
+      partner = fct_lump_n(partner, lump_n, other_level = "Other countries"),
+      partner_arm = fct_lump_n(partner_arm, lump_n, other_level =  "Այլ պետություններ")
+    ) 
+  
+  if (fct.reorder) {
+    tbl <- tbl |> 
+      mutate(
+        partner = fct_reorder(partner, netweight_kg, .na_rm = TRUE, .desc = TRUE),
+        partner = fct_relevel(partner, "Other countries", after = Inf),
+        partner_arm = fct_reorder(partner_arm, netweight_kg, .na_rm = TRUE, .desc = TRUE),
+        partner_arm = fct_relevel(partner_arm, "Այլ պետություններ", after = Inf)
+      )
+  }
+  
+  return(tbl)
+}
+
+
+gold_exports_annual_plot <- function(tbl, lump_n = 6, plot_start = 2019, uncomplete_year_label = "\nառաջին\nեռամսյակ"){
+  
+  estimate_start <- tbl |> filter(estimate)
+  
+  tbl <- tbl |> 
+    mutate(month = month(period), year = year(period))
+  
+  if (nrow(estimate_start) == 0) {
+    estimate_start <-  NULL
+  } else{
+    estimate_start <- 
+      estimate_start |> 
+      filter(period == min(period)) |> 
+      pull(period) |> 
+      unique()
+  }
+  
+  year_position_f <- function(year, start_year = plot_start, max_year_ = max_year) {
+    case_when(
+      !grepl("uncomplete", year) ~ as.numeric(year) - start_year + 1,
+      year == "uncomplete_year_past" ~ max_year_ - start_year + 1.5,
+      year == "uncomplete_year_present" ~ max_year_ - start_year + 2.5,
+      TRUE ~ NA_real_
+    )
+  }
+  
+  max_month <- filter(tbl, period == max(period))$month |> max()
+  max_year <- filter(tbl, period == max(period))$year |> max()
+  
+  if (max_month != 12) {
+    
+    additional_data <- tbl |> 
+      filter(year == (max_year - 1), month <= max_month) |> 
+      mutate(year = "uncomplete_year_past")
+    
+    tbl <- tbl |> 
+      mutate(
+        year = ifelse(
+          year == max_year & month <= max_month, 
+          "uncomplete_year_present", 
+          as.character(year)
+        ),
+      ) |> 
+      bind_rows(additional_data)
+    
+    breaks_ = year_position_f(c(plot_start:(max_year - 1), "uncomplete_year_past", "uncomplete_year_present"))
+    labels_ = c(plot_start:(max_year - 1), paste0((max_year - 1):max_year, uncomplete_year_label))
+  } else {
+    breaks_ = year_position_f(plot_start:max_year)
+    labels_ = c(plot_start:max_year)
+  }
+  
+  plot <- 
+    tbl |> 
+    arrange(period, year) |> 
+    group_by(year, partner, partner_arm) |> 
+    summarise(
+      netweight_kg = sum(netweight_kg, na.rm = TRUE),
+      trade_value_us = sum(trade_value_us,  na.rm = TRUE),
+      .groups = "drop"
+    ) |> 
+    group_by(year) |> 
+    mutate(
+      netweight_tn = netweight_kg / 1000,
+      pct = netweight_tn / sum(netweight_tn),
+      pct_text = ifelse(netweight_tn >= 6, scales::percent(pct, accuracy = 0.1), NA),
+      year_position = year_position_f(year)
+    ) |> 
+    ggplot(aes(x = year_position, y = netweight_tn, fill = partner_arm, label = pct_text)) +
+    geom_col(width = 0.9) +
+    geom_text(position = position_stack(vjust = 0.5)) +
+    scale_fill_manual(values = colfunc3(lump_n + 1)) +
+    scale_x_continuous(
+      breaks = breaks_,
+      labels = labels_,
+      expand = expansion(mult = c(0.05, 0.05))
+    ) +
+    labs(
+      x = NULL,
+      y = NULL,
+      fill = NULL
+    ) +
+    theme(
+      panel.grid.major.x = element_blank()
+    )
+  
+  if (!is.null(estimate_start)) {
+    plot <- plot +
+      geom_vline(xintercept = year(estimate_start) - plot_start + 0.5, color = new_palette_colors[1], linetype = 2)
+  }
+  
+  return(plot)
+}
+
+    
 
 ```
+
+
+```{r month plots, include=FALSE}
+
+armenia_monthly_gold_exports_plot <- 
+  estimated_gold_data |>
+  plot_data_preparation(reporter_iso_ = "ARM", period_from = ymd("2019-01-01"), lump_n = 8) |> 
+  ggplot(aes(period, netweight_kg / 1000, fill = partner_arm)) +
+  geom_col() +
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+  scale_fill_manual(values = colfunc3(9)) +
+  labs(
+    x = NULL,
+    y = NULL,
+    fill = NULL,
+    title = "Հայաստանից ոսկու արտահանումը",
+    subtitle = "տոննա, ամսական կտրվածքով, ԱՏԳ ԱԱ 7108. Ոսկի անմշակ կամ կիսամշակ, փոշի",
+    caption = caption_f(source = "UN comtrade")
+  )
+
+russia_monthly_gold_exports_plot <- 
+  estimated_gold_data |>
+  plot_data_preparation(reporter_iso_ = "ARM", period_from = ymd("2019-01-01"), lump_n = 6) |> 
+  ggplot(aes(period, netweight_kg / 1000, fill = partner_arm)) +
+  geom_col() +
+  geom_vline(xintercept = ymd("2022-01-01"), color = new_palette_colors[1], linetype = 2) +
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+  scale_fill_manual(values = colfunc3(8)) +
+  labs(
+    x = NULL,
+    y = NULL,
+    fill = NULL,
+    title = "Ռուսատանից ոսկու արտահանումը*",
+    subtitle = "տոննա, ամսական կտրվածքով, ԱՏԳ ԱԱ 7108. Ոսկի անմշակ կամ կիսամշակ, փոշի",
+    caption = caption_f(
+      source = "UN comtrade, հեղինակի գնահատական", 
+      suffix_text = "2022 թվականից հետո նշված տվյալները նախնական են"
+    )
+  )
+
+```
+
+```{r year plots, include=FALSE}
+
+russia_annual_gold_exports_plot <- 
+  estimated_gold_data |>
+  plot_data_preparation(reporter_iso_ = "RUS", period_from = ymd("2019-01-01"), lump_n = 6) |> 
+  gold_exports_annual_plot(lump_n = 7, plot_start = 2019, uncomplete_year_label = "\nառաջին\nեռամսյակ") +
+  labs(
+    title = "Ռուսատանից ոսկու արտահանումը*",
+    subtitle = "տոննա, ԱՏԳ ԱԱ 7108. Ոսկի անմշակ կամ կիսամշակ, փոշի",
+    caption = caption_f(
+      source = "UN comtrade, հեղինակի գնահատական",
+      suffix_text = "2022 թվականից հետո նշված տվյալները նախնական են"
+    )
+  )
+
+armenia_annual_gold_exports_plot <- 
+  estimated_gold_data |>
+  plot_data_preparation(reporter_iso_ = "RUS", period_from = ymd("2019-01-01"), lump_n = 6) |> 
+  gold_exports_annual_plot(lump_n = 7, plot_start = 2019, uncomplete_year_label = "\nառաջին\nեռամսյակ") +
+  labs(
+    title = "Հայաստանից ոսկու արտահանումը",
+    subtitle = "տոննա, ԱՏԳ ԱԱ 7108. Ոսկի անմշակ կամ կիսամշակ, փոշի",
+    caption = caption_f(source = "UN comtrade")
+  )
+```
+
+```{r price per gram plot, include=FALSE}
+
+GRAMS_PER_TROY_OUNCE <- 31.1034768
+
+gold_prices_yf <- tq_get("GC=F", from = "2000-01-01", to = Sys.Date())
+
+gold_prices_monthly <- gold_prices_yf |> 
+  mutate(period = floor_date(date, "month")) |> 
+  group_by(period) |> 
+  summarise(price_per_ounce = mean(close, na.rm = TRUE)) |> 
+  mutate(price_per_gram = price_per_ounce / GRAMS_PER_TROY_OUNCE) |> 
+  arrange(desc(period)) |> 
+  filter(period >= ymd("2017-01-01") & period <= ymd("2024-05-01"))
+
+
+armenia_per_gram_plot <- 
+  estimated_gold_data |> 
+  filter(
+    reporter_iso == "ARM",
+    # period >= ymd("2019-01-01")
+  ) |> 
+  group_by(trade_code, period) |> 
+  summarise(
+    trade_value_us = sum(trade_value_us, na.rm = TRUE),
+    netweight_kg = sum(netweight_kg, na.rm = TRUE),
+    .groups = "drop"
+  ) |> 
+  group_by(trade_code) |> 
+  mutate(
+    price_per_gram = trade_value_us / netweight_kg / 1000,
+    price_per_gram_roll = roll_meanr(price_per_gram, 12)
+  ) |> 
+  rename(code = trade_code) |> 
+  bind_rows(
+    gold_prices_monthly |> 
+      select(-price_per_ounce) |> 
+      mutate(code = "internation price")
+  ) |> 
+  ungroup() |> 
+  ggplot() +
+  geom_line(aes(period, price_per_gram, color = code), size = 1) +
+  # geom_line(aes(period, gram_price_roll, color = trade_code), size = 1.2, linetype = 2)
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+  scale_color_manual(
+    values = new_palette_colors[c(2,6,8)], 
+    labels = c("միջազգային շուկայում գրանցված գին", "ներմուծման գին", "արտահանման գին")
+  ) +
+  labs(
+    x = NULL,
+    y = NULL,
+    color = NULL,
+    title = "1 գամ ոսկու արտահանման և ներմուծման միջին ամսական գինը Հայաստանում",
+    subtitle = "արժեքային առևտուր հարաբերած բնեղեն առևտրի վրա",
+    caption = caption_f(source = "UN Comtrade, Yahoo Fiance")
+  )
+
+```
+
 
 
 ***English summary below.***
@@ -44,7 +344,7 @@ source("../../initial_setup.R")
 **Գծապատկեր 1.**
 
 ```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
-
+russia_monthly_gold_exports_plot
 ```
 
 
@@ -52,7 +352,7 @@ source("../../initial_setup.R")
 **Գծապատկեր 2.** 
 
 ```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
-
+russia_annual_gold_exports_plot
 ```
 
 
@@ -60,7 +360,7 @@ source("../../initial_setup.R")
 **Գծապատկեր 3.**  
 
 ```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
-
+armenia_monthly_gold_exports_plot
 ```
 
 
@@ -68,7 +368,7 @@ source("../../initial_setup.R")
 **Գծապատկեր 4.**
 
 ```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
-
+armenia_annual_gold_exports_plot
 ```
 
 
@@ -76,7 +376,7 @@ source("../../initial_setup.R")
 **Գծապատկեր 5.**
 
 ```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
-
+armenia_per_gram_plot
 ```
 
 
