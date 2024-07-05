@@ -198,32 +198,14 @@ gold_exports_annual_plot <- function(tbl, lump_n = 6, plot_start = 2019, uncompl
   return(plot)
 }
 
-    
-
 ```
 
 
 ```{r month plots, include=FALSE}
 
-armenia_monthly_gold_exports_plot <- 
-  estimated_gold_data |>
-  plot_data_preparation(reporter_iso_ = "ARM", period_from = ymd("2019-01-01"), lump_n = 8) |> 
-  ggplot(aes(period, netweight_kg / 1000, fill = partner_arm)) +
-  geom_col() +
-  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
-  scale_fill_manual(values = colfunc3(9)) +
-  labs(
-    x = NULL,
-    y = NULL,
-    fill = NULL,
-    title = "Հայաստանից ոսկու արտահանումը",
-    subtitle = "տոննա, ամսական կտրվածքով, ԱՏԳ ԱԱ 7108. Ոսկի անմշակ կամ կիսամշակ, փոշի",
-    caption = caption_f(source = "UN comtrade")
-  )
-
 russia_monthly_gold_exports_plot <- 
   estimated_gold_data |>
-  plot_data_preparation(reporter_iso_ = "ARM", period_from = ymd("2019-01-01"), lump_n = 6) |> 
+  plot_data_preparation(reporter_iso_ = "RUS", period_from = ymd("2019-01-01"), lump_n = 6) |> 
   ggplot(aes(period, netweight_kg / 1000, fill = partner_arm)) +
   geom_col() +
   geom_vline(xintercept = ymd("2022-01-01"), color = new_palette_colors[1], linetype = 2) +
@@ -239,6 +221,22 @@ russia_monthly_gold_exports_plot <-
       source = "UN comtrade, հեղինակի գնահատական", 
       suffix_text = "2022 թվականից հետո նշված տվյալները նախնական են"
     )
+  )
+
+armenia_monthly_gold_exports_plot <- 
+  estimated_gold_data |>
+  plot_data_preparation(reporter_iso_ = "ARM", period_from = ymd("2019-01-01"), lump_n = 8) |> 
+  ggplot(aes(period, netweight_kg / 1000, fill = partner_arm)) +
+  geom_col() +
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+  scale_fill_manual(values = colfunc3(9)) +
+  labs(
+    x = NULL,
+    y = NULL,
+    fill = NULL,
+    title = "Հայաստանից ոսկու արտահանումը",
+    subtitle = "տոննա, ամսական կտրվածքով, ԱՏԳ ԱԱ 7108. Ոսկի անմշակ կամ կիսամշակ, փոշի",
+    caption = caption_f(source = "UN comtrade")
   )
 
 ```
@@ -260,8 +258,8 @@ russia_annual_gold_exports_plot <-
 
 armenia_annual_gold_exports_plot <- 
   estimated_gold_data |>
-  plot_data_preparation(reporter_iso_ = "RUS", period_from = ymd("2019-01-01"), lump_n = 6) |> 
-  gold_exports_annual_plot(lump_n = 7, plot_start = 2019, uncomplete_year_label = "\nառաջին\nեռամսյակ") +
+  plot_data_preparation(reporter_iso_ = "ARM", period_from = ymd("2019-01-01"), lump_n = 8) |> 
+  gold_exports_annual_plot(lump_n = 8, plot_start = 2019, uncomplete_year_label = "\nառաջին\nեռամսյակ") +
   labs(
     title = "Հայաստանից ոսկու արտահանումը",
     subtitle = "տոննա, ԱՏԳ ԱԱ 7108. Ոսկի անմշակ կամ կիսամշակ, փոշի",
