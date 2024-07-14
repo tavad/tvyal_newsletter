@@ -285,6 +285,35 @@ chart_3 <-
 #     K_USD = sum(K_USD), K_USD_YOY = sum(K_USD_YOY)
 #   ) |> view()
 
+
+transfers_date |>
+  mutate(
+    country_arm = countrycode(country, origin = "country.name", destination = "cldr.name.hy"),
+    country_arm = ifelse(is.na(country_arm), "Այլ պետություններ", country_arm),
+    country_arm = fct_reorder(country_arm, K_USD_YOY, .desc = TRUE),
+    country_arm = fct_relevel(country_arm, "Այլ պետություններ", after = Inf),
+    country = fct_reorder(country, K_USD_YOY, .desc = TRUE),
+    country = fct_relevel(country, "Others", after = Inf),
+    direction_arm = ifelse(direction == "Inflow", "Ներհոսք", "Արտահոսք"),
+    direction_arm = fct_rev(direction_arm)
+  ) |> 
+  filter(date >= ymd("2019-12-30")) |>
+  ggplot(aes(date, K_USD_YOY / 1e6, fill = country_arm)) +
+  geom_area() +
+  facet_wrap(~direction_arm) +
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+  scale_y_continuous(breaks = 0:7, labels = number_format(accuracy = 1)) +
+  scale_fill_manual(values = colfunc3(10)) +
+  # scale_fill_brewer(type = "qual", palette = 3) +
+  labs(
+    x = NULL,
+    y = NULL,
+    fill = NULL,
+    title = "Հայաստանի բանկային համակարգի միջոցով կատարված փոխանցումներ*",
+    subtitle = "մլրդ ԱՄՆ դոլար, 12-ամսյա կտրվածքով",
+    caption =paste0("* ֆիզիկական անձանց կողմից\n\n", caption_arm, "   |   Տվյալների աղբյուր՝ CBA.am")
+  )
+
 ```
 
 
