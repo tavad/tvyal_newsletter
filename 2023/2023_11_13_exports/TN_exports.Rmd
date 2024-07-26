@@ -184,7 +184,7 @@ GDP_plot <-
     name = fct_inorder(name),
   ) %>% 
   ggplot(aes(year, value, color = country)) +
-  geom_line(size = 2) +
+  geom_line(linewidth = 2) +
   facet_wrap(~name, scales = "free_y") +
   scale_x_continuous(breaks = seq(1990, 2030, 5)) +
   scale_y_continuous(labels = dollar_format()) +
