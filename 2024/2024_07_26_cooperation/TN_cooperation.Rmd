@@ -168,7 +168,7 @@ Today, we're excited to announce that we're expanding our services and our team.
 
 ### Enhancing Business Intelligence with SaaS Solutions
 
-Are you looking to extract additional value from your existing data? Tvyal.com now offers a range of SaaS solutions to help businesses optimize their operations:
+Are you looking to extract additional value from your existing data? [Tvyal.com](tvyal.com) now offers a range of SaaS solutions to help businesses optimize their operations:
 
 * Data Scraping and Mining
 * Process Automation and Browser Automation
@@ -236,6 +236,8 @@ As a token of our potential cooperation we are happy to present the interactive 
 exchange_plot_interactive()
 ```
 
+<!-- [![](plots/exchange_plot.png)](https://www.tvyal.com/newsletter/2024/2024_07_26) -->
+
 -----
 
 **Some of our past work:**
@@ -254,7 +256,7 @@ exchange_plot_interactive()
 -----
 
 
-## Media Apirrences
+## Media Appearances
 
 
 1. [Watch my interview given to 1in.am where I talk about economic challenges and potental changes in exchange rate and exonomic volatility.](https://youtu.be/EROKFOixiTA)
