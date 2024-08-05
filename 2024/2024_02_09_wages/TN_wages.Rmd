@@ -692,6 +692,83 @@ wages_clean |>
   )
 ```
 
+```{r new ideas, include=FALSE}
+
+order_based_on_public <- 
+  workers_n |> 
+  filter(
+    year == max(year),
+    type != "total"
+  ) |> 
+  group_by(marz_eng) |> 
+  mutate(workers_pct = workers_n / sum(workers_n)) |> 
+  ungroup() |> 
+  filter(type == "public") |> 
+  arrange(desc(workers_pct)) |> 
+  pull(marz_eng)
+
+
+workers_plot_data <- 
+  workers_n |> 
+  filter(
+    year == max(year),
+    type != "total"
+  ) |> 
+  group_by(marz_arm, marz_eng, year) |> 
+  mutate(
+    workers_pct = workers_n / sum(workers_n),
+    workers_pct_txt = percent(workers_pct, accuracy = 0.1),
+    workers_pct_txt = ifelse(workers_pct >= 0.025, workers_pct_txt, NA),
+    # type = case_match(
+    #   type,
+    #   "non_public" ~ "Ոչ պետական",
+    #   "public" ~ "Պետական",
+    #   "total" ~ "Ընդամենը"
+    # )
+    type = str_replace(type, "_", " ") |> str_to_title(),
+    type = factor(type, levels = c("Total", "Non Public", "Public"))
+  ) |> 
+  ungroup() |> 
+  mutate(marz_eng = factor(marz_eng, levels = order_based_on_public)) |> 
+  arrange(marz_eng) |> 
+  mutate(marz_arm = fct_inorder(marz_arm))
+
+workers_plot_data |> 
+  ggplot() +
+  geom_col(aes(workers_pct, marz_arm, fill = type), alpha = 1) +
+  geom_text(
+    data = filter(workers_plot_data, type == "Public"),
+    aes(0, marz_arm, label  = workers_pct_txt), hjust = -0.5
+  ) + 
+    geom_text(
+    data = filter(workers_plot_data, type == "Non Public"),
+    aes(1, marz_arm, label  = workers_pct_txt), hjust = 1.5, color = "white"
+  ) +
+  geom_text(
+    data = tibble(x = c(0.1, 0.9), y = 12, label = c("Պետական", "Մասնավոր")),
+    aes(x, y , label = label), size = 4
+  ) +
+  scale_fill_manual(values = new_palette_colors[c(2,6)]) +
+  ggthemes::theme_hc() +
+  labs(
+    x = NULL,
+    y = NULL,
+    title = "Ո՞ր մարզերում կա աշխատանք",
+    subtitle = "Մասնավոր և պետական աշխատատեղերի հարաբերությունը ըստ մարզերի",
+    caption = caption_f(source = "armstat.am")
+  ) +
+  coord_cartesian(ylim = c(NA, 12)) +
+  theme( 
+    panel.grid.major.x = element_blank(),
+    panel.grid.major.y = element_blank(),
+    legend.position = "none",
+    axis.text.x  = element_blank(),
+    axis.ticks.length.y = unit(-1, "cm")
+  )
+
+```
+
+
 ***English summary below.***
 
 Հարգելի գործընկեր,
