@@ -105,6 +105,7 @@ money_base_daily |>
   ggplot(aes(date, value / 1000)) +
   geom_line() +
   geom_smooth() +
+  scale_x_date(date_breaks = "1 month", date_labels = "%b") +
   labs(
     x = NULL, y = NULL,
     title = "Correspondent accounts (in FX)",
