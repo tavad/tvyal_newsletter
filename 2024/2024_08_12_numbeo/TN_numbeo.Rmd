@@ -1,0 +1,498 @@
+---
+title: "Tvyal Newsletter"
+date: "2024-08-12"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(RcppRoll)
+library(scales)
+
+# rm(list = ls()); gc()
+
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+
+source("../../initial_setup.R")
+
+```
+
+
+```{r reading data, include=FALSE}
+numbeo_expenses_countries <- read_csv("numbeo_expenses_countries.csv")
+numbeo_salaries_financing <- read_csv("numbeo_salaries_financing.csv")
+
+selected_ISO_1 <- c("IRN", "AZE", "GEO", "RUS", "ARM", "KAZ")
+selected_ISO_2 <- c("IRN", "AZE", "TUR", "GEO", "RUS", "ARM", "KAZ", "HUN",
+                  "USA", "CHN", "DEU", "GBR", "JPN", "SGP", "POL", "ESP", "SYR")
+
+iso_to_unicode_flag <- function(iso2c) {
+  sapply(iso2c, function(code) {
+    if (is.na(code)) return(NA)
+    paste0(
+      intToUtf8(127462L + which(LETTERS == substr(code, 1, 1)) - 1L),
+      intToUtf8(127462L + which(LETTERS == substr(code, 2, 2)) - 1L)
+    )
+  })
+}
+
+select_countries_arm <- 
+  countrycode::codelist |> 
+  transmute(
+    iso3c, country_arm = cldr.name.hy
+  ) |> 
+  mutate(
+    country_arm = case_when(
+      iso3c == "USA" ~ "ԱՄՆ",
+      iso3c == "GBR" ~ "Մ․ Բրիտանիա",
+      TRUE ~ country_arm
+    ),
+  ) |> 
+  filter(
+    iso3c %in% selected_ISO_2
+  ) |> 
+  pull(country_arm)
+
+```
+
+```{r plots 1 & 2, include=FALSE}
+
+create_country_chart <- function(data, y_column, selected_ISO, title, subtitle, caption) {
+  data |> 
+    mutate(
+      iso3c = countrycode::countrycode(country, origin = 'country.name', destination = 'iso3c'),
+      iso2c = countrycode::countrycode(iso3c, origin = 'iso3c', destination = 'iso2c'),
+      country_arm = countrycode::countrycode(iso3c, origin = 'iso3c', destination = 'cldr.name.hy'),
+      continent = countrycode::countrycode(country, origin = 'country.name', destination = 'continent'),
+    ) |> 
+    filter(
+      !is.na(iso3c),
+      !continent %in% c("Africa", "Oceania"),
+      iso3c %in% selected_ISO
+    ) |> 
+    mutate(
+      country = fct_reorder(country, !!sym(y_column)),
+      country_arm = fct_reorder(country_arm, !!sym(y_column)),
+      price_txt = dollar(!!sym(y_column), accuracy = 1),
+      flag_unicode = iso_to_unicode_flag(iso2c)
+    ) |> 
+    ggplot(aes(country_arm, !!sym(y_column))) +
+    geom_col(width = 0.7, fill = new_palette_colors[3], alpha = 1) +
+    geom_text(aes(label = price_txt), vjust = -0.5, color = "black", size = 5) +
+    geom_text(aes(label = flag_unicode, y = -50), size = 10, family = "Noto Color Emoji") +
+    coord_cartesian(clip = "off") +
+    labs(
+      x = NULL,
+      y = NULL,
+      title = title,
+      subtitle = subtitle,
+      caption = caption
+    ) +
+    theme(
+      panel.grid.major.x = element_blank(),
+      panel.grid.major.y = element_blank(),
+      axis.text.x = element_text(angle = 0, size = 12, vjust = -1),
+      axis.text.y = element_blank()
+    )
+}
+
+plot_1_mean_wages <- 
+  numbeo_salaries_financing |> 
+  filter(
+    grepl("Net Salary", indicator),
+  ) |> 
+  create_country_chart(
+    y_column = "mean_price",
+    selected_ISO = selected_ISO_1,
+    title = "Միջին ամսական աշխատավարձ",
+    subtitle = "հարկերի վճարումից հետո",
+    caption = caption_f(source = "Numbero", suffix_text = "\nՏվյալները 2024թ․ հուլիսի դրությամբ")
+  )
+
+plot_2_mean_expenses <- 
+  numbeo_expenses_countries |> 
+  create_country_chart(
+    y_column = "single_costs_usd",
+    selected_ISO = selected_ISO_1,
+    title = "Մեկ անձի միջին ամսական ծախսեր",
+    subtitle = "առանց վարձակալություն ծախսերի",
+    caption = caption_f(source = "Numbero", suffix_text = "\nՏվյալները 2024թ․ հուլիսի դրությամբ")
+  )
+
+```
+
+
+```{r plot_4_mortgage_pct, include=FALSE}
+
+plot_4_mortgage_pct <- 
+  numbeo_salaries_financing |> 
+  filter(
+    grepl("Mortgage", indicator),
+  ) |> 
+  mutate(
+    iso3c = countrycode::countrycode(country, origin = 'country.name', destination = 'iso3c'),
+    iso2c = countrycode::countrycode(iso3c, origin = 'iso3c', destination = 'iso2c'),
+    country_arm = countrycode::countrycode(iso3c, origin = 'iso3c', destination = 'cldr.name.hy'),
+    continent = countrycode::countrycode(country, origin = 'country.name', destination = 'continent'),
+    across(matches("price|range"), ~.x/100)
+  ) |> 
+  filter(
+    !is.na(iso3c),
+    iso3c %in% selected_ISO_2
+  ) |> 
+  mutate(
+    country_arm = case_when(
+      iso3c == "USA" ~ "ԱՄՆ",
+      iso3c == "GBR" ~ "Մ․ Բրիտանիա",
+      TRUE ~ country_arm
+    ),
+    country = fct_reorder(country, mean_price),
+    country_arm = fct_reorder(country_arm, mean_price),
+    price_txt = percent(mean_price, accuracy = 1),
+    flag_unicode = iso_to_unicode_flag(iso2c)
+  ) |> 
+  ggplot(aes(country_arm, mean_price)) +
+  geom_col(width = 0.7, fill = new_palette_colors[3], alpha = 1) +
+  geom_errorbar(aes(ymin = min_range, ymax = max_range),  width = 0.25) +
+  geom_text(aes(y = 0, label = price_txt), vjust = -0.2, color = "white", size = 4) +
+  geom_text(aes(label = flag_unicode, y = -0.03), size = 10, family = "Noto Color Emoji") +
+  labs(
+    x = NULL,
+    y = NULL,
+    title = "Որտե՞ղ է ավելի մատչլի հիփեթեքով տուն վերցնելը",
+    subtitle = "Հիփոթեքային տարեկան տոկոսադրույքը",
+    caption = caption_f(source = "Numbeo", suffix_text = "* 20 տարվա կտրվածքով հաստատուն միջին տոկոսադրույք\nՏվյալները 2024թ․ հուլիսի դրությամբ")
+  ) +
+  theme(
+    panel.grid.major.x = element_blank(),
+    panel.grid.major.y = element_blank(),
+    axis.text.y = element_blank(),
+    axis.text.x = element_text(angle = 90, size = 10, vjust = 0.5, hjust=1)
+  )
+
+```
+
+
+```{r plot_3_is_money_enough, include=FALSE}
+
+plot_3_data <- 
+  numbeo_salaries_financing |> 
+  filter(
+    grepl("Net Salary", indicator),
+  ) |> 
+  left_join(numbeo_expenses_countries) |> 
+  mutate(sallary_to_expences = mean_price / single_costs_usd) |> 
+  select(country, sallary_to_expences) |> 
+  filter(!is.na(sallary_to_expences)) |> 
+  mutate(
+    iso3c = countrycode::countrycode(country, origin = 'country.name', destination = 'iso3c'),
+    iso2c = countrycode::countrycode(iso3c, origin = 'iso3c', destination = 'iso2c'),
+    country_arm = countrycode::countrycode(iso3c, origin = 'iso3c', destination = 'cldr.name.hy'),
+    continent = countrycode::countrycode(country, origin = 'country.name', destination = 'continent'),
+  ) |> 
+  filter(
+    !is.na(iso3c),
+    !continent %in% c("Africa"),
+  ) |> 
+  mutate(
+    country_arm = case_when(
+      iso3c == "USA" ~ "ԱՄՆ",
+      iso3c == "GBR" ~ "Մ․ Բրիտանիա",
+      TRUE ~ country_arm
+    ),
+    flag_emoji = iso_to_unicode_flag(iso2c),
+    country_arm_with_flag = paste(country_arm, flag_emoji),
+    country = fct_reorder(country, sallary_to_expences),
+    country_arm = fct_reorder(country_arm, sallary_to_expences),
+    country_arm_with_flag = fct_reorder(country_arm_with_flag, sallary_to_expences)
+  )
+
+plot_3_is_money_enough <- 
+  plot_3_data |> 
+  ggplot(aes(country_arm_with_flag, sallary_to_expences)) +
+  geom_vline(
+    data = plot_3_data |> filter(country_arm %in% select_countries_arm),
+    aes(xintercept = as.numeric(country_arm_with_flag)),
+    color = "gray", linetype = "dotted"
+  ) +
+  geom_hline(yintercept = 1) +
+  geom_vline(xintercept = 53.5, linewidth = 0.7, alpha = 0.5) +
+  geom_col(width = 1, fill = new_palette_colors[3], alpha = 0.8) +
+  geom_text(
+    data = plot_3_data |> filter(country_arm %in% select_countries_arm),
+    aes(y = 0.04, label = country_arm_with_flag), 
+    hjust = 1,
+    angle = 90
+  ) +
+  geom_text(
+    data = tibble(
+      x = c(25, 102),
+      y = c(2.5, 0.25),
+      labels = c("Փողը չի հերիքում", "Փողը հերիքում է")
+    ),
+    aes(x, y, label = labels)
+  ) +
+  scale_x_discrete(labels = NULL) +
+  scale_y_log10(labels = percent_format(accuracy = 1), n.breaks = 10) +
+  theme(
+    axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
+    panel.grid.major.x = element_blank()
+  ) +
+  coord_cartesian(clip = "off") +
+  labs(
+    x = NULL,
+    y = NULL,
+    title = "Փողը ո՞ր երկրներում է հերքում",
+    subtitle = "Միջին ամսական զուտ աշխատավարձի և ապրուստի ծախսերի հարաբերակցությունը*",
+    caption = caption_f(
+      source = "Numbeo",
+      suffix_text = "\n\n\n\n\n\n\n\n* Միջին ամսական զուտ աշխատավարձը ներկայացված է հարկերից հետո։
+          Միջին ծախսերը չեն ներառում բնակարանի վարձակալության ծախսերը։
+          Գծապատկերում ներառված չեն աֆրիկյան երկրները։"
+    )
+  )
+
+```
+
+
+```{r plot_5_cost_of_leaving, include=FALSE}
+
+plot_5_data <- 
+  numbeo_expenses_countries |> 
+  select(country, contains("armenia")) |> 
+  filter(!is.na(rent_to_armenia)) |> 
+  mutate(
+    iso3c = countrycode::countrycode(country, origin = 'country.name', destination = 'iso3c'),
+    iso2c = countrycode::countrycode(iso3c, origin = 'iso3c', destination = 'iso2c'),
+    country_arm = countrycode::countrycode(iso3c, origin = 'iso3c', destination = 'cldr.name.hy'),
+    continent = countrycode::countrycode(country, origin = 'country.name', destination = 'continent'),
+    across(contains("armenia"), ~.x/100 + 1)
+  ) |> 
+  filter(
+    !is.na(iso3c),
+    !continent %in% c("Africa"),
+  ) |> 
+  mutate(
+    country_arm = case_when(
+      iso3c == "USA" ~ "ԱՄՆ",
+      iso3c == "GBR" ~ "Մ․ Բրիտանիա",
+      TRUE ~ country_arm
+    ),
+    flag_emoji = iso_to_unicode_flag(iso2c),
+    country_arm_with_flag = paste(country_arm, flag_emoji),
+    country = fct_reorder(country, rent_to_armenia),
+    country_arm = fct_reorder(country_arm, rent_to_armenia),
+    country_arm_with_flag = fct_reorder(country_arm_with_flag, rent_to_armenia)
+  )
+
+plot_5_cost_of_leaving <- 
+  plot_5_data |> 
+  ggplot(aes(country_arm_with_flag, rent_to_armenia)) +
+  geom_vline(
+    data = plot_5_data |> filter(country_arm %in% select_countries_arm),
+    aes(xintercept = as.numeric(country_arm_with_flag)),
+    color = "gray", linetype = "dotted"
+  ) +
+  geom_hline(yintercept = 1) +
+  geom_vline(xintercept = 86, linewidth = 0.7, alpha = 0.5) +
+  geom_col(width = 1, fill = new_palette_colors[3], alpha = 0.8) +
+  geom_text(
+    data = plot_5_data |> filter(country_arm %in% select_countries_arm),
+    aes(y = 0.09, label = country_arm_with_flag), 
+    hjust = 1,
+    angle = 90
+  ) +
+  geom_text(
+    data = tibble(
+      x = c(43, 116),
+      y = c(2.5, 0.4),
+      labels = c("Հայաստանից էժան է", "Հայաստանից թանկ է")
+    ),
+    aes(x, y, label = labels)
+  ) +
+  scale_x_discrete(labels = NULL) +
+  scale_y_log10(labels = percent_format(accuracy = 1), n.breaks = 10) +
+  theme(
+    axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
+    panel.grid.major.x = element_blank()
+  ) +
+  coord_cartesian(clip = "off") +
+  labs(
+    x = NULL,
+    y = NULL,
+    title = "Որտե՞ղ է կյանքն ավելի էժան",
+    subtitle = "Կյանքի արժեքի համեմատությունը Հայաստանի հետ*",
+    caption = caption_f(
+      source = "Numbeo",
+      suffix_text = "\n\n\n\n\n\n\n\n* Կյանքի արժքը (Cost of living) ինդեքս է մշակված Numbeo հարթակի կողմից։
+      Այս ինդեքսը հաշվում է ապրուստի համար բոլոր միջինացված ծախսերի արժեքը՝ բացառությամբ վարձակալության։
+          Գծապատկերում ներառված չեն աֆրիկյան երկրները։"
+    )
+  )
+
+```
+
+
+
+
+***English summary below.***
+
+Հարգելի գործընկեր,
+
+Հուսով եմ՝ լավ եք: 
+Ներկայացնում եմ այս շաբաթվա վերլուծությունները և աշխատանքները.
+
+## [👛💨💰 Դատարկ գրպաններ, բարձր աշխատավարձր](https://www.tvyal.com/newsletter/2024/2024_08_12)
+<!-- ## [🐅🌆💸 Հայաստան` Կովկասի վագր թե թանկ երազանք](https://www.tvyal.com/newsletter/2024/2024_08_12)  -->
+
+### **Բարձր աշխատավարձեր, բարձր ծախսեր. Հայաստանի տնտեսական մրցունակության վերլուծություն**
+
+Այս շաբաթվա տնտեսական վերլուծությունն առնչվում է Հայաստանի տնտեսության տարբեր ասպեկտներին՝ համեմատություններ անցկացնելով հարևան երկրների և գլոբալ տնտեսական հսկաների հետ: Մեր վերլուծությունը հիմնված է Numbeo-ի տվյալների վրա, որը սպառողական գների և կյանքի որակի այլ ցուցանիշների գլոբալ շտեմարան է:
+
+Նախորդ ուսումնասիրություններում մենք բացահայտել ենք Հայաստանի տնտեսության առջև ծառացած մի շարք էական մարտահրավերներ: [2023 թվականին Երևանը դարձել է ամենաթանկ քաղաքը տարածաշրջանում՝ գերազանցելով նույնիսկ Մոսկվային](https://www.tvyal.com/newsletter/2024/2024_01_12): Ըստ Numbeo-ի տվյալների 2023 թցականի վերջին, Երևանում նույն կենսամակարդակը պահպանելու համար անհրաժեշտ էր ամսական 3,246.3 դոլար, մինչդեռ Մոսկվայում՝ 2,909.4 դոլար: Սպառողական գները Երևանում 15.1%-ով բարձր էին, քան Մոսկվայում, իսկ վարձակալության գները՝ 4.8%-ով: [Այժմ այս ցուցանիշները որոշակի փոփոխություն են գրանցել։ Երևանում անհրաժեշտ է 3,735.0 դոլար, իսկ Մոսկվայում` 3,573.5 դոլար։ Սպառողական գները արդեն 11.1%-ով բարձր են, քան Մոսկվայում, իսկ վարձակալության գները՝ 4.5%-ով](https://www.numbeo.com/cost-of-living/compare_cities.jsp?country1=Russia&city1=Moscow&country2=Armenia&city2=Yerevan&displayCurrency=USD)։ Դեռևս [Երևանը Մոսկվայից թանկ է](https://www.tvyal.com/newsletter/2024/2024_01_12)։
+
+**Գծապատկեր 1.** 
+
+```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
+plot_1_mean_wages
+```
+
+
+2024 թվականի հուլիսի դրությամբ վերջին տվյալների համաձայն, Հայաստանը տարածաշրջանում առաջատար է միջին ամսական աշխատավարձերի առումով (հարկերից հետո)՝ գերազանցելով նույնիսկ Ռուսաստանին 8.1%-ով: Հայաստանում միջին ամսական աշխատավարձը կազմում է 637 դոլար՝ Ռուսաստանի 589 դոլարի համեմատ: Այնուամենայնիվ, այս համեմատությունը չպետք է դիտարկել կոնտեքստից դուրս: Հայաստանի բնակչության 47%-ը բնակվում է Երևանի մետրոպոլիայի տարածքում, մինչդեռ Ռուսատանի բնակչության միայն 18%-ն է ապրում Մոսկվայի մետրոպոլիայի տարածքում: Ավելին, մեր վերջին վերլուծությունը ցույց է տալիս, որ [Հայաստանում մասնավոր հատվածի աշխատատեղերի 76%-ը կենտրոնացված է Երևանում, ինչը ընդգծում է քաղաքային և գյուղական տարածքների միջև զգալի անհավասարությունը](https://www.tvyal.com/newsletter/2024/2024_02_09):
+
+Երևանում աշխատատեղերի կենտրոնացումը շարունակում է ուժեղանալ: 2022 թվականին ոչ պետական աշխատատեղերի 76.3%-ը գտնվում էր մայրաքաղաքում՝ նշանակալի աճ գրանցելով նախորդ տարիների համեմատ: Երևանի մասնավոր հատվածը արձանագրել է 19.5% աճ՝ մարզերի համեստ 4.7%-ի համեմատ: Ընթացիկ գնահատականները ենթադրում են, որ այս կենտրոնացումը կարող է բերել նրան, որ Երևանի մասնաբաժինը մասնավոր հատվածի աշխատատեղերի քանակում հասնի 80%-ի:
+
+**Գծապատկեր 2.**
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 12, fig.height = 8}
+plot_2_mean_expenses
+```
+
+Կարևոր է նշել, որ թեև հայկական աշխատավարձերը բարձր են թվում տարածաշրջանի երկրների համեմատությամբ, հայկական դրամը 2022 թվականի սկզբից ամենաարժևորված արժույթն է փոխարկելի արժույթների շարքում: Դրամն արժևորվել է 20%-ով այս ժամանակահատվածում՝ փոխարժեքը 2022 թվականի սկզբին 485 դրամ էր մեկ դոլարի դիմաց, այժմ` 386 դրամ: Այս արժևորումը դրական չի անդրադառնում արտահանման վրա և բացասական է ազդում զբոսաշրջության և ՏՏ ոլորտներից ստացվող եկամուտների վրա: Այնուամենայնիվ, այս արժեզրկումը հանգեցրել է նաև դոլարով արտահայտված ներքին աշխատավարձերի աճի՝ նպաստելով մեկ շնչի հաշվով ՀՆԱ-ի և աշխատավարձերի աճին:
+
+Ամբողջական պատկերը ստանալու համար անհրաժեշտ է նաև ուսումնասիրենլ ծախսերը: Տվյալները ցույց են տալիս, որ Հայաստանում մեկ անձի միջին ամսական ծախսերը (բացառությամբ վարձակալության) ամենաբարձրն են նշված երկրների շարքում՝ կազմելով 732 դոլար: Աշխատավարձերի համեմատ կյանքի բարձր արժեքը մարտահրավեր է միջին հայ սպառողի համար:
+
+**Գծապատկեր 3.**  
+
+```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
+plot_3_is_money_enough
+```
+
+Երորդ գծապատկերում պատկերված աշխատավարձերի և ծախսերի հարաբերակցությունը պատկերացում է տալիս գնողունակության և կենսամակարդակի մասին: Հայաստանում այս հարաբերակցությունը կազմում է 87%, ինչը նշանակում է, որ միջին աշխատավարձերը ծածկում են միջին ծախսերի միայն 87%-ը: Թեև սա ավելի բարձր է, քան Ադրբեջանում և Վրաստանում, այն զիջում է Ղազախստանին, Ռուսաստանին և Թուրքիային, որտեղ միջին աշխատավարձերը գերազանցում են միջին ծախսերը: Օրինակ, Ռուսաստանում աշխատավարձերը ծածկում են ծախսերի 111%-ը՝ թողնելով միջինում 11% այլ ծախսերի կամ խնայողությունների վրա:
+
+Դիտարկենք նաև գծապատկերում ներկայացված այլ պետությունները: Ստորին մակարդակում Սիրիայի հարաբերակցությունը ընդամենը 10.7% է՝ արտացոլելով լուրջ տնտեսական մարտահրավերները: Իրանը և Ադրբեջանը նույնպես դժվարանում են՝ ունենալով 80%-ից ցածր հարաբերակցություններ: Այլ կողմում՝ զարգացած տնտեսություններ, ինչպիսիք են Միացյալ Նահանգները, Գերմանիան և Սինգապուրը, ցույց են տալիս 300%-ից բարձր հարաբերակցություն՝ վկայելով զգալիորեն ավելի բարձր գնողունակության և խնայողությունների պոտենցիալի մասին:
+
+**Գծապատկեր 4.**
+
+```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
+plot_4_mortgage_pct
+```
+
+Ուսումնասիրենք նաև հիփոթեքային տոկոսադրույքները։ Հայաստանում առկա է ամենաբարձր հիփոթեքային վարկի տոկոսադրույքներից մեկը՝ 15% (20-ամյա ֆիքսված տոկոսադրույքով հիփոթեքի համար): Այս բարձր դրույքաչափը զգալի խոչընդոտներ է ստեղծում սեփական գույք ունենալու համար առանց հիփոթեքային վարկից եկամտահարկի վերադարձի: Համեմատության համար, այնպիսի երկրներ, ինչպիսիք են Ճապոնիան (1.65%), Գերմանիան (3.51%) և Իսպանիան (3.47%), առաջարկում են շատ ավելի բարենպաստ պայմաններ տուն գնողների համար: Տարածաշրջանի հարևանները, ինչպիսիք են Ադրբեջանը (9.09%) և Վրաստանը (11.7%), առաջարկում են ավելի մատչելի հիփոթեքային տարբերակներ:
+
+**Կյանքի արժեքի ուսումնասիրություն։** Numbeo-ի Կյանքի արժեքի ինդեքսը տրամադրում է սպառողական ապրանքների գների համեմատական չափում, ներառյալ մթերքը, ռեստորանները, տրանսպորտը և կոմունալ ծառայությունները, բայց բացառելով վարձակալությունը:
+
+Այս վերլուծության մեջ մենք նորմալացրել ենք ինդեքսը Հայաստանի նկատմամբ (սահմանված 100%) այլ պետությունների համեմատ: Արդյունքները մտահոգիչ են Հայաստանի տնտեսական մրցունակության տեսանկյունից: Առաջին գծապատկերում նշված բոլոր հարևան երկրներն ունեն ավելի ցածր կյանքի արժեք Հայաստանի համեմատ: Բացի այդ, այնպիսի երկրներ, ինչպիսիք են Հունգարիան, Չինաստանը, Լեհաստանը և նույնիսկ Ճապոնիան, ցույց են տալիս կյանքի արժեքի ավելի բարենպաստ ինդեքսներ:
+
+Մասնավորապես՝
+
+* Իրանում կյանքի արժեքը կազմում է Հայաստանի 60.4%-ը
+* Ռուսաստանում՝ 71.6%
+* Ղազախստանում՝ 71.8%
+* Ադրբեջանում՝ 74.2%
+* Վրաստանում՝ 79.8%
+
+**Գծապատկեր 5.** 
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 12, fig.height = 8}
+plot_5_cost_of_leaving
+```
+
+Այս տվյալների լույսի ներքո ծագում են մի շարք հարցեր Հայաստանի տնտեսական մրցունակության վերաբերյալ: Առաջին հերթին, որքանո՞վ է հայ աշխատողն իրապես մրցունակ տարածաշրջանի այլ երկрների աշխատուժի համեմատ, հաշվի առնելով բարձր աշխատավարձերը և կյանքի արժեքը: Երկրորդ, ինչպե՞ս է այս իրավիճակն ազդում Հայաստանի՝ որպես ներդրումային հարթակի գրավչության վրա: Արդյոք օտարերկրյա ներդրողները կնախընտրե՞ն ներդնել Հայաստանում՝ հաշվի առնելով աշխատուժի համեմատաբար բարձր արժեքը, թե՞ կգերադասեն ավելի ցածր աշխատավարձեր ունեցող հարևան երկրները:
+
+Հայաստանում կյանքի այս բարձր արժեքը, զուգակցված աշխատավարձի և ծախսերի հարաբերականորեն ցածր հարաբերակցության հետ, զգալի մարտահրավերներ է ներկայացնում տնտեսական աճի և կյանքի որակի բարելավման համար: Այս իրավիճակը հատկապես ազդում է միջին և ցածր եկամուտ ունեցող քաղաքացիների վրա, ովքեր ստիպված են ավելի մեծ մասնաբաժին հատկացնել իրենց եկամուտներից հիմնական կարիքները բավարարելու համար:
+
+
+
+-----
+
+-----
+
+Եթե հնարավոր է, խնդրում եմ այս նյութը ուղարկել նաև այն մարդկանց, ում այն կարծում եք կարող է հետաքրքրել:
+
+**ԱՅՍ ՀՈԴՎԱԾԻ ՀՂՈՒՄԸ**
+
+***Թավադյան, Աղ․Ա․ (2024)․ Դատարկ գրպաններ, բարձր աշխատավարձր [Empty Pockets, High Salaries]․ Tvyal.com հարթակ [Tvyal.com platform], 12-08-2024․ https://www.tvyal.com/newsletter/2024/2024_08_12***
+
+**Արգելվում է այս հարթակի նյութերը արտատպել առանց հղում կատարելու։**    
+
+<small>\* Այս և մեր բոլոր այլ վերլուծությունների տվյալները վերցված են պաշտոնական աղբյուրներից։ Հաշվարկները ամբողջությամբ հասանելի են github-ում, դրանք կարելի է ստուգել` այցելելով [github-ի](https://github.com/tavad/tvyal_newsletter/blob/main/2024/) մեր էջը, որտեղ տրված են տվյալները, հաշվարկների և գծապատկերների կոդը։</small>
+
+
+-----
+
+# ՀԱՄԱԳՈՐԾԱԿՑՈՒԹՅՈՒՆ
+
+## [Եթե ուզում եք ձեր տվյլներից օգուտ քաղել AI գործիքներով` ԴԻՄԵՔ ՄԵԶ](https://www.tvyal.com/newsletter/2024/2024_07_26)
+
+## [ՄԻԱՑԵՔ ՄԵՐ ԹԻՄԻՆ](https://www.tvyal.com/newsletter/2024/2024_07_26)
+
+-----
+
+## ԶԼՄ հաղորդագրություն
+
+
+[Հարկահավաքաքության և տնտեսության այլ առանցքային խնդիրների վերաբերյալ դիտեք այս հարցազրույցը](https://youtu.be/W9JM8gnttl0)
+
+📺  Մեր ավանդական ապրանքների արտահանումը անկում է ապրում. Աղասի Թավադյան 📺
+
+<a href="https://youtu.be/W9JM8gnttl0">
+  <img src="https://i3.ytimg.com/vi/nQi1vtV19jI/hqdefault.jpg" alt="YouTube Video" style="width:60%;">
+</a>
+
+
+
+## English Summary
+
+<!-- ### 🐅🌆💸 Armenia: Caucasian Tiger or Costly Mirage -->
+### 👛💨💰 Empty Pockets, High Salaries
+
+**High Wages, High Costs: An Analysis of Armenia's Economic Competitiveness**
+
+Recent data from Numbeo reveals that Yerevan, Armenia's capital, remains one of the most expensive cities in the region, surpassing even Moscow in terms of living costs. As of July 2024, Armenia leads the region in average monthly wages after taxes, with \$637 compared to Russia's \$589. However, this seemingly positive statistic is offset by high living costs, with monthly expenses (excluding rent) in Armenia being the highest among compared countries at \$732. The wage-to-expense ratio in Armenia is 87%, meaning average wages cover only 87% of average expenses, lagging behind countries like Kazakhstan, Russia, and Turkey where wages exceed expenses.
+
+The economic landscape in Armenia presents significant challenges. The country has one of the highest mortgage interest rates in the region at 15% for a 20-year fixed-rate mortgage, making homeownership difficult. The cost of living index, normalized to Armenia (100%), shows neighboring countries and even some developed economies like Japan having more favorable living costs. This high cost of living, coupled with the relatively low wage-to-expense ratio, poses substantial challenges for economic growth and quality of life improvement, particularly affecting middle and low-income citizens. The situation is further complicated by the concentration of private sector jobs in Yerevan (76% of all private sector jobs) and the significant appreciation of the Armenian dram since early 2022, which impacts exports and income from tourism and IT sectors.
+
+---
+ 
+
+
+Հարգանքներով,            
+Աղասի Թավադյան         
+12.08.2024          
+[tvyal.com](https://www.tvyal.com/)      
+[tavadyan.com](https://www.tavadyan.com/)
+
+---
+
+[Was this email forwarded to you? Subscribe here.](https://www.tvyal.com/subscribe)
+
+[Բաժանորդագրվեք](https://www.tvyal.com/subscribe)
+
+       
+---              
+               
+
+
+####### **Ուշադրություն. Ձեր էլ.փոստը մեյլլիսթի մեջ է, որի միջոցով ես կիսվում եմ շաբաթական նյութեր, որոնք հիմնականում ներկայացնում են Հայաստանի տնտեսությունը: Նյութերը ներառում են գծապատկերներ, [տվյալների բազաներ](https://github.com/tavad/tvyal_newsletter), տեսանյութեր, հոդվածներ, [առցանց վահանակներ](https://www.tvyal.com/projects), տնտեսական գործիքներ, կանխատեսումներ և հաշվետվություններ: Եթե ցանկանում եք չեղարկել բաժանորդագրությունը, խնդրում եմ տեղեկացրեք ինձ, և ես կհեռացնեմ ձեր էլ. փոստը ցուցակից: Գրեք նաև եթե ունեք մենկնաբանություններ:**
+
+####### **Important! Your email is part of the mailing list where I share weekly materials primarily focused on the Armenian economy. These materials encompass charts, [databases](https://github.com/tavad/tvyal_newsletter), videos, articles, [online dashboards](https://www.tvyal.com/projects), economic tools, forecasts, and reports. If you wish to unsubscribe, please let me know, and I will remove your email from the list. Please share your comments as well․**
+
+
+
+
+
+
+
