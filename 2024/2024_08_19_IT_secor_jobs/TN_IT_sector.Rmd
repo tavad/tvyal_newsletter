@@ -1,0 +1,694 @@
+---
+title: "Tvyal Newsletter"
+date: "2024-08-19"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+library(tidyverse)
+library(RcppRoll)
+library(scales)
+library(rvest)
+library(rio)
+library(ggtext)
+
+# rm(list = ls()); gc()
+
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+
+source("../../initial_setup.R")
+
+```
+
+
+```{r reading data, include=FALSE}
+fetch_armstat_download_link <- function(page_link, description){
+  return_link <- 
+    read_html(page_link) |> 
+    html_element(xpath = paste0('//a[contains(text(), "', description, '")]')) |> 
+    html_attr("href") |> 
+    str_replace("\\.{2}/", "https://www.armstat.am/")
+  
+  return(return_link)
+}
+
+wages_link <- 
+  fetch_armstat_download_link("https://www.armstat.am/am/?nid=964", "Աշխատավարձն ըստ տնտեսական գործունեության տեսակների (ՏԳՏԴ")
+
+employees_link <- 
+  fetch_armstat_download_link("https://www.armstat.am/am/?nid=964", "Աշխատողների թվաքանակն ըստ տնտեսական գործունեության տեսակների (ՏԳՏԴ")
+
+  
+wages_tmp_1 <- rio::import(wages_link, skip = 2, sheet = 1) |>  as_tibble()
+wages_tmp_2 <- rio::import(wages_link, skip = 2, sheet = 2) |>  as_tibble()
+employees_tmp <- rio::import(employees_link, skip = 2) |>  as_tibble()
+
+```
+
+```{r wages data wrangeling, include=FALSE}
+
+roman_to_numeric <- tibble(
+  month = c("I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"),
+  month_numeric = 1:12
+)
+
+clean_nace <- function(tbl_raw, values_to = "value") {
+  
+  tbl_clean <- 
+    tbl_raw |> 
+    rename(nace_2_code = 1, type = 2) |> 
+    fill(type, .direction = "down") |> 
+    mutate(nace_2_code = paste(nace_2_code, type, sep = "____")) |> 
+    select(-type) |> 
+    t() |> as_tibble() |> 
+    rename(year = 1, month = 2) |> 
+    fill(year, .direction = "down") |> 
+    mutate(month = str_remove(month, "^I-")) |> 
+    left_join(roman_to_numeric, by = join_by(month)) |> 
+    mutate(date = paste(year, month_numeric, sep = "_")) |> 
+    select(-c(year, month)) |> 
+    relocate(date) |> 
+    t() |> as_tibble() |> 
+    janitor::row_to_names(row_number = 1) |> 
+    pivot_longer(matches("\\d{4}"), names_to = "date", values_to = values_to) |> 
+    rename(nace_2_code = 1, name_arm = 2, name_eng = 3, name_rus = 4) |> 
+    extract(
+      nace_2_code, into = c("nace_2_code", "type_arm", "type_eng"),
+      regex = "(.*)____([ա-ֆԱ-ֆ ]+) +([a-zA-z-]+).*"
+    ) |> 
+    filter(!is.na(!!sym(values_to))) |> 
+    mutate(
+      across(contains("type"), str_trim),
+      !!sym(values_to) := str_remove_all(!!sym(values_to), " | "),
+      !!sym(values_to) := parse_number(!!sym(values_to)),
+      date = ym(date) + months(1) - days(1)
+    ) |> 
+    filter(!is.na(nace_2_code))
+  
+  return(tbl_clean)
+}
+
+wages_db_clean <- 
+  full_join(
+    clean_nace(wages_tmp_1, values_to = "wages"),
+    clean_nace(wages_tmp_2, values_to = "wages_cumulative"),
+    by = join_by(nace_2_code, type_arm, type_eng, name_arm, name_eng, name_rus, date)
+  ) |> 
+  full_join(
+    clean_nace(employees_tmp, values_to = "employees"),
+    by = join_by(nace_2_code, type_arm, type_eng, name_arm, name_eng, name_rus, date)
+  ) |> 
+  relocate(date) |> 
+  arrange(date) |> 
+  mutate(
+    nace_2_code = fct_inorder(nace_2_code),
+    year = year(date)
+  ) |> 
+  group_by(year, nace_2_code, type_eng, name_eng) |> 
+  mutate(
+    # cleaning cum wages as the data in column wages_cumulative is not calculted correctly by armstat
+    wages_cumulative = cumsum(wages) / row_number()
+  ) |> 
+  ungroup() |> 
+  select(-year)
+
+wages_db_clean |> write_excel_csv("wages_db_clean.csv")
+
+```
+
+```{r plot_4 wages and employment in IT, include=FALSE}
+
+plot_4_wages <- 
+  wages_db_clean |> 
+  filter(
+    grepl("58.2", nace_2_code), 
+    type_eng == "Non-public"
+  ) |> 
+  mutate(
+    across(contains("wages"), ~.x),
+    employees = employees * 20
+  ) |> 
+  pivot_longer(c(wages_cumulative, wages, employees)) |> 
+  mutate(name = fct_inorder(name)) |> 
+  ggplot(aes(date, value)) +
+  geom_line(aes(color = name, linewidth = name)) +
+  geom_text(
+    data = tibble(
+      x = c(ymd("2019-07-01"),ymd("2023-01-01")),
+      y = c(830000, 370000),
+      label = c("աշխատավարձ", "աշխատողների թիվ"),
+      color = new_palette_colors[c(6,2)]
+    ),
+    mapping = aes(x, y, label = label, color = I(color)),
+    size = 5
+  ) +
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+  scale_y_continuous(
+    breaks = seq(200,1200,100)*1000,
+    labels = c(rep("", 3), number(seq(500,1200,100)*1000, accuracy = 1)),
+    sec.axis = sec_axis(
+      ~ . / 20,
+      breaks = seq(10000, 35000, 5000),
+      labels = number_format(accuracy = 1)
+    )
+  ) +
+  scale_color_manual(values = new_palette_colors[c(6,6,2)]) +
+  scale_linewidth_manual(values = c(1.5, 0.3, 1.5)) +
+  labs(
+    x = NULL,
+    y = NULL,
+    title = "ՏՏ ոլորտի աշխատավարձ և աշխատողների թիվ",
+    subtitle = "<span style='color:#f95d6a;'>աշխատավարձ (դրամ)</span> և <span style='color:#2f4b7c;'>աշխատողների թիվ (մարդ)</span>",
+    caption = caption_f(source = "Armstat", suffix_text = "\nաշխատավարձը ներկայացված է կումուլատիվ հարթեցված, աշխատավարձի ամսական տվյալները բարակ գծով են")
+  ) +
+  theme(
+    legend.position = "null",
+    plot.subtitle = element_markdown(),
+  )
+
+```
+
+```{r plot_2&3 it companies, include=FALSE}
+total_it_taxes <- tribble(
+  ~year,  ~taxpayers_n,  ~tax_inputs,  ~employease_mean, ~in_1000_list,
+  # year: Reporting year
+  # taxpayers_n: Number of IT sector taxpayers
+  # tax_inputs: Total tax revenue from IT sector
+  # employease_mean: Average permanent IT jobs
+  # in_1000_list: IT taxpayers in top 1000 taxpayers list
+  "2019",         1948,    31351517440,           14827,            32,
+  "2020",         2460,    33607067870,           16145,            38,
+  "2021",         3251,    48892033319,           19315,            51,
+  "2022",         8371,    91088164073,           31518,            66,
+  "2023",        10674,   136022279832,           36773,            76,
+  "2024 H1",      9354,    76304032848,           34814,            85
+)
+
+foreigners_it_taxes <- tribble(
+  ~year,  ~taxpayers_n_f, ~taxpayers_n_f_ent, ~employease_mean_f,  ~tax_inputs_f,
+  # year: Reporting year
+  # taxpayers_n_f: Foreign IT taxpayers
+  # taxpayers_n_f_ent: Foreign IT entrepreneurs
+  # employease_mean_f: Average permanent IT jobs in corporations owned by Foreign IT entrepreneurs
+  # tax_inputs_f: Tax revenue from foreign IT sector
+  "2019",            227,                 32,               1713,     1864021560,
+  "2020",            249,                 26,               1824,     2042755196,
+  "2021",            322,                 68,               2379,     3147857182,
+  "2022",           3949,               2764,               5194,    11137427220,
+  "2023",           5511,               4198,               6301,    19567701461,
+  "2024 H1",        8180,               6151,               6033,    11308054334
+)
+# Note: Data includes taxpayers with valid J62 and J63 sector reports. Foreign status based on State Registry data for LLCs and sole proprietors.
+# Average employee count calculated from monthly income tax and social security payment reports.
+# Tax inputs consider unified account allocations and non-unified account payments.
+
+plot_2_it_companies <- 
+  total_it_taxes |> 
+  left_join(foreigners_it_taxes) |> 
+  mutate(
+    year = ifelse(grepl("H1", year), "2024\nառաջին\nկիսամյակ", year)
+  ) |> 
+  select(year, matches("taxpayers_n")) |> 
+  mutate(
+    taxpayers_n_l = taxpayers_n - taxpayers_n_f
+  ) |> 
+  select(year, taxpayers_n_f, taxpayers_n_l) |> 
+  pivot_longer(-year) |> 
+  group_by(year) |> 
+  mutate(
+    pct = value / sum(value),
+    pct_text = percent(pct, accuracy = 0.1)
+  ) |> 
+  ungroup() |> 
+  ggplot(aes(year, value, fill = name, label = pct_text)) +
+  geom_col() +
+  geom_text(position = position_stack(vjust = 0.5)) +
+  scale_y_continuous(n.breaks = 6, labels = number_format()) +
+  scale_fill_manual(values = new_palette_colors[c(6,2)]) +
+  labs(
+    x = NULL,
+    y = NULL,
+    title = "ՏՏ ոլորտում հարկատուների թիվը",
+    subtitle = "Գրանցված <span style='color:#2f4b7c;'>ՀՀ քաղաքացիների</span> և <span style='color:#f95d6a;'>օտարերկրյա քաղաքացիների</span> կողմից",
+    caption = caption_f()
+  ) +
+  theme(
+    legend.position = "none",
+    panel.grid.major.x = element_blank(),
+    plot.subtitle = element_markdown(),
+  )
+
+plot_3_it_companies_emp <- 
+  total_it_taxes |> 
+  left_join(foreigners_it_taxes) |> 
+  mutate(
+    year = ifelse(grepl("H1", year), "2024\nառաջին\nկիսամյակ", year)
+  ) |> 
+  select(year, matches("employease_mean")) |> 
+  mutate(
+    employease_mean_l = employease_mean - employease_mean_f
+  ) |> 
+  select(year, employease_mean_f, employease_mean_l) |> 
+  pivot_longer(-year) |> 
+  group_by(year) |> 
+  mutate(
+    pct = value / sum(value),
+    pct_text = percent(pct, accuracy = 0.1)
+  ) |> 
+  ungroup() |> 
+  ggplot(aes(year, value, fill = name, label = pct_text)) +
+  geom_col() +
+  geom_text(position = position_stack(vjust = 0.5)) +
+  scale_y_continuous(n.breaks = 8, labels = number_format()) +
+  scale_fill_manual(values = new_palette_colors[c(6,2)]) +
+  labs(
+    x = NULL,
+    y = NULL,
+    title = "ՏՏ կազմակերպությունների աշխատողների թվաքանակը",
+    subtitle = "Գրանցված <span style='color:#2f4b7c;'> ՀՀ քաղաքացիների </span> և <span style='color:#f95d6a;'> օտարերկրյա քաղաքացիների </span> կողմից",
+    caption = caption_f()
+  ) +
+  theme(
+    legend.position = "none",
+    panel.grid.major.x = element_blank(),
+    plot.subtitle = element_markdown(),
+  )
+```
+
+
+```{r plot_5 it taxes, include=FALSE}
+
+taxes_data <- 
+  tibble(
+    company = c("Synopsys Armenia", "KEH Armenia (Avito)", "EPAM", "Veeam Armenia", "Align Technology", 
+                "Service Titan", "Picsart", "FTech Soft (Tinkoff)", "Nexters Studio", "RideTech AM",
+                "BostonGene", "DataArt", "NVIDIA", "Armsoft", "Aim High Technology AM", 
+                "DevSoft", "Energize Global Services", "Adobe", "VMware", "Grid Dynamics"),
+    position = c(38, 57, 82, 83, 87, 89, 95, 108, 113, 116, 
+                 123, 130, 148, 150, 158, 151, 179, 208, 211, 257),
+    end = c(3204, 2685, 1981, 1918, 1828, 1758, 1588, 1432, 1348, 1326,
+            1223, 1204, 1027, 1012, 984, 981, 859, 765, 741, 606),
+    begining = c(2508, 2216, 2670, 4935, 1292, 1671, 1775, 463, 1423, 195,
+                 985, 1647, 1150, 817, NA, 996, 762, 641, 1057, 587)
+  ) |> 
+  mutate(
+    begining = ifelse(is.na(begining), 500, begining),
+    percent_change =  end / begining,
+    percent_change = case_when(
+      company == "Aim High Technology AM" ~ "ավելի քան 6 անգամ աճ",
+      percent_change > 0.5 & percent_change < 2 ~ percent(percent_change - 1, accuracy = 0.1),
+      percent_change <= 0.5 ~ number(1/percent_change, suffix = " անգամ անկում", accuracy = 0.1),
+      percent_change >= 2 ~ number(percent_change, suffix = " անգամ աճ", accuracy = 0.1)
+    ),
+    company = paste0(company, " (", position, ")")
+  )
+
+date_legend <- 
+  tibble(
+    x = 3200, y = c(1.5, 2.5), 
+    color = c("#005C4B", "#f95d6a"), 
+    text = c("2024 առաջի եռամսյակ", "2023 առաջի եռամսյակ"),
+  )
+
+plot_5_it_taxes <- 
+  taxes_data |> 
+  mutate(
+    company = fct_reorder(company, position, .desc = TRUE),
+    color = ifelse(begining > end, "#f95d6a", "#005C4B")
+  ) |> 
+  ggplot() +
+  geom_segment(
+    aes(x = begining, xend = end,  y = company, 
+        yend = company, group = company, color = I(color)),
+    linewidth = 1.2,
+    lineend = 'round', linejoin = 'round',
+    arrow = arrow(length = unit(0.1, "inches"))
+  ) +
+  geom_segment(
+    aes(y = 5, yend = 5, x = 168, xend = 500),
+    linewidth = 1.2, color = "#005C4B", linetype = 4
+  ) +
+  geom_point(
+    data = taxes_data |> filter(!grepl("Aim High", company)),
+    aes(x = begining, y = company, color = I("#f95d6a")), size = 3
+  ) +
+  geom_point(aes(x = end, y = company, color = I("#005C4B")), size = 3) +
+  geom_text(
+    aes(x = (end+begining)/2, y = company,  label = percent_change, vjust = -0.6)
+  ) +
+  geom_point(data = date_legend, aes(x, y, color = I(color)), size = 3) +
+  geom_text(data = date_legend, aes(x + 640, y, label = text)) +
+  scale_y_discrete() +
+  labs(
+    x = NULL,
+    y = NULL,
+    color = NULL,
+    title = "ՏՏ ոլորտի խոշոր 20 հարկատուների դիրքերի փոփոխությունը",
+    subtitle = "մլն դրամ, 1000 խոշոր հարկատուների ցանկից",
+    caption = caption_f("armstat.am")
+  ) +
+  theme(
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor.x =  element_line(
+      colour = "gray", 
+      linetype = "dotted"
+    ),
+    panel.grid.major.x =  element_line(
+      colour = "gray", 
+      linetype = "dotted"
+    ),
+  )
+```
+
+
+```{r plot_1 it growth, include=FALSE}
+
+GDP_quarter <- read_csv("~/R/newsletter/2024/2024_09_02_GDP_components/GDP_quarter_tidy.csv")
+
+subtitle_text <- "<span style='color:#2f4b7c;'>մլրդ դրամ (ընթացիկ գներով)</span><br><br><span style='color:#F72C3D;'>աճ, նախորդ տարվա համապատասխան եռամսյակի նկատմամբ, %</span>"
+
+plot_1_it_growth <- 
+  GDP_quarter |> 
+  filter(code == "J") |> 
+  mutate(
+    date = yq(date) + months(1) + days(15),
+    vol_YoY_pct = vol_YoY_pct
+  ) |> 
+  filter(date >= ymd("2018-01-01")) |> 
+  ggplot(aes(date)) +
+  geom_col(aes(y = production / 1000), fill = new_palette_colors[2], alpha = 0.5) +
+  geom_text(
+    aes(y = production / 1000, label = number(production / 1000, accuracy = 1)),
+    vjust = -0.2, color = new_palette_colors[2]
+  ) +
+  geom_line(aes(y = vol_YoY_pct - 100), color = "#F72C3D", size = 2, alpha = 1) +
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+  scale_y_continuous(
+    breaks = seq(0,70,10),
+    labels = NULL,
+    sec.axis = sec_axis(
+      ~ .x / 100,
+      breaks = seq(0,0.7,0.1),
+      labels = percent_format()
+    )
+  ) +
+  # Add subtitle as geom_richtext
+  geom_richtext(
+    aes(x = min(date), y = max(production / 1000) * 0.95, 
+        label = subtitle_text),
+    hjust = 0, vjust = 1, size = 4, fill = NA, label.color = NA
+  ) +
+  labs(
+    x = NULL,
+    y = NULL,
+    title = "Տեղեկատվություն և կապ*",
+    caption = caption_f("armstat.am", suffix_text = "* ՏԳՏԴ2 « J » դասիչ")
+  ) +
+  coord_cartesian(clip = "off") +
+  theme(
+    panel.grid.major.y = element_blank(),
+    panel.grid.major.x = element_blank(),
+    plot.margin = margin(t = -20, r = 5, b = 5, l = 5),
+    plot.title = element_text(hjust = 0.1, vjust = -10),
+    axis.text.y.right = element_text(margin = margin(l = -20), color = "#F72C3D")
+  )
+
+```
+
+
+***English summary below.***
+
+Հարգելի գործընկեր,
+
+Հուսով եմ՝ լավ եք: 
+Ներկայացնում եմ այս շաբաթվա վերլուծությունները և աշխատանքները.
+
+## [👛💨💰 Դատարկ գրպաններ, բարձր աշխատավարձր](https://www.tvyal.com/newsletter/2024/2024_08_19)
+
+### **Հայաստանի ՏՏ ոլորտը. ռազմավարական առաջնահերթությունից մինչև հնարավոր անկում**
+
+Վերջին տարիներին Հայաստանի տեղեկատվական տեխնոլոգիաների (ՏՏ) ոլորտը եղել է տնտեսական աճի շարժիչներից մեկը: Սակայն վերջին տվյալները ցույց են տալիս, որ այս ռազմավարական ճյուղը լուրջ մարտահրավերների առջև է կանգնած: Այս հոդվածը կուսումնասիրի ՏՏ ոլորտի ներկայիս վիճակը, նրա առջև ծառացած խնդիրները և հնարավոր լուծումները:
+
+**ՏՏ ոլորտի վերելքը և անկման նշանները**
+
+**Գծապատկեր 1.** 
+
+```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
+plot_1_it_growth
+```
+
+2022 թվականից սկսած Հայաստանի ՏՏ ոլորտը զգալի աճ է արձանագրել՝ հիմնականում պայմանավորված Ռուսաստանից տեղափոխված մասնագետների ներհոսքով: Այս ժամանակահատվածում ոլորտը դարձավ ՀՆԱ-ի աճի էական աղբյուր՝ ապահովելով աճի 1-3 տոկոսային կետը: Սակայն վերջին երկու եռամսյակների տվյալները մտահոգիչ պատկեր են ցույց տալիս:
+
+Ինչպես երևում է գծապատկերից, վերջին երկու եռամսյակներում ոլորտը բացասական աճ է արձանագրել, ինչը կարող է վկայել այս ռազմավարական ոլորտի ճգնաժամի մասին: 
+
+**ՏՏ ընկերությունների և աշխատակիցների դինամիկան**
+
+**Գծապատկեր 2.**
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 12, fig.height = 8}
+plot_2_it_companies 
+```
+
+
+2024 թվականի առաջին կիսամյակի տվյալները բացահայտում են մի շարք հետաքրքիր միտումներ.
+
+1. Հայաստանում գրանցված ՏՏ ընկերություններ. թիվը կտրուկ նվազել է 5,163-ից մինչև 1,174 (4.4 անգամ): 
+2. Օտարերկրյա գրանցում ունեցող ՏՏ ընկերություններ. եղել է կտրուկ աճ 5,511-ից մինչև 8,180: 
+    
+Սակայն այս թվերը հակասում են աշխատակիցների թվի դինամիկային: Հայաստանում գրանցված ընկերություններում աշխատակիցների թիվը նվազել է ընդամենը 5.5%-ով: Այս անհամապատասխանությունը կարող է վկայել մի քանի սցենարների մասին՝ տվյալների անճշտություն, փոքր բիզնեսների զանգվածային փակում կամ գրանցման կարգավիճակի փոփոխություններ: 
+
+**Գծապատկեր 3.**  
+
+```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
+plot_3_it_companies_emp
+```
+
+Հետաքրքիր է, որ ըստ Հայաստանի Հանրապետության պետական եկամուտների կոմիտեի (ՊԵԿ) տրամադրած տվյալների, Հայաստանում գրանցված ընկերություններում միջին հաշվով աշխատում է 24.5 աշխատակից, մինչդեռ օտարերկրյա գրանցում ունեցող ընկերություններում՝ միջինը ընդամենը 0.74 աշխատակից: Այս զգալի տարբերությունը կարող է վկայել բազմաթիվ «փոստարկղային ընկերությունների» առկայության մասին։ Ամենայն հավանականությամբ 2024 թվականի առաջին կիսամյակում փակվել են ՀՀ քաղաքացիների կողմից գրանցված «փոստարկղային ընկերությունները» և դրանք վերաբացվել են օտարերկրյա աղաքացիների կողմից։ Փոստարկղային կազմակերպությունները գոյություն ունեն հիմնականում թղթի վրա՝ հարկային կամ իրավական նպատակներով, սակայն գրեթե չունեն իրական գործունեություն:
+
+**Աշխատավարձերի դինամիկան**
+
+**Գծապատկեր 4.**
+
+```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
+plot_4_wages
+```
+
+Աշխատավարձերի և աշխատակիցների թվի աճի գագաթնակետը եղել է 2023 թվականի սկզբին: Հարկ է նշել, որ կտրուկ աճը սկսվել է 2022 թվականի սկզբին, ինչը համընկնում է Ռուսաստանից տեղափոխվածների ներհոսքի հետ: Սակայն վերջին տարվա ընթացքում նկատվում է աճի տեմպերի դանդաղում:
+
+ՏՏ ընկերությունների Հայաստանում հաստատվելու որոշումը պայմանավորված էր ոչ թե երկրի ներքին առավելություններով, այլ ԵԱՏՄ անդամակցությամբ, որը երաշխավորում է աշխատուժի, կապիտալի, ապրանքների և ծառայությունների ազատ շրջանառություն միության անդամ պետությունների միջև:
+
+**Խոշոր ՏՏ ընկերությունների հարկային ներդրումը**
+
+**Գծապատկեր 5.** 
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 12, fig.height = 8}
+plot_5_it_taxes
+```
+
+Խոշոր ՏՏ հարկ վճարողների ցանկը բացահայտում է մի շարք հետաքրքիր միտումներ: 2024 թվականի հունվար-հունիս ամիսներին 1000 խոշոր հարկատուների ցանկում ներառվել են 79 ՏՏ ընկերություններ, որոնք պետբյուջեի համար ապահովել են 45.9 մլրդ դրամի եկամուտ՝ 123 մլն դրամով ավելի քիչ, քան 2023թ-ի նույն ժամանակահատվածում: ՏՏ ընկերությունների ներդրումը ընդհանուր հարկային եկամուտներում նվազել է 4.8%-ից մինչև 4.4%:
+
+Synopsys Armenia-ն շարունակում է մնալ առաջատար՝ ապահովելով վճարված շահութահարկի 12%-ը (1.1 մլրդ դրամ): Սակայն ՏՏ ոլորտի 20 ամենախոշոր հարկատուներից ութի դեպքում վճարած հարկերը նվազել են: Հատկապես զգալի անկում է գրանցվել Veeam Armenia, VMware, DataArt և EPAM ընկերությունների դեպքում, ինչը հիմնականում պայմանավորված է եկամտային հարկի նվազմամբ:
+
+
+**ՏՏ ոլորտի անկման պատճառները**
+
+ 1. ՀՀ դրամի արժևորում. 2022 թվականի սկզբին մեկ դոլարը արժեր 480 դրամ, իսկ այժմ՝ 386 դրամ: Դրամը ներկայումս ամենաարժևորված արժույթն է փոխարկելի արժույթների շարքում: Այս արժևորումը բացասաբար է անդրադառնում արտահանմանը կողմնորոշված ոլորտների, այդ թվում՝ ՏՏ ոլորտի վրա: 2022-ին դրամի արժևորման հետևանքով շատ տեղական ՏՏ ընկերություններ սնանկացան, սակայն այս միտումը չերևաց ընդհանուր վիճակագրության մեջ՝ օտարերկրյա, հատկապես ռուս ծրագրավորողների մեծ ներհոսքի պատճառով: 2024-ի սկզբին դրամի հետագա արժևորումը (404-ից 386 դրամ մեկ դոլարի դիմաց) նպաստեց ՏՏ ոլորտում նոր սնանկացումների: Ի տարբերություն նախորդ շրջանի, այժմ աշխատուժի ներհոսք չկա, այլ նկատվում է ՏՏ մասնագետների արտահոսք:
+2. Հարկային քաղաքականության փոփոխություններ. [Հայաստանում հարկահավաքությունը դարձել է ինքնանպատակ:](https://www.tvyal.com/newsletter/2024/2024_08_02): Շրջանառության հարկը փոքր և միջին ձեռնարկությունների համար բարձրանում է 5%-ից մինչև 10%՝ 2025 թվականին: Միևնույն ժամանակ, հարևան Վրաստանը ՏՏ ընկերությունների համար սահմանել է ընդամենը 1% հարկ, ինչը գրավիչ է դարձնում այդ երկիրը Հայաստանի ՏՏ ընկերությունների համար:             
+Կարևոր է նշել, որ Հայաստանի ՏՏ ոլորտի հարկային արտոնությունները մոտենում են ավարտին: Սերտիֆիկացված ՏՏ ընկերությունների համար նվազեցված 10% եկամտահարկի դրույքաչափը կավարտվի 2024 թվականի դեկտեմբերի 31-ին, իսկ շահութահարկի արտոնությունները արդեն ավարտվել են 2023 թվականի դեկտեմբերի 31-ին: Այս արտոնությունների ավարտը կարող է լուրջ հարված հասցնել Հայաստանի ՏՏ ոլորտի մրցունակությանը և զարգացմանը, հատկապես հաշվի առնելով հարևան երկրների առաջարկած ավելի գրավիչ պայմանները:
+3. Երևանում կյանքի թանկությունը. ՀՀ դրամի արժևորման պատճառով Հայաստանը դարձել է ավելի թանկ օտարերկրյա մասնագետների համար: 2022-2023 թվականներին Երևանում բնակարանի վարձակալության գինը նույնիսկ գերազանցում էր Մոսկվայի գները: Սա նվազեցնում է Հայաստանի երկարաժամկետ գրավչության ապահովումը: 
+4. Կապիտալի արտահոսք. Վերջերս Հայաստանում նկատվում է կապիտալի արտահոսք և ներհոսքի կրճատում: ՏՏ մասնագետները եկան կապիտալի հետ և հեռանում են դրա հետ: 
+    
+Դեպքերի ուսումնասիրություն. Առաջատար ՏՏ ընկերություններ
+
+**Երկարաժամկետ հետևանքները և հնարավորությունները**
+
+ՏՏ ոլորտի ներկա իրավիճակը ցույց է տալիս զարգացման ռազմավարությունը վերանայելու անհրաժեշտությունը: 2022-ի ՏՏ մասնագետների ներհոսքը ժամանակավոր էր, և երկարաժամկետ քաղաքականությունը չպետք է հիմնվի դրա վրա: Կառավարության՝ հարկահավաքությունը որպես հիմնական ցուցանիշ դիտարկելը կարող է վտանգել երկարաժամկետ հարկային արտոնությունների ռազմավարությունը, որն անհրաժեշտ է կայուն ՀՆԱ աճի համար:
+
+
+**Առաջարկություններ**
+
+1. Հարկային քաղաքականության վերանայում: Հարկային բեռի թեթևացումը կարող է օգնել տնտեսական անկման պայմաններում: Հարկահավաքությանը մենք քննարկել ենք այս նյութում՝ [🧮⏳🎲 Հայաստանը հարկում է ժամանակը․ Խաղ տնտեսական աճի հետ :](https://www.tvyal.com/newsletter/2024/2024_08_02)
+2. Վանաձորը՝ որպես ՏՏ հանգույց: Քաղաքի ռազմավարական դիրքը Երևանի և Թբիլիսիի միջև կարող է օգտագործվել՝ հարկային արտոնություններով ՏՏ մասնագետներին գրավելու համար: 
+3. Դրամի փոխարժեքի կառավարում: Ուժեղ արժույթը բացասաբար է ազդում ՏՏ ոլորտի և արտահանման վրա, սակայն արժեզրկումը կարող է խթանել պետական պարտքի աճը և կապիտալի արտահոսքը։ Այս հանգամանքով է պայմանավորված գրեթե 0-ական գնաճի պայմաններում ԿԲ տոկոսադրույքերը իջեցնելու տարակուսումը։ Այս հարցը արժանի է առանձին վերլուծության։ 
+4. Հասանելի բնակարանաշինություն: Չնայած կապիտալի ներհոսքին, այս հարցը դեռ լուծում է պահանջում: 
+    
+Առաջիկա ամիսները վճռորոշ կլինեն Հայաստանի ՏՏ ոլորտի ապագայի համար: Հետևե՛ք մեզ այս և տնտեսության այլ ոլորտների վերլուծությունների համար:
+
+-----
+
+-----
+
+Եթե հնարավոր է, խնդրում եմ այս նյութը ուղարկել նաև այն մարդկանց, ում այն կարծում եք կարող է հետաքրքրել:
+
+**ԱՅՍ ՀՈԴՎԱԾԻ ՀՂՈՒՄԸ**
+
+***Թավադյան, Աղ․Ա․ (2024)․ Դատարկ գրպաններ, բարձր աշխատավարձր [Empty Pockets, High Salaries]․ Tvyal.com հարթակ [Tvyal.com platform], 19-08-2024․ https://www.tvyal.com/newsletter/2024/2024_08_19***
+
+**Արգելվում է այս հարթակի նյութերը արտատպել առանց հղում կատարելու։**    
+
+<small>\* Այս և մեր բոլոր այլ վերլուծությունների տվյալները վերցված են պաշտոնական աղբյուրներից։ Հաշվարկները ամբողջությամբ հասանելի են github-ում, դրանք կարելի է ստուգել` այցելելով [github-ի](https://github.com/tavad/tvyal_newsletter/blob/main/2024/) մեր էջը, որտեղ տրված են տվյալները, հաշվարկների և գծապատկերների կոդը։</small>
+
+
+-----
+
+# ՀԱՄԱԳՈՐԾԱԿՑՈՒԹՅՈՒՆ
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Services Banner with Scoped Styles</title>
+    <style>
+        .ai-services-banner-tvyal {
+            background-color: #0a192f;
+            color: #e6f1ff;
+            padding: 30px;
+            font-family: Arial, sans-serif;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .ai-services-banner-tvyal::before {
+            content: '';
+            position: absolute;
+            top: -25%;
+            left: -25%;
+            right: -25%;
+            bottom: -25%;
+            background: repeating-radial-gradient(
+                circle at 50% 50%,
+                rgba(100, 255, 218, 0.1),
+                rgba(100, 255, 218, 0.1) 15px,
+                transparent 15px,
+                transparent 30px
+            );
+            animation: gaussianWaveTvyal 10s infinite alternate;
+            opacity: 0.3;
+            z-index: 0;
+        }
+        @keyframes gaussianWaveTvyal {
+            0% {
+                transform: scale(1.5) rotate(0deg);
+                opacity: 0.2;
+            }
+            50% {
+                transform: scale(2.25) rotate(180deg);
+                opacity: 0.5;
+            }
+            100% {
+                transform: scale(1.5) rotate(360deg);
+                opacity: 0.2;
+            }
+        }
+        .ai-services-banner-tvyal > * {
+            position: relative;
+            z-index: 1;
+        }
+        .ai-services-banner-tvyal h2,
+        .ai-services-banner-tvyal h3 {
+            margin-bottom: 20px;
+            color: #ccd6f6;
+        }
+        .ai-services-banner-tvyal ul {
+            margin-bottom: 30px;
+            padding-left: 20px;
+        }
+        .ai-services-banner-tvyal li {
+            margin-bottom: 10px;
+        }
+        .ai-services-banner-tvyal a {
+            color: #64ffda;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .ai-services-banner-tvyal a:hover {
+            color: #ffd700;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+<div class="ai-services-banner-tvyal">
+
+## [Եթե ուզում եք ձեր տվյլներից օգուտ քաղել AI գործիքներով` ԴԻՄԵՔ ՄԵԶ](mailto:a@tavadyan.com?subject=Let's Put Data to Work!)
+
+### Մենք առաջարկում ենք
+
+- Extensive databases for finding both international and local leads
+- Exclusive reports on the Future of the Armenian Economy
+- Work and browser automation to streamline operations and reduce staffing needs
+- AI models for forecasting growth and optimizing various aspects of your business
+- Advanced dashboarding and BI solutions
+- Algorithmic trading
+
+### [Let's Put Your Data to Work!](mailto:a@tavadyan.com?subject=Let's Put Data to Work!)
+
+### [ՄԻԱՑԵՔ ՄԵՐ ԹԻՄԻՆ](mailto:a@tavadyan.com?subject=Work application)
+</div>
+</body>
+</html>
+
+
+
+-----
+
+## ԶԼՄ հաղորդագրություն
+
+
+[Հարկահավաքաքության և տնտեսության այլ առանցքային խնդիրների վերաբերյալ դիտեք այս հարցազրույցը](https://youtu.be/hvqUjWcepE4)
+
+📺  Երբ կա տնտեսական անկում պետք է մտածել հարկերը նվազեցնելու մասին. կառավարությունը հակառակն է անում. Աղասի Թավադյան 📺
+
+<a href="https://youtu.be/W9JM8gnttl0">
+  <img src="https://i3.ytimg.com/vi/hvqUjWcepE4/hqdefault.jpg" alt="YouTube Video" style="width:60%;">
+</a>
+
+
+
+## English Summary
+
+<!-- ### 🐅🌆💸 Armenia: Caucasian Tiger or Costly Mirage -->
+### 👛💨💰 Empty Pockets, High Salaries
+
+**High Wages, High Costs: An Analysis of Armenia's Economic Competitiveness**
+
+
+
+---
+ 
+
+
+Հարգանքներով,            
+Աղասի Թավադյան         
+19.08.2024          
+[tvyal.com](https://www.tvyal.com/)      
+[tavadyan.com](https://www.tavadyan.com/)
+
+---
+
+[Was this email forwarded to you? Subscribe here.](https://www.tvyal.com/subscribe)
+
+[Բաժանորդագրվեք](https://www.tvyal.com/subscribe)
+
+       
+---              
+               
+
+
+####### **Ուշադրություն. Ձեր էլ.փոստը մեյլլիսթի մեջ է, որի միջոցով ես կիսվում եմ շաբաթական նյութեր, որոնք հիմնականում ներկայացնում են Հայաստանի տնտեսությունը: Նյութերը ներառում են գծապատկերներ, [տվյալների բազաներ](https://github.com/tavad/tvyal_newsletter), տեսանյութեր, հոդվածներ, [առցանց վահանակներ](https://www.tvyal.com/projects), տնտեսական գործիքներ, կանխատեսումներ և հաշվետվություններ: Եթե ցանկանում եք չեղարկել բաժանորդագրությունը, խնդրում եմ տեղեկացրեք ինձ, և ես կհեռացնեմ ձեր էլ. փոստը ցուցակից: Գրեք նաև եթե ունեք մենկնաբանություններ:**
+
+####### **Important! Your email is part of the mailing list where I share weekly materials primarily focused on the Armenian economy. These materials encompass charts, [databases](https://github.com/tavad/tvyal_newsletter), videos, articles, [online dashboards](https://www.tvyal.com/projects), economic tools, forecasts, and reports. If you wish to unsubscribe, please let me know, and I will remove your email from the list. Please share your comments as well․**
+
+
+
+
+
+
+
