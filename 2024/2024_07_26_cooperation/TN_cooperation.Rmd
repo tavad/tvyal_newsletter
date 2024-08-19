@@ -228,6 +228,117 @@ Since its inception 14 months ago, our newsletter has grown from 100 to 1,800 su
 
 -----
 
+-----
+
+Եթե հնարավոր է, խնդրում եմ այս նյութը ուղարկել նաև այն մարդկանց, ում այն կարծում եք կարող է հետաքրքրել:
+
+**ԱՅՍ ՀՈԴՎԱԾԻ ՀՂՈՒՄԸ**
+
+***Թավադյան, Աղ․Ա․ (2024)․ SOS ՀՀ ՏՏ․ Վայրիվերում ոլորտում [SOS Armenia IT: Ups and Downs in the Sector]․ Tvyal.com հարթակ [Tvyal.com platform], 19-08-2024․ https://www.tvyal.com/newsletter/2024/2024_08_19***
+
+**Արգելվում է այս հարթակի նյութերը արտատպել առանց հղում կատարելու։**    
+
+<small>\* Այս և մեր բոլոր այլ վերլուծությունների տվյալները վերցված են պաշտոնական աղբյուրներից։ Հաշվարկները ամբողջությամբ հասանելի են github-ում, դրանք կարելի է ստուգել` այցելելով [github-ի](https://github.com/tavad/tvyal_newsletter/blob/main/2024/) մեր էջը, որտեղ տրված են տվյալները, հաշվարկների և գծապատկերների կոդը։</small>
+
+
+-----
+
+# ՀԱՄԱԳՈՐԾԱԿՑՈՒԹՅՈՒՆ
+
+<style>
+.ai-services-banner-tvyal {
+background-color: #0a192f;
+color: #e6f1ff;
+padding: 30px;
+font-family: Arial, sans-serif;
+border-radius: 10px;
+box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+position: relative;
+overflow: hidden;
+min-height: 400px;
+display: flex;
+flex-direction: column;
+justify-content: center;
+}
+.ai-services-banner-tvyal::before {
+content: '';
+position: absolute;
+top: -25%;
+left: -25%;
+right: -25%;
+bottom: -25%;
+background: repeating-radial-gradient(
+circle at 50% 50%,
+rgba(100, 255, 218, 0.1),
+rgba(100, 255, 218, 0.1) 15px,
+transparent 15px,
+transparent 30px
+);
+animation: gaussianWaveTvyal 10s infinite alternate;
+opacity: 0.3;
+z-index: 0;
+}
+@keyframes gaussianWaveTvyal {
+0% {
+transform: scale(1.5) rotate(0deg);
+opacity: 0.2;
+}
+50% {
+transform: scale(2.25) rotate(180deg);
+opacity: 0.5;
+}
+100% {
+transform: scale(1.5) rotate(360deg);
+opacity: 0.2;
+}
+}
+.ai-services-banner-tvyal > * {
+position: relative;
+z-index: 1;
+}
+.ai-services-banner-tvyal h2,
+.ai-services-banner-tvyal h3 {
+margin-bottom: 20px;
+color: #ccd6f6;
+}
+.ai-services-banner-tvyal ul {
+margin-bottom: 30px;
+padding-left: 20px;
+}
+.ai-services-banner-tvyal li {
+margin-bottom: 10px;
+}
+.ai-services-banner-tvyal a {
+color: #64ffda;
+text-decoration: none;
+transition: color 0.3s ease;
+}
+.ai-services-banner-tvyal a:hover {
+color: #ffd700;
+text-decoration: underline;
+}
+</style>
+
+<div class="ai-services-banner-tvyal">
+## [Եթե ուզում եք ձեր տվյլներից օգուտ քաղել AI գործիքներով` ԴԻՄԵՔ ՄԵԶ](mailto:a@tavadyan.com?subject=Let's Put Data to Work!)
+
+### Մենք առաջարկում ենք
+
+- Extensive databases for finding both international and local leads
+- Exclusive reports on the Future of the Armenian Economy
+- Work and browser automation to streamline operations and reduce staffing needs
+- AI models for forecasting growth and optimizing various aspects of your business
+- Advanced dashboarding and BI solutions
+- Algorithmic trading
+
+### [Let's Put Your Data to Work!](mailto:a@tavadyan.com?subject=Let's Put Data to Work!)
+
+### [ՄԻԱՑԵՔ ՄԵՐ ԹԻՄԻՆ](mailto:a@tavadyan.com?subject=Work application)
+</div>
+
+
+-----
+
 ## A Token for Future Cooperation 
 
 As a token of our potential cooperation we are happy to present the interactive plot of Armenia's exchange points. [The charts works on our website](https://www.tvyal.com/newsletter/2024/2024_07_26).
