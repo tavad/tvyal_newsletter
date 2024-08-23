@@ -377,8 +377,12 @@ future_forecast_tbl |>
   
 future_forecast_tbl |> 
   filter(grepl("Domestic p", eng)) |> 
+  select(date, .model_desc, .value, matches("conf")) |> 
   mutate(
-    gdp_growth = (.value / lag(.value, 4) ),
+    across(contains("conf"), ~ifelse(is.na(.x), .value, .x)),
+    gdp_growth = (.value / lag(.value, 4)),
+    gdp_growth_hi = (.conf_hi / lag(.conf_hi, 4)),
+    gdp_growth_lo = (.conf_lo / lag(.conf_lo, 4)),
     date = ymd(date)
   ) |> 
   left_join(
@@ -387,10 +391,13 @@ future_forecast_tbl |>
       transmute(date = yq(date), vol_YoY_pct = vol_YoY_pct / 100),
     by = "date"
   ) |> 
+  mutate(date = date + months(3) - days(1)) |> 
+  filter(date <= ymd("2025-01-01")) |> 
   ggplot(aes(date, gdp_growth, color =  .model_desc)) +
   geom_line() +
-  # geom_ribbon(aes(ymin = .conf_lo, ymax = .conf_hi), alpha = 0.2) +
-  geom_line(aes(date, vol_YoY_pct), color = "blue")
+  geom_ribbon(aes(ymin = gdp_growth_lo, ymax = gdp_growth_hi), alpha = 0.2) +
+  geom_line(aes(date, vol_YoY_pct), color = "blue") +
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y")
   
 future_forecast_tbl |> 
   write_csv("future_gdp_forecast_2.csv")
