@@ -364,7 +364,7 @@ plot_5_it_taxes <-
 
 ```{r plot_1 it growth, include=FALSE}
 
-GDP_quarter <- read_csv("../2024_09_09_GDP_components/GDP_quarter_tidy.csv")
+GDP_quarter <- read_csv("../2024_08_26_GDP_components/GDP_quarter_tidy.csv")
 
 subtitle_text <- "<span style='color:#2f4b7c;'>մլրդ դրամ (ընթացիկ գներով)</span><br><br><span style='color:#F72C3D;'>աճ, նախորդ տարվա համապատասխան եռամսյակի նկատմամբ, %</span>"
 
