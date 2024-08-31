@@ -100,19 +100,20 @@ plot_1_arm_trade_by_regions <-
     color = NULL,
     title = "Հայաստանի արտահանումը Միջին Արևելք ԵԱՏՄ-ից մեծ է",
     subtitle = "ՀՀ արտահանումը ըստ տարածաշրջանների\nմլրդ ԱՄՆ դոլար, տարեկան (տվյալ ամիսը նախորդ տարվա նույն ամսվա համեմատ)",
-    caption = caption_f("Comtrade")
+    caption = caption_f("Armstat")
   )
 ```
 
 
 ```{r plot 2 exports by country, include=FALSE}
 
-country_chosen = c("United Arab Emirates", "Russian Federation", "Hong Kong")
+country_chosen = c("United Arab Emirates", "Russian Federation", "Hong Kong", "China")
 
 plot_2_exports_by_country <- 
   arm_trade_country |> 
   mutate(
     country = ifelse(country %in% country_chosen, country, "The Rest (Other countries)"),
+    country = ifelse(country %in% c("Hong Kong", "China"), "Hong Kong & China", country)
   ) |> 
   bind_rows(
     arm_trade_country |> mutate(country = "Total")
@@ -128,11 +129,11 @@ plot_2_exports_by_country <-
   mutate(
     value_yoy = roll_sumr(value, 12),
     country = factor(
-      country, 
+      country,
       levels = c("Russian Federation", "United Arab Emirates",
-                 "Hong Kong", "Total", "The Rest (Other countries)"),
+                 "Hong Kong & China", "Total", "The Rest (Other countries)"),
       labels = c("Ռուսաստանի Դաշնություն", "Արաբական Միացյալ Էմիրություններ",
-                 "Հոնկոնգ", "Ընդամենը", "Մնացածը (այլ պետություններ)"),
+                 "Հոնկոնգ և Չինաստան", "Ընդամենը", "Մնացածը (այլ պետություններ)"),
     )
   ) |> 
   filter(
@@ -145,9 +146,9 @@ plot_2_exports_by_country <-
   filter(date >= ym("2020-01")) |> 
   ggplot(aes(date, value_yoy / 1e6, color = direction)) +
   geom_line(linewidth = 1.5) +
-  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
   facet_wrap(~country, scales = "free") +
-  # scale_y_continuous(limits = c(0, 4), labels = dollar_format()) +
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+  scale_y_continuous(n.breaks = 6, labels = number_format()) +
   scale_color_manual(
     values = new_palette_colors[c(6,2)],
     labels = c("Արտահանում", "Ներմուծում")
@@ -284,7 +285,7 @@ table_1_exports_by_regions <-
     subtitle = "Տվյալները տրված են առաջին կիսամյակի կտրվածքով"
   ) |> 
   tab_footnote(
-    footnote = caption_f("armstat.am")
+    footnote = caption_f("Armstat")
   )
 
 ```
@@ -498,7 +499,7 @@ plot_2_exports_by_country
 plot_3_exports_forecast
 ```
 
-Երրորդ գծապատկերը ցույց է տալիս ոչ դրական կանխատեսում: Մինչ ընդհանուր արտահանումը թվացյալ սլանում է վեր, թանկարժեք մետաղների և քարերի վերաարտահանման հաշվին (ԱՏԳ ԱԱ 71), այլ բոլոր ապրանքների արտահանման կտրվածքով առկա է անկում: Այս տարբերությունը Հայաստանի ներկայիս տնտեսական պատրանքի իրականությունն է:
+Երրորդ գծապատկերը ցույց է տալիս ոչ դրական կանխատեսում: Մինչ ընդհանուր արտահանումը թվացյալ սլանում է վեր, թանկարժեք մետաղների և քարերի վերաարտահանման հաշվին (ԱՏԳ ԱԱ 71), այլ բոլոր ապրանքների արտահանման կտրվածքով առկա է անկում: Այս տարբերությունը Հայաստանի ներկայիս տնտեսական պատրանքի իրականությունն է: Գծապատկերում կարմիր և կապույտ գծերի միջև մակերեսն արտացոլում է թանկարժեք քարերի և մետաղների մասնաբաժինն ընդհանուր արտահանման մեջ:
 
 Այս ոսկե շահույթի կայունությունը լավագույն դեպքում կասկածելի է: Հայաստանի միջոցով ոսկու վերաարտահանման աճը մեծապես պայմանավորված է աշխարհաքաղաքական հանգամանքներով, մասնավորապես՝ Ռուսաստանի նկատմամբ արևմտյան պատժամիջոցներով: Սա ժամանակավոր երևույթ է և պայմանավորված է համաշխարհային տնտեսական իրողություններով, որոնք արդեն իսկ փոխվում են:
 
