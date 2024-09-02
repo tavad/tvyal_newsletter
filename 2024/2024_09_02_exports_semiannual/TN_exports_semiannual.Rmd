@@ -271,7 +271,7 @@ table_1_exports_by_regions <-
   ) |> 
   text_transform(
     locations = cells_body(columns = matches("pct_growth")),
-    fn = function(x) ifelse(x < 0, paste0("<strong>2", x, "</strong>"), x)
+    fn = function(x) ifelse(x < 0, paste0("<strong>", x, "</strong>"), x)
   ) |> 
   tab_spanner(
     label = "2021",
@@ -446,9 +446,9 @@ plot_4_gold_trade <-
     x = NULL,
     y = NULL,
     fill = NULL,
-    title = "Հայաստանի արտահանման 71%-ը թանկարժեք քարեր և մետաղներն են",
+    title = "Հայաստանի արտահանման 71%-ը թանկարժեք քարեր և մետաղներն են*",
     subtitle = "Թանկարժեք քարերի և մետաղների արտահանում և ներմուծում (ԱՏԳ ԱԱ 71)\nմլրդ դոլար, ամսական",
-    caption = caption_f("Armstat")
+    caption = caption_f("Armstat", suffix_text = "* 2024 թվականի առաջին կիսամյակի դրությամբ")
   ) + 
   theme(
     legend.position = "drop",
