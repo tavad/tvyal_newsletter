@@ -677,7 +677,7 @@ text-decoration: underline;
 </style>
 
 <div class="ai-services-banner-tvyal">
-## [Եթե ուզում եք ձեր տվյլներից օգուտ քաղել AI գործիքներով` ԴԻՄԵՔ ՄԵԶ](mailto:a@tavadyan.com?subject=Let's Put Data to Work!)
+## [Եթե ուզում եք AI գործիքներով ձեր տվյալներից օգուտ քաղել` ԴԻՄԵՔ ՄԵԶ](mailto:a@tavadyan.com?subject=Let's Put Data to Work!)
 
 ### Մենք առաջարկում ենք
 
