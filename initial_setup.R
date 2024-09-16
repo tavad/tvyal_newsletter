@@ -19,11 +19,11 @@ theme_tvyal <- function(base_size = 12, base_family = "sans")
         legend.box = "vertical",
         panel.grid = element_line(colour = NULL),
         panel.grid.major.x = element_line(
-          colour = colors["Medium Gray"], 
+          colour = colors["Medium Gray"],
           linetype = "dotted"
         ),
         panel.grid.major.y = element_line(
-          colour = colors["Medium Gray"], 
+          colour = colors["Medium Gray"],
           linetype = "dotted"
         ),
         panel.grid.minor = element_blank(),
@@ -37,10 +37,10 @@ theme_set(theme_tvyal())
 
 save_last_plot <-
   function(filename, extension = "png", width = 1152, height = 648) {
-    
+
     filename <- str_replace_all(filename, ", ", "_")
     last_plot <- recordPlot()
-    
+
     if (extension == "png") {
       png(paste0(filename, ".", extension), width = width, height = height)
     } else if (extension == "pdf") {
@@ -48,7 +48,7 @@ save_last_plot <-
     } else {
       stop("Unsupported file extension. Use 'png' or 'pdf'.")
     }
-    
+
     replayPlot(last_plot)
     dev.off()
     paste0(filename, ".", extension)
@@ -71,16 +71,16 @@ caption_eng <-  "Author: Aghasi Tavadyan   |   tvyal.com   |   tavadyan.com"
 
 caption_f <- function(source = NULL, language = "arm", suffix_text = NULL){
   caption <- case_when(
-    language == "arm" & is.null(source) ~ caption_arm, 
-    language == "eng" & is.null(source) ~ caption_eng, 
-    language == "arm" & !is.null(source) ~ paste0(caption_arm, "    |    Տվյալների աղբյուր՝ ", source), 
-    language == "eng" & !is.null(source) ~ paste0(caption_eng, "    |    Data Source: ", source), 
+    language == "arm" & is.null(source) ~ caption_arm,
+    language == "eng" & is.null(source) ~ caption_eng,
+    language == "arm" & !is.null(source) ~ paste0(caption_arm, "    |    Տվյալների աղբյուր՝ ", source),
+    language == "eng" & !is.null(source) ~ paste0(caption_eng, "    |    Data Source: ", source),
   )
-  
+
   if (!is.null(suffix_text)) {
     caption = paste0(suffix_text, "\n\n", caption)
   }
-  
+
   return(caption)
 }
 
