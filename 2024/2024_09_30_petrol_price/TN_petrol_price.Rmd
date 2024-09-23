@@ -1,0 +1,756 @@
+---
+title: "Tvyal Newsletter"
+date: "2024-09-23"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(scales)
+library(RcppRoll)
+library(rvest)
+library(countrycode)
+
+# rm(list = ls()); gc()
+
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+
+source("../../initial_setup.R")
+
+```
+
+
+```{r petrol price in the world, include=FALSE}
+petrol_price <- 
+  read_html("https://oilpricez.com/us/usa-gasoline-price") |> 
+  html_elements("table") |> 
+  html_table()
+
+petrol_price[[4]] |> 
+  janitor::clean_names() |> 
+  # bind_rows(
+  #   tibble(country = "Armenia", price_in_usd = as.character(550/406))
+  # ) |> 
+  write_csv("petrol_price_world.csv")
+
+# pull(petrol_price[[6]][1,2], 1)
+
+fuel_price_plot_0 <- 
+  read_csv("petrol_price_world.csv") |> 
+  mutate(
+    iso3c = countrycode(country, origin = 'country.name', destination = 'iso3c'),
+    price_in_usd = parse_number(price_in_usd),
+    price_in_amd = price_in_usd* 399.6983,
+  ) |> 
+  left_join(
+    countrycode::codelist |> transmute(iso3c, country_arm = cldr.name.hy),
+    by = "iso3c"
+  ) |> 
+  mutate(
+    country = fct_reorder(country, price_in_usd, .desc = TRUE),
+    country_arm = fct_reorder(country_arm, price_in_usd, .desc = TRUE),
+    price_amd_text = number(price_in_amd, accuracy = 0.1),
+    type = ifelse(
+      iso3c %in% c("TUR", "GEO", "BLR", "KGZ", "ARM", "UZB", "MDA"),
+      "Նավթամթերք ներմուծող պետություն",
+      "Նավթամթերք արտահանող պետություն"
+    )
+  ) |> 
+  # filter(iso3c %in% c("GEO", "AZE", "RUS", "IRN", "KAZ", "BLR", "KGZ", "USA", "POL", "ARM", "UZB")) |> 
+  filter(iso3c %in% c("TUR", "GEO", "BLR", "KGZ", "ARM", "UZB", "MDA", "AZE", "RUS", "IRN", "KAZ", "USA")) |> 
+  ggplot(aes(price_in_amd, country_arm, fill = type)) +
+  geom_col(alpha = 0.8) +
+  geom_text(aes(x = 40, label = price_amd_text), color = "white") +
+  scale_x_continuous(breaks = seq(0,600,100)) +
+  scale_fill_manual(values = new_palette_colors[c(3,5)]) +
+  labs(
+    x = NULL,
+    y = NULL,
+    fill = NULL,
+    title = "Բենզինի գները Հայաստանում և այլ պետություններում",
+    subtitle = "Բենզին ԱԻ 95, ՀՀ դրամ 1 լիտրի համար, 2024 մարտի 18 դրությամբ.",
+    caption = paste0(caption_arm, "   |   տվյալների աղբյուր՝ oilpricez.com")
+  ) +
+  theme(
+    panel.grid.major.x = element_blank(),
+    panel.grid.major.y = element_blank(),
+    axis.text.x = element_blank()
+  )
+
+# save_last_plot("petrol_price_in_the_region")
+```
+
+
+```{r fuel price in Armenia, include=FALSE}
+fuel_price <- read_csv("fuel_price_2024_03_20.csv")
+
+Sys.setlocale("LC_TIME", "hy_AM.UTF-8")
+
+petrol_name_dict <- 
+  tibble(
+    name_arm = c("Բենզին ԱԻ 92", "Բենզին ԱԻ 95", "Դիզելային վառելիք"),
+    name = c( "petrol_regular", "petrol_premium", "disel")
+  )
+
+
+fuel_price_plot_1 <- 
+  fuel_price |> 
+  pivot_longer(-date) |> 
+  filter(name != "liquefied_gas_price") |> 
+  left_join(petrol_name_dict, join_by(name)) |> 
+  mutate(
+    name = str_replace_all(name, "_", " "),
+    name = str_to_title(name)
+  ) |> 
+  ggplot(aes(date, value, color = name_arm)) +
+  geom_line(linewidth = 1.5) +
+  scale_x_date(
+    date_breaks = "3 month", date_labels = "%b-%y", 
+    # limits = c(as.Date("2021-12-31"), as.Date("2023-12-01"))
+  ) +
+  scale_y_continuous(breaks = seq(0, 1000, 50)) +
+  scale_color_manual(values = new_palette_colors[c(2,6,8)]) +
+  labs(
+    x = NULL,
+    y = NULL,
+    color = NULL,
+    title = "Բենզինի և դիզվառելիքի գինը Հայաստանում",
+    subtitle = "ՀՀ դրամ 1 լիտրի համար",
+    caption = paste0(caption_arm)
+  )
+
+```
+
+
+
+```{r Petrol Imports, include=FALSE}
+usd_amd_monthly <- 
+  read_csv("USD_AMD_Historical_Data.csv")
+
+petrol_dict <- 
+  tibble(
+    commodity_code = c(271012, 271019, 271113, 271121),
+    name_short_eng = c("Petrol (light petroleum)", "Diesel (non-light petroleum)",
+                       "Butanes", "Natural gas (in gaseous state)"),
+    name_short_arm = c("Բենզին (թեթև նավթամերք)", "Դիզել (ոչ թեթև նավթամերք)",
+                       "Հեղուկ գազ (բութան)", "բնական գազ"),
+    density = c(0.737, 0.885, NA, NA) # kg/m3
+  )
+
+fuil_imports <- 
+  read_csv("fuel_imports.csv") |> 
+  mutate(year = year(period)) |> 
+  left_join(petrol_dict, join_by(commodity_code))
+
+
+
+plot_petrolium_imports_1 <- 
+  fuil_imports |> 
+  group_by(period, commodity_code, name_short_eng, name_short_arm) |> 
+  summarise(
+    trade_value_us = sum(trade_value_us, na.rm = TRUE),
+    netweight_kg = sum(netweight_kg, na.rm = TRUE),
+    .groups = "drop"
+  ) |> 
+  arrange(commodity_code, period) |> 
+  group_by(commodity_code) |> 
+  mutate(
+    netweight_kg = roll_sumr(netweight_kg, 12)
+  ) |> 
+  na.omit()
+
+
+fuel_price_plot_4 <- 
+  plot_petrolium_imports_1 |>
+  mutate(period = period + months(1)) |> 
+  filter(commodity_code %in% c(271012, 271019)) |> 
+  mutate(
+    netweight_kg = ifelse(commodity_code == 271019, -netweight_kg, netweight_kg),
+    period = year(period) + (month(period) - 1) / 12,
+    name_short_arm = fct_rev(name_short_arm)
+  ) |>
+  ggplot() +
+  geom_area(
+    aes(period, netweight_kg / 1e6, fill = name_short_arm), 
+    alpha = 0.8
+  ) +
+  geom_text(
+    data = tibble(
+      x = c(2023, 2023),
+      y = c(-135, 110),
+      label = c("Դիզել (ոչ թեթև նավթամերք)", "Բենզին (թեթև նավթամերք)")
+    ),
+    mapping = aes(x, y, label = label)
+  ) +
+  scale_x_reverse(breaks = 2011:2024) +
+  scale_y_continuous(
+    breaks = seq(-600, 600, 100),
+    labels = function(x) ifelse(x < 0, abs(x), x)
+  ) +
+  scale_fill_manual(values = new_palette_colors[c(3,5)]) +
+  coord_flip() +
+  labs(
+    x = NULL,
+    y = NULL,
+    fill = NULL,
+    title = "Բենզինի և դիզվառելիքի տարեկան ներմուծումը Հայաստան",
+    subtitle = "Մլն կիլոգրամ, 12 ամսյա կտրվածքով",
+    caption = paste0(caption_arm, "   |    տվյալների աղբյուր՝ Comtrade")
+  ) +
+  theme(
+    legend.position = "none"
+  )
+
+# save_last_plot("The annual imports of Petrolium fuel to Armenia.png")
+```
+
+
+```{r import price of petrol, include=FALSE}
+petrol_imports_price <- 
+  fuil_imports |> 
+  filter(
+    commodity_code %in% c(271012, 271019),
+    year >= 2014,
+  ) |> 
+  left_join(usd_amd_monthly, by = join_by(period)) |> 
+  group_by(period, usd_amd, commodity_code, name_short_eng, name_short_arm) |> 
+  summarise(
+    trade_value_us = sum(trade_value_us, na.rm = TRUE),
+    netweight_kg = sum(netweight_kg, na.rm = TRUE),
+    density = mean(density),
+    .groups = "drop"
+  ) |>
+  mutate(
+    liter_price = trade_value_us / netweight_kg / density,
+    liter_price = ifelse(liter_price == Inf, NA, liter_price),
+    liter_price = liter_price * usd_amd,
+    period = period + months(1) - days(1)
+  ) |> 
+  filter(liter_price <= 10 * usd_amd)
+
+fuel_price_plot_5 <- 
+  petrol_imports_price |> 
+  ggplot(aes(period, liter_price, color = name_short_arm)) +
+  geom_line(linewidth = 1.5) +
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+  # scale_y_continuous(breaks = seq(0.4, 1.6, 0.2), labels = dollar_format()) +
+  scale_color_manual(values = new_palette_colors[c(3,5)]) +
+  labs(
+    x = NULL,
+    y = NULL,
+    color = NULL,
+    title = "Բենզինի և դիզվառելիքի ներմուծման գինը Հայաստանում",
+    subtitle = "ՀՀ դրամ, 1 լիտրի համար",
+    caption = "Ներմուծման գինը հաշվարկվում է հետևյալ բանաձևով`\n(ներմուծման արժեք, ԱՄՆ դոլար) / (զուտ քաշ, կգ) / (խտություն, լ/կգ) * USD_AMD փոխարժեք\nԲենզինի խտություն = 0,737, Դիզելի խտություն = 0,885\n\nՀեղինակ` Աղասի Թավադյան   |   tvyal.com   |   tavadyan.com    |    տվյալների աղբյուր՝ Comtrade"
+  )
+
+
+# save_last_plot("Import Price of Pertol and Diesel Fuils into Armenia")
+```
+
+
+
+```{r petrol import regional analysys, include=FALSE}
+# What's the price and quantity from different regions?
+
+fuel_price_plot_6 <- 
+  fuil_imports |> 
+  rename(iso3c = partner_iso) |> 
+  left_join(
+    countrycode::codelist |> transmute(iso3c, partner_arm = cldr.name.hy),
+    by = "iso3c"
+  ) |> 
+  filter(
+    commodity_code %in% c(271012, 271019),
+    year >= 2014
+  ) |> 
+  mutate(
+    partner = fct_lump_n(partner, 7, w = trade_value_us, 
+                         other_level = "Other countris"),
+    partner_arm = fct_lump_n(partner_arm, 7, w = trade_value_us, 
+                             other_level = "Այլ պետություններ"),
+    period = period + months(1) - days(1)
+  ) |> 
+  group_by(period, commodity_code, name_short_eng, name_short_arm, partner, partner_arm) |> 
+  summarise(
+    trade_value_us = sum(trade_value_us, na.rm = TRUE),
+    netweight_kg = sum(netweight_kg, na.rm = TRUE),
+    density = mean(density),
+    .groups = "drop"
+  ) |> 
+  arrange(commodity_code, partner, partner_arm, period) |> 
+  group_by(commodity_code, partner, partner_arm) |> 
+  mutate( 
+    trade_value_us = roll_sumr(trade_value_us, 12),
+    netweight_kg = roll_sumr(netweight_kg, 12)
+  ) |> 
+  na.omit() |> 
+  ggplot(aes(period, netweight_kg / 1e6, fill = partner_arm)) +
+  geom_area(alpha = 0.8) +
+  facet_wrap(~name_short_arm) +
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+  scale_y_continuous(labels = number_format(accuracy = 1)) +
+  scale_fill_manual(values = colfunc3(7)) +
+  labs(
+    x = NULL,
+    y = NULL,
+    fill = NULL,
+    title = "Նավթամթերքի տարեկան ներմուծումը Հայաստան",
+    subtitle = "ըստ երկրների, մլն կիլոգրամ",
+    caption = paste0(caption_arm, "   |   տվյալների աղբյուր՝ Comtrade")
+  )
+
+# save_last_plot("The Annual Imports of Petrolium Fuel to Armenia by country")
+
+fuel_price_plot_7 <- 
+  fuil_imports |> 
+  filter(
+    commodity_code %in% c(271012, 271019),
+    year >= 2014,
+  ) |>
+  mutate(partner = fct_lump_n(partner, 2, w = trade_value_us, 
+                              other_level = "Other countris")) |> 
+  group_by(period, commodity_code, name_short_eng, name_short_arm, partner) |> 
+  summarise(
+    trade_value_us = sum(trade_value_us, na.rm = TRUE),
+    netweight_kg = sum(netweight_kg, na.rm = TRUE),
+    density = mean(density),
+    .groups = "drop"
+  ) |> 
+  mutate(
+    liter_price = trade_value_us / netweight_kg / density,
+    liter_price = ifelse(liter_price == Inf, NA, liter_price),
+  ) |>
+  filter(partner!= "Other countris") |> 
+  ggplot(aes(period, liter_price, color = partner)) +
+  geom_line(linewidth = 1.5) +
+  facet_wrap(~name_short_eng, scales = "free_y") +
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+  scale_y_continuous(labels = dollar_format()) +
+  scale_color_brewer(type = "qual", palette = 3) |> 
+  labs(
+    x = NULL,
+    y = NULL,
+    color = NULL,
+    title = "Petrol and Diesel import price fom Russia and Iran",
+    subtitle = "Dollars for a liter",
+    caption = "The import price is calculated using the formula: (trade value in USD) / (nerweight in kg) / (dencity l/kg)\nPetrol density = 0.737, Diesel density = 0.885\n\nAuthor: Aghasi Tavadyan    |    tvyal.com    |    tavadyan.com    |    Data source: Comtrade"
+  )
+
+```
+
+
+```{r butane import price, include=FALSE}
+# fuil_imports |>
+#   filter(
+#     commodity_code == 271113,
+#     year >= 2022
+#   ) |>
+#   left_join(usd_amd_monthly, by = join_by(period)) |>
+#   group_by(period, usd_amd, commodity_code, name_short_eng, name_short_arm) |>
+#   summarise(
+#     trade_value_us = sum(trade_value_us, na.rm = TRUE),
+#     netweight_kg = sum(netweight_kg, na.rm = TRUE),
+#     # density = mean(density),
+#     .groups = "drop"
+#   ) |>
+#   mutate(
+#     liter_price = trade_value_us / netweight_kg * 540
+#     #  I do not know what's the density here, it seems it should be around 540 at 50 °C
+#     # see for more info the link below
+#     # https://www.engineeringtoolbox.com/butane-density-specific-weight-temperature-pressure-d_2080.html
+#     # / density,
+#   #   liter_price = ifelse(liter_price == Inf, NA, liter_price),
+#   #   liter_price = liter_price * usd_amd
+#   ) |>
+#   # filter(liter_price <= 10 * usd_amd)
+#   rename(Date = period) |>
+#   select(Date, name_short_eng, liter_price) |>
+#   transmute(Date, value = liter_price, market = "import price") |>
+#   filter(Date >= as.Date("2018-12-01")) |>
+#   bind_rows(
+#     fuel_price |>
+#       transmute(Date = date, value = liquefied_gas_price, market = "1in am data")
+#   ) |>
+#   ggplot(aes(Date, value, color = market)) +
+#   geom_line()
+
+
+```
+
+
+```{r, include=FALSE}
+# I need the new data for petrol price in Armenia
+
+
+fuel_price_world <- read_csv("~/R/server_projects/rate_am/rate_am_scrape_new/oilpricez/fuel_price_world.csv")
+
+usd_amd <- 
+  read_csv("~/R/Gcapatker/2024_03_24_CBA_FX/CBA_FX_data_cleaned.csv") |> 
+  filter(
+    FX_ISO == "USD",
+    year >= 2024
+  ) |> 
+  transmute(date, usd_amd = AMD)
+
+fuel_price_world |> 
+  filter(country == "Armenia") |> 
+  select(-date) |> 
+  rename(date = date_updated) |> 
+  unique() |> 
+  left_join(usd_amd) |> 
+  mutate(price_in_amd = price_in_usd * usd_amd) |> view()
+  ggplot(aes(date, price_in_amd, color = type)) +
+  geom_line()
+
+
+530; 490 untill "2024-06-20"
+520; 480
+500; 470 untill "2024-08-19"
+510; 
+
+
+```
+
+
+```{r petrol import price, include=FALSE}
+fuel_inflation <- 
+  read_csv("fuel_inflation_in_arm.csv")
+
+fuel_inflation$date |> max()
+
+petrol_imports_price_long <- 
+  petrol_imports_price |> 
+  rename(Date = period) |> 
+  select(Date, name_short_eng, liter_price) |> 
+  pivot_wider(names_from = name_short_eng, values_from = liter_price) |> 
+  filter(Date >= as.Date("2016-12-01")) |> 
+  pivot_longer(-Date) |> 
+  # mutate(market = "Import Price")
+  mutate(market = "Ներմուծման գին")
+
+last_inflation_month <- 
+  fuel_inflation |> 
+  na.omit() |> 
+  filter(date == max(date)) |> 
+  pull(date) |> 
+  unique()
+  
+fuel_price_month <- 
+  fuel_price |> 
+  mutate(date = ym(paste(year(date), month(date)))) |> 
+  group_by(date) |> 
+  slice_tail(n = 1) |> 
+  ungroup()
+
+
+last_month_petrol_price <- 
+  fuel_price_month |> 
+  filter(date == last_inflation_month)
+
+fuel_price_plot_8 <- 
+  fuel_inflation |> 
+  filter(code != "07.2.2.4") |> 
+  arrange(code, date) |> 
+  group_by(code) |> 
+  mutate(
+    cpi_cumprod = cumprod(cpi_month)
+  ) |> 
+  select(date, cpi_cumprod, code) |> 
+  pivot_wider(names_from = code, values_from = cpi_cumprod) |> 
+  set_names(c("Date", "burn", "disel", "petrol", "other")) |> 
+  mutate(
+    across(-Date, ~.x / last(.x))
+  ) |> 
+  select(Date, disel, petrol) |>
+  mutate(
+    disel = disel * last_month_petrol_price$disel,
+    petrol_premium = petrol * last_month_petrol_price$petrol_premium,
+    # petrol_regular = petrol * last_month_petrol_price$petrol_regular
+  ) |> 
+  select(-petrol) |>
+  pivot_longer(-Date) |> 
+  mutate(
+    name = str_replace(name, "_", " "),
+    name = str_to_title(name),
+    name = paste(name, "(Market Price)"),
+    # market = "Market price, (data from CPI)"
+    market = "Շուկայական գին (սպառողական գների ինդեքսի հիման վրա)"
+  ) |> 
+  bind_rows(petrol_imports_price_long) |> 
+  mutate(
+    type = ifelse(!grepl("disel|diesel", tolower(name)), "Բենզին (ԱԻ 95)", "Դիզվառելիք"),
+    Date = Date + months(1) - days(1)
+  ) |> 
+  ggplot(aes(Date, value, color = market, group = name)) +
+  geom_line(size = 1.5) +
+  facet_wrap(~type) +
+  scale_color_manual(values = new_palette_colors[c(3,6)]) +
+  labs(
+    x = NULL,
+    y = NULL,
+    color = NULL,
+    title = "Բենզինի ու դիզվառելիքի ներմուծման և ներքին շուկայի գների համեմատություն",
+    subtitle = "ՀՀ դրամ",
+    caption = caption_arm
+  )
+
+# save_last_plot("Petroleum Imports and the Domestic Price")
+  
+
+```
+
+
+***English summary below.***
+
+Հարգելի գործընկեր,
+
+Հուսով եմ՝ լավ եք: 
+Ներկայացնում եմ այս շաբաթվա վերլուծությունները և աշխատանքները.
+
+
+## [⛽🚗🏷️ Բենզինի գինը թա՞փ է հավաքում](https://www.tvyal.com/newsletter/2024/2024_09_23)
+
+### Ինչպե՞ս է ձևավորվում բենզինի գինը շուկայում
+
+Նախ ուսումնասիրենք բենզինի գինը տարածաշրջանի այն երկրներում, որոնք հիմնականում համարվում են նավթամթերք ներմուծող պետություն։ Նշեմ, որ Հայաստանում համեմատած մեր հարևանների և ԵԱՏՄ երկրների բենզինի գինը ամենաբարձրն է։ Սակայն սրա պատճառները հիմնականում տրանսպորտային ծախսերն են և այն հանգամանքը, որ Հայաստանը նավթամթերք արտադրող պետություն չէ։ Այս պահին, ՀՀ դրամով հաշվարկված, Վրաստանում ԱԻ95, պրեմիում դասի բենզինի գինը կազմում է մոտ 465 դրամ, իսկ Հայաստանում՝ 530 դրամ։ Այս նյութում կուսումնասիրենք, թե իրականում ինչ ազդեցություն ունեն բենզին ներկրողները բենզինի գնագոյացման վրա։
+
+     
+**Գծապատկեր 1.** 
+
+```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
+fuel_price_plot_0
+```
+
+Գծապատկեր 2-ում ներկայացված է բենզինի ընդհանուր քանակության ներմուծումը միլիոն կիլոգրամով: Ինչպես երևում է գծապատկերից նավթամթերքի ներմուծման ծավալները 2010-ից 2019թ. սկիզբը եղել են գրեթե անփոփոխ: 2019 թվականից սկսած գրանցվել է նավթամթերիքի ներմուծման շարունակական և կայուն աճ: 2017թ. ներմուծվել է համապատասխանաբար 200 և 140 մլն կիլոգրամ դիզվառելիք և բենզին, իսկ 2023թ արդեն 300 և 225 հազար կիլոգրամ: Ընդհանուր նավթամթերի ներկրումը վերջին 5 տարիների ընթացքում աճել է 1.5 անգամ։
+Հուշագրավ է նաև, որ 2023 թվականի ընթացքում նավթամթերքի ներմուծման քանակական աճ գրեթե չի գրանցվել և այդ տարվա կեսերից աճը բացասական միտում ունի։
+Նավթամթերքը էներգիայի կարևոր աղբյուր է, որն ապահովում է տրանսպորտային և արդյունաբերական գործունեությունը: Երբ երկիրն ավելի շատ նավթամթերք է ներկրում, դա ընդհանուր առմամբ նշանակում է, որ էներգիայի ներքին պահանջարկը մեծանում է։ Սա կարող է լինել աճող տնտեսության ցուցանիշ, որը վկայում է սպառողական ծախսերի, ձեռնարկատիրական գործունեության և արդյունաբերական արտադրության աճի մասին: 
+
+**Գծապատկեր 2.** 
+
+```{r, echo=FALSE, fig.width = 12, fig.height = 8}
+fuel_price_plot_4
+```
+
+
+Գծապատկեր 3-ում ներկայացված է բենզինի գնի փոփոխությունը: Բենզինի գինը մինչև 2023 թվականին գրանցված աճը, ամենաբարձրն է եղել 2022 թվականի ապրիլին, երբ 1 լիտր պրեմիում դասի բենզինը արժեր 540 դրամ: 2022թ. վերջին պրեմիում դասի բենզինի գինը նվազեց մինչև 350 դրամ 1 լիտրի համար, որը գրանցվել էր 2023 թվականի փետրվարին: 2023 թվականին շարունակաբար գրանցվեց վառելիքի գնի բարձրացում: Թե ինչո՞վ էր պայմանավորված այդ բարձրացումը կքննարկենք հաջորդիվ: 2024 թվականից բենզինի գինը սկսեց նվազել, [ինչպես կանխատեսել էինք 2023 թվականի նոյեմբերին, երբ գրանցվել էր այդ տարվա ամենաբարձր բենզինի գինը](https://www.tvyal.com/newsletter/2023_11_27)։ Սակայն նավթամթերքի համաշխարհային շուկայում փոփոխությունները թույլ չտվեցին, որ բենզինի գինը ներքին շուկայում նվազի մինչև կանխատեսված մակարդակը և այս պահին մենք գտնվում ենք պլատոյի վրա։ Սակայն նավթամթերքի գնի համաշխարհային փոփոխությունը թույլ չտվեց, որ ներքին շուկայում բենզինը նվազի կանխատեսված մակարդակին և ներկայումս գտնվում է հարթության վրա։
+
+
+**Գծապատկեր 3.**
+
+```{r, echo=FALSE, fig.width = 12, fig.height = 8}
+fuel_price_plot_1
+```
+
+
+Ստորև ներկայացված է բենզինի և դիզելային վառելիքի ներմուծման գինը: Այն հաշվարկվել է բաժանելով տվյալ ամսվա ներմուծման արժեքային և բնեղեն տվյալները, որից ստացվել է բենզինի գնի կիլոգրամի ներմուծման արժեքը ԱՄՆ դոլարով: Ստացված ցուցանիշը բաժանվել է բենզինի և դիզելի խտության վրա և բազմապատկվել տվյալ ամսվա միջին ԱՄՆ դոլար դրամ փոխարժեքով: Իհարկե ստացված ցուցանիշը ունի որոշակի ճշգրտության խնդիր, քանի որ նավթամթերքի խտությունը ըստ ջերմաստիճանի կարող է փոխվել ինչպես նաև պետք է հաշվի առնել դոլարի վաճառքի գինը ներքին շուկայում, այլ ոչ թե միջին փոխարժեքը։ Սակայն այս ցուցանիշի դինամիկան հստակ պատկերացում կարող է տալ, թե ինչքանով է տարբերվում նավթամթերքի գինը սահմանին, որը ձեռք են բերում մեր տնտեսվարողները։ Բենզինի և դիզվառելիքի սահմանին գնված գինն է, որ ձևավորում է բենզինի գինը ներքին շուկայում։
+
+
+**Գծապատկեր 4.** 
+
+```{r, echo=FALSE, fig.width = 12, fig.height = 8}
+fuel_price_plot_5
+```
+
+Դիտարկենք նաև նավթամթերքի ներմուծումը ըստ պետությունների։ Դիզելային վառելիքի 76.6 տոկոսը ներմուծվում է Ռուսաստանից, 11.9 տոկոսը Իրանից: Հետաքրքիրն այն է, որ ճիշտ է Իրանի ներքին շուկայում բենզինի լիտրը շատ ցածր գին ունի, այն Հայաստան ներմուծվում է գրեթե նույն գնով, ինչ Ռուսաստանից: Սա կարող է քաղաքական պատճառներ ունենալ։ Ռուսաստանից եկող նավթամթերքի գինը թանկ է, քանի որ բարձր են տրանսպորտային ծախսերը, իսկ Իրանի հետ մենք ունենք ուղիղ սահման: Նշենք նաև, որ Վրաստանը նույնպես իր բենզինի ներմուծուման զգալի մասը իրականացնում է Ռուսատանից։
+
+
+**Գծապատկեր 5.**
+
+```{r, echo=FALSE, fig.width = 12, fig.height = 8}
+fuel_price_plot_6
+```
+
+Վերջին գծապատկերում ներկայացված է բենզինի ներմուծման գնի և շուկայական գնի դինամիկան դիզելային վեռելիքի և բենզինի համար: Ինչպես երևում է ներմուծման գինը և շուկայական գինը ունեն կախվածության մեծ աստիճան: Այսինքն Հայաստանի ներքին շուկան բավականին մրցունակ է և չի կարող թելադրել ներքին գինը։ Այն գինը, որով սահմանին տնտեսվարողը գնում է նավթամթերքը համեմատելի է այն գնին, ինչ վճարում է սովորական քաղաքացուն:
+
+Այստեղ ներքին շուկայի գինը հաշվարկվել է ըստ սպառողական գների ինդեքսի տվյալների բազայի, որը բազմապատկվել է 2023թ․ հոկտեմբերի վերջին գրանցված ներքին շուկայի նավթամթերքի գներով։ Գծապատկերում ներկայացված երկու ցուցանիշն էլ՝ գինը սահամանին և ներքին շուկայում, ունեն սխալի աստիճան։ Սա է պատճառը, որ որոշ դեպքերում բենզինի գինը ներքին շուկայում ավելի ցածր է, քան սահմանին։ Անկախ դրանից գծապատկերը հստակ ցույց է տալիս, որ նավթամթերքի գինը սահմանին ձևավորում է գինը ներքին շուկայում։ Սակայն չի բացառվում, որ բենզին ներկրողը նվազեցնում է բենզինի խտությունը, ինչից էլ պայմանավորված է այն հանգամանքը, որ որոշ ամիսների ընթացքում բենզինի գինը սահմանին ավելի բարձր է, քան ներքին շուկայում։ Նորից նշենք, որ տվյալների մեջ հնարավոր է որոշակի սխալ, և վերջին պնդումը կարող է չհամապատասխանել իրականությանը և պահանջում է լաբորատոր հետազոտություն։
+
+Շուկան մրցունակ է և արագ արձագանքում է սահմանին բենզինի գների փոփոխությանը: Բենզինի գինը կարգավորելու և այն իջեցնելու համար առաջին հերթին այն պիտի կարգավորվի սահմանին: Հայաստանը գտնվում է ԵԱՏՄ ընդհանուր շուկայում և ըստ ԵԱՏՄ համաձայնագրի պետք է գործի ընդհանուր էներգառեսուրսների շուկա: Բենզինի գնի համեմատաբար բարձր լինելը հիմնականում պայմանավորված է տրանսպորտային ծախսերով: Հնարավոր է բենզինի ներմուծումը դիվերսիֆիկացնել և այն ներմուծել Իրանից, որտեղից տրանսպորտային ծախսերը ավելի քիչ կլինեն, սակայն սա արդեն քաղաքատնտեսական և նոր ենթակառուցվածքների ձևավովորման հարց է։
+
+**Գծապատկեր 6.** 
+
+```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
+fuel_price_plot_8
+```
+
+
+
+-----
+
+-----
+
+Եթե հնարավոր է, խնդրում եմ այս նյութը ուղարկել նաև այն մարդկանց, ում այն կարծում եք կարող է հետաքրքրել:
+
+**ԱՅՍ ՀՈԴՎԱԾԻ ՀՂՈՒՄԸ**
+
+***Թավադյան, Աղ․Ա․ (2024)․ էլեկտրիկ Հայաստան․ Ցանցի խոցելիությունից մինչև արևային հեռանկարներ [Electric Armenia: From Grid Vulnerability to Solar Prospects]․ Tvyal.com հարթակ [Tvyal.com platform], 23-09-2024․ https://www.tvyal.com/newsletter/2024/2024_09_23***
+
+**Արգելվում է այս հարթակի նյութերը արտատպել առանց հղում կատարելու։**    
+
+\* Այս վերլուծության բոլոր տվյալները վերցված են պաշտոնական նաև աղբյուրներից, մասնավորապես՝ աշխատավարձի, աշխատողների թվաքանակի և կազմակերպությունների վառելիքի թանկացման ամսական տվյալների բազան ըստ [ՍԳԻ սկսած 2017թ․](https://www.armstat.am/am/?nid=82&id=2611), վառելիքի ներմուծման ամսական տվյալների բազան ըստ 6-նիշ արտաքին տնտեսական գործունեության ծածկագրերի և պետությունների։ Ինչպես նաև բենզինի և դիզելային վառելիքի գնի օրական տվյալների նեքին աղբյուր։ Հաշվարկները ամբողջությամբ հասանելի են github-ում, դրանք կարելի է ստուգել այցելելով [github-ի](https://github.com/tavad/tvyal_newsletter/blob/main/2024/) մեր էջը, որտեղ տրված են տվյալները, հաշվարկների և գծապատկերների կոդը։
+
+
+-----
+
+# ՀԱՄԱԳՈՐԾԱԿՑՈՒԹՅՈՒՆ
+
+<style>
+.ai-services-banner-tvyal {
+background-color: #0a192f;
+color: #e6f1ff;
+padding: 30px;
+font-family: Arial, sans-serif;
+border-radius: 10px;
+box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+position: relative;
+overflow: hidden;
+min-height: 400px;
+display: flex;
+flex-direction: column;
+justify-content: center;
+}
+.ai-services-banner-tvyal::before {
+content: '';
+position: absolute;
+top: -25%;
+left: -25%;
+right: -25%;
+bottom: -25%;
+background: repeating-radial-gradient(
+circle at 50% 50%,
+rgba(100, 255, 218, 0.1),
+rgba(100, 255, 218, 0.1) 15px,
+transparent 15px,
+transparent 30px
+);
+animation: gaussianWaveTvyal 10s infinite alternate;
+opacity: 0.3;
+z-index: 0;
+}
+@keyframes gaussianWaveTvyal {
+0% {
+transform: scale(1.5) rotate(0deg);
+opacity: 0.2;
+}
+50% {
+transform: scale(2.25) rotate(180deg);
+opacity: 0.5;
+}
+100% {
+transform: scale(1.5) rotate(360deg);
+opacity: 0.2;
+}
+}
+.ai-services-banner-tvyal > * {
+position: relative;
+z-index: 1;
+}
+.ai-services-banner-tvyal h2,
+.ai-services-banner-tvyal h3 {
+margin-bottom: 20px;
+color: #ccd6f6;
+}
+.ai-services-banner-tvyal ul {
+margin-bottom: 30px;
+padding-left: 20px;
+}
+.ai-services-banner-tvyal li {
+margin-bottom: 10px;
+}
+.ai-services-banner-tvyal a {
+color: #64ffda;
+text-decoration: none;
+transition: color 0.3s ease;
+}
+.ai-services-banner-tvyal a:hover {
+color: #ffd700;
+text-decoration: underline;
+}
+</style>
+
+<div class="ai-services-banner-tvyal">
+## [Եթե ուզում եք AI գործիքներով ձեր տվյալներից օգուտ քաղել` ԴԻՄԵՔ ՄԵԶ](mailto:a@tavadyan.com?subject=Let's Put Data to Work!)
+
+### Մենք առաջարկում ենք
+
+- Extensive databases for finding both international and local leads
+- Exclusive reports on the Future of the Armenian Economy
+- Work and browser automation to streamline operations and reduce staffing needs
+- AI models for forecasting growth and optimizing various aspects of your business
+- Advanced dashboarding and BI solutions
+- Algorithmic trading
+
+### [Let's Put Your Data to Work!](mailto:a@tavadyan.com?subject=Let's Put Data to Work!)
+
+### [ՄԻԱՑԵՔ ՄԵՐ ԹԻՄԻՆ](mailto:a@tavadyan.com?subject=Work application)
+</div>
+
+
+
+-----
+
+
+
+## ԶԼՄ հաղորդագրություն
+
+
+[Դիտեք 1in.am լրատվամիջոցին տված իմ վերջին հարցազրույցը, եթե ուզում եք իմանալ տնտեսության իրական վիճակի մասին](https://youtu.be/WMymScFP0hc&t=565s)
+
+📺  Ծուղակի մեջ ենք. դրամի արժեզրկումը կմեծացնի պետական պարտքը. Աղասի Թավադյան 📺
+
+<a href="https://youtu.be/WMymScFP0hc&t=565s">
+  <img src="https://i3.ytimg.com/vi/WMymScFP0hc/hqdefault.jpg" alt="YouTube Video" style="width:60%;">
+</a>
+
+
+<!-- Նաև կարդացեք նոր հոդվածը JAM News-ում՝ Հայաստանի ՏՏ ոլորտի իրավիճակի մասին, որը պարունակում է նաև իմ մեկանաբանությունը։ -->
+<!-- [Աշխատողները պակասել են, խոշոր հարկատուները՝ ավելացել․ իրավիճակը Հայաստանի ՏՏ ոլորտում](https://jam-news.net/am/%D5%AB%D6%80%D5%A1%D5%BE%D5%AB%D5%B3%D5%A1%D5%AF%D5%A8-%D5%B0%D5%A1%D5%B5%D5%A1%D5%BD%D5%BF%D5%A1%D5%B6%D5%AB-%D5%BF%D5%BF-%D5%B8%D5%AC%D5%B8%D6%80%D5%BF%D5%B8%D6%82%D5%B4%E2%80%A4-%D5%BE%D5%A5%D6%80/) -->
+
+
+
+## English Summary
+
+### ⛽🚗🏷️ Are Gasoline Prices Revving Up?
+
+**How is the price of gasoline formed in the market?**
+
+This week's newsletter delves into the factors influencing the recent surge in gasoline prices in Armenia. It analyzes various data sources, including daily petrol and diesel price data, monthly fuel price databases, and fuel import statistics. Highlighting Armenia's position as a significant gasoline-importing country, the analysis explores the impact of transportation costs and Armenia's non-oil-producing status on fuel prices. It notes the steady increase in petroleum product imports since 2019 and discusses the correlation between gasoline prices, import volumes, and domestic demand for energy. The newsletter emphasizes the competitive nature of Armenia's domestic oil market and suggests that regulating prices at the border is crucial for effectively managing and lowering gasoline prices in the country. The potential to diversify gasoline imports from Iran as a means of reducing transportation costs is also explored as a possible solution. The comprehensive data visualizations accompanying the analysis provide a detailed overview of the key trends and dynamics driving gasoline prices in Armenia.
+
+
+
+---
+
+Այս վերլուծությունը առկա է նաև [մեր կայքէջում](https://www.tvyal.com/newsletter/2024/2024_09_23), այս վերլուծության կոդը և տվյալները դրված են նաև [Github-ում](https://github.com/tavad/tvyal_newsletter)։       
+
+---                  
+
+Եթե հնարավոր է, խնդրում եմ այս նյութը ուղարկել նաև այն մարդկանց, ում այն կարծում եք կարող է հետաքրքրել:
+
+Սպասեք հաջորդ հաղորդագրությանը հաջորդ ուրբաթ օրը:      
+
+
+Հարգանքներով,            
+Աղասի Թավադյան         
+23.09.2024          
+[tvyal.com](https://www.tvyal.com/)      
+[tavadyan.com](https://www.tavadyan.com/)
+
+---
+
+[Was this email forwarded to you? Subscribe here.](https://www.tvyal.com/subscribe)
+
+[Բաժանորդագրվեք](https://www.tvyal.com/subscribe)
+
+       
+---              
+               
+
+
+####### **Ուշադրություն. Ձեր էլ.փոստը մեյլլիսթի մեջ է, որի միջոցով ես կիսվում եմ շաբաթական նյութեր, որոնք հիմնականում ներկայացնում են Հայաստանի տնտեսությունը: Նյութերը ներառում են գծապատկերներ, [տվյալների բազաներ](https://github.com/tavad/tvyal_newsletter), տեսանյութեր, հոդվածներ, [առցանց վահանակներ](https://www.tvyal.com/projects), տնտեսական գործիքներ, կանխատեսումներ և հաշվետվություններ: Եթե ցանկանում եք չեղարկել բաժանորդագրությունը, խնդրում եմ տեղեկացրեք ինձ, և ես կհեռացնեմ ձեր էլ. փոստը ցուցակից: Գրեք նաև եթե ունեք մենկնաբանություններ:**
+
+####### **Important! Your email is part of the mailing list where I share weekly materials primarily focused on the Armenian economy. These materials encompass charts, [databases](https://github.com/tavad/tvyal_newsletter), videos, articles, [online dashboards](https://www.tvyal.com/projects), economic tools, forecasts, and reports. If you wish to unsubscribe, please let me know, and I will remove your email from the list. Please share your comments as well․**
+
+
+
