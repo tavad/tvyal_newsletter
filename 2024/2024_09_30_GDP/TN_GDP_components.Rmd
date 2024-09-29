@@ -267,7 +267,7 @@ plot_2_gdp_main <-
     data = segments,
     aes(x = date, y = production_yoy + 0.5, label = production_yoy_text)
   ) +
-  geom_area(aes(fill = eng)) +
+  geom_area(aes(fill = eng), alpha = 1) +
   geom_text(
     data = main_GDP_plot_data |> filter(date == min(date)),
     aes(label = pct_text, color = eng),
@@ -348,7 +348,7 @@ plot_3_gdp_growth <-
     label_text = percent(vol_pct, accuracy = 0.1),
   ) |> 
   ggplot(aes(vol_pct, text)) +
-  geom_col() +
+  geom_col(alpha = 1) +
   geom_text(aes(x = text_x_possition, label = text), hjust = -0.02) +
   geom_text(aes(
     x = ifelse(vol_pct >= -0.2, vol_pct, 0),
@@ -548,10 +548,10 @@ plot_4_components_dynamics <-
   arrange(groupped_codes) |> 
   mutate(
     annotation = fct_inorder(annotation)
-    ) |> 
+  ) |> 
   ggplot(aes(date, contribution, fill = annotation)) +
-
-  geom_stream(type = "ridge", bw=0.95,  extra_span = 0.025,  n_grid = 4000)  +
+  
+  geom_stream(type = "ridge", bw=0.95,  extra_span = 0.025,  n_grid = 4000, alpha = 1)  +
   # geom_area() +
   # scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
   
@@ -598,6 +598,7 @@ plot_4_components_dynamics <-
 
 ```{r plot1, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 12, fig.height = 8}
 plot_1_gdp_annual_growth
+ggsave(filename = "plots/plot_1_gdp_annual_growth.png", plot_1_gdp_annual_growth, width = 12, height = 8)
 ```
 
 
@@ -620,12 +621,14 @@ plot_1_gdp_annual_growth
 
 ```{r plot2, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 12, fig.height = 8}
 plot_2_gdp_main
+ggsave(filename = "plots/plot_2_gdp_main.png", plot_2_gdp_main, width = 12, height = 8)
 ```
 
 Գծապատկեր 3.
 
 ```{r plot3, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 12, fig.height = 8}
 plot_3_gdp_growth
+ggsave(filename = "plots/plot_3_gdp_growth.png", plot_3_gdp_growth, width = 12, height = 8)
 ```
 
 
@@ -659,6 +662,7 @@ plot_3_gdp_growth
 
 ```{r plot4, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 12, fig.height = 8}
 plot_4_components_dynamics
+ggsave(filename = "plots/plot_4_components_dynamics.png", plot_4_components_dynamics, width = 12, height = 8)
 ```
 
 Գծապատկեր 3-ը ցույց է տալիս Հայաստանի տնտեսական աճին նպաստող գործոնները ըստ եռամսյակների։ Մի քանի կարևոր կետեր են ի հայտ գալիս․
