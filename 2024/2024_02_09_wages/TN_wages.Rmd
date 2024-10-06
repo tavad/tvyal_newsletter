@@ -19,7 +19,7 @@ library(RcppRoll)
 # loadfonts()
 # par(family = "DejaVu Serif") 
 
-rm(list = ls()); gc()
+# rm(list = ls()); gc()
 
 theme_tvyal <- function(base_size = 12, base_family = "sans")
 {

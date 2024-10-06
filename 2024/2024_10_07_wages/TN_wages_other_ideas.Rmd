@@ -1,0 +1,498 @@
+---
+title: "Tvyal Newsletter"
+date: "2024-10-07"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+library(tidyverse)
+library(rvest)
+library(RcppRoll)
+library(scales)
+library(readxl)
+library(treemapify)
+
+# rm(list = ls()); gc()
+
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+
+source("../../initial_setup.R")
+
+```
+
+
+```{r get raw data download, include=FALSE}
+
+wages_raw <- 
+  read_excel("wages_in_armenia_raw_2022.xlsx", skip = 2)
+
+# # run the code below to update CPI data
+# system(
+#   paste0(
+#     "curl \"", "https://www.cba.am/stat/stat_data_eng/6_CPI_eng.xls", "\"",
+#     " -o ", "\"cpi_armenia_eng.xls\""
+#   )
+# )
+
+inflation_raw <- read_excel("cpi_armenia_eng.xls", skip = 3)
+workers_n <- read_excel("wages_more_info.xlsx", sheet = "workers_n")
+public_wages <- read_excel("wages_more_info.xlsx", sheet = 3)
+
+```
+
+
+```{r data cleaning 3, include=FALSE}
+
+max_year <- wages_raw |> colnames() |> parse_number() |> max(na.rm = TRUE)
+
+
+inf_cumprod <-
+  inflation_raw |>
+  rename(date = 1, cpi_m = 2) |>
+  select(date, cpi_m) |>
+  mutate(
+    date = ym(date),
+    cpi_m = cpi_m / 100,
+    year = year(date)
+  ) |>
+  filter(year <= max_year) |>
+  mutate(
+    cpi_yoy = roll_prodr(cpi_m, 12)
+  ) |>
+  arrange(desc(date)) |>
+  mutate(
+    adj_price = cumprod(cpi_m),
+    adj_price = lag(adj_price),
+    adj_price = ifelse(is.na(adj_price), 1, adj_price)
+  ) |>
+  group_by(year) |>
+  filter(date == max(date)) |>
+  ungroup() |>
+  select(year, cpi_yoy, adj_price)
+
+
+wages_clean <-
+  wages_raw |>
+  filter(!is.na(`2020`))  |>
+  janitor::clean_names() |>
+  mutate(
+    across(matches("\\d{4}"), ~ifelse(.x == "-", NA, .x)),
+    across(matches("\\d{4}"), ~ as.numeric(.x))
+  ) |>
+  mutate(
+    indicator_arm = str_replace(indicator_arm, "աշխատավարձ, դրամ", "աշխատավարձ ՀՀ ընդհանուր, դրամ"),
+    indicator_arm = str_remove(indicator_arm, "Միջին ամսական անվանական աշխատավարձը? ? ?-? ?\\(?"),
+    indicator_arm = str_remove(indicator_arm, ", դրամ$"),
+    indicator_arm = str_replace_all(indicator_arm, " *- *", " - "),
+
+    indicator_eng = str_remove(indicator_eng, "Average monthly nominal wages? ? ?-? ?\\(? ?b?y? ?"),
+    indicator_eng = str_replace_all(indicator_eng, " *- *", " - "),
+  ) |>
+  extract(
+    indicator_arm, into = c("ind1_arm", "ind2_arm"),
+    regex = "(ըստ .*) - (.*)", remove = FALSE
+  ) |>
+  extract(
+    indicator_eng, into = c("ind1_eng", "ind2_eng"),
+    regex = "(.*) - (.*)", remove = FALSE
+  ) |>
+  # extract(ind1_arm, into = c("ind1", "ind2"),
+  #         regex = "(ըստ .*) *- *(.*)", remove = FALSE) |>
+  # mutate(
+  #   ind1 = ifelse(is.na(ind1), ind1_arm, ind1),
+  #
+  # ) |> view()
+  mutate(
+    correction_2017 = x2017_2 / x2017,
+    correction_2012 = x2012_2 / x2012,
+  ) |>
+  select(-c(x2017_2, x2012_2)) |>
+  pivot_longer(
+    cols = matches("^x\\d{4}$"),
+    names_to = "year", values_to = "wages"
+  ) |>
+  mutate(
+    across(contains("ind"), ~str_trim(.x)),
+    year = parse_number(year),
+    wages_corrected = case_when(
+      year <= 2012 & !is.na(correction_2017) ~ correction_2012 * correction_2017 * wages,
+      year <= 2017 & year > 2012 & !is.na(correction_2017) ~ correction_2017 * wages,
+      TRUE ~ wages
+    )
+  ) |>
+  left_join(inf_cumprod, by = "year") |>
+  mutate(wages_real = wages_corrected * adj_price) |>
+  select(-contains("correction"))
+
+
+rm(wages_raw, inflation_row)
+
+```
+
+
+```{r plot 1, include=FALSE, eval=FALSE}
+
+wages_clean |>
+  filter(grepl("RA Marzes and Yerevan", indicator_eng)) |>
+  mutate(
+    ind1_arm = case_when(
+      grepl("ոչ պետական", ind1_arm) ~ "ոչ պետական",
+      grepl("պետական", ind1_arm) ~ "պետական",
+      TRUE ~ "ընդհանուր"
+    ),
+    ind1_eng = case_when(
+      grepl("Non - Public", ind1_eng) ~ "Non-Public",
+      grepl("Public", ind1_eng) ~ "Public",
+      TRUE ~ "Total"
+    ),
+    ind2_eng = fct_relevel(ind2_eng, "Yerevan"),
+    ind2_arm = fct_relevel(ind2_arm, "ք. Երևան")
+  ) |>
+  ggplot(aes(year, wages_real / 1000, fill = year)) +
+  geom_col() +
+  facet_grid(ind1_eng ~ ind2_eng) +
+  scale_y_continuous(breaks = seq(0, 1000, 100), labels = comma_format()) +
+  scale_x_continuous(labels = NULL, breaks = NULL) +
+  scale_fill_gradient(breaks = 2008:2020,  high = "#2f4b7c", low = "#f95d6a") +
+  labs(
+    x = NULL,
+    y = NULL,
+    title = "Ամսական իրական միջին աշխատավարձը ըստ մարզերի Հայաստանում",
+    subtitle = "հազար դրամ, գաճով ճշգրտված"
+  ) +
+  theme(
+    legend.position = "bottom",
+    legend.key.width = unit(2.5, 'cm'),
+    legend.box =
+  )
+
+```
+
+
+```{r main 2, include=FALSE}
+
+ # provide 2 consecutive years that are in wages_clean
+years_select = c(max_year - 1, max_year)
+
+date_legend <-
+  tibble(
+    x = 215, y = c(1.5, 2.5),
+    color = c("#2f4b7c", "#f95d6a"),
+    text = rev(years_select),
+    ind1_arm = "պետական",
+    ind1_eng = "Public"
+  )
+
+
+wages_change_2021_22_plot <-
+  wages_clean |>
+  filter(grepl("RA Marzes and Yerevan", indicator_eng)) |>
+  mutate(
+    ind1_arm = case_when(
+      grepl("ոչ պետական", ind1_arm) ~ "ոչ պետական",
+      grepl("պետական", ind1_arm) ~ "պետական",
+      TRUE ~ "ընդհանուր"
+    ),
+    ind1_eng = case_when(
+      grepl("Non - Public", ind1_eng) ~ "Non-Public",
+      grepl("Public", ind1_eng) ~ "Public",
+      TRUE ~ "Total"
+    ),
+    # ind2_eng = fct_relevel(ind2_eng, "Yerevan"),
+    # ind2_arm = fct_relevel(ind2_arm, "ք. Երևան")
+  ) |>
+  filter(year %in% years_select) |>
+  select(ind1_arm, ind2_arm, ind1_eng, ind2_eng, year, wages_real) |>
+  mutate(
+    wages_real = wages_real / 1000,
+    year = ifelse(year == min(year), "begining", "end")
+  ) |>
+  rename(marz_arm = ind2_arm, marz_eng = ind2_eng) |>
+  pivot_wider(names_from = year, values_from = wages_real) |>
+  mutate(
+    marz_arm = fct_reorder(marz_arm, (begining + end)/2, .fun = mean),
+    marz_eng = fct_reorder(marz_eng, (begining + end)/2, .fun = mean),
+    color = ifelse(begining > end, "#f95d6a", "#2f4b7c"),
+    ind1_eng = factor(ind1_eng, levels = c("Total", "Non-Public", "Public"))
+  ) |>
+  ggplot() +
+  facet_grid(~ind1_eng, scales = "free_x", space = "free_x") +
+  geom_segment(
+    aes(x = begining, xend = end,  y = marz_eng,
+        yend = marz_eng, group = ind1_eng, color = I(color)),
+    linewidth = 1.2,
+    lineend = "round", linejoin = "round",
+    arrow = arrow(length = unit(0.1, "inches"))
+  ) +
+  geom_point(aes(x=begining, y=marz_eng, color=I("#f95d6a")), size = 3) +
+  geom_point(aes(x=end, y=marz_eng, color=I("#2f4b7c")), size = 3) +
+  geom_point(data = date_legend, aes(x, y, color = I(color)), size = 3) +
+  geom_text(data = date_legend, aes(x + 15, y, label = text)) +
+  scale_y_discrete() +
+  labs(
+    x = NULL,
+    y = NULL,
+    color = NULL,
+    # title = "Միջին ամսական անվանական աշխատավարձը ըստ մարզերի և տնտեսության հատվածների",
+    # subtitle = "Ներկայացված են իրական աշխատավարձերը, 2022 թվականի 8.3 տոկոս գնաճով ճշգրտված\nհազար ՀՀ դրամ",
+    # caption = paste0(caption_arm, "    |    տվյալների աղբյուր` armstat.am")
+    title = "Average monthly salary by regions and sectors of the economy",
+    subtitle = "Real nominal salaries, thousand AMD, 2021 is adjusted by 8.3% inflation in 2022",
+    caption = paste0(caption_eng, "    |    Data Source: armstat.am")
+  )
+
+
+```
+
+
+```{r plots 32,  include=FALSE, eval=FALSE}
+
+wages_by_sector <-
+  wages_clean |>
+  mutate(
+    ind2_arm = str_trunc(ind2_arm, 30),
+    ind2_eng = str_trunc(ind2_eng, 30)
+  ) |>
+  filter(year %in% years_select) |>
+  select(ind1_arm, ind2_arm, ind1_eng, ind2_eng, year, wages_real) |>
+  mutate(
+    wages_real = wages_real / 1000,
+    year = ifelse(year == min(year), "begining", "end")
+  ) |>
+  pivot_wider(names_from = year, values_from = wages_real) |>
+  mutate(
+    ind2_arm = fct_reorder(ind2_arm, (begining + end)/2, .fun = mean),
+    ind2_eng = fct_reorder(ind2_eng, (begining + end)/2, .fun = mean),
+    color = ifelse(begining > end, "#f95d6a", "#2f4b7c")
+  ) |>
+  ggplot() +
+  geom_segment(
+    aes(x = begining, xend = end,  y = ind2_eng,
+        yend = ind2_eng, group = ind1_eng, color = I(color)),
+    linewidth = 1.2,
+    lineend = 'round', linejoin = 'round',
+    arrow = arrow(length = unit(0.1, "inches"))
+  ) +
+  geom_point(aes(x = begining, y = ind2_eng, color = I("#f95d6a")), size = 3) +
+  geom_point(aes(x = end, y = ind2_eng, color = I("#2f4b7c")), size = 3) +
+  geom_point(data = date_legend, aes(x + 400, y, color = I(color)), size = 3) +
+  geom_text(data = date_legend, aes(x + 480, y, label = text)) +
+  scale_x_log10(breaks = seq(0, 800, 100), limits =c(100, 800)) +
+  scale_y_discrete() +
+  labs(
+    x = NULL,
+    y = NULL,
+    color = NULL,
+    # title = "Միջին ամսական աշխատավարձը ըստ տնտեսական գործունեության",
+    # subtitle = "Ներկայացված են իրական աշխատավարձերը, 2022 թվականի 8.3 տոկոս գնաճով ճշգրտված\nանվանական, հազար ՀՀ դրամ",
+    # caption = paste0(caption_arm, "    |    տվյալների աղբյուր` armstat.am")
+    title = "Average Monthly Salary by Economic Activity",
+    subtitle = "Real nominal salaries, thousand AMD, 2021 is adjusted by 8.3% inflation in 2022",
+    caption = paste0(caption_eng, "    |    Data Source: armstat.am")
+  )
+
+```
+
+
+
+
+
+
+
+
+
+
+```{r main 3, include=FALSE}
+
+ # provide 2 consecutive years that are in wages_clean
+years_select = c(max_year - 1, max_year)
+
+date_legend <-
+  tibble(
+    x = 215, y = c(1.5, 2.5),
+    color = c("#2f4b7c", "#f95d6a"),
+    text = rev(years_select),
+    ind1_arm = "պետական",
+    ind1_eng = "Public"
+  )
+
+
+wages_change_2021_22_plot <-
+  wages_clean |>
+  filter(grepl("RA Marzes and Yerevan", indicator_eng)) |>
+  mutate(
+    ind1_arm = case_when(
+      grepl("ոչ պետական", ind1_arm) ~ "ոչ պետական",
+      grepl("պետական", ind1_arm) ~ "պետական",
+      TRUE ~ "ընդհանուր"
+    ),
+    ind1_eng = case_when(
+      grepl("Non - Public", ind1_eng) ~ "Non-Public",
+      grepl("Public", ind1_eng) ~ "Public",
+      TRUE ~ "Total"
+    ),
+    # ind2_eng = fct_relevel(ind2_eng, "Yerevan"),
+    # ind2_arm = fct_relevel(ind2_arm, "ք. Երևան")
+  ) |>
+  filter(year %in% years_select) |>
+  select(ind1_arm, ind2_arm, ind1_eng, ind2_eng, year, wages_real) |>
+  mutate(
+    wages_real = wages_real / 1000,
+    year = ifelse(year == min(year), "begining", "end")
+  ) |>
+  rename(marz_arm = ind2_arm, marz_eng = ind2_eng) |>
+  pivot_wider(names_from = year, values_from = wages_real) |>
+  mutate(
+    marz_arm = fct_reorder(marz_arm, (begining + end)/2, .fun = mean),
+    marz_eng = fct_reorder(marz_eng, (begining + end)/2, .fun = mean),
+    color = ifelse(begining > end, "#f95d6a", "#2f4b7c"),
+    ind1_eng = factor(ind1_eng, levels = c("Total", "Non-Public", "Public"))
+  ) |>
+  ggplot() +
+  facet_grid(~ind1_eng, scales = "free_x", space = "free_x") +
+  geom_segment(
+    aes(x = begining, xend = end,  y = marz_eng,
+        yend = marz_eng, group = ind1_eng, color = I(color)),
+    linewidth = 1.2,
+    lineend = "round", linejoin = "round",
+    arrow = arrow(length = unit(0.1, "inches"))
+  ) +
+  geom_point(aes(x=begining, y=marz_eng, color=I("#f95d6a")), size = 3) +
+  geom_point(aes(x=end, y=marz_eng, color=I("#2f4b7c")), size = 3) +
+  # geom_point(data = date_legend, aes(x, y, color = I(color)), size = 3) +
+  # geom_text(data = date_legend, aes(x + 15, y, label = text)) +
+  scale_x_continuous(breaks = seq(50, 600, 50)) +
+  scale_y_discrete() +
+  labs(
+    x = NULL,
+    y = NULL,
+    color = NULL,
+    # title = "Միջին ամսական անվանական աշխատավարձը ըստ մարզերի և տնտեսության հատվածների",
+    # subtitle = "Ներկայացված են իրական աշխատավարձերը, 2022 թվականի 8.3 տոկոս գնաճով ճշգրտված\nհազար ՀՀ դրամ",
+    # caption = paste0(caption_arm, "    |    տվյալների աղբյուր` armstat.am")
+    title = "Average monthly salary by regions and sectors of the economy",
+    subtitle = "Real nominal salaries, thousand AMD, 2021 (red) is adjusted by 8.3% inflation in 2022 (blue)",
+    caption = paste0(caption_eng, "    |    Data Source: armstat.am")
+  )
+  # theme(
+  #   panel.grid.major.y = element_blank()
+  # )
+
+
+```
+
+
+```{r plots 3,  include=FALSE}
+
+wages_by_sector <-
+  wages_clean |>
+  filter(grepl("Types of Economic Activity", indicator_eng)) |>
+  mutate(
+    ind2_arm = str_trunc(ind2_arm, 30),
+    ind2_eng = str_trunc(ind2_eng, 30)
+  ) |>
+  filter(year %in% years_select) |>
+  select(ind1_arm, ind2_arm, ind1_eng, ind2_eng, year, wages_real) |>
+  mutate(
+    wages_real = wages_real / 1000,
+    year = ifelse(year == min(year), "begining", "end")
+  ) |>
+  pivot_wider(names_from = year, values_from = wages_real) |>
+  mutate(
+    ind2_arm = fct_reorder(ind2_arm, (begining + end)/2, .fun = mean),
+    ind2_eng = fct_reorder(ind2_eng, (begining + end)/2, .fun = mean),
+    color = ifelse(begining > end, "#f95d6a", "#2f4b7c")
+  ) |>
+  ggplot() +
+  geom_segment(
+    aes(x = begining, xend = end,  y = ind2_eng,
+        yend = ind2_eng, group = ind1_eng, color = I(color)),
+    linewidth = 1.2,
+    lineend = 'round', linejoin = 'round',
+    arrow = arrow(length = unit(0.1, "inches"))
+  ) +
+  geom_point(aes(x = begining, y = ind2_eng, color = I("#f95d6a")), size = 3) +
+  geom_point(aes(x = end, y = ind2_eng, color = I("#2f4b7c")), size = 3) +
+  geom_point(data = date_legend, aes(x + 400, y, color = I(color)), size = 3) +
+  geom_text(data = date_legend, aes(x + 480, y, label = text)) +
+  scale_x_log10(breaks = seq(0, 800, 100), limits =c(100, 800)) +
+  scale_y_discrete() +
+  labs(
+    x = NULL,
+    y = NULL,
+    color = NULL,
+    # title = "Միջին ամսական աշխատավարձը ըստ տնտեսական գործունեության",
+    # subtitle = "Ներկայացված են իրական աշխատավարձերը, 2022 թվականի 8.3 տոկոս գնաճով ճշգրտված\nանվանական, հազար ՀՀ դրամ",
+    # caption = paste0(caption_arm, "    |    տվյալների աղբյուր` armstat.am")
+    title = "Average Monthly Salary by Economic Activity",
+    subtitle = "Real nominal salaries, thousand AMD, 2021 is adjusted by 8.3% inflation in 2022",
+    caption = paste0(caption_eng, "    |    Data Source: armstat.am")
+  )
+
+```
+
+
+
+
+
+
+
+
+```{r not run, include=FALSE, warning=FALSE, eval=FALSE}
+wages_clean |>
+  filter(grepl("ըստ կազմակերպության չափի", indicator_arm)) |>
+  mutate(
+    ind1_arm = case_when(
+      grepl("ոչ պետական", ind1_arm) ~ "ոչ պետական",
+      grepl("պետական", ind1_arm) ~ "պետական",
+      TRUE ~ "ընդհանուր"
+    ),
+    ind1_arm = fct_reorder(ind1_arm, wages_real, .desc = TRUE),
+    ind2_arm = str_remove(ind2_arm, "ում$")
+  ) |>
+  ggplot(aes(year, wages_real / 1000, color = ind1_arm)) +
+  geom_line(linewidth = 1.5) +
+  facet_wrap(~ind2_arm, scale = "free_y") +
+  scale_x_continuous(breaks = seq(2008, 2030, 2)) +
+  scale_color_manual(values = new_palette_colors[c(2,6,8)]) +
+  labs(
+    x = NULL,
+    y = NULL,
+    color = NULL,
+    title = "Միջին ամսական անվանական աշխատավարձը ըստ կազմակերպության չափի",
+    subtitle = "Ներկայացված են իրական աշխատավարձերը, 2022 թվականի 8.3 տոկոս գնաճով ճշգրտված\nհազար ՀՀ դրամ",
+    caption = paste0(caption_arm, "    |    տվյալների աղբյուր` armstat.am")
+  )
+
+
+wages_clean |>
+  filter(
+    grepl("ՀՀ ընդհանուր|ըստ սեռի", indicator_arm),
+    !grepl( "նվազագույն", indicator_arm)
+  ) |>
+  mutate(
+    indicator_arm = ifelse(is.na(ind1_arm), indicator_arm, ind2_arm),
+    indicator_arm = fct_reorder(indicator_arm, wages_real, .desc = TRUE),
+  ) |>
+  ggplot(aes(year, wages_real / 1000, color = indicator_arm)) +
+  geom_line(linewidth = 1.5) +
+  scale_x_continuous(breaks = seq(2008, 2030, 2)) +
+  scale_color_manual(values = new_palette_colors[c(2,6,8)]) +
+  labs(
+    x = NULL,
+    y = NULL,
+    color = NULL,
+    title = "Միջին ամսական անվանական աշխատավարձը ըստ սեռի",
+    subtitle = "Ներկայացված են իրական աշխատավարձերը, 2022 թվականի 8.3 տոկոս գնաճով ճշգրտված\nհազար ՀՀ դրամ",
+    caption = paste0(caption_arm, "    |    տվյալների աղբյուր` armstat.am")
+  )
+```
+
+
+
+
+
+
+
