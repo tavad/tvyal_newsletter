@@ -59,9 +59,9 @@ plot1_wages_employees <-
   geom_line(aes(color = name, linewidth = name), alpha = 1) +
   geom_text(
     data = tibble(
-      x = c(ymd("2019-07-01"),ymd("2023-01-01")),
+      x = c(ymd("2019-07-01"),ymd("2023-05-01")),
       y = c(337, 187) * 1000,
-      label = c("աշխատողների թիվ (մարդ)", "միջին աշխատավարձ (դրամ)"),
+      label = c("գրանցված աշխատատեղեր (մարդ)", "միջին աշխատավարձ (դրամ)"),
       color = new_palette_colors[c(2,6)]
     ),
     mapping = aes(x, y, label = label, color = I(color)),
