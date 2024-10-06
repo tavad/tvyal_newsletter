@@ -161,7 +161,7 @@ public_wages_2023_onwords <-
     pct_non_public = non_public / total
   )
 
-plot2_public_wages_pct <- 
+plot2_public_wages_pct <-
   public_wages |> 
   select(year, total, public, non_public) |>
   pivot_longer(-year) |> 
@@ -190,10 +190,18 @@ plot2_public_wages_pct <-
     pct_non_public = (total - public) / (non_public - public)
   ) |> 
   bind_rows(public_wages_2023_onwords) |> 
-  ggplot(aes(year, pct_public, fill = year)) +
-  geom_col(alpha = 1) +
+  ggplot(aes(year, pct_public)) +
+  geom_col(aes(fill = year), alpha = 1) +
+  geom_text(
+    aes(y = 0.02, label = number(pct_public * 100, accuracy = 1)),
+    color = "white", size = 5
+  ) +
+  geom_text(
+    data = tibble(x = 1999, y = 0.02, label = "%"),
+    aes(x, y, label = label), hjust = 0, size = 5
+  ) +
   scale_x_continuous(breaks = seq(2000, 2030, 2)) +
-  scale_y_continuous(breaks = seq(0, 1, 0.1), labels = percent_format()) +
+  scale_y_continuous(breaks = seq(0, 1, 0.1), labels = NULL) +
   scale_fill_gradientn(colors = rev(colfunc2(100)[15:75])) +
   labs(
     x = NULL,
@@ -204,7 +212,10 @@ plot2_public_wages_pct <-
   ) +
   theme(
     legend.position = "none",
-    panel.grid.major.x = element_blank()
+    panel.grid.major.x = element_blank(),
+    panel.grid.major.y = element_blank(),
+      plot.title = element_text(hjust = 0.15),
+    plot.subtitle = element_text(hjust = 0.15)
   )
 
 ```
@@ -398,7 +409,7 @@ plot4_job_avalability <-
     title = "Ո՞ր մարզերում կա աշխատանք",
     subtitle = "Մասնավոր և պետական աշխատատեղերի հարաբերությունը ըստ մարզերի*",
     caption = caption_f(
-      source = "armstat.am", 
+      source = "Armstat", 
       suffix_text = paste0(format(max_recored_date, format = "%Y %B"), " դրությամբ")
     )
   ) +
