@@ -446,7 +446,8 @@ plot5_public_to_non_public <-
   arrange(non_public_to_public) |> 
   mutate(
     year = year(date),
-    month = month(date)
+    month = month(date),
+    arm_marz = ifelse(arm_marz == "Ընդամենը", "Հայաստան", arm_marz)
   ) |> 
   filter(year == max(year)) |> 
   group_by(year) |> 
