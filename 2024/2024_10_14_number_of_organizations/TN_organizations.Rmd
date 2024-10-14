@@ -1,0 +1,483 @@
+---
+title: "Tvyal Newsletter"
+date: "2024-10-14"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+library(tidyverse)
+library(scales)
+library(RcppRoll)
+library(grid) 
+
+# rm(list = ls()); gc()
+
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+
+source("../../initial_setup.R")
+
+```
+
+```{r read data, include=FALSE}
+
+organizations_data <- read_csv("organizations_number.csv")
+
+min_date = organizations_data$date |> min()
+max_date = organizations_data$date |> max()
+
+```
+
+
+```{r plot 1 organizations change, include=FALSE}
+
+plot_1_organizations_change <- 
+  organizations_data |> 
+  filter(month <= month(max_date)) |> 
+  mutate(
+    org_type_clean = paste0(org_type_clean, " (", org_type_short, ")"),
+    org_type_clean = fct_lump_n(
+      org_type_clean, w = count, 2,
+       other_level = "Այլ կազմակերպություններ"
+    ),
+    org_type_clean = fct_reorder(org_type_clean, count, .desc = TRUE)
+  ) |> 
+  group_by(year, org_type_clean) |> 
+  summarise(count = sum(count, na.rm = TRUE), .groups = "drop") |>
+  mutate(
+    label_text = number(count / 1000, accuracy = 0.1)
+  ) |>
+  # filter(year %in% 2020:2024) |>
+  ggplot(aes(year, count, fill = org_type_clean, label = label_text)) +
+  geom_col(position = position_dodge(), alpha = 1) +
+  geom_text(position = position_dodge(width = 0.9), vjust = -0.5) +
+  scale_x_continuous(breaks = 2016:year(max_date)) +
+  scale_fill_manual(values = new_palette_colors[c(2,6,8)]) +
+  labs(
+    x = NULL,
+    y = NULL,
+    fill = NULL,
+    title = "Գրանցված կազմակերպությունների թիվը ըստ ձևի",
+    subtitle = "հազար կազմակերպություն, հունվար-օգոստոս կտրվածքով",
+    caption = caption_f(source = "Armstat")
+  ) +
+  theme(
+    panel.grid.major.x = element_blank(),
+    panel.grid.major.y = element_blank(),
+    axis.text.y = element_blank() 
+  )
+
+```
+
+
+```{r plot 2 and 4 organizations change, include=FALSE}
+
+plot_organizations <- 
+  function(organizations_data, output_type = "yoy") {
+    org_data <- organizations_data |> 
+      mutate(
+        org_type_clean = paste0(org_type_clean, " (", org_type_short, ")"),
+        org_type_clean = fct_lump_n(
+          org_type_clean, w = count, 2,
+          other_level = "Այլ կազմակերպություններ"
+        ),
+        org_type_clean = fct_reorder(org_type_clean, count, .desc = TRUE)
+      ) |> 
+      filter(!is.na(count_yoy)) |> 
+      group_by(date, org_type_clean) |> 
+      summarise(
+        count = sum(count, na.rm = TRUE), 
+        count_yoy = sum(count_yoy, na.rm = TRUE), 
+        .groups = "drop"
+      )
+    
+    # Choose the y variable based on the output type
+    y_variable <- if (output_type == "yoy") "count_yoy" else "count"
+    subtitle_text <- if (output_type == "yoy") "տարեկան կումուլատիվ կտրվածքով, հատ" else "ամսական կտրվածքով, հատ"
+    
+    ggplot(org_data, aes(date, !!sym(y_variable), color = org_type_clean)) +
+      geom_line(linewidth = 1, alpha = 1) +
+      scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+      scale_y_continuous(n.breaks = 6, label = number_format(accuracy = 1)) +
+      scale_color_manual(values = new_palette_colors[c(2, 6, 8)]) +
+      labs(
+        x = NULL,
+        y = NULL,
+        color = NULL,
+        title = "Գրանցված կազմակերպությունների թիվը ըստ ձևի",
+        subtitle = subtitle_text,
+        caption = caption_f(source = "Armstat")
+      ) +
+      theme(
+        panel.grid.major.x = element_blank()
+      )
+  }
+
+# Call the function for yearly data
+plot_2_organizations_annual <- plot_organizations(organizations_data, output_type = "yoy")
+
+# Call the function for monthly data
+plot_3_organizations_monthly <- plot_organizations(organizations_data, output_type = "monthly")
+
+```
+
+
+```{r plot 4 NGO change, include=FALSE}
+
+insert_chart <- 
+  organizations_data |> 
+  filter(
+    org_type_short %in% c("ՀՄԴ", "ՀԿ"),
+    date >= ym("2017-06"),
+    date <= ym("2018-02")
+  ) |> 
+  mutate(
+    org_type_clean = paste0(org_type_clean, " (", org_type_short, ")"),
+    # org_type_clean = fct_reorder(org_type_clean, count, .desc = TRUE)
+  ) |> 
+  # filter(org_type_clean != "Other") |> 
+  ggplot(aes(date, count, fill = org_type_clean, label = number(count, accuracy = 1))) +
+  geom_col(position = position_dodge(), alpha = 1) +
+  geom_text(position = position_dodge(width = 26), vjust = -0.5) +
+  scale_x_date(breaks = seq.Date(ym("2017-06"), ym("2018-02"), "1 month"), date_labels = "%b-%y") +
+  scale_y_continuous(n.breaks = 6) +
+  scale_fill_manual(values = new_palette_colors[c(2,6,8)]) +
+  labs(
+    x = NULL,
+    y = NULL,
+    color = NULL,
+  ) +
+  coord_cartesian(clip = "off") +
+  theme(
+    panel.background = element_blank(),
+    plot.background = element_blank(),
+    panel.grid.major.x = element_blank(),
+    panel.grid.major.y = element_blank(),
+    axis.text.y = element_blank(),
+    legend.position = "drop",
+    plot.margin = margin(10, 20, 10, 10),  # Adjust margins for the border
+  )
+
+insert_chart_grob <- ggplotGrob(insert_chart)
+
+plot_4_ngo_change <- 
+  organizations_data |> 
+  filter(org_type_short %in% c("ՀՄԴ", "ՀԿ")) |> 
+  mutate(
+    org_type_clean = paste0(org_type_clean, " (", org_type_short, ")"),
+    # org_type_clean = fct_reorder(org_type_clean, count, .desc = TRUE)
+  ) |> 
+  ggplot() +
+  geom_rect(
+    data = tibble(  
+      xmin = as.Date("2018-06-01"), xmax = max_date, 
+      ymin = 160, ymax = 500
+    ),
+    aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax),
+    fill = NA, color = new_palette_colors[8], linewidth = 1
+  ) +
+  geom_segment(
+    data = tibble(
+      x = ym("2017-06", "2018-02"), xend = c(ym("2018-06"), max_date),
+      y = c(0, 0), yend = c(160, 160)
+    ),
+    aes(x, y, xend = xend, yend = yend),
+    linetype = 3, linewidth = 0.8, color = new_palette_colors[8]
+  ) +
+  geom_line(
+    aes(date, count, color = org_type_clean),
+    linewidth = 1, alpha = 1
+  ) +
+  scale_x_date(breaks = seq.Date(ym("2016-01"), max_date, "year"), date_labels = "%Y") +
+  scale_y_continuous(n.breaks = 6) +
+  scale_color_manual(values = new_palette_colors[c(2,6,8)]) +
+  labs(
+    x = NULL,
+    y = NULL,
+    color = NULL,
+    title = "Հայաստանում ՀԿ-ները և հիմնադրամները",
+    subtitle = "կազմակերպությունների գրանցումների թիվ, ամսական կտրվածքով",
+    caption = caption_f(source = "Armstat")
+  ) +
+  theme(
+    panel.grid.major.x = element_blank()
+  ) +
+  annotation_custom(
+    grob = insert_chart_grob, 
+    xmin = as.Date("2018-06-01"), xmax = max_date, 
+    ymin = 160, ymax = 500
+  )
+
+```
+
+
+```{r plot NGO and media change, include=FALSE}
+
+plot_5_ngo_media_change <- 
+  organizations_data |> 
+  filter(
+    org_type_short %in% c("ԼՄ", "ԿՍ", "ՀՄԴ", "ՀԿ"),
+    year %in% c(2016:2024)
+  ) |> 
+  mutate(
+    year = ifelse(year == max(year), paste0(year, "*"), year),
+    org_type_clean = paste0(org_type_clean, " (", org_type_short, ")"),
+    org_type_clean = fct_reorder(org_type_clean, count, .desc = TRUE)
+  ) |> 
+  group_by(year, org_type_clean) |> 
+  summarise(count = sum(count, na.rm = TRUE), .groups = "drop") |> 
+  mutate(
+    label_text = number(count, accuracy = 1)
+  ) |>
+  ggplot(aes(year, count, fill = org_type_clean, label = label_text)) +
+  geom_col(position = position_dodge(), alpha = 1) +
+  geom_text(position = position_dodge(width = 0.9), vjust = -0.5) +
+  scale_fill_manual(values = new_palette_colors[c(2,4,6,8)]) +
+  labs(
+    x = NULL,
+    y = NULL,
+    fill = NULL,
+    title = "Գրանցված կազմակերպությունների թիվը ըստ ձևի",
+    subtitle = "հատ, տարեկան կտրվածքով*",
+    caption = caption_f(source = "Armstat", suffix_text = "*2024 թվականի տվյալնրը տրված են հունվարից֊օգոստոս կտրվածքով")
+  ) +
+  guides(fill = guide_legend(nrow = 1)) +
+  theme(
+    panel.grid.major.x = element_blank(),
+    panel.grid.major.y = element_blank(),
+    axis.text.y = element_blank() 
+  )
+
+```
+
+
+***English summary below.***
+
+Հարգելի գործընկեր,
+
+Հուսով եմ՝ լավ եք: 
+Ներկայացնում եմ այս շաբաթվա վերլուծությունները և աշխատանքները.
+
+## [ Թավշյա իրարանցում և կազմակերպական փոփոխություն](https://www.tvyal.com/newsletter/2024/2024_10_14)
+
+Գծապատկեր 1.
+
+```{r plot1, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 12, fig.height = 8}
+plot_1_organizations_change
+ggsave("plots/plot_1_organizations_change.png", plot_1_organizations_change, width = 12, height = 8)
+```
+
+
+Գծապատկեր 2.
+
+```{r plot2, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 12, fig.height = 8}
+plot_2_organizations_annual
+ggsave("plots/plot_2_organizations_annual.png", plot_2_organizations_annual, width = 12, height = 8)
+```
+
+
+
+Գծապատկեր 3.
+
+```{r plot3, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 12, fig.height = 8}
+plot_3_organizations_monthly
+ggsave("plots/plot_2_organizations_monthly.png", plot_3_organizations_monthly, width = 12, height = 8)
+```
+
+
+
+
+Գծապատկեր 4.
+
+```{r plot4, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 12, fig.height = 8}
+plot_4_ngo_change
+ggsave("plots/plot_4_ngo_change.png", plot_4_ngo_change, width = 10, height = 8)
+```
+
+
+
+Գծապատկեր 5.
+
+```{r plot5, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 12, fig.height = 8}
+plot_5_ngo_media_change
+ggsave("plots/plot_5_ngo_media_change.png", plot_5_ngo_media_change, width = 10, height = 8)
+```
+
+
+
+ 
+>
+> Ձեզ կարող են հետաքրքրել նաև հետևյալ նյութերը.
+>
+>1. [👨‍👩‍👧‍👦✨ Ամուր ընտանիք․ հարուստ ընտանիք](https://www.tvyal.com/newsletter/2024/2024_01_26)
+>2. [🚨📉🕵 Քողարկված անկում. Ինչո՞վ է ապրում Հայաստանի տնտեսությունը](ttps://www.tvyal.com/newsletter/2024/2024_09_30)
+>3. [🐅🌆💸 Հայաստան` Կովկասի վագր, թե՞ թանկ երազանք](ttps://www.tvyal.com/newsletter/2024/2024_08_26)
+>
+
+
+-----
+
+-----
+
+Եթե հնարավոր է, խնդրում եմ այս նյութը ուղարկել նաև այն մարդկանց, ում այն կարծում եք կարող է հետաքրքրել:
+
+**ԱՅՍ ՀՈԴՎԱԾԻ ՀՂՈՒՄԸ**
+
+***Թավադյան, Աղ․Ա․ (2024) Մասնավոր աշխատատեղերի գրեթե 80 տոկոսը Երևանում է [Almost 80% of Private Sector Jobs are in Yerevan], tvyal.com հարթակ [tvyal.com platform], 14-10-2024․ https://www.tvyal.com/newsletter/2024/2024_10_14***
+
+**Արգելվում է այս հարթակի նյութերը արտատպել առանց հղում կատարելու։**    
+
+<small>\* Այս և մեր բոլոր այլ վերլուծությունների տվյալները վերցված են պաշտոնական աղբյուրներից։ Հաշվարկները ամբողջությամբ հասանելի են github-ում, դրանք կարելի է ստուգել` այցելելով [github-ի](https://github.com/tavad/tvyal_newsletter/blob/main/2024/) մեր էջը, որտեղ տրված են տվյալները, հաշվարկների և գծապատկերների կոդը։
+
+</small>
+
+
+-----
+
+# ՀԱՄԱԳՈՐԾԱԿՑՈՒԹՅՈՒՆ
+
+<style>
+.ai-services-banner-tvyal {
+background-color: #0a192f;
+color: #e6f1ff;
+padding: 30px;
+font-family: Arial, sans-serif;
+border-radius: 10px;
+box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+position: relative;
+overflow: hidden;
+min-height: 400px;
+display: flex;
+flex-direction: column;
+justify-content: center;
+}
+.ai-services-banner-tvyal::before {
+content: '';
+position: absolute;
+top: -25%;
+left: -25%;
+right: -25%;
+bottom: -25%;
+background: repeating-radial-gradient(
+circle at 50% 50%,
+rgba(100, 255, 218, 0.1),
+rgba(100, 255, 218, 0.1) 15px,
+transparent 15px,
+transparent 30px
+);
+animation: gaussianWaveTvyal 10s infinite alternate;
+opacity: 0.3;
+z-index: 0;
+}
+@keyframes gaussianWaveTvyal {
+0% {
+transform: scale(1.5) rotate(0deg);
+opacity: 0.2;
+}
+50% {
+transform: scale(2.25) rotate(180deg);
+opacity: 0.5;
+}
+100% {
+transform: scale(1.5) rotate(360deg);
+opacity: 0.2;
+}
+}
+.ai-services-banner-tvyal > * {
+position: relative;
+z-index: 1;
+}
+.ai-services-banner-tvyal h2,
+.ai-services-banner-tvyal h3 {
+margin-bottom: 20px;
+color: #ccd6f6;
+}
+.ai-services-banner-tvyal ul {
+margin-bottom: 30px;
+padding-left: 20px;
+}
+.ai-services-banner-tvyal li {
+margin-bottom: 10px;
+}
+.ai-services-banner-tvyal a {
+color: #64ffda;
+text-decoration: none;
+transition: color 0.3s ease;
+}
+.ai-services-banner-tvyal a:hover {
+color: #ffd700;
+text-decoration: underline;
+}
+</style>
+
+<div class="ai-services-banner-tvyal">
+## [Եթե ուզում եք  AI գործիքներով ձեր տվյալներից օգուտ քաղել` ԴԻՄԵՔ ՄԵԶ](mailto:a@tavadyan.com?subject=Let's Put Data to Work!)
+
+### Մենք առաջարկում ենք
+
+- Extensive databases for finding both international and local leads
+- Exclusive reports on the Future of the Armenian Economy
+- Work and browser automation to streamline operations and reduce staffing needs
+- AI models for forecasting growth and optimizing various aspects of your business
+- Advanced dashboarding and BI solutions
+- Algorithmic trading
+
+### [Let's Put Your Data to Work!](mailto:a@tavadyan.com?subject=Let's Put Data to Work!)
+
+### [ՄԻԱՑԵՔ ՄԵՐ ԹԻՄԻՆ](mailto:a@tavadyan.com?subject=Work application)
+</div>
+
+
+---
+
+
+## ԶԼՄ հաղորդագրություն
+
+[Դիտեք Նվեր Մնացականյանին տված իմ վերջին հարցազրույցը](https://youtu.be/_EnZnF7qS5Y?t=198)
+
+📺  Հայաստանի տնտեսությունն աճում է ոսկու վերաարտահանման հաշվին. որտեղից է այն գալիս և որտեղ գնում 📺
+
+<a href="https://youtu.be/_EnZnF7qS5Y?t=198">
+  <img src="https://i3.ytimg.com/vi/_EnZnF7qS5Y/hqdefault.jpg" alt="YouTube Video" style="width:60%;">
+</a>
+
+---
+
+
+## English Summary
+
+### 💹💳🧑‍🏭 Almost 80% of Private Sector Jobs are in Yerevan
+
+**Analysis of inflation-adjusted wages**
+
+
+
+
+---
+
+
+Հարգանքներով,            
+Աղասի Թավադյան         
+14.10.2024          
+[tvyal.com](https://www.tvyal.com/)      
+[tavadyan.com](https://www.tavadyan.com/)
+
+---
+
+[Was this email forwarded to you? Subscribe here.](https://www.tvyal.com/subscribe)
+
+[Բաժանորդագրվեք](https://www.tvyal.com/subscribe)
+
+       
+---              
+               
+
+
+####### **Ուշադրություն. Ձեր էլ.փոստը մեյլլիսթի մեջ է, որի միջոցով ես կիսվում եմ շաբաթական նյութեր, որոնք հիմնականում ներկայացնում են Հայաստանի տնտեսությունը: Նյութերը ներառում են գծապատկերներ, [տվյալների բազաներ](https://github.com/tavad/tvyal_newsletter), տեսանյութեր, հոդվածներ, [առցանց վահանակներ](https://www.tvyal.com/projects), տնտեսական գործիքներ, կանխատեսումներ և հաշվետվություններ: Եթե ցանկանում եք չեղարկել բաժանորդագրությունը, խնդրում եմ տեղեկացրեք ինձ, և ես կհեռացնեմ ձեր էլ. փոստը ցուցակից: Գրեք նաև եթե ունեք մենկնաբանություններ:**
+
+####### **Important! Your email is part of the mailing list where I share weekly materials primarily focused on the Armenian economy. These materials encompass charts, [databases](https://github.com/tavad/tvyal_newsletter), videos, articles, [online dashboards](https://www.tvyal.com/projects), economic tools, forecasts, and reports. If you wish to unsubscribe, please let me know, and I will remove your email from the list. Please share your comments as well․**
+
+
+
+
