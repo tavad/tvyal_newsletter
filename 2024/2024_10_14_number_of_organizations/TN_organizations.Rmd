@@ -370,21 +370,22 @@ ggsave("plots/plot_5_ngo_media_change.png", plot_5_ngo_media_change, width = 10,
 [2016թ. դեկտեմբերին վերացվեց «իրավաբանական անձանց միություն» (ԻԱՄ) կազմակերպաիրավական ձևը:]( https://www.arlis.am/DocumentView.aspx?docid=110836) Սահմանվեց, որ բոլոր նման կազմակերպությունները պետք է մեկ տարվա ընթացքում (մինչև 2017թ. վերջ) վերագրանցվեն որպես հասարակական կազմակերպություն (ՀԿ): 
 
 Սակայն պետք է նշել, որ՝
+
 1. [2023թ. հունիսի դրությամբ դեռևս գրանցվում են ԻԱՄ-ներ:](https://armstat.am/file/article/sv_06_23a_150_.pdf)
 2. Մինչև 2017թ. վերջը գրանցվել է ընդհանուր 347 ԻԱՄ:
 
 Վիճակագրությունը ցույց է տալիս, որ՝
 
 |Տարեթիվ|Ոչ առևտրային ԻԱՄ|Առևտրային ԻԱՄ|Ընդամենը ԻԱՄ|
-|--------|-------------------|---------------|-------------|
-|[Մինչև 01.01.2011](https://armstat.am/file/article/sv_12_10a_150.pdf)|199|97|296|
-|[2011](https://armstat.am/file/article/sv_12_11a_150.pdf)|23|1|24|
-|[2012](https://armstat.am/file/article/sv_12_12a_150.pdf)|6|0|6|
-|[2013](https://armstat.am/file/article/sv_12_13a_150.pdf)|1|3|4|
-|[2014](https://armstat.am/file/article/sv_12_14a_150.pdf)|3|3|6|
-|[2015](https://armstat.am/file/article/sv_12_15a_150.pdf)|1|2|3|
-|[2016](https://armstat.am/file/article/sv_12_16a_150.pdf)|1|0|1|
-|[2017](https://armstat.am/file/article/sv_12_17a_150.pdf)|6|1|7|
+|:--------|-------------------:|---------------:|-------------:|
+|[Մինչև 01.01.2011թ․](https://armstat.am/file/article/sv_12_10a_150.pdf)|199|97|296|
+|[2011թ․](https://armstat.am/file/article/sv_12_11a_150.pdf)|23|1|24|
+|[2012թ․](https://armstat.am/file/article/sv_12_12a_150.pdf)|6|0|6|
+|[2013թ․](https://armstat.am/file/article/sv_12_13a_150.pdf)|1|3|4|
+|[2014թ․](https://armstat.am/file/article/sv_12_14a_150.pdf)|3|3|6|
+|[2015թ․](https://armstat.am/file/article/sv_12_15a_150.pdf)|1|2|3|
+|[2016թ․](https://armstat.am/file/article/sv_12_16a_150.pdf)|1|0|1|
+|[2017թ․](https://armstat.am/file/article/sv_12_17a_150.pdf)|6|1|7|
 |Ընդամենը|240|107|347|
 
 Կարևոր է նշել, որ մինչև 2017թ. վերջ Հայաստանում գրանցված 347 ԻԱՄ-ի թիվը զգալիորեն փոքր է 2017թ. նոյեմբեր-դեկտեմբեր ամիսներին գրանցված 737 ՀԿ-ների թվից:
