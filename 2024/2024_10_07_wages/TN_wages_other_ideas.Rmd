@@ -493,6 +493,303 @@ wages_clean |>
 
 
 
+```{r}
+library(cNORM)
 
 
+wages_db_clean |> 
+  mutate(
+    across(c(wages, wages_cumulative), ~ifelse(nace_2_code == "G" & date == ymd(2024-01-31), .x * 10, .x))
+  )
+  view()
+
+
+
+wages_db_clean_test <- 
+  wages_db_clean %>%
+  filter(
+    !is.na(wages_cumulative) & !is.na(employees),
+    nace_2_code %in% LETTERS,
+    type_eng == "Public",
+    date == min(date)
+  )
+
+
+wages <- wages_db_clean_test$wages_cumulative
+weights <- wages_db_clean_test$employees
+
+
+calculate_weighted_deciles <- function(wages, weights, probs = seq(0.1, 0.9, 0.1), ...) {
+  deciles <- weighted.quantile(x = wages, probs = probs, weights = weights, ...)
+  return(deciles)
+}
+
+
+# Calculate wage deciles by month
+wages_db_clean |> count(type_eng)
+
+wage_deciles <- 
+  wages_db_clean %>%
+  filter(
+    !is.na(wages_cumulative) & !is.na(employees),
+    nace_2_code %in% LETTERS,
+  ) %>%
+  group_by(date, type_eng) %>%
+  # summarise(deciles = list(calculate_weighted_deciles(wages_cumulative, employees))) |> 
+  reframe(
+    deciles = paste0("Decile ", 1:9),
+    wages = calculate_weighted_deciles(wages_cumulative, employees)
+  )
+
+wage_deciles |> 
+  pivot_wider(names_from = deciles, values_from = wages) |> 
+  view()
+
+inf_cumprod <- 
+  inflation_row |> 
+  rename(date = 1, cpi_m = 2) |> 
+  select(date, cpi_m) |> 
+  mutate(
+    date = ym(date) + months(1) - days(1),
+    cpi_m = cpi_m / 100,
+    year = year(date)
+  ) |> 
+  filter(date <= max(wage_deciles$date)) |>
+  select(-year) |> 
+  arrange(desc(date)) |> 
+  mutate(
+    adj_price = cumprod(cpi_m),
+    adj_price = lag(adj_price),
+    adj_price = ifelse(is.na(adj_price), 1, adj_price)
+  )
+
+wage_deciles |> 
+  filter(
+    # type_eng == "Public"
+    type_eng == "Total",
+    # type_eng == "Non-public",
+  ) |> 
+  left_join(inf_cumprod, join_by(date)) |> 
+  # filter(!date %in% ymd("2022-12-31", "2024-01-31")) |> 
+  mutate(
+    wages = wages * adj_price,
+    label_text = ifelse(date == max(date), deciles, NA)
+  ) |>
+  ggplot(aes(date, wages / 1000 , color = deciles, label = label_text)) +
+  geom_line(linewidth = 1, alpha = 1) +
+  geom_text(hjust = -0.2) +
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+  scale_y_continuous(breaks = (1:10)*100) +
+  scale_color_manual(values = rev(colfunc2(9))) +
+  coord_cartesian(clip = "off") +
+  labs(
+    x = NULL,
+    y = NULL,
+    color = NULL,
+    title = "Որքա՞ն է աշխատողների ամսական եկամուտը Հայաստանում",
+    subtitle = "Աշխատավարձերի փոփոխությունը եկամտային հարկումից առաջ ըստ դեցիլների\nաշխատավարձերը ճշգրտվել են 2024 թվականի օգոստոսի գներով և կշռվել",
+    caption = caption_arm
+  ) +
+  theme(
+    panel.grid.major.x = element_blank(),
+    legend.position = "none",
+    plot.margin = margin(10, 30, 10, 10)
+  )
+
+  
+# Display the results
+print(wage_deciles) |> view()
+```
+
+
+```{r}
+wage_1000 <- 
+  wages_db_clean %>% 
+  filter(
+    !is.na(wages_cumulative) & !is.na(employees),
+    nace_2_code %in% LETTERS,
+    type_eng != "Total"
+  ) %>% 
+  group_by(date) %>%
+  # summarise(deciles = list(calculate_weighted_deciles(wages_cumulative, employees))) |> 
+  reframe(
+    deciles = paste0("P", 1:999),
+    wages = calculate_weighted_deciles(wages_cumulative, employees, probs = seq(0.001,0.999,0.001))
+  )
+
+wage_1000 |>
+  filter(date == max(date)) |> 
+  ggplot(aes(wages)) +
+  geom_density()
+
+
+
+wage_group_percentages
+wage_1000 %>%
+  mutate(
+    income_bin = cut(
+      wages/1000,
+      breaks = c(0, 110, 125, 150, 200, 250, 300, 400, 1e6),
+      include.lowest = TRUE
+    )
+  ) |> 
+  group_by(date) |> 
+  count(income_bin) |> 
+  pivot_wider(names_from = income_bin, values_from = n) |> 
+  relocate(date, `[0,110]`) |> 
+  view()
+
+
+  group_by(date) %>%
+  # Use employees as weights
+  count(date, income_bin, wt = employees) %>%
+  group_by(date) %>%
+  mutate(
+    pct = n / sum(n),
+    lower_cut = as.numeric(sub("\\((.+),.*", "\\1", income_bin)),
+    upper_cut = as.numeric(sub("[^,]*,([^]]*)\\]", "\\1", income_bin))
+  ) %>%
+  mutate(
+    label = case_when(
+      lower_cut == 0 ~ paste0(upper_cut, " drams or less"),
+      upper_cut == Inf ~ paste0(lower_cut, " drams or more"),
+      TRUE ~ paste0(lower_cut, " to ", upper_cut, " drams")
+    )
+  ) %>%
+  arrange(lower_cut) %>%
+  mutate(
+    label = factor(label, levels = unique(label)),
+    label = fct_rev(label),
+    # pct_text = ifelse(pct <= 0.01, NA, percent(pct, accuracy = 0.1))
+  ) %>%
+  select(date, label, pct) |> 
+  # pivot_wider(names_from = label, values_from = c(pct), names_glue = "{label}_{.value}") |> 
+  # view()
+
+
+```
+
+
+```{r}
+library(moments)  # for weighted.mean and weighted.sd
+
+wages_db_clean |> 
+  filter(
+    !is.na(wages_cumulative) & !is.na(employees) & wages_cumulative > 0,
+    nace_2_code %in% LETTERS,
+    type_eng != "Total",
+    date %in% ymd("2022-12-31", "2024-01-31")
+  ) |> view()
+  
+
+# Calculate log-normal parameters by date
+lognormal_params <- 
+  wages_db_clean |> 
+  filter(
+    !is.na(wages_cumulative) & !is.na(employees) & wages_cumulative > 0,
+    nace_2_code %in% LETTERS,
+    type_eng != "Total"
+  ) %>%
+  mutate(
+    log_wages = log(wages_cumulative)
+  ) |> 
+  rename(weights = employees) |> 
+  group_by(date) |> 
+  summarise(
+    mean = weighted.mean(log_wages, weights),
+    sd = sqrt(weighted.mean((log_wages - mean)^2, weights)),
+    .groups = "drop"
+  )
+
+lognormal_params |> 
+  rowwise() |> 
+  mutate(
+    deciles = list(setNames(
+      exp(qnorm(seq(0.1, 0.9, 0.1), mean, sd)),
+      paste0("D", seq(10, 90, 10))
+    ))
+  ) |> 
+  ungroup() |> 
+  unnest_wider(deciles) |> 
+  view()
+
+  
+
+  
+
+# Define wage groups
+wage_groups <- c(0, 100, 125, 150, 200, 250, 300, 400, 500, Inf)*1000
+group_labels <- sapply(seq_along(wage_groups)[-1], function(i) {
+  lower <- wage_groups[i-1] / 1000
+  upper <- wage_groups[i] / 1000
+  if (is.infinite(upper)) {
+    return(str_glue("{lower}k+       "))
+  } else if (lower == 0) {
+    return(str_glue("<{upper}k       "))
+  } else {
+    return(str_glue("{lower}k-{upper}k"))
+  }
+})
+
+# Calculate probabilities for each wage group
+wage_group_probabilities <- lognormal_params %>%
+  mutate(
+    probabilities = pmap(list(mean, sd), function(m, s) {
+      probs <- diff(plnorm(wage_groups, meanlog = m, sdlog = s))
+      setNames(probs, group_labels)
+    })
+  ) %>%
+  unnest_wider(probabilities)
+
+# wage_group_probabilities |> view()
+
+# Format the results
+wage_group_probabilities_formatted <- wage_group_probabilities %>%
+  pivot_longer(cols = all_of(group_labels), names_to = "wage_group", values_to = "probability") %>%
+  select(date, wage_group, probability)
+
+# Display the results
+print(wage_group_probabilities_formatted)
+
+colfunc_4 <- colorRampPalette(c("#2f4b7c", "gray50", "#f95d6a"))
+
+
+wage_group_probabilities_formatted %>%
+  mutate(
+    year = lubridate::year(date),
+    label = factor(wage_group, levels = unique(wage_group)),
+    label = fct_rev(label)
+  ) %>%
+  group_by(year) %>%
+  mutate(
+    formatted_pct = ifelse(probability <= 0.01 | month(date) != 12, NA, percent(probability, accuracy = 0.1)),
+  ) |> 
+  ungroup() |> 
+  mutate(label_text = ifelse(date == max(date), wage_group, NA)) |> 
+  ggplot(aes(date, probability, fill = label)) +
+  geom_area(alpha = 1, color = "gray30") +
+  geom_text(aes(label = formatted_pct), position = position_stack(vjust = 0.5), size = 3) +
+  geom_text(aes(label = label_text, color = label), position = position_stack(vjust = 0.5), hjust = -0.15, size = 4) +
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+  scale_fill_manual(values = colfunc(9)) +
+  scale_color_manual(values = colfunc_4(9)) +
+  coord_cartesian(clip = "off") +
+  labs(
+    x = NULL,
+    y = NULL,
+    fill = NULL,
+    color = NULL,
+    title = "Wage Distribution in Armenia Over Time",
+    subtitle = "Percentage of employees in different wage groups by year\nBased on log-normal distribution estimates",
+    caption = caption_f()
+  ) +
+  theme(
+    panel.grid.major.x = element_blank(),
+    panel.grid.major.y = element_blank(),
+    axis.text.y = element_blank(),
+    legend.position = "none",
+    plot.margin = margin(10, 55, 10, 10)
+  )
+
+```
 
