@@ -99,7 +99,23 @@ taxes_first_order <-
 
 taxes_plot_2 <- 
   taxes_first_order |> 
-  mutate(date = date + months(1) - days(1)) |> 
+  arrange(indicator) |> 
+  mutate(
+    date = date + months(1) - days(1),
+    indicator_ru = case_when(
+      indicator == "ԱԱՀ" ~ "НДС",
+      indicator == "Ակցիզային հարկ" ~ "Акцизный налог",
+      indicator == "Մաքսատուրք" ~ "Таможенная пошлина",
+      indicator == "Շահութահարկ" ~ "Налог на прибыль",
+      indicator == "Պետական տուրք" ~ "Государственная пошлина",
+      indicator == "Սոցիալական վճար" ~ "Социальный взнос",
+      indicator == "Եկամտային հարկ" ~ "Подоходный налог",
+      indicator == "Շրջանառության հարկ" ~ "Налог с оборота",
+      indicator == "Բնապահպանական հարկ և բնօգտագործման վճար" ~ "Экологический налог и плата за природопользование",
+      TRUE ~ as.character(indicator)
+    ),
+    indicator_ru = fct_inorder(indicator_ru)
+  ) |> 
   filter(year >= 2018) |> 
   ggplot() +
   geom_line(aes(date, value_roll / 1000), size = 1.5, color = new_palette_colors[2]) +

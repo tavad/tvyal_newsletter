@@ -492,59 +492,7 @@ wages_clean |>
 
 
 
-
 ```{r}
-library(cNORM)
-
-
-wages_db_clean |> 
-  mutate(
-    across(c(wages, wages_cumulative), ~ifelse(nace_2_code == "G" & date == ymd(2024-01-31), .x * 10, .x))
-  )
-  view()
-
-
-
-wages_db_clean_test <- 
-  wages_db_clean %>%
-  filter(
-    !is.na(wages_cumulative) & !is.na(employees),
-    nace_2_code %in% LETTERS,
-    type_eng == "Public",
-    date == min(date)
-  )
-
-
-wages <- wages_db_clean_test$wages_cumulative
-weights <- wages_db_clean_test$employees
-
-
-calculate_weighted_deciles <- function(wages, weights, probs = seq(0.1, 0.9, 0.1), ...) {
-  deciles <- weighted.quantile(x = wages, probs = probs, weights = weights, ...)
-  return(deciles)
-}
-
-
-# Calculate wage deciles by month
-wages_db_clean |> count(type_eng)
-
-wage_deciles <- 
-  wages_db_clean %>%
-  filter(
-    !is.na(wages_cumulative) & !is.na(employees),
-    nace_2_code %in% LETTERS,
-  ) %>%
-  group_by(date, type_eng) %>%
-  # summarise(deciles = list(calculate_weighted_deciles(wages_cumulative, employees))) |> 
-  reframe(
-    deciles = paste0("Decile ", 1:9),
-    wages = calculate_weighted_deciles(wages_cumulative, employees)
-  )
-
-wage_deciles |> 
-  pivot_wider(names_from = deciles, values_from = wages) |> 
-  view()
-
 inf_cumprod <- 
   inflation_row |> 
   rename(date = 1, cpi_m = 2) |> 
@@ -562,6 +510,53 @@ inf_cumprod <-
     adj_price = lag(adj_price),
     adj_price = ifelse(is.na(adj_price), 1, adj_price)
   )
+```
+
+
+
+```{r}
+library(cNORM)
+
+wages_db_clean_bc
+
+wages_db_clean
+wages_db_clean_bc |>
+  filter(
+     date == ymd("2022-12-31")
+  # nace_2_code == "G" & date == ymd("2024-01-31")
+  ) |> view()
+  
+  mutate(
+    across(c(wages, wages_cumulative), ~ifelse(nace_2_code == "G" & date == ymd("2024-01-31") & type_eng == "Non-public", .x * 10, .x))
+  )
+
+
+
+calculate_weighted_deciles <- function(wages, weights, probs = seq(0.1, 0.9, 0.1), ...) {
+  deciles <- weighted.quantile(x = wages, probs = probs, weights = weights, ...)
+  return(deciles)
+}
+
+
+# Calculate wage deciles by month
+# wages_db_clean |> count(type_eng)
+
+wage_deciles <- 
+  wages_db_clean %>%
+  filter(
+    !is.na(wages_cumulative) & !is.na(employees),
+    nace_2_code %in% LETTERS,
+  ) %>%
+  group_by(date, type_eng) %>%
+  # summarise(deciles = list(calculate_weighted_deciles(wages_cumulative, employees))) |> 
+  reframe(
+    deciles = paste0("Decile ", 1:9),
+    wages = calculate_weighted_deciles(wages_cumulative, employees)
+  )
+
+wage_deciles |> 
+  pivot_wider(names_from = deciles, values_from = wages)
+
 
 wage_deciles |> 
   filter(
@@ -598,7 +593,67 @@ wage_deciles |>
 
   
 # Display the results
-print(wage_deciles) |> view()
+# print(wage_deciles) |> view()
+```
+
+```{r}
+
+wage_quantile <- 
+  wages_db_clean %>%
+  filter(
+    !is.na(wages_cumulative) & !is.na(employees),
+    nace_2_code %in% LETTERS,
+  ) %>%
+  group_by(date, type_eng) %>%
+  # summarise(deciles = list(calculate_weighted_deciles(wages_cumulative, employees))) |> 
+  reframe(
+    deciles = c("mean", paste0("Q", 1:3)),
+    wages = c(
+      sum(wages_cumulative * employees) / sum(employees),
+      weighted.quantile(x = wages_cumulative, probs = c(0.25, 0.5, 0.75), weights = employees)
+    )
+  )
+
+
+wage_quantile |> 
+  filter(
+    # type_eng == "Public"
+    type_eng == "Total",
+    # type_eng == "Non-public",
+  ) |> 
+  left_join(inf_cumprod, join_by(date)) |> 
+  # filter(!date %in% ymd("2022-12-31", "2024-01-31")) |> 
+  mutate(
+    wages = wages * adj_price,
+    deciles_name_arm = case_when(
+      deciles == "Q1" ~ "Q3 (ամենացածր 25% շեմ)",
+      deciles == "Q2" ~ "մեդիան աշխատավարձ (Q2)",
+      deciles == "Q3" ~ "Q3 (ամենաբարձր 25% շեմ)",
+      deciles == "mean" ~ "միջին աշխատավարձ",
+    ),
+    label_text = ifelse(date == max(date), deciles_name_arm, NA),
+  ) |>
+  ggplot(aes(date, wages / 1000 , color = deciles, label = label_text)) +
+  geom_line(linewidth = 1, alpha = 1) +
+  geom_text(hjust = 0.5, vjust = -1) +
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+  scale_y_continuous(n.breaks = 8) +
+  scale_color_manual(values = new_palette_colors[c(2,4,6,8)]) +
+  coord_cartesian(clip = "off") +
+  labs(
+    x = NULL,
+    y = NULL,
+    color = NULL,
+    title = "Որքա՞ն է աշխատողների ամսական եկամուտը Հայաստանում",
+    subtitle = "Աշխատավարձերի փոփոխությունը եկամտային հարկումից առաջ ըստ դեցիլների\nաշխատավարձերը ճշգրտվել են 2024 թվականի օգոստոսի գներով և կշռվել",
+    caption = caption_arm
+  ) +
+  theme(
+    panel.grid.major.x = element_blank(),
+    legend.position = "none",
+    plot.margin = margin(10, 60, 10, 10)
+  )
+
 ```
 
 
@@ -679,7 +734,7 @@ wages_db_clean |>
     nace_2_code %in% LETTERS,
     type_eng != "Total",
     date %in% ymd("2022-12-31", "2024-01-31")
-  ) |> view()
+  )
   
 
 # Calculate log-normal parameters by date
@@ -791,6 +846,40 @@ wage_group_probabilities_formatted %>%
     plot.margin = margin(10, 55, 10, 10),
     plot.title = element_text(hjust = 0.1),
     plot.subtitle = element_text(hjust = 0.1)
+  )
+
+lognormal_params |> 
+  mutate(
+    l_mean = exp(mean + sd^2/2),
+    l_median = exp(mean),
+    l_mode = exp(mean - sd^2)
+  ) |> 
+  pivot_longer(
+    contains("l_"), names_to = "central_tendances"
+  ) |> 
+  left_join(inf_cumprod, join_by(date)) |> 
+  # filter(!date %in% ymd("2022-12-31", "2024-01-31")) |> 
+  mutate(
+    value = value * adj_price
+  ) |> 
+  ggplot(aes(date, value, color = central_tendances)) +
+  geom_line(size = 1, alpha = 1) +
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+  scale_y_continuous(n.breaks = 8) +
+  scale_color_manual(values = new_palette_colors[c(2,6,8)]) +
+  coord_cartesian(clip = "off") +
+  labs(
+    x = NULL,
+    y = NULL,
+    color = NULL,
+    title = "central_tendances",
+    subtitle = "Աշխատավարձերի փոփոխությունը եկամտային հարկումից առաջ ըստ դեցիլների\nաշխատավարձերը ճշգրտվել են 2024 թվականի օգոստոսի գներով և կշռվել",
+    caption = caption_arm
+  ) +
+  theme(
+    panel.grid.major.x = element_blank(),
+    # legend.position = "none",
+    plot.margin = margin(10, 60, 10, 10)
   )
 
 ```
