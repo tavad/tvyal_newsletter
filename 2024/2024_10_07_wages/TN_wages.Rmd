@@ -214,7 +214,7 @@ plot2_public_wages_pct <-
     legend.position = "none",
     panel.grid.major.x = element_blank(),
     panel.grid.major.y = element_blank(),
-      plot.title = element_text(hjust = 0.15),
+    plot.title = element_text(hjust = 0.15),
     plot.subtitle = element_text(hjust = 0.15)
   )
 
