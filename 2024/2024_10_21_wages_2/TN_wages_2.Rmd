@@ -1,6 +1,6 @@
 ---
 title: "Tvyal Newsletter"
-date: "2024-10-07"
+date: "2024-10-21"
 output: html_document
 ---
 
@@ -8,11 +8,10 @@ output: html_document
 knitr::opts_chunk$set(echo = FALSE)
 
 library(tidyverse)
-library(rvest)
 library(RcppRoll)
 library(scales)
-library(readxl)
-library(treemapify)
+library(moments)  # for weighted.mean and weighted.sd
+library(cNORM)
 
 # rm(list = ls()); gc()
 
@@ -25,488 +24,16 @@ source("../../initial_setup.R")
 
 ```{r get raw data download, include=FALSE}
 
-wages_raw <- 
-  read_excel("wages_in_armenia_raw_2022.xlsx", skip = 2)
-
-# # run the code below to update CPI data
-# system(
-#   paste0(
-#     "curl \"", "https://www.cba.am/stat/stat_data_eng/6_CPI_eng.xls", "\"",
-#     " -o ", "\"cpi_armenia_eng.xls\""
-#   )
-# )
-
-inflation_raw <- read_excel("cpi_armenia_eng.xls", skip = 3)
-workers_n <- read_excel("wages_more_info.xlsx", sheet = "workers_n")
-public_wages <- read_excel("wages_more_info.xlsx", sheet = 3)
-
-```
-
-
-```{r data cleaning 3, include=FALSE}
-
-# max_year <- wages_raw |> colnames() |> parse_number() |> max(na.rm = TRUE)
-
-# 
-# inf_cumprod <-
-#   inflation_raw |>
-#   rename(date = 1, cpi_m = 2) |>
-#   select(date, cpi_m) |>
-#   mutate(
-#     date = ym(date),
-#     cpi_m = cpi_m / 100,
-#     year = year(date)
-#   ) |>
-#   filter(year <= max_year) |>
-#   mutate(
-#     cpi_yoy = roll_prodr(cpi_m, 12)
-#   ) |>
-#   arrange(desc(date)) |>
-#   mutate(
-#     adj_price = cumprod(cpi_m),
-#     adj_price = lag(adj_price),
-#     adj_price = ifelse(is.na(adj_price), 1, adj_price)
-#   ) |>
-#   group_by(year) |>
-#   filter(date == max(date)) |>
-#   ungroup() |>
-#   select(year, cpi_yoy, adj_price)
-
-
-wages_clean <-
-  wages_raw |>
-  filter(!is.na(`2020`))  |>
-  janitor::clean_names() |>
-  mutate(
-    across(matches("\\d{4}"), ~ifelse(.x == "-", NA, .x)),
-    across(matches("\\d{4}"), ~ as.numeric(.x))
-  ) |>
-  mutate(
-    indicator_arm = str_replace(indicator_arm, "աշխատավարձ, դրամ", "աշխատավարձ ՀՀ ընդհանուր, դրամ"),
-    indicator_arm = str_remove(indicator_arm, "Միջին ամսական անվանական աշխատավարձը? ? ?-? ?\\(?"),
-    indicator_arm = str_remove(indicator_arm, ", դրամ$"),
-    indicator_arm = str_replace_all(indicator_arm, " *- *", " - "),
-
-    indicator_eng = str_remove(indicator_eng, "Average monthly nominal wages? ? ?-? ?\\(? ?b?y? ?"),
-    indicator_eng = str_replace_all(indicator_eng, " *- *", " - "),
-  ) |>
-  extract(
-    indicator_arm, into = c("ind1_arm", "ind2_arm"),
-    regex = "(ըստ .*) - (.*)", remove = FALSE
-  ) |>
-  extract(
-    indicator_eng, into = c("ind1_eng", "ind2_eng"),
-    regex = "(.*) - (.*)", remove = FALSE
-  ) |>
-  # extract(ind1_arm, into = c("ind1", "ind2"),
-  #         regex = "(ըստ .*) *- *(.*)", remove = FALSE) |>
-  # mutate(
-  #   ind1 = ifelse(is.na(ind1), ind1_arm, ind1),
-  #
-  # ) |> view()
-  mutate(
-    correction_2017 = x2017_2 / x2017,
-    correction_2012 = x2012_2 / x2012,
-  ) |>
-  select(-c(x2017_2, x2012_2)) |>
-  pivot_longer(
-    cols = matches("^x\\d{4}$"),
-    names_to = "year", values_to = "wages"
-  ) |>
-  mutate(
-    across(contains("ind"), ~str_trim(.x)),
-    year = parse_number(year),
-    wages_corrected = case_when(
-      year <= 2012 & !is.na(correction_2017) ~ correction_2012 * correction_2017 * wages,
-      year <= 2017 & year > 2012 & !is.na(correction_2017) ~ correction_2017 * wages,
-      TRUE ~ wages
-    )
-  ) |>
-  left_join(inf_cumprod, by = "year") |>
-  mutate(wages_real = wages_corrected * adj_price) |>
-  select(-contains("correction"))
-
-
-rm(wages_raw, inflation_row)
-
-```
-
-
-```{r plot 1, include=FALSE, eval=FALSE}
-
-wages_clean |>
-  filter(grepl("RA Marzes and Yerevan", indicator_eng)) |>
-  mutate(
-    ind1_arm = case_when(
-      grepl("ոչ պետական", ind1_arm) ~ "ոչ պետական",
-      grepl("պետական", ind1_arm) ~ "պետական",
-      TRUE ~ "ընդհանուր"
-    ),
-    ind1_eng = case_when(
-      grepl("Non - Public", ind1_eng) ~ "Non-Public",
-      grepl("Public", ind1_eng) ~ "Public",
-      TRUE ~ "Total"
-    ),
-    ind2_eng = fct_relevel(ind2_eng, "Yerevan"),
-    ind2_arm = fct_relevel(ind2_arm, "ք. Երևան")
-  ) |>
-  ggplot(aes(year, wages_real / 1000, fill = year)) +
-  geom_col() +
-  facet_grid(ind1_eng ~ ind2_eng) +
-  scale_y_continuous(breaks = seq(0, 1000, 100), labels = comma_format()) +
-  scale_x_continuous(labels = NULL, breaks = NULL) +
-  scale_fill_gradient(breaks = 2008:2020,  high = "#2f4b7c", low = "#f95d6a") +
-  labs(
-    x = NULL,
-    y = NULL,
-    title = "Ամսական իրական միջին աշխատավարձը ըստ մարզերի Հայաստանում",
-    subtitle = "հազար դրամ, գաճով ճշգրտված"
-  ) +
-  theme(
-    legend.position = "bottom",
-    legend.key.width = unit(2.5, 'cm'),
-    legend.box =
+# run the code below to update CPI data
+system(
+  paste0(
+    "curl \"", "https://www.cba.am/stat/stat_data_eng/6_CPI_eng.xls", "\"",
+    " -o ", "\"cpi_armenia_eng.xls\""
   )
-
-```
-
-
-```{r main 2, include=FALSE}
-
- # provide 2 consecutive years that are in wages_clean
-years_select = c(max_year - 1, max_year)
-
-date_legend <-
-  tibble(
-    x = 215, y = c(1.5, 2.5),
-    color = c("#2f4b7c", "#f95d6a"),
-    text = rev(years_select),
-    ind1_arm = "պետական",
-    ind1_eng = "Public"
-  )
-
-
-wages_change_2021_22_plot <-
-  wages_clean |>
-  filter(grepl("RA Marzes and Yerevan", indicator_eng)) |>
-  mutate(
-    ind1_arm = case_when(
-      grepl("ոչ պետական", ind1_arm) ~ "ոչ պետական",
-      grepl("պետական", ind1_arm) ~ "պետական",
-      TRUE ~ "ընդհանուր"
-    ),
-    ind1_eng = case_when(
-      grepl("Non - Public", ind1_eng) ~ "Non-Public",
-      grepl("Public", ind1_eng) ~ "Public",
-      TRUE ~ "Total"
-    ),
-    # ind2_eng = fct_relevel(ind2_eng, "Yerevan"),
-    # ind2_arm = fct_relevel(ind2_arm, "ք. Երևան")
-  ) |>
-  filter(year %in% years_select) |>
-  select(ind1_arm, ind2_arm, ind1_eng, ind2_eng, year, wages_real) |>
-  mutate(
-    wages_real = wages_real / 1000,
-    year = ifelse(year == min(year), "begining", "end")
-  ) |>
-  rename(marz_arm = ind2_arm, marz_eng = ind2_eng) |>
-  pivot_wider(names_from = year, values_from = wages_real) |>
-  mutate(
-    marz_arm = fct_reorder(marz_arm, (begining + end)/2, .fun = mean),
-    marz_eng = fct_reorder(marz_eng, (begining + end)/2, .fun = mean),
-    color = ifelse(begining > end, "#f95d6a", "#2f4b7c"),
-    ind1_eng = factor(ind1_eng, levels = c("Total", "Non-Public", "Public"))
-  ) |>
-  ggplot() +
-  facet_grid(~ind1_eng, scales = "free_x", space = "free_x") +
-  geom_segment(
-    aes(x = begining, xend = end,  y = marz_eng,
-        yend = marz_eng, group = ind1_eng, color = I(color)),
-    linewidth = 1.2,
-    lineend = "round", linejoin = "round",
-    arrow = arrow(length = unit(0.1, "inches"))
-  ) +
-  geom_point(aes(x=begining, y=marz_eng, color=I("#f95d6a")), size = 3) +
-  geom_point(aes(x=end, y=marz_eng, color=I("#2f4b7c")), size = 3) +
-  geom_point(data = date_legend, aes(x, y, color = I(color)), size = 3) +
-  geom_text(data = date_legend, aes(x + 15, y, label = text)) +
-  scale_y_discrete() +
-  labs(
-    x = NULL,
-    y = NULL,
-    color = NULL,
-    # title = "Միջին ամսական անվանական աշխատավարձը ըստ մարզերի և տնտեսության հատվածների",
-    # subtitle = "Ներկայացված են իրական աշխատավարձերը, 2022 թվականի 8.3 տոկոս գնաճով ճշգրտված\nհազար ՀՀ դրամ",
-    # caption = paste0(caption_arm, "    |    տվյալների աղբյուր` armstat.am")
-    title = "Average monthly salary by regions and sectors of the economy",
-    subtitle = "Real nominal salaries, thousand AMD, 2021 is adjusted by 8.3% inflation in 2022",
-    caption = paste0(caption_eng, "    |    Data Source: armstat.am")
-  )
-
-
-```
-
-
-```{r plots 32,  include=FALSE, eval=FALSE}
-
-wages_by_sector <-
-  wages_clean |>
-  mutate(
-    ind2_arm = str_trunc(ind2_arm, 30),
-    ind2_eng = str_trunc(ind2_eng, 30)
-  ) |>
-  filter(year %in% years_select) |>
-  select(ind1_arm, ind2_arm, ind1_eng, ind2_eng, year, wages_real) |>
-  mutate(
-    wages_real = wages_real / 1000,
-    year = ifelse(year == min(year), "begining", "end")
-  ) |>
-  pivot_wider(names_from = year, values_from = wages_real) |>
-  mutate(
-    ind2_arm = fct_reorder(ind2_arm, (begining + end)/2, .fun = mean),
-    ind2_eng = fct_reorder(ind2_eng, (begining + end)/2, .fun = mean),
-    color = ifelse(begining > end, "#f95d6a", "#2f4b7c")
-  ) |>
-  ggplot() +
-  geom_segment(
-    aes(x = begining, xend = end,  y = ind2_eng,
-        yend = ind2_eng, group = ind1_eng, color = I(color)),
-    linewidth = 1.2,
-    lineend = 'round', linejoin = 'round',
-    arrow = arrow(length = unit(0.1, "inches"))
-  ) +
-  geom_point(aes(x = begining, y = ind2_eng, color = I("#f95d6a")), size = 3) +
-  geom_point(aes(x = end, y = ind2_eng, color = I("#2f4b7c")), size = 3) +
-  geom_point(data = date_legend, aes(x + 400, y, color = I(color)), size = 3) +
-  geom_text(data = date_legend, aes(x + 480, y, label = text)) +
-  scale_x_log10(breaks = seq(0, 800, 100), limits =c(100, 800)) +
-  scale_y_discrete() +
-  labs(
-    x = NULL,
-    y = NULL,
-    color = NULL,
-    # title = "Միջին ամսական աշխատավարձը ըստ տնտեսական գործունեության",
-    # subtitle = "Ներկայացված են իրական աշխատավարձերը, 2022 թվականի 8.3 տոկոս գնաճով ճշգրտված\nանվանական, հազար ՀՀ դրամ",
-    # caption = paste0(caption_arm, "    |    տվյալների աղբյուր` armstat.am")
-    title = "Average Monthly Salary by Economic Activity",
-    subtitle = "Real nominal salaries, thousand AMD, 2021 is adjusted by 8.3% inflation in 2022",
-    caption = paste0(caption_eng, "    |    Data Source: armstat.am")
-  )
-
-```
-
-
-
-
-
-
-
-
-
-
-```{r main 3, include=FALSE}
-
- # provide 2 consecutive years that are in wages_clean
-years_select = c(max_year - 1, max_year)
-
-date_legend <-
-  tibble(
-    x = 215, y = c(1.5, 2.5),
-    color = c("#2f4b7c", "#f95d6a"),
-    text = rev(years_select),
-    ind1_arm = "պետական",
-    ind1_eng = "Public"
-  )
-
-
-wages_change_2021_22_plot <-
-  wages_clean |>
-  filter(grepl("RA Marzes and Yerevan", indicator_eng)) |>
-  mutate(
-    ind1_arm = case_when(
-      grepl("ոչ պետական", ind1_arm) ~ "ոչ պետական",
-      grepl("պետական", ind1_arm) ~ "պետական",
-      TRUE ~ "ընդհանուր"
-    ),
-    ind1_eng = case_when(
-      grepl("Non - Public", ind1_eng) ~ "Non-Public",
-      grepl("Public", ind1_eng) ~ "Public",
-      TRUE ~ "Total"
-    ),
-    # ind2_eng = fct_relevel(ind2_eng, "Yerevan"),
-    # ind2_arm = fct_relevel(ind2_arm, "ք. Երևան")
-  ) |>
-  filter(year %in% years_select) |>
-  select(ind1_arm, ind2_arm, ind1_eng, ind2_eng, year, wages_real) |>
-  mutate(
-    wages_real = wages_real / 1000,
-    year = ifelse(year == min(year), "begining", "end")
-  ) |>
-  rename(marz_arm = ind2_arm, marz_eng = ind2_eng) |>
-  pivot_wider(names_from = year, values_from = wages_real) |>
-  mutate(
-    marz_arm = fct_reorder(marz_arm, (begining + end)/2, .fun = mean),
-    marz_eng = fct_reorder(marz_eng, (begining + end)/2, .fun = mean),
-    color = ifelse(begining > end, "#f95d6a", "#2f4b7c"),
-    ind1_eng = factor(ind1_eng, levels = c("Total", "Non-Public", "Public"))
-  ) |>
-  ggplot() +
-  facet_grid(~ind1_eng, scales = "free_x", space = "free_x") +
-  geom_segment(
-    aes(x = begining, xend = end,  y = marz_eng,
-        yend = marz_eng, group = ind1_eng, color = I(color)),
-    linewidth = 1.2,
-    lineend = "round", linejoin = "round",
-    arrow = arrow(length = unit(0.1, "inches"))
-  ) +
-  geom_point(aes(x=begining, y=marz_eng, color=I("#f95d6a")), size = 3) +
-  geom_point(aes(x=end, y=marz_eng, color=I("#2f4b7c")), size = 3) +
-  # geom_point(data = date_legend, aes(x, y, color = I(color)), size = 3) +
-  # geom_text(data = date_legend, aes(x + 15, y, label = text)) +
-  scale_x_continuous(breaks = seq(50, 600, 50)) +
-  scale_y_discrete() +
-  labs(
-    x = NULL,
-    y = NULL,
-    color = NULL,
-    # title = "Միջին ամսական անվանական աշխատավարձը ըստ մարզերի և տնտեսության հատվածների",
-    # subtitle = "Ներկայացված են իրական աշխատավարձերը, 2022 թվականի 8.3 տոկոս գնաճով ճշգրտված\nհազար ՀՀ դրամ",
-    # caption = paste0(caption_arm, "    |    տվյալների աղբյուր` armstat.am")
-    title = "Average monthly salary by regions and sectors of the economy",
-    subtitle = "Real nominal salaries, thousand AMD, 2021 (red) is adjusted by 8.3% inflation in 2022 (blue)",
-    caption = paste0(caption_eng, "    |    Data Source: armstat.am")
-  )
-  # theme(
-  #   panel.grid.major.y = element_blank()
-  # )
-
-
-```
-
-
-```{r plots 3,  include=FALSE}
-
-wages_by_sector <-
-  wages_clean |>
-  filter(grepl("Types of Economic Activity", indicator_eng)) |>
-  mutate(
-    ind2_arm = str_trunc(ind2_arm, 30),
-    ind2_eng = str_trunc(ind2_eng, 30)
-  ) |>
-  filter(year %in% years_select) |>
-  select(ind1_arm, ind2_arm, ind1_eng, ind2_eng, year, wages_real) |>
-  mutate(
-    wages_real = wages_real / 1000,
-    year = ifelse(year == min(year), "begining", "end")
-  ) |>
-  pivot_wider(names_from = year, values_from = wages_real) |>
-  mutate(
-    ind2_arm = fct_reorder(ind2_arm, (begining + end)/2, .fun = mean),
-    ind2_eng = fct_reorder(ind2_eng, (begining + end)/2, .fun = mean),
-    color = ifelse(begining > end, "#f95d6a", "#2f4b7c")
-  ) |>
-  ggplot() +
-  geom_segment(
-    aes(x = begining, xend = end,  y = ind2_eng,
-        yend = ind2_eng, group = ind1_eng, color = I(color)),
-    linewidth = 1.2,
-    lineend = 'round', linejoin = 'round',
-    arrow = arrow(length = unit(0.1, "inches"))
-  ) +
-  geom_point(aes(x = begining, y = ind2_eng, color = I("#f95d6a")), size = 3) +
-  geom_point(aes(x = end, y = ind2_eng, color = I("#2f4b7c")), size = 3) +
-  geom_point(data = date_legend, aes(x + 400, y, color = I(color)), size = 3) +
-  geom_text(data = date_legend, aes(x + 480, y, label = text)) +
-  scale_x_log10(breaks = seq(0, 800, 100), limits =c(100, 800)) +
-  scale_y_discrete() +
-  labs(
-    x = NULL,
-    y = NULL,
-    color = NULL,
-    # title = "Միջին ամսական աշխատավարձը ըստ տնտեսական գործունեության",
-    # subtitle = "Ներկայացված են իրական աշխատավարձերը, 2022 թվականի 8.3 տոկոս գնաճով ճշգրտված\nանվանական, հազար ՀՀ դրամ",
-    # caption = paste0(caption_arm, "    |    տվյալների աղբյուր` armstat.am")
-    title = "Average Monthly Salary by Economic Activity",
-    subtitle = "Real nominal salaries, thousand AMD, 2021 is adjusted by 8.3% inflation in 2022",
-    caption = paste0(caption_eng, "    |    Data Source: armstat.am")
-  )
-
-```
-
-
-
-
-
-
-
-
-```{r not run, include=FALSE, warning=FALSE, eval=FALSE}
-wages_clean |>
-  filter(grepl("ըստ կազմակերպության չափի", indicator_arm)) |>
-  mutate(
-    ind1_arm = case_when(
-      grepl("ոչ պետական", ind1_arm) ~ "ոչ պետական",
-      grepl("պետական", ind1_arm) ~ "պետական",
-      TRUE ~ "ընդհանուր"
-    ),
-    ind1_arm = fct_reorder(ind1_arm, wages_real, .desc = TRUE),
-    ind2_arm = str_remove(ind2_arm, "ում$")
-  ) |>
-  ggplot(aes(year, wages_real / 1000, color = ind1_arm)) +
-  geom_line(linewidth = 1.5) +
-  facet_wrap(~ind2_arm, scale = "free_y") +
-  scale_x_continuous(breaks = seq(2008, 2030, 2)) +
-  scale_color_manual(values = new_palette_colors[c(2,6,8)]) +
-  labs(
-    x = NULL,
-    y = NULL,
-    color = NULL,
-    title = "Միջին ամսական անվանական աշխատավարձը ըստ կազմակերպության չափի",
-    subtitle = "Ներկայացված են իրական աշխատավարձերը, 2022 թվականի 8.3 տոկոս գնաճով ճշգրտված\nհազար ՀՀ դրամ",
-    caption = paste0(caption_arm, "    |    տվյալների աղբյուր` armstat.am")
-  )
-
-
-wages_clean |>
-  filter(
-    grepl("ՀՀ ընդհանուր|ըստ սեռի", indicator_arm),
-    !grepl( "նվազագույն", indicator_arm)
-  ) |>
-  mutate(
-    indicator_arm = ifelse(is.na(ind1_arm), indicator_arm, ind2_arm),
-    indicator_arm = fct_reorder(indicator_arm, wages_real, .desc = TRUE),
-  ) |>
-  ggplot(aes(year, wages_real / 1000, color = indicator_arm)) +
-  geom_line(linewidth = 1.5) +
-  scale_x_continuous(breaks = seq(2008, 2030, 2)) +
-  scale_color_manual(values = new_palette_colors[c(2,6,8)]) +
-  labs(
-    x = NULL,
-    y = NULL,
-    color = NULL,
-    title = "Միջին ամսական անվանական աշխատավարձը ըստ սեռի",
-    subtitle = "Ներկայացված են իրական աշխատավարձերը, 2022 թվականի 8.3 տոկոս գնաճով ճշգրտված\nհազար ՀՀ դրամ",
-    caption = paste0(caption_arm, "    |    տվյալների աղբյուր` armstat.am")
-  )
-```
-
-
-
-
-
-
-
-
-
-
-
-```{r}
-wages_db_clean <- read_csv("wages_db_clean.csv")
-  
-wages_db_clean |> 
-  filter(
-nace_2_code == "G" & date %in% ymd("2023-11-30", "2023-12-31", "2024-01-31", "2024-02-29", "2024-03-31") & type_eng == "Non-public"
 )
+
+wages_db_clean <- read_csv("../2024_10_07_wages/wages_db_clean.csv", sheet = 3)
+
 
 inf_cumprod <- 
   inflation_row |> 
@@ -530,19 +57,12 @@ inf_cumprod <-
 
 
 ```{r}
-library(cNORM)
-
-
-
 
 calculate_weighted_deciles <- function(wages, weights, probs = seq(0.1, 0.9, 0.1), ...) {
   deciles <- weighted.quantile(x = wages, probs = probs, weights = weights, ...)
   return(deciles)
 }
 
-
-# Calculate wage deciles by month
-# wages_db_clean |> count(type_eng)
 
 wage_deciles <- 
   wages_db_clean %>%
@@ -595,9 +115,6 @@ wage_deciles |>
     plot.margin = margin(10, 30, 10, 10)
   )
 
-  
-# Display the results
-# print(wage_deciles) |> view()
 ```
 
 ```{r}
@@ -632,7 +149,7 @@ wage_quantile |>
   left_join(inf_cumprod, join_by(date)) |> 
   # filter(!date %in% ymd("2022-12-31", "2024-01-31")) |> 
   mutate(
-    # wages = wages * adj_price,
+    wages = wages * adj_price,
     
     deciles_name_arm = case_when(
       deciles == "Q1" ~ "Միջինից ցածր (Q1)",
@@ -656,8 +173,8 @@ wage_quantile |>
     y = NULL,
     color = NULL,
     title = "Որքա՞ն է աշխատողների ամսական եկամուտը Հայաստանում",
-    # subtitle = "Աշխատավարձերի փոփոխությունը եկամտային հարկումից առաջ\nԱշխատավարձերը ճշգրտվել են 2024թ․ օգուստոսի գնողունակությամբ",
-    subtitle = "Աշխատավարձերի փոփոխությունը եկամտային հարկումից առաջ",
+    subtitle = "Աշխատավարձերի փոփոխությունը եկամտային հարկումից առաջ\nԱշխատավարձերը ճշգրտվել են 2024թ․ օգուստոսի գնողունակությամբ",
+    # subtitle = "Աշխատավարձերի փոփոխությունը եկամտային հարկումից առաջ",
     caption = caption_arm
   ) +
   theme(
@@ -666,9 +183,6 @@ wage_quantile |>
     plot.margin = margin(10, 60, 10, 10)
   )
 
-```
-
-```{r}
 
 wage_quantile |> 
   filter(
@@ -760,8 +274,6 @@ wage_change |>
 
 
 wage_change |> 
-
-  
   mutate(
     deciles_name_arm = case_when(
       deciles == "D9" ~ "Բարձր",
@@ -821,7 +333,7 @@ wage_change |>
     color = new_palette_colors[2], fontface = "bold"
   ) +
   geom_text(
-    data = tibble(x = ymd("2018-01-01"), y = 0.72, label = "ներկայացված եկամտային խմբերով", color = "d"),
+    data = tibble(x = ymd("2018-01-01"), y = 0.72, label = "Ներկայացված եկամտային խմբերով*", color = "d"),
     aes(x, y, label = label),
     hjust = 0, size = 4,
     color = new_palette_colors[5], fontface = "bold"
@@ -838,7 +350,7 @@ wage_change |>
     # title = "Իրական աշխատավարձի\nաճը Հայաստանում",
     # subtitle = "Աշխատավարձերի փոփոխությունը եկամտային հարկումից առաջ\nԱշխատավարձերը ճշգրտվել են 2024թ․ օգուստոսի գնողունակությամբ",
     # subtitleC = "ներկայացված եկամտային խմբերով",
-    caption = caption_arm
+    caption = caption_f(suffix_text = "*Աշխատավարձերը ճշգրտվել են 2024թ․ օգուստոսի գնողունակությամբ")
   ) +
   theme(
     panel.grid.major.x = element_blank(),
@@ -854,22 +366,22 @@ wage_change |>
 
 
 ```{r}
-wage_1000 <- 
-  wages_db_clean %>% 
+wage_1000 <-
+  wages_db_clean %>%
   filter(
     !is.na(wages_cumulative) & !is.na(employees),
     nace_2_code %in% LETTERS,
     type_eng != "Total"
-  ) %>% 
+  ) %>%
   group_by(date) %>%
-  # summarise(deciles = list(calculate_weighted_deciles(wages_cumulative, employees))) |> 
+  # summarise(deciles = list(calculate_weighted_deciles(wages_cumulative, employees))) |>
   reframe(
     deciles = paste0("P", 1:999),
     wages = calculate_weighted_deciles(wages_cumulative, employees, probs = seq(0.001,0.999,0.001))
   )
 
 wage_1000 |>
-  filter(date == max(date)) |> 
+  filter(date == max(date)) |>
   ggplot(aes(wages)) +
   geom_density()
 
@@ -883,13 +395,11 @@ wage_1000 %>%
       breaks = c(0, 110, 125, 150, 200, 250, 300, 400, 1e6),
       include.lowest = TRUE
     )
-  ) |> 
-  group_by(date) |> 
-  count(income_bin) |> 
-  pivot_wider(names_from = income_bin, values_from = n) |> 
-  relocate(date, `[0,110]`) |> 
-  view()
-
+  ) |>
+  group_by(date) |>
+  count(income_bin) |>
+  pivot_wider(names_from = income_bin, values_from = n) |>
+  relocate(date, `[0,110]`)
 
   group_by(date) %>%
   # Use employees as weights
@@ -913,8 +423,8 @@ wage_1000 %>%
     label = fct_rev(label),
     # pct_text = ifelse(pct <= 0.01, NA, percent(pct, accuracy = 0.1))
   ) %>%
-  select(date, label, pct) |> 
-  # pivot_wider(names_from = label, values_from = c(pct), names_glue = "{label}_{.value}") |> 
+  select(date, label, pct) |>
+  # pivot_wider(names_from = label, values_from = c(pct), names_glue = "{label}_{.value}") |>
   # view()
 
 
@@ -922,7 +432,7 @@ wage_1000 %>%
 
 
 ```{r}
-library(moments)  # for weighted.mean and weighted.sd
+
 
 
 # Calculate log-normal parameters by date
@@ -1029,9 +539,9 @@ wage_group_probabilities_formatted |>
     # subtitle = "Percentage of employees in different wage groups by year*",
     # caption = caption_f(suffix_text = "Based on log-normal distribution estimates")
     title = "Ինչքա՞ն աշխատավարձ են ստանում Հայաստանում",
-    # subtitle = "Աշխատողների տոկոսը տարբեր աշխատավարձի խմբերում ըստ տարիների*\nԱշխատավարձերը ճշգրտվել են 2024թ․ օգուստոսի գնողունակությամբ",
-    subtitle = "Աշխատողների տոկոսը տարբեր աշխատավարձի խմբերում ըստ տարիների*",
-    caption = caption_f(suffix_text = "Հաշվարկը հիմնված լոգարիթմական նորմալ բաշխման կշռված գնահատականների վրա")
+    # subtitle = "Աշխատողների տոկոսը տարբեր աշխատավարձային խմբերում ըստ ամիսների*\nԱշխատավարձերը ճշգրտվել են 2024թ․ օգուստոսի գնողունակությամբ",
+    subtitle = "Աշխատողների տոկոսը տարբեր աշխատավարձային խմբերում ըստ ամիսների*",
+    caption = caption_f(suffix_text = "* Հաշվարկը հիմնված լոգարիթմական նորմալ բաշխման կշռված գնահատականների վրա")
   ) +
   theme(
     panel.grid.major.x = element_blank(),
@@ -1160,8 +670,9 @@ wages_db_clean |>
     panel.grid.major.x =  element_line(
       colour = "gray", 
       linetype = "dotted"
-    ),
+    )
   )
+
 ```
 
 
@@ -1170,6 +681,239 @@ wages_db_clean |>
 
 ‼️
 Մենք միշտ ձգտում ենք որ մեր կոզմից հրապարակվող աշխատությունները լինեն հնարավորինս օբյեկտիվ և ապաքաղաքական, որը միշտ չէ որ հաջողվում է։ Tvyal.com-ի արժեքների հիմքում է ճշմարտությունը և ճշգրտությունը։ Նախորդ նյութը հրապարակելիս [«📢✊🕊️ Թավշյա իրարանցում և կազմակերպական փոփոխություն»](https://www.tvyal.com/newsletter/2024/2024_10_14) առկա է մի կարևոր փաստարկի բացակայություն, որը նյութը գրելու պահին մեզ հասանելի չէր։ [2016թ. դեկտեմբերին վերացվեց «իրավաբանական անձանց միություն» (ԻԱՄ) կազմակերպաիրավական ձևը](https://www.arlis.am/DocumentView.aspx?docid=110836): Սահմանվեց, որ բոլոր նման կազմակերպությունները պետք է մեկ տարվա ընթացքում (մինչև 2017թ. վերջ) վերագրանցվեն որպես հասարակական կազմակերպություն (ՀԿ): Այս փաստարկը որոշակիօրեն, սակայն ոչ ամբողջությամբ բացատրում է ՀԿ-ների տարօրինակ աճը 2017-թ․ վերջին։ Կարևոր է նշել որ մինչև 2017թ. վերջ Հայաստանում գրանցված էր 347 ԻԱՄ, որը զգալիորեն փոքր է 2017թ. նոյեմբեր-դեկտեմբեր ամիսներին գրանցված 737 ՀԿ-ների թվից: Սա պահանջում է հետագա հավելյալ հետազոտություն, որը կներառի նաև գրանցված կազմակերպությունները ամբողջական շարքը Հայաստանի երրորդ հանրապետության ձևավորման սկզբից։ [Մանրամասները ավելացվել են տվյալ նյութի վերջում։](https://www.tvyal.com/newsletter/2024/2024_10_14)
+
+
+
+
+
+
+***English summary below.***
+
+Հարգելի գործընկեր,
+
+Հուսով եմ՝ լավ եք: 
+Ներկայացնում եմ այս շաբաթվա վերլուծությունները և աշխատանքները.
+
+## [💹💳🧑‍🏭 Մասնավոր աշխատատեղերի գրեթե 80 տոկոսը Երևանում է](https://www.tvyal.com/newsletter/2024/2024_10_21)
+
+
+
+Գծապատկեր 1.
+
+```{r plot1, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 12, fig.height = 8}
+plot2_public_wages_pct
+ggsave("plots/plot2_pct_non_public.png", plot2_public_wages_pct, width = 12, height = 8)
+```
+
+
+
+Գծապատկեր 2.
+
+```{r plot2, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 12, fig.height = 8}
+plot1_wages_employees
+ggsave("plots/plot1_wages_employees.png", plot1_wages_employees, width = 12, height = 8)
+```
+
+
+
+Գծապատկեր 3.
+
+```{r plot3, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 12, fig.height = 8}
+plot3_emloyee_share
+ggsave("plots/plot3_emloyee_share.png", plot3_emloyee_share, width = 12, height = 8)
+```
+
+
+
+
+Գծապատկեր 4.
+
+```{r plot4, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 9, fig.height = 8}
+plot4_job_avalability
+ggsave("plots/plot4_job_avalability.png", plot4_job_avalability, width = 10, height = 8)
+```
+
+
+
+Գծապատկեր 5.
+
+```{r plot5, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 12, fig.height = 8}
+plot5_public_to_non_public
+ggsave("plots/plot5_public_to_non_public.png", plot5_public_to_non_public, width = 10, height = 8)
+```
+
+
+ 
+>
+> Ձեզ կարող են հետաքրքրել նաև հետևյալ նյութերը.
+>
+>1. [👨‍👩‍👧‍👦✨ Ամուր ընտանիք․ հարուստ ընտանիք](https://www.tvyal.com/newsletter/2024/2024_01_26)
+>2. [🚨📉🕵 Քողարկված անկում. Ինչո՞վ է ապրում Հայաստանի տնտեսությունը](ttps://www.tvyal.com/newsletter/2024/2024_09_30)
+>3. [🐅🌆💸 Հայաստան` Կովկասի վագր, թե՞ թանկ երազանք](ttps://www.tvyal.com/newsletter/2024/2024_08_26)
+>
+
+
+-----
+
+-----
+
+Եթե հնարավոր է, խնդրում եմ այս նյութը ուղարկել նաև այն մարդկանց, ում այն կարծում եք կարող է հետաքրքրել:
+
+**ԱՅՍ ՀՈԴՎԱԾԻ ՀՂՈՒՄԸ**
+
+***Թավադյան, Աղ․Ա․ (2024) Մասնավոր աշխատատեղերի գրեթե 80 տոկոսը Երևանում է [Almost 80% of Private Sector Jobs are in Yerevan], tvyal.com հարթակ [tvyal.com platform], 21-10-2024․ https://www.tvyal.com/newsletter/2024/2024_10_21***
+
+**Արգելվում է այս հարթակի նյութերը արտատպել առանց հղում կատարելու։**    
+
+<small>\* Այս և մեր բոլոր այլ վերլուծությունների տվյալները վերցված են պաշտոնական աղբյուրներից։ Հաշվարկները ամբողջությամբ հասանելի են github-ում, դրանք կարելի է ստուգել` այցելելով [github-ի](https://github.com/tavad/tvyal_newsletter/blob/main/2024/) մեր էջը, որտեղ տրված են տվյալները, հաշվարկների և գծապատկերների կոդը։
+
+</small>
+
+
+-----
+
+# ՀԱՄԱԳՈՐԾԱԿՑՈՒԹՅՈՒՆ
+
+<style>
+.ai-services-banner-tvyal {
+background-color: #0a192f;
+color: #e6f1ff;
+padding: 30px;
+font-family: Arial, sans-serif;
+border-radius: 10px;
+box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+position: relative;
+overflow: hidden;
+min-height: 400px;
+display: flex;
+flex-direction: column;
+justify-content: center;
+}
+.ai-services-banner-tvyal::before {
+content: '';
+position: absolute;
+top: -25%;
+left: -25%;
+right: -25%;
+bottom: -25%;
+background: repeating-radial-gradient(
+circle at 50% 50%,
+rgba(100, 255, 218, 0.1),
+rgba(100, 255, 218, 0.1) 15px,
+transparent 15px,
+transparent 30px
+);
+animation: gaussianWaveTvyal 10s infinite alternate;
+opacity: 0.3;
+z-index: 0;
+}
+@keyframes gaussianWaveTvyal {
+0% {
+transform: scale(1.5) rotate(0deg);
+opacity: 0.2;
+}
+50% {
+transform: scale(2.25) rotate(180deg);
+opacity: 0.5;
+}
+100% {
+transform: scale(1.5) rotate(360deg);
+opacity: 0.2;
+}
+}
+.ai-services-banner-tvyal > * {
+position: relative;
+z-index: 1;
+}
+.ai-services-banner-tvyal h2,
+.ai-services-banner-tvyal h3 {
+margin-bottom: 20px;
+color: #ccd6f6;
+}
+.ai-services-banner-tvyal ul {
+margin-bottom: 30px;
+padding-left: 20px;
+}
+.ai-services-banner-tvyal li {
+margin-bottom: 10px;
+}
+.ai-services-banner-tvyal a {
+color: #64ffda;
+text-decoration: none;
+transition: color 0.3s ease;
+}
+.ai-services-banner-tvyal a:hover {
+color: #ffd700;
+text-decoration: underline;
+}
+</style>
+
+<div class="ai-services-banner-tvyal">
+## [Եթե ուզում եք  AI գործիքներով ձեր տվյալներից օգուտ քաղել` ԴԻՄԵՔ ՄԵԶ](mailto:a@tavadyan.com?subject=Let's Put Data to Work!)
+
+### Մենք առաջարկում ենք
+
+- Extensive databases for finding both international and local leads
+- Exclusive reports on the Future of the Armenian Economy
+- Work and browser automation to streamline operations and reduce staffing needs
+- AI models for forecasting growth and optimizing various aspects of your business
+- Advanced dashboarding and BI solutions
+- Algorithmic trading
+
+### [Let's Put Your Data to Work!](mailto:a@tavadyan.com?subject=Let's Put Data to Work!)
+
+### [ՄԻԱՑԵՔ ՄԵՐ ԹԻՄԻՆ](mailto:a@tavadyan.com?subject=Work application)
+</div>
+
+
+---
+
+
+## ԶԼՄ հաղորդագրություն
+
+[Դիտեք Նվեր Մնացականյանին տված իմ վերջին հարցազրույցը](https://youtu.be/A-PrAKkOfwA)
+
+📺  Հայաստանի տնտեսությունն աճում է ոսկու վերաարտահանման հաշվին. որտեղից է այն գալիս և որտեղ գնում 📺
+
+<a href="https://youtu.be/A-PrAKkOfwA">
+  <img src="https://i3.ytimg.com/vi/A-PrAKkOfwA/hqdefault.jpg" alt="YouTube Video" style="width:60%;">
+</a>
+
+---
+
+
+## English Summary
+
+### 💹💳🧑‍🏭 Almost 80% of Private Sector Jobs are in Yerevan
+
+**Analysis of inflation-adjusted wages**
+
+
+
+
+---
+
+
+Հարգանքներով,            
+Աղասի Թավադյան         
+21.10.2024          
+[tvyal.com](https://www.tvyal.com/)      
+[tavadyan.com](https://www.tavadyan.com/)
+
+---
+
+[Was this email forwarded to you? Subscribe here.](https://www.tvyal.com/subscribe)
+
+[Բաժանորդագրվեք](https://www.tvyal.com/subscribe)
+
+       
+---              
+               
+
+
+####### **Ուշադրություն. Ձեր էլ.փոստը մեյլլիսթի մեջ է, որի միջոցով ես կիսվում եմ շաբաթական նյութեր, որոնք հիմնականում ներկայացնում են Հայաստանի տնտեսությունը: Նյութերը ներառում են գծապատկերներ, [տվյալների բազաներ](https://github.com/tavad/tvyal_newsletter), տեսանյութեր, հոդվածներ, [առցանց վահանակներ](https://www.tvyal.com/projects), տնտեսական գործիքներ, կանխատեսումներ և հաշվետվություններ: Եթե ցանկանում եք չեղարկել բաժանորդագրությունը, խնդրում եմ տեղեկացրեք ինձ, և ես կհեռացնեմ ձեր էլ. փոստը ցուցակից: Գրեք նաև եթե ունեք մենկնաբանություններ:**
+
+####### **Important! Your email is part of the mailing list where I share weekly materials primarily focused on the Armenian economy. These materials encompass charts, [databases](https://github.com/tavad/tvyal_newsletter), videos, articles, [online dashboards](https://www.tvyal.com/projects), economic tools, forecasts, and reports. If you wish to unsubscribe, please let me know, and I will remove your email from the list. Please share your comments as well․**
 
 
 
