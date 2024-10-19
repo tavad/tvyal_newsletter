@@ -469,7 +469,6 @@ lognormal_params |>
   ungroup() |> 
   unnest_wider(deciles)
 
-  
 
   
 
@@ -479,11 +478,11 @@ group_labels <- sapply(seq_along(wage_groups)[-1], function(i) {
   lower <- wage_groups[i-1] / 1000
   upper <- wage_groups[i] / 1000
   if (is.infinite(upper)) {
-    return(str_glue("{lower}k+       "))
+    return(str_glue("{lower}K+       "))
   } else if (lower == 0) {
-    return(str_glue("<{upper}k       "))
+    return(str_glue("<{upper}K       "))
   } else {
-    return(str_glue("{lower}k-{upper}k"))
+    return(str_glue("{lower}K-{upper}K"))
   }
 })
 
@@ -504,8 +503,6 @@ wage_group_probabilities_formatted <- wage_group_probabilities %>%
   pivot_longer(cols = all_of(group_labels), names_to = "wage_group", values_to = "probability") %>%
   select(date, wage_group, probability)
 
-# Display the results
-print(wage_group_probabilities_formatted)
 
 colfunc_4 <- colorRampPalette(c("#2f4b7c", "gray50", "#f95d6a"))
 
