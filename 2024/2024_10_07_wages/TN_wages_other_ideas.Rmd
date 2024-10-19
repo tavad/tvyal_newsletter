@@ -492,7 +492,22 @@ wages_clean |>
 
 
 
+
+
+
+
+
+
+
+
 ```{r}
+wages_db_clean <- read_csv("wages_db_clean.csv")
+  
+wages_db_clean |> 
+  filter(
+nace_2_code == "G" & date %in% ymd("2023-11-30", "2023-12-31", "2024-01-31", "2024-02-29", "2024-03-31") & type_eng == "Non-public"
+)
+
 inf_cumprod <- 
   inflation_row |> 
   rename(date = 1, cpi_m = 2) |> 
@@ -502,7 +517,7 @@ inf_cumprod <-
     cpi_m = cpi_m / 100,
     year = year(date)
   ) |> 
-  filter(date <= max(wage_deciles$date)) |>
+  filter(date <= max(wages_db_clean$date)) |>
   select(-year) |> 
   arrange(desc(date)) |> 
   mutate(
@@ -517,18 +532,6 @@ inf_cumprod <-
 ```{r}
 library(cNORM)
 
-wages_db_clean_bc
-
-wages_db_clean
-wages_db_clean_bc |>
-  filter(
-     date == ymd("2022-12-31")
-  # nace_2_code == "G" & date == ymd("2024-01-31")
-  ) |> view()
-  
-  mutate(
-    across(c(wages, wages_cumulative), ~ifelse(nace_2_code == "G" & date == ymd("2024-01-31") & type_eng == "Non-public", .x * 10, .x))
-  )
 
 
 
@@ -567,7 +570,7 @@ wage_deciles |>
   left_join(inf_cumprod, join_by(date)) |> 
   # filter(!date %in% ymd("2022-12-31", "2024-01-31")) |> 
   mutate(
-    wages = wages * adj_price,
+    # wages = wages * adj_price,
     label_text = ifelse(date == max(date), deciles, NA)
   ) |>
   ggplot(aes(date, wages / 1000 , color = deciles, label = label_text)) +
@@ -582,7 +585,8 @@ wage_deciles |>
     y = NULL,
     color = NULL,
     title = "Որքա՞ն է աշխատողների ամսական եկամուտը Հայաստանում",
-    subtitle = "Աշխատավարձերի փոփոխությունը եկամտային հարկումից առաջ ըստ դեցիլների\nաշխատավարձերը ճշգրտվել են 2024 թվականի օգոստոսի գներով և կշռվել",
+    # subtitle = "Աշխատավարձերի փոփոխությունը եկամտային հարկումից առաջ ըստ դեցիլների\nաշխատավարձերը ճշգրտվել են 2024 թվականի օգոստոսի գներով և կշռվել",
+    subtitle = "Աշխատավարձերի փոփոխությունը եկամտային հարկումից առաջ ըստ դեցիլների",
     caption = caption_arm
   ) +
   theme(
@@ -599,20 +603,24 @@ wage_deciles |>
 ```{r}
 
 wage_quantile <- 
-  wages_db_clean %>%
+  wages_db_clean |> 
   filter(
     !is.na(wages_cumulative) & !is.na(employees),
     nace_2_code %in% LETTERS,
-  ) %>%
-  group_by(date, type_eng) %>%
+  ) |> 
+  group_by(date, type_eng) |> 
   # summarise(deciles = list(calculate_weighted_deciles(wages_cumulative, employees))) |> 
   reframe(
-    deciles = c("mean", paste0("Q", 1:3)),
+    deciles = c("mean", paste0("Q", 1:3), "D99"),
     wages = c(
       sum(wages_cumulative * employees) / sum(employees),
-      weighted.quantile(x = wages_cumulative, probs = c(0.25, 0.5, 0.75), weights = employees)
+      weighted.quantile(x = wages_cumulative, probs = c(0.25, 0.5, 0.75, 0.99), weights = employees)
     )
-  )
+  ) |> 
+  mutate(
+    deciles = factor(deciles, levels = c("Q1", "Q2", "mean", "Q3")) |> fct_rev()
+  ) |> 
+  arrange(deciles)
 
 
 wage_quantile |> 
@@ -625,13 +633,15 @@ wage_quantile |>
   # filter(!date %in% ymd("2022-12-31", "2024-01-31")) |> 
   mutate(
     wages = wages * adj_price,
+    
     deciles_name_arm = case_when(
-      deciles == "Q1" ~ "Q3 (ամենացածր 25% շեմ)",
+      deciles == "Q1" ~ "Q1 (ամենացածր 25% շեմ)",
       deciles == "Q2" ~ "մեդիան աշխատավարձ (Q2)",
       deciles == "Q3" ~ "Q3 (ամենաբարձր 25% շեմ)",
       deciles == "mean" ~ "միջին աշխատավարձ",
     ),
     label_text = ifelse(date == max(date), deciles_name_arm, NA),
+    label_text = fct_inorder(label_text)
   ) |>
   ggplot(aes(date, wages / 1000 , color = deciles, label = label_text)) +
   geom_line(linewidth = 1, alpha = 1) +
@@ -645,12 +655,66 @@ wage_quantile |>
     y = NULL,
     color = NULL,
     title = "Որքա՞ն է աշխատողների ամսական եկամուտը Հայաստանում",
-    subtitle = "Աշխատավարձերի փոփոխությունը եկամտային հարկումից առաջ ըստ դեցիլների\nաշխատավարձերը ճշգրտվել են 2024 թվականի օգոստոսի գներով և կշռվել",
+    subtitle = "Աշխատավարձերի փոփոխությունը եկամտային հարկումից առաջ\nԱշխատավարձերը ճշգրտվել են 2024թ․ օգուստոսի գնողունակությամբ",
+    # subtitle = "Աշխատավարձերի փոփոխությունը եկամտային հարկումից առաջ",
     caption = caption_arm
   ) +
   theme(
     panel.grid.major.x = element_blank(),
     legend.position = "none",
+    plot.margin = margin(10, 60, 10, 10)
+  )
+
+```
+
+```{r}
+
+wage_quantile |> 
+  filter(
+    # type_eng == "Public"
+    type_eng != "Total",
+    # type_eng == "Non-public",
+  ) |> 
+  left_join(inf_cumprod, join_by(date)) |> 
+  # filter(!date %in% ymd("2022-12-31", "2024-01-31")) |> 
+  mutate(
+    # wages = wages * adj_price,
+    
+    deciles_name_arm = case_when(
+      deciles == "Q1" ~ "Q1 (ամենացածր 25% շեմ)",
+      deciles == "Q2" ~ "մեդիան աշխատավարձ (Q2)",
+      deciles == "Q3" ~ "Q3 (ամենաբարձր 25% շեմ)",
+      deciles == "mean" ~ "միջին աշխատավարձ",
+    ),
+    label_text = ifelse(date == max(date), deciles_name_arm, NA),
+    label_text = fct_inorder(label_text),
+    deciles_name_arm = fct_inorder(deciles_name_arm),
+    type_eng = case_when(
+      type_eng == "Public" ~ "Պետական",
+      type_eng == "Total" ~ "Ընդհանուր",
+      type_eng == "Non-public" ~ "Մասնավոր"
+    )
+  ) |>
+  ggplot(aes(date, wages / 1000 , color = deciles_name_arm, label = label_text)) +
+  geom_line(linewidth = 1, alpha = 1) +
+  # geom_text(hjust = 0.5, vjust = -1) +
+  facet_wrap(~type_eng) +
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+  scale_y_continuous(n.breaks = 8) +
+  scale_color_manual(values = new_palette_colors[c(2,4,6,8)]) +
+  coord_cartesian(clip = "off") +
+  labs(
+    x = NULL,
+    y = NULL,
+    color = NULL,
+    title = "Որքա՞ն է աշխատողների ամսական եկամուտը Հայաստանում",
+    # subtitle = "Աշխատավարձերի փոփոխությունը եկամտային հարկումից առաջ\nԱշխատավարձերը ճշգրտվել են 2024թ․ օգուստոսի գնողունակությամբ",
+    subtitle = "Աշխատավարձերի փոփոխությունը եկամտային հարկումից առաջ",
+    caption = caption_arm
+  ) +
+  theme(
+    panel.grid.major.x = element_blank(),
+    # legend.position = "none",
     plot.margin = margin(10, 60, 10, 10)
   )
 
@@ -728,14 +792,6 @@ wage_1000 %>%
 ```{r}
 library(moments)  # for weighted.mean and weighted.sd
 
-wages_db_clean |> 
-  filter(
-    !is.na(wages_cumulative) & !is.na(employees) & wages_cumulative > 0,
-    nace_2_code %in% LETTERS,
-    type_eng != "Total",
-    date %in% ymd("2022-12-31", "2024-01-31")
-  )
-  
 
 # Calculate log-normal parameters by date
 lognormal_params <- 
@@ -743,9 +799,13 @@ lognormal_params <-
   filter(
     !is.na(wages_cumulative) & !is.na(employees) & wages_cumulative > 0,
     nace_2_code %in% LETTERS,
-    type_eng != "Total"
-  ) %>%
+    type_eng == "Total"
+    # type_eng == "Non-public",
+    # type_eng == "Public"
+  ) |> 
+  left_join(inf_cumprod, by = "date") |> 
   mutate(
+    wages_cumulative = wages_cumulative * adj_price,  # comment out to see adjusted wages
     log_wages = log(wages_cumulative)
   ) |> 
   rename(weights = employees) |> 
@@ -765,8 +825,7 @@ lognormal_params |>
     ))
   ) |> 
   ungroup() |> 
-  unnest_wider(deciles) |> 
-  view()
+  unnest_wider(deciles)
 
   
 
@@ -809,13 +868,13 @@ print(wage_group_probabilities_formatted)
 colfunc_4 <- colorRampPalette(c("#2f4b7c", "gray50", "#f95d6a"))
 
 
-wage_group_probabilities_formatted %>%
+wage_group_probabilities_formatted |> 
   mutate(
     year = lubridate::year(date),
     label = factor(wage_group, levels = unique(wage_group)),
     label = fct_rev(label)
   ) %>%
-  group_by(year) %>%
+  group_by(year) |> 
   mutate(
     formatted_pct = ifelse(probability <= 0.01 | month(date) != 12, NA, percent(probability, accuracy = 0.1)),
   ) |> 
@@ -834,9 +893,13 @@ wage_group_probabilities_formatted %>%
     y = NULL,
     fill = NULL,
     color = NULL,
-    title = "Wage Distribution in Armenia Over Time",
-    subtitle = "Percentage of employees in different wage groups by year*",
-    caption = caption_f(suffix_text = "Based on log-normal distribution estimates")
+    # title = "Wage Distribution in Armenia Over Time",
+    # subtitle = "Percentage of employees in different wage groups by year*",
+    # caption = caption_f(suffix_text = "Based on log-normal distribution estimates")
+    title = "Ինչքա՞ն աշխատավարձ են ստանում Հայաստանում",
+    subtitle = "Աշխատողների տոկոսը տարբեր աշխատավարձի խմբերում ըստ տարիների*\nԱշխատավարձերը ճշգրտվել են 2024թ․ օգուստոսի գնողունակությամբ",
+    # subtitle = "Աշխատողների տոկոսը տարբեր աշխատավարձի խմբերում ըստ տարիների*",
+    caption = caption_f(suffix_text = "Հաշվարկը հիմնված լոգարիթմական նորմալ բաշխման կշռված գնահատականների վրա")
   ) +
   theme(
     panel.grid.major.x = element_blank(),
@@ -844,29 +907,38 @@ wage_group_probabilities_formatted %>%
     axis.text.y = element_blank(),
     legend.position = "none",
     plot.margin = margin(10, 55, 10, 10),
-    plot.title = element_text(hjust = 0.1),
-    plot.subtitle = element_text(hjust = 0.1)
+    plot.title = element_text(hjust = 0.13),
+    plot.subtitle = element_text(hjust = 0.13)
   )
+```
+
+```{r}
+
+wages_test <- 
+  wages_db_clean |> 
+  filter(nace_2_code == "A-S", type_eng == "Total") |> 
+  transmute(date, l_wages_cumulative = wages_cumulative)
 
 lognormal_params |> 
   mutate(
-    l_mean = exp(mean + sd^2/2),
+    l_mean = exp(mean + (sd^2)/2),
     l_median = exp(mean),
     l_mode = exp(mean - sd^2)
   ) |> 
+  left_join(wages_test, by = "date") |> 
   pivot_longer(
     contains("l_"), names_to = "central_tendances"
   ) |> 
   left_join(inf_cumprod, join_by(date)) |> 
   # filter(!date %in% ymd("2022-12-31", "2024-01-31")) |> 
   mutate(
-    value = value * adj_price
+    # value = value * adj_price
   ) |> 
   ggplot(aes(date, value, color = central_tendances)) +
   geom_line(size = 1, alpha = 1) +
   scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
   scale_y_continuous(n.breaks = 8) +
-  scale_color_manual(values = new_palette_colors[c(2,6,8)]) +
+  scale_color_manual(values = new_palette_colors[c(2,4,6,8)]) +
   coord_cartesian(clip = "off") +
   labs(
     x = NULL,
@@ -881,6 +953,10 @@ lognormal_params |>
     # legend.position = "none",
     plot.margin = margin(10, 60, 10, 10)
   )
+
+
+
+
 
 ```
 
