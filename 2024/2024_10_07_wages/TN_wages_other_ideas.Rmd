@@ -611,10 +611,10 @@ wage_quantile <-
   group_by(date, type_eng) |> 
   # summarise(deciles = list(calculate_weighted_deciles(wages_cumulative, employees))) |> 
   reframe(
-    deciles = c("mean", paste0("Q", 1:3), "D99"),
+    deciles = c("mean", paste0("Q", 1:3)),
     wages = c(
       sum(wages_cumulative * employees) / sum(employees),
-      weighted.quantile(x = wages_cumulative, probs = c(0.25, 0.5, 0.75, 0.99), weights = employees)
+      weighted.quantile(x = wages_cumulative, probs = c(0.25, 0.5, 0.75), weights = employees)
     )
   ) |> 
   mutate(
@@ -638,6 +638,7 @@ wage_quantile |>
       deciles == "Q1" ~ "Q1 (ամենացածր 25% շեմ)",
       deciles == "Q2" ~ "մեդիան աշխատավարձ (Q2)",
       deciles == "Q3" ~ "Q3 (ամենաբարձր 25% շեմ)",
+      deciles == "P99" ~ "ամենաբարձր 1% շեմ",
       deciles == "mean" ~ "միջին աշխատավարձ",
     ),
     label_text = ifelse(date == max(date), deciles_name_arm, NA),
