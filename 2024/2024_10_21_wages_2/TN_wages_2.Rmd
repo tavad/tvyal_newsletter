@@ -553,7 +553,7 @@ wage_1000 |>
 # Calculate log-normal parameters by date
 lognormal_params_return <- 
   function(
-    adjusted_prices = FALSE, type = "Total", return_db = FALSE,
+    adjusted_prices = FALSE, type = "Total", return_db = 1,
     wage_groups = c(0, 100, 125, 150, 200, 250, 300, 400, 500, Inf)*1000
   ){
     
@@ -573,6 +573,10 @@ lognormal_params_return <-
         mutate(wages_cumulative = wages_cumulative * adj_price)
     }
     
+    if (return_db == 1) {
+      return(lognormal_params)
+    }
+    
     lognormal_params <- lognormal_params |> 
       mutate(
         log_wages = log(wages_cumulative)
@@ -585,7 +589,7 @@ lognormal_params_return <-
         .groups = "drop"
       )
     
-    if (return_db == TRUE) {
+    if (return_db == 2) {
       return(lognormal_params)
     }
     

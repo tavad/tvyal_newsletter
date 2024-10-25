@@ -22,6 +22,8 @@ estimate_loglogistic_params <- function(data) {
   return(tibble(alpha = opt_result$par[1], beta = opt_result$par[2]))
 }
 
+lognormal_params <- lognormal_params_return(adjusted_prices = FALSE, return_db = 1) 
+
 loglogistic_params <- lognormal_params |>  # Assuming this is your original data frame
   group_by(date) |>
   group_modify(~ estimate_loglogistic_params(.x)) |>
@@ -46,8 +48,9 @@ wage_1000 |>
   filter(date == max(date))
 
 last_date_lnorm_params <- 
-  lognormal_params_return(adjusted_prices = FALSE, return_db = TRUE) |> 
+  lognormal_params_return(adjusted_prices = FALSE, return_db = 2) |> 
   filter(date == max(date))
+
 
 last_date_lnorm_values <- 
   tibble(
