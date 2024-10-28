@@ -1,0 +1,140 @@
+import React, { useState, useEffect } from 'react';
+import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, Line } from 'recharts';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+
+const GDPComparisonChart = () => {
+  const [data, setData] = useState([]);
+  const [currentYear, setCurrentYear] = useState(1992);
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  // Colors matching the reference image
+  const colors = {
+    Brazil: '#FFD700',      // Yellow
+    Russia: '#87CEEB',      // Light Blue
+    India: '#FFA500',       // Orange
+    China: '#FF4040',       // Red
+    SouthAfrica: '#90EE90', // Light Green
+    G7: '#000000'          // Black
+  };
+
+  useEffect(() => {
+    // In a real application, you would load the JSON file here
+    fetch('/gdp_comparison_data.json')
+      .then(response => response.json())
+      .then(setData);
+  }, []);
+
+  useEffect(() => {
+    let timer;
+    if (isPlaying) {
+      timer = setInterval(() => {
+        setCurrentYear(year => {
+          const nextYear = year + 1;
+          if (nextYear > 2023) {
+            setIsPlaying(false);
+            return 1992;
+          }
+          return nextYear;
+        });
+      }, 500); // Adjust speed as needed
+    }
+    return () => clearInterval(timer);
+  }, [isPlaying]);
+
+  const filteredData = data.filter(d => d.year <= currentYear);
+
+  return (
+    <Card className="w-full max-w-4xl">
+      <CardHeader>
+        <div className="flex justify-between items-center">
+          <CardTitle className="text-xl font-bold">
+            BRICS versus the G7 - {currentYear}
+          </CardTitle>
+          <button
+            onClick={() => setIsPlaying(!isPlaying)}
+            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          >
+            {isPlaying ? 'Pause' : 'Play'}
+          </button>
+        </div>
+        <div className="text-sm text-gray-500">
+          GDP at purchasing power parity, % of world total
+        </div>
+      </CardHeader>
+      <CardContent>
+        <div className="h-96">
+          <ResponsiveContainer width="100%" height="100%">
+            <AreaChart
+              data={filteredData}
+              margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+            >
+              <XAxis dataKey="year" />
+              <YAxis
+                domain={[0, 50]}
+                tickFormatter={(value) => `${value}%`}
+              />
+              <Tooltip
+                formatter={(value) => [`${value}%`]}
+              />
+              <Line
+                type="monotone"
+                dataKey="G7"
+                stroke={colors.G7}
+                strokeWidth={2}
+                dot={false}
+              />
+              <Area
+                type="monotone"
+                dataKey="Brazil"
+                stackId="1"
+                stroke={colors.Brazil}
+                fill={colors.Brazil}
+              />
+              <Area
+                type="monotone"
+                dataKey="Russia"
+                stackId="1"
+                stroke={colors.Russia}
+                fill={colors.Russia}
+              />
+              <Area
+                type="monotone"
+                dataKey="India"
+                stackId="1"
+                stroke={colors.India}
+                fill={colors.India}
+              />
+              <Area
+                type="monotone"
+                dataKey="China"
+                stackId="1"
+                stroke={colors.China}
+                fill={colors.China}
+              />
+              <Area
+                type="monotone"
+                dataKey="SouthAfrica"
+                stackId="1"
+                stroke={colors.SouthAfrica}
+                fill={colors.SouthAfrica}
+              />
+            </AreaChart>
+          </ResponsiveContainer>
+        </div>
+        <div className="mt-4 flex flex-wrap gap-4">
+          {Object.entries(colors).map(([country, color]) => (
+            <div key={country} className="flex items-center gap-2">
+              <div
+                className="w-4 h-4"
+                style={{ backgroundColor: color }}
+              />
+              <span>{country === 'SouthAfrica' ? 'South Africa' : country}</span>
+            </div>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
+
+export default GDPComparisonChart;

@@ -1,0 +1,161 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BRICS vs G7 GDP Comparison</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- React and ReactDOM -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+    
+    <!-- Recharts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/recharts/2.12.2/Recharts.js"></script>
+    
+    <!-- Babel for JSX -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+</head>
+<body>
+    <div id="root" class="p-8"></div>
+
+    <script type="text/babel">
+        // Data
+        const sampleData = [{"year":1992,"Brazil":2.12,"China":2.94,"India":2.36,"Russia":2.04,"South Africa":0.53,"G7":29.71},{"year":1993,"Brazil":2.22,"China":3.34,"India":2.47,"Russia":1.86,"South Africa":0.54,"G7":29.95},{"year":1994,"Brazil":2.32,"China":3.73,"India":2.6,"Russia":1.6,"South Africa":0.55,"G7":30.53},{"year":1995,"Brazil":2.38,"China":4.08,"India":2.76,"Russia":1.51,"South Africa":0.56,"G7":30.81},{"year":1996,"Brazil":2.38,"China":4.39,"India":2.9,"Russia":1.43,"South Africa":0.57,"G7":31.04},{"year":1997,"Brazil":2.43,"China":4.72,"India":2.97,"Russia":1.43,"South Africa":0.57,"G7":31.5},{"year":1998,"Brazil":2.4,"China":5.03,"India":3.12,"Russia":1.33,"South Africa":0.57,"G7":32.03},{"year":1999,"Brazil":2.37,"China":5.3,"India":3.33,"Russia":1.39,"South Africa":0.57,"G7":32.36},{"year":2000,"Brazil":2.4,"China":5.59,"India":3.36,"Russia":1.52,"South Africa":0.58,"G7":32.7},{"year":2001,"Brazil":2.4,"China":5.98,"India":3.47,"Russia":1.57,"South Africa":0.59,"G7":32.74},{"year":2002,"Brazil":2.45,"China":6.44,"India":3.56,"Russia":1.66,"South Africa":0.6,"G7":32.89},{"year":2003,"Brazil":2.42,"China":6.93,"India":3.75,"Russia":1.83,"South Africa":0.61,"G7":32.69},{"year":2004,"Brazil":2.47,"China":7.38,"India":3.92,"Russia":1.89,"South Africa":0.61,"G7":32.49},{"year":2005,"Brazil":2.48,"China":7.99,"India":4.11,"Russia":2.06,"South Africa":0.63,"G7":32.22},{"year":2006,"Brazil":2.47,"China":8.63,"India":4.25,"Russia":2.4,"South Africa":0.63,"G7":31.8},{"year":2007,"Brazil":2.52,"China":9.48,"India":4.41,"Russia":2.51,"South Africa":0.64,"G7":31.24},{"year":2008,"Brazil":2.69,"China":10.57,"India":4.62,"Russia":3.03,"South Africa":0.67,"G7":31.92},{"year":2009,"Brazil":2.69,"China":11.55,"India":4.98,"Russia":2.89,"South Africa":0.66,"G7":30.88},{"year":2010,"Brazil":2.77,"China":12.23,"India":5.17,"Russia":2.89,"South Africa":0.65,"G7":30.46},{"year":2011,"Brazil":2.78,"China":12.94,"India":5.25,"Russia":3.05,"South Africa":0.65,"G7":29.95},{"year":2012,"Brazil":2.67,"China":13.58,"India":5.5,"Russia":3.11,"South Africa":0.62,"G7":29.55},{"year":2013,"Brazil":2.81,"China":14.73,"India":5.85,"Russia":3.37,"South Africa":0.66,"G7":30.99},{"year":2014,"Brazil":2.75,"China":15.13,"India":5.92,"Russia":3.27,"South Africa":0.64,"G7":30.91},{"year":2015,"Brazil":2.54,"China":15.49,"India":6.12,"Russia":3,"South Africa":0.65,"G7":31.21},{"year":2016,"Brazil":2.38,"China":15.75,"India":6.37,"Russia":2.89,"South Africa":0.63,"G7":31.06},{"year":2017,"Brazil":2.31,"China":15.99,"India":6.49,"Russia":2.96,"South Africa":0.61,"G7":30.73},{"year":2018,"Brazil":2.33,"China":16.42,"India":6.75,"Russia":3.1,"South Africa":0.57,"G7":30.2},{"year":2019,"Brazil":2.31,"China":16.84,"India":6.88,"Russia":3.17,"South Africa":0.55,"G7":29.95},{"year":2020,"Brazil":2.34,"China":17.56,"India":6.8,"Russia":3.24,"South Africa":0.53,"G7":29.59},{"year":2021,"Brazil":2.37,"China":18,"India":7.11,"Russia":3.58,"South Africa":0.53,"G7":29.12},{"year":2022,"Brazil":2.37,"China":18.01,"India":7.39,"Russia":3.41,"South Africa":0.52,"G7":28.73},{"year":2023,"Brazil":2.36,"China":18.36,"India":7.7,"Russia":3.42,"South Africa":0.51,"G7":28.4}];
+
+        // Destructure needed components from Recharts
+        const { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, Line } = Recharts;
+
+        const GDPComparisonChart = () => {
+            const [data, setData] = useState(sampleData);
+            const [currentYear, setCurrentYear] = useState(1992);
+            const [isPlaying, setIsPlaying] = useState(false);
+
+            const colors = {
+                Brazil: "#FFD700",
+                Russia: "#87CEEB",
+                India: "#FFA500",
+                China: "#FF4040",
+                SouthAfrica: "#90EE90",
+                G7: "#000000"
+            };
+
+            useEffect(() => {
+                let timer;
+                if (isPlaying) {
+                    timer = setInterval(() => {
+                        setCurrentYear(year => {
+                            const nextYear = year + 1;
+                            if (nextYear > 2023) {
+                                setIsPlaying(false);
+                                return 1992;
+                            }
+                            return nextYear;
+                        });
+                    }, 500);
+                }
+                return () => clearInterval(timer);
+            }, [isPlaying]);
+
+            const filteredData = data.filter(d => d.year <= currentYear);
+
+            return (
+                <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg">
+                    <div className="p-6">
+                        <div className="flex justify-between items-center mb-4">
+                            <h2 className="text-xl font-bold">
+                                BRICS versus the G7 - {currentYear}
+                            </h2>
+                            <button
+                                onClick={() => setIsPlaying(!isPlaying)}
+                                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                            >
+                                {isPlaying ? "Pause" : "Play"}
+                            </button>
+                        </div>
+                        <div className="text-sm text-gray-500 mb-4">
+                            GDP at purchasing power parity, % of world total
+                        </div>
+                        <div className="h-96">
+                            <ResponsiveContainer width="100%" height="100%">
+                                <AreaChart
+                                    data={filteredData}
+                                    margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+                                >
+                                    <XAxis dataKey="year" />
+                                    <YAxis
+                                        domain={[0, 50]}
+                                        tickFormatter={(value) => `${value}%`}
+                                    />
+                                    <Tooltip formatter={(value) => [`${value}%`]} />
+                                    <Line
+                                        type="monotone"
+                                        dataKey="G7"
+                                        stroke={colors.G7}
+                                        strokeWidth={2}
+                                        dot={false}
+                                    />
+                                    <Area
+                                        type="monotone"
+                                        dataKey="Brazil"
+                                        stackId="1"
+                                        stroke={colors.Brazil}
+                                        fill={colors.Brazil}
+                                    />
+                                    <Area
+                                        type="monotone"
+                                        dataKey="Russia"
+                                        stackId="1"
+                                        stroke={colors.Russia}
+                                        fill={colors.Russia}
+                                    />
+                                    <Area
+                                        type="monotone"
+                                        dataKey="India"
+                                        stackId="1"
+                                        stroke={colors.India}
+                                        fill={colors.India}
+                                    />
+                                    <Area
+                                        type="monotone"
+                                        dataKey="China"
+                                        stackId="1"
+                                        stroke={colors.China}
+                                        fill={colors.China}
+                                    />
+                                    <Area
+                                        type="monotone"
+                                        dataKey="SouthAfrica"
+                                        stackId="1"
+                                        stroke={colors.SouthAfrica}
+                                        fill={colors.SouthAfrica}
+                                    />
+                                </AreaChart>
+                            </ResponsiveContainer>
+                        </div>
+                        <div className="mt-4 flex flex-wrap gap-4">
+                            {Object.entries(colors).map(([country, color]) => (
+                                <div key={country} className="flex items-center gap-2">
+                                    <div 
+                                        className="w-4 h-4"
+                                        style={{ backgroundColor: color }}
+                                    />
+                                    <span>{country === "SouthAfrica" ? "South Africa" : country}</span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // Render the app
+        const { useState, useEffect } = React;
+        ReactDOM.render(<GDPComparisonChart />, document.getElementById("root"));
+    </script>
+</body>
+</html>
+
