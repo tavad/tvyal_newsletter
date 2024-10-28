@@ -1,0 +1,430 @@
+---
+title: "Tvyal Newsletter"
+date: "2024-10-28"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+library(tidyverse)
+library(scales)
+library(RcppRoll)
+library(rvest)
+library(WDI)
+library(janitor)
+library(ggthemes)
+library(zoo)
+
+# rm(list = ls()); gc()
+
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+
+source("../../initial_setup.R")
+
+```
+
+
+```{r get raw data download, include=FALSE}
+
+gdp_ppp <- 
+  WDI(indicator = "NY.GDP.MKTP.PP.CD", start = 1990) |>
+  # WDI(indicator = "NY.GDP.MKTP.CD") |>  
+  as_tibble() |> 
+  rename(gdp_ppp = 5)
+
+gdp_ppp |> write_csv("gdp_ppp.csv")
+
+```
+
+
+```{r russia president gdp plot, include=FALSE}
+
+russia_presidents <- 
+  read_html("https://en.wikipedia.org/wiki/List_of_presidents_of_Russia") |> 
+  html_elements("table") |> 
+  html_table()
+
+russia_presidents <- 
+  russia_presidents[[2]] |> 
+  janitor::row_to_names(row_number = 1) |> 
+  janitor::clean_names() |> 
+  select(president, term_of_office) |> 
+  unique() |> 
+  extract(
+    president, into = c("president_eng", "president_rus"),
+    regex = "([a-zA-Z ]+)([а-яА-Я ]+).+"
+  ) |> 
+  extract(
+    term_of_office, into = c("start", "end"),
+    regex = "([a-zA-Z0-9 ]+) – ([a-zA-Z0-9 ]+).+"
+  ) |> 
+  mutate(
+    start = dmy(start),
+    end = lead(start) - days(1),
+    president_number = as.character(row_number())
+  ) |> 
+  pivot_longer(c(start, end), values_to = "date") |> 
+  filter(!is.na(date))
+
+sanction_date = as.Date("2014-03-26")
+
+gdp_ppp_ceiling <- 
+  gdp_ppp |> 
+  filter(iso3c == "RUS") |> 
+  filter(gdp_ppp == max(gdp_ppp)) |> 
+  mutate(gdp_ppp = ceiling(gdp_ppp/1e12) * 1000) |> 
+  pull(gdp_ppp)
+  
+
+Russia_GDP_plot_data <- 
+  gdp_ppp |> 
+  filter(iso3c == "RUS") |> 
+  mutate(date = ym(paste(year, 12)) + months(1) - days(1)) |> 
+  select(gdp_ppp, date) |> 
+  bind_rows(
+    tibble(date = sanction_date)
+  ) |> 
+  full_join(russia_presidents, join_by(date)) |> 
+  arrange(date) |> 
+  fill(contains("president"), .direction = "down") |> 
+  mutate(
+    gdp_ppp = na.approx(gdp_ppp, x = date, na.rm = FALSE),
+    gdp_ppp = gdp_ppp / 1e9,
+    max_min_value = ifelse(date == max(date) | date == min(date), gdp_ppp, NA),
+    max_min_value = number(max_min_value, accuracy = 1, big.mark = ""),
+    sanctions = ifelse(date >= sanction_date, gdp_ppp_ceiling - gdp_ppp, NA)
+  ) |> 
+  filter(!is.na(gdp_ppp)) |> 
+  select(-name)
+
+
+plot_text <- 
+  russia_presidents |> 
+  pivot_wider(values_from = date) |> 
+  bind_rows(
+    tibble(
+      president_eng = "Sanctions,\neconomic war",
+      president_rus = "Санкции,\nэкономическая война",
+      start = sanction_date
+    )
+  ) |> 
+  mutate(
+    end = ifelse(
+      is.na(end),
+      Russia_GDP_plot_data |>
+        slice_max(date) |>
+        pull(date),
+      end
+    ),
+    start = as.numeric(start),
+    date_middle = (start + end)/2,
+    date_middle = as.Date(date_middle),
+    y = ifelse(!grepl("Sanctions", president_eng), 450, 6000)
+  ) |> 
+  transmute(
+    date = date_middle, y, 
+    president_eng = ifelse(
+      grepl("Medvedev", president_eng),
+      str_replace(president_eng, " ", "\n"), 
+      president_eng
+    )
+  ) |> 
+  mutate(
+    president_eng = case_when(
+      grepl("Yeltsin", president_eng) ~ "Բորիս Ելցին",
+      grepl("Medvedev", president_eng) ~ "Դմիտրի\nՄեդվեդև",  
+      grepl("Putin", president_eng) ~ "Վլադիմիր Պուտին",   
+      grepl("Sanctions", president_eng) ~ "Պատժամիջոցներ,\nտնտեսական պատերազմ",  
+    )
+  )
+
+plot_russia_president_gdp <- 
+  Russia_GDP_plot_data |> 
+  ggplot(aes(date, gdp_ppp)) +
+  geom_area(
+    data =  Russia_GDP_plot_data |> 
+      pivot_longer(c(sanctions, gdp_ppp), values_to = "gdp_ppp") |> 
+      mutate(
+        president_number = ifelse(name == "sanctions", 3.5, president_number),
+      ),
+    mapping = aes(fill = president_number),
+    alpha = 1
+  ) +
+  geom_text(aes(y = gdp_ppp + max(gdp_ppp) * 0.04, label = max_min_value)) +
+  geom_text(
+    data = plot_text,
+    mapping = aes(date, y, label = president_eng, color = ifelse(y == max(y), "black", "white"))
+  ) +
+  geom_line(color = new_palette_colors[6], alpha = 1, linewidth = 1.5) +
+  scale_x_date(
+    date_breaks = "2 years", date_labels = "%Y",
+    limits = c(as.Date("1990-01-01"), as.Date("2024-01-01"))
+  ) +
+  geom_text(
+    data = tibble(x = ymd("1990-01-01"), y = 6800, label = "Ռուսաստանը 4-րդ ամենախոշոր տնտեսությունն է", color = "d"),
+    aes(x, y, label = label),
+    hjust = 0, size = 6.5, alpha = 1,
+    color = new_palette_colors[2], fontface = "bold"
+  ) +
+  geom_text(
+    data = tibble(x = ymd("1990-01-01"), y = 6350, label = "Ռուսատանի ՀՆԱ-ն (գնողութնակության պարիտոտով ճշգրտված)\nՄլրդ ԱՄՆ դոլար", color = "d"),
+    aes(x, y, label = label),
+    hjust = 0, size = 4, alpha = 1,
+    color = new_palette_colors[6], fontface = "bold"
+  ) +
+  # scale_y_log10() +
+  scale_y_continuous(breaks = seq(0, 6e3, 1e3), labels = number_format()) +
+  scale_fill_manual(
+    values = c(new_palette_colors[c(2,6,8)], "#eeeeee", new_palette_colors[6])
+  ) +
+  scale_color_manual(values = c("black", "white")) +
+  labs(
+    x = NULL, y = NULL,
+    # title = "Ռուսաստանը 4-րդ ամենախոշոր տնտեսությունն է",
+    # subtitle = "Ռուսատանի ՀՆԱ-ն (գնողութնակության պարիտոտով ճշգրտված)\nՄլրդ ԱՄՆ դոլար",
+    caption = caption_f(language = "arm", source = "Համաշխարհային բանկ"),
+  ) +
+  theme(
+    legend.position = "drop",
+    panel.grid.major.x = element_blank(),
+    panel.grid.major.y = element_line(
+      colour = "gray", linewidth = 0.1,
+      linetype = 1
+    )
+  )
+
+```
+
+
+```{r}
+
+```
+
+
+
+***English summary below.***
+
+Հարգելի գործընկեր,
+
+Հուսով եմ՝ լավ եք: 
+Ներկայացնում եմ այս շաբաթվա վերլուծությունները և աշխատանքները.
+
+## [💶📏🔎 Աշխատավարձի միջինից այն կողմ](https://www.tvyal.com/newsletter/2024/2024_10_28)
+
+### **Հայաստանի աշխատավարձերի իրական պատկերը․ մեկ երկիր, երկու տարբեր տնտեսություն**
+
+
+Գծապատկեր 1.
+
+```{r plot1, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 12, fig.height = 8}
+plot_1_wage_change_main
+ggsave("plots/plot_1_wage_change_main.png", plot_1_wage_change_main, width = 12, height = 8)
+```
+
+
+
+Գծապատկեր 2.
+
+```{r plot2, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 12, fig.height = 8}
+plot_russia_president_gdp
+ggsave("plots/plot_russia_president_gdp.png", plot_russia_president_gdp, width = 12, height = 8)
+```
+
+
+Գծապատկեր 3.
+
+```{r plot3, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 12, fig.height = 8}
+plot_3_median_wage_adjusted
+ggsave("plots/plot_3_median_wage_adjusted.png", plot_3_median_wage_adjusted, width = 12, height = 8)
+```
+
+
+
+Գծապատկեր 4.
+
+```{r plot4, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 12, fig.height = 8}
+plot_4_wage_groups
+ggsave("plots/plot_4_wage_groups.png", plot_4_wage_groups, width = 12, height = 8)
+```
+
+ 
+>
+> Ձեզ կարող են հետաքրքրել նաև հետևյալ նյութերը.
+>
+>1. [👛💨💰 Դատարկ գրպաններ, բարձր աշխատավարձր](https://www.tvyal.com/newsletter/2024/2024_08_12)
+>2. [👨‍👩‍👧‍👦✨ Ամուր ընտանիք․ հարուստ ընտանիք](https://www.tvyal.com/newsletter/2024/2024_01_26)
+>3. [🚨📉🕵 Քողարկված անկում. Ինչո՞վ է ապրում Հայաստանի տնտեսությունը](https://www.tvyal.com/newsletter/2024/2024_09_30)
+>4. [🐅🌆💸 Հայաստան` Կովկասի վագր, թե՞ թանկ երազանք](https://www.tvyal.com/newsletter/2024/2024_08_26)
+>
+
+
+
+-----
+
+-----
+
+Եթե հնարավոր է, խնդրում եմ այս նյութը ուղարկել նաև այն մարդկանց, ում այն կարծում եք կարող է հետաքրքրել:
+
+**ԱՅՍ ՀՈԴՎԱԾԻ ՀՂՈՒՄԸ**
+
+***Թավադյան, Աղ․Ա․ (2024) Աշխատավարձի միջինից այն կողմ [Beyond the Average Wage], tvyal.com հարթակ [tvyal.com platform], 28-10-2024․ https://www.tvyal.com/newsletter/2024/2024_10_28***
+
+**Արգելվում է այս հարթակի նյութերը արտատպել առանց հղում կատարելու։**    
+
+<small>\* Այս և մեր բոլոր այլ վերլուծությունների տվյալները վերցված են պաշտոնական աղբյուրներից։ Հաշվարկները ամբողջությամբ հասանելի են github-ում, դրանք կարելի է ստուգել` այցելելով [github-ի](https://github.com/tavad/tvyal_newsletter/blob/main/2024/) մեր էջը, որտեղ տրված են տվյալները, հաշվարկների և գծապատկերների կոդը։
+
+</small>
+
+
+-----
+
+# ՀԱՄԱԳՈՐԾԱԿՑՈՒԹՅՈՒՆ
+
+<style>
+.ai-services-banner-tvyal {
+background-color: #0a192f;
+color: #e6f1ff;
+padding: 30px;
+font-family: Arial, sans-serif;
+border-radius: 10px;
+box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+position: relative;
+overflow: hidden;
+min-height: 400px;
+display: flex;
+flex-direction: column;
+justify-content: center;
+}
+.ai-services-banner-tvyal::before {
+content: '';
+position: absolute;
+top: -25%;
+left: -25%;
+right: -25%;
+bottom: -25%;
+background: repeating-radial-gradient(
+circle at 50% 50%,
+rgba(100, 255, 218, 0.1),
+rgba(100, 255, 218, 0.1) 15px,
+transparent 15px,
+transparent 30px
+);
+animation: gaussianWaveTvyal 10s infinite alternate;
+opacity: 0.3;
+z-index: 0;
+}
+@keyframes gaussianWaveTvyal {
+0% {
+transform: scale(1.5) rotate(0deg);
+opacity: 0.2;
+}
+50% {
+transform: scale(2.25) rotate(180deg);
+opacity: 0.5;
+}
+100% {
+transform: scale(1.5) rotate(360deg);
+opacity: 0.2;
+}
+}
+.ai-services-banner-tvyal > * {
+position: relative;
+z-index: 1;
+}
+.ai-services-banner-tvyal h2,
+.ai-services-banner-tvyal h3 {
+margin-bottom: 20px;
+color: #ccd6f6;
+}
+.ai-services-banner-tvyal ul {
+margin-bottom: 30px;
+padding-left: 20px;
+}
+.ai-services-banner-tvyal li {
+margin-bottom: 10px;
+}
+.ai-services-banner-tvyal a {
+color: #64ffda;
+text-decoration: none;
+transition: color 0.3s ease;
+}
+.ai-services-banner-tvyal a:hover {
+color: #ffd700;
+text-decoration: underline;
+}
+</style>
+
+<div class="ai-services-banner-tvyal">
+## [Եթե ուզում եք  AI գործիքներով ձեր տվյալներից օգուտ քաղել` ԴԻՄԵՔ ՄԵԶ](mailto:a@tavadyan.com?subject=Let's Put Data to Work!)
+
+### Մենք առաջարկում ենք
+
+- Extensive databases for finding both international and local leads
+- Exclusive reports on the Future of the Armenian Economy
+- Work and browser automation to streamline operations and reduce staffing needs
+- AI models for forecasting growth and optimizing various aspects of your business
+- Advanced dashboarding and BI solutions
+- Algorithmic trading
+
+### [Let's Put Your Data to Work!](mailto:a@tavadyan.com?subject=Let's Put Data to Work!)
+
+### [ՄԻԱՑԵՔ ՄԵՐ ԹԻՄԻՆ](mailto:a@tavadyan.com?subject=Work application)
+</div>
+
+
+---
+
+
+## ԶԼՄ հաղորդագրություն
+
+[Դիտեք իմ վերջին հարցազրույցը](https://youtu.be/_9FfQ_oBVYU?t=68)
+
+📺  Մեծ կախվածություն ունենք ԵԱՏՄ-ից. մեր արտադրանքը մրցունակ չէ 📺
+
+<a href="https://youtu.be/_9FfQ_oBVYU?t=68">
+  <img src="https://i3.ytimg.com/vi/_9FfQ_oBVYU/hqdefault.jpg" alt="YouTube Video" style="width:60%;">
+</a>
+
+---
+
+
+## English Summary
+
+### 💶📏🔎 Beyond the Average Wage
+
+**The Real Picture of Wages in Armenia: One Country, Two Different Economies**
+
+The analysis of wages in Armenia reveals a stark economic divide, with Yerevan emerging as the country's economic powerhouse. Nearly 80% of the national wage fund is concentrated in the capital, attracting high-paying jobs particularly in finance and IT sectors. This concentration has led to significant wage disparities: while the top 10% of earners have seen their real wages increase by an impressive 70.6% since 2018, those in the bottom 10% have experienced a modest 14.5% growth. The median wage of 223,000 drams (before taxes) is notably lower than the average wage of 282,568 drams, highlighting the skewed income distribution.
+
+The wage analysis also uncovers concerning trends in purchasing power and regional development. When adjusted for inflation, the real wages for lower-income groups have remained virtually stagnant, indicating that despite nominal wage increases, their purchasing power has not improved. To address this growing economic divide, the newsletter proposes a bold strategy of targeted tax incentives to stimulate development in regions outside Yerevan. This approach aims to encourage industrial activity and job creation in less developed areas, potentially expanding the tax base by incentivizing businesses operating in the shadow economy to formalize their operations.
+
+
+
+---
+
+
+Հարգանքներով,            
+Աղասի Թավադյան         
+28.10.2024          
+[tvyal.com](https://www.tvyal.com/)      
+[tavadyan.com](https://www.tavadyan.com/)
+
+---
+
+[Was this email forwarded to you? Subscribe here.](https://www.tvyal.com/subscribe)
+
+[Բաժանորդագրվեք](https://www.tvyal.com/subscribe)
+
+       
+---              
+               
+
+
+####### **Ուշադրություն. Ձեր էլ.փոստը մեյլլիսթի մեջ է, որի միջոցով ես կիսվում եմ շաբաթական նյութեր, որոնք հիմնականում ներկայացնում են Հայաստանի տնտեսությունը: Նյութերը ներառում են գծապատկերներ, [տվյալների բազաներ](https://github.com/tavad/tvyal_newsletter), տեսանյութեր, հոդվածներ, [առցանց վահանակներ](https://www.tvyal.com/projects), տնտեսական գործիքներ, կանխատեսումներ և հաշվետվություններ: Եթե ցանկանում եք չեղարկել բաժանորդագրությունը, խնդրում եմ տեղեկացրեք ինձ, և ես կհեռացնեմ ձեր էլ. փոստը ցուցակից: Գրեք նաև եթե ունեք մենկնաբանություններ:**
+
+####### **Important! Your email is part of the mailing list where I share weekly materials primarily focused on the Armenian economy. These materials encompass charts, [databases](https://github.com/tavad/tvyal_newsletter), videos, articles, [online dashboards](https://www.tvyal.com/projects), economic tools, forecasts, and reports. If you wish to unsubscribe, please let me know, and I will remove your email from the list. Please share your comments as well․**
+
+
+
+
