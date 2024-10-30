@@ -26,6 +26,8 @@ gdp <-
   as_tibble() |> 
   rename(gdp_nominal = NY.GDP.MKTP.CD, gdp_ppp = NY.GDP.MKTP.PP.CD)
 
+facet_labels <- c("GDP, PPP (current international $)", "GDP, nominal (current US$)")
+
 gdp |> 
   filter(iso2c %in% valid_countries) |> 
   pivot_longer(contains("gdp"), names_to = "indicator") |> 
@@ -59,8 +61,8 @@ gdp |>
     country = reorder_within(country, pct, indicator) |> fct_rev(),
     flag = iso_to_unicode_flag(iso2c),
     indicator = case_when(
-      indicator == "gdp_ppp" ~ "GDP, PPP (current international $)",
-      indicator == "gdp_nominal" ~ "GDP, nominal (current US$)"
+      indicator == "gdp_ppp" ~ facet_labels[1],
+      indicator == "gdp_nominal" ~ facet_labels[2]
     )
   ) |> 
   ggplot(aes(country, pct)) +
@@ -79,7 +81,7 @@ gdp |>
         "Better reflects:\n➡️ Industrial output\n➡️ Innovation potential\n➡️ Resource efficiency\n➡️ Living standards\n➡️ Real production capacity\n➡️ Domestic consumption power",
         "Better reflects:\n➡️ International purchasing power\n➡️ Global financial influence\n➡️ Trade capabilities\n➡️ Geopolitical economic leverage\n➡️ Currency market power\n➡️ International debt capacity"
       ),
-      indicator = c("GDP, PPP (current international $)", "GDP, nominal (current US$)")
+      indicator = facet_labels
     ),
     aes(x, y, label = label),
     vjust = 0, hjust = 0,
