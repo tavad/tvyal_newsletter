@@ -47,11 +47,13 @@ gdp |>
   filter(year == max(year)) |> 
   group_by(indicator) |> 
   slice_max(order_by = pct, n = 7) |> 
+  mutate(row_number = as.character(row_number())) |> 
   ungroup() |> 
   mutate(
     country = case_when(
       country == "United Kingdom" ~ "UK", 
       country == "Russian Federation" ~ "Russia",
+      country == "United States" ~ "USA",
       TRUE ~ country
     ),
     country = reorder_within(country, pct, indicator) |> fct_rev(),
@@ -63,16 +65,16 @@ gdp |>
   ) |> 
   ggplot(aes(country, pct)) +
   facet_wrap(~indicator, scales = "free_x") +
-  geom_col(aes(fill = log(pct)), alpha = 1) +
+  geom_col(aes(fill = row_number), alpha = 1) +
   geom_text(aes(y = -0.015, label = flag), size = 8) +
   geom_text(aes(label = pct_text), vjust = -0.3, size = 5) +
   geom_text(
-    aes(y = 0.01, label = dollar(value / 1e12, accuracy = 0.1, suffix = "B")),
+    aes(y = 0.007, label = dollar(value / 1e12, accuracy = 0.1, suffix = "B")),
     color = "white"
   ) +
   geom_text(
     data = tibble(
-      x = 2.8, y = 0.18, 
+      x = 2.8, y = 0.13, 
       label = c(
         "Better reflects:\n➡️ Industrial output\n➡️ Innovation potential\n➡️ Resource efficiency\n➡️ Living standards\n➡️ Real production capacity\n➡️ Domestic consumption power",
         "Better reflects:\n➡️ International purchasing power\n➡️ Global financial influence\n➡️ Trade capabilities\n➡️ Geopolitical economic leverage\n➡️ Currency market power\n➡️ International debt capacity"
@@ -80,17 +82,18 @@ gdp |>
       indicator = c("GDP, PPP (current international $)", "GDP, nominal (current US$)")
     ),
     aes(x, y, label = label),
-    vjust = 0, hjust = 0
+    vjust = 0, hjust = 0,
+    lineheight = 1.7
   ) +
   scale_x_reordered() +
-  # scale_y_continuous(limits = c(0, 0.35)) +
-  scale_fill_gradientn(colors = rev(colfunc2(100)[15:75])) +
+  scale_fill_manual(values = colfunc2(11)[2:8]) +
+  # scale_fill_gradientn(colors = rev(colfunc2(100)[15:75])) +
   labs(
     x = NULL,
     y = NULL,
     fill = NULL,
-    title = "Nominal or PPP GDP, which is better?",
-    subtitle = "The differences between nominal and adjusted GDP",
+    title = "Nominal GDP vs GDP PPP: Which is Better?",
+    subtitle = "The differences between nominal and adjusted GDP in 2023",
     caption = caption_f(language = "eng", source = "World Bank")
   ) +
   theme(
