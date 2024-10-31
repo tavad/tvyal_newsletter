@@ -21,10 +21,11 @@ valid_countries <-
   filter(!is.na(iso2c)) |> 
   pull(iso2c)
 
-gdp <- 
-  WDI::WDI(indicator = c("NY.GDP.MKTP.PP.CD", "NY.GDP.MKTP.CD"), start = 1990) |> 
-  as_tibble() |> 
+
+gdp <-  WDI(indicator = c("NY.GDP.MKTP.PP.CD", "NY.GDP.MKTP.CD"), start = 1990) |>
+  as_tibble() |>
   rename(gdp_nominal = NY.GDP.MKTP.CD, gdp_ppp = NY.GDP.MKTP.PP.CD)
+
 
 facet_labels <- c("GDP, PPP (current international $)", "GDP, nominal (current US$)")
 
@@ -108,3 +109,40 @@ gdp |>
   )
 
 ggsave("plots/gdp_nominal_ppp_diff.png", ggplot2::last_plot(), width = 8, height = 7)
+
+
+#################################################
+
+gdp |> 
+  filter(iso2c %in% c("RU", "KZ", "AM", "IN", "UZ", "CN")) |> 
+  mutate(
+    ppp_convertion = gdp_ppp / gdp_nominal,
+    country = case_when(
+      country == "United Kingdom" ~ "UK", 
+      country == "Russian Federation" ~ "Russia",
+      country == "United States" ~ "USA",
+      TRUE ~ country
+    ),
+    text = paste0(country, ", ", number(ppp_convertion, accuracy = 0.1)),
+    text = ifelse(year == max(year), text, NA)
+  ) |> 
+  ggplot(aes(year, ppp_convertion, color = country)) +
+  geom_line(alpha = 1, linewidth = 1.5) +
+  geom_text(aes(x = year + 0.5, label = text), hjust = 0, alpha = 1) +
+  scale_x_continuous(breaks = seq(1990, 2025, 5)) +
+  scale_y_continuous(breaks = 1:10) +
+  scale_color_manual(values = colfunc3(7)) +
+  coord_cartesian(clip = "off") +
+  labs(
+    x = NULL,
+    y = NULL,
+    color = NULL,
+    title = "PPP conversion ratio",
+    subtitle = "for select countries",
+    caption = "calculated based on data from World Bank"
+  ) +
+  theme(
+    plot.margin = margin(10, 60, 10, 10),
+    legend.position = "drop"
+  )
+
