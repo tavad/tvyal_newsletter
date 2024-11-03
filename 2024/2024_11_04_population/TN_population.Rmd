@@ -1,0 +1,680 @@
+---
+title: "Tvyal Newsletter"
+date: "2024-11-14"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+library(tidyverse)
+library(scales)
+library(RcppRoll)
+library(patchwork)
+library(countrycode)
+library(WDI)
+library(wpp2019)
+
+# rm(list = ls()); gc()
+
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+
+source("../../initial_setup.R")
+
+```
+
+
+```{r get data, include=FALSE}
+
+data(pop)
+data(popMT)
+data(popFT)
+data(popM)
+data(popF)
+
+data(popproj)
+data(popproj80l)
+data(popproj80u)
+data(popproj95l)
+data(popproj95u)
+data(popprojHigh)
+data(popprojLow)
+
+data(popMTproj)
+data(popFTproj)
+
+data(popMprojMed)
+data(popFprojMed)
+data(popMprojHigh)
+data(popFprojHigh)
+data(popMprojLow)
+data(popFprojLow)
+
+```
+
+
+```{r combine data functions, include=FALSE}
+
+convert_population <- function(tbl, value){
+  tbl |> 
+    as_tibble() |> 
+    pivot_longer(
+      matches("\\d{4}"), names_to = "year",
+      values_to = value
+    ) |> 
+    mutate(
+      year = as.numeric(year)
+    )
+}
+
+
+combine_datasets <- function(data_sets, join_by){
+  
+  pop_forecast = NULL
+  for (i in 1:length(data_sets)) {
+    
+    dataset_name <- 
+      names(data_sets)[i]
+    
+    table_converted <- 
+      data_sets[[i]] |> 
+      convert_population(dataset_name)
+    
+    if (is.null(pop_forecast)) {
+      pop_forecast <- 
+        table_converted
+    } else {
+      pop_forecast <- 
+        full_join(
+          pop_forecast, table_converted, 
+          by = join_by
+        )
+    }
+  }
+  
+  return(pop_forecast)
+}
+
+iso_to_unicode_flag <- function(iso2c) {
+  sapply(iso2c, function(code) {
+    if (is.na(code)) return(NA)
+    paste0(
+      intToUtf8(127462L + which(LETTERS == substr(code, 1, 1)) - 1L),
+      intToUtf8(127462L + which(LETTERS == substr(code, 2, 2)) - 1L)
+    )
+  })
+}
+
+```
+
+
+```{r datasets read and write, include=FALSE}
+datasets <- list(
+  pop = pop,
+  popMT = popMT,
+  popFT = popFT,
+  popproj = popproj, 
+  popproj80l = popproj80l,
+  popproj80u = popproj80u,
+  popproj95l = popproj95l,
+  popproj95u = popproj95u, 
+  popprojHigh = popprojHigh,
+  popprojLow = popprojLow,
+  popMTproj = popMTproj,
+  popFTproj = popFTproj
+)
+
+pop_forecast <- 
+  combine_datasets(datasets, join_by = c("country_code", "name", "year"))
+
+pop_forecast |> write_csv("pop_forecast.csv")
+
+# pop_forecast |> view()
+
+
+datasets2 <- list(
+  popM = popM,
+  popF = popF,
+  popMprojMed = popMprojMed,
+  popFprojMed = popFprojMed,
+  popMprojHigh = popMprojHigh,
+  popFprojHigh = popFprojHigh,
+  popMprojLow = popMprojLow,
+  popFprojLow = popFprojLow
+)
+
+pop_forecast_age_gender <- 
+  combine_datasets(datasets2, join_by = c("country_code", "name", "year", "age"))
+
+pop_forecast_age_gender |> write_csv("pop_forecast_age_gender.csv")
+
+
+rm(datasets, datasets2,
+   pop, popMT, popFT, popproj, popproj80l, popproj80u, popproj95l, popproj95u, 
+   popprojHigh, popprojLow, popMTproj, popFTproj,
+   
+   popM, popF, popMprojMed, popFprojMed, popMprojHigh, popFprojHigh,
+   popMprojLow, popFprojLow)
+
+``` 
+
+
+```{r get raw data download, include=FALSE}
+
+fertility_rate <- WDI::WDI(indicator = "SP.DYN.TFRT.IN") |> 
+  as_tibble() |> 
+  rename(fertility = 5)
+
+fertility_rate_plot_data <- 
+  fertility_rate |> 
+  filter(iso2c %in% c("AM", "AZ", "GE", "RU", "TR", "IR")) |> 
+  mutate(
+    country = case_when(
+      country == "Russian Federation" ~ "Russia",
+      TRUE ~ country
+    ),
+    linewidth_marker = ifelse(iso2c %in% c("AM"), "Armenia", "Others"),
+    flag = iso_to_unicode_flag(iso2c),
+    country_label = ifelse(year == min(year), paste(country, flag), NA)
+  )
+
+country_levels <- 
+  fertility_rate_plot_data |> filter(year == min(year)) |> 
+  arrange(desc(fertility)) |> pull(country)
+
+last_yer_growth_plot <- 
+  fertility_rate_plot_data |> 
+  filter(!is.na(fertility)) |> 
+  filter(year == max(year)) |> 
+  mutate(
+    country = factor(country, levels = rev(country_levels)),
+  ) |> 
+  ggplot(aes(fertility, country, fill = country)) +
+  geom_col(alpha = 1) +
+  geom_text(aes(x = 1, label = flag), hjust = -0.2, size = 8) +
+  geom_text(
+    aes(label = number(fertility, accuracy = 0.1), color = ifelse(iso2c == "AM", "#002040", "white")), 
+    hjust = 1.2, size = 5
+  ) +
+  scale_x_log10() +
+  scale_color_manual(values = c("white","#002040")) +
+  scale_fill_manual(values = new_palette_colors[c(7,5,2,4,8,6)]) +
+  labs(
+    x = NULL,
+    y = NULL,
+  ) +
+  theme_void() +
+  theme(legend.position = "drop")
+
+
+fertility_rate_plot_data |> 
+  ggplot(aes(year, fertility, color = country)) +
+  geom_hline(yintercept = 2.1,  color = "#002040") +
+  geom_text(aes(x = year - 1, label = country_label), hjust = 1) +
+  geom_text(
+    data = tibble(x = 1960, y = 1.8, label = "2.1 երեխա.\nհավասարակշռության գիծ", color =""),
+    mapping = aes(x, y, label = label, color = color),
+    hjust = 0, color = "#002040"
+  ) +
+  geom_line(aes(linewidth = linewidth_marker), alpha = 1) +
+  scale_x_continuous(breaks = seq(1960, 2030, 10)) +
+  scale_y_continuous(breaks= 1:7, position = "right") +
+  scale_color_manual(values = new_palette_colors[c(2,4,5,6,7,8)]) +
+  scale_linewidth_manual(values = c(2.2, rep(0.7, 5))) +
+  coord_cartesian(clip = "off") +
+  labs(
+    x = NULL,
+    y = NULL,
+    title = "Բնակչության պտղաբերության մակարդակը",
+    subtitle = "1 կնոջից ծնված երեխաների միջին քանակը",
+    caption = caption_f("Համաշխարհային բանկ")
+  ) +
+  theme(
+    panel.grid.major.x = element_line(
+      colour = "gray", linewidth = 0.1,
+      linetype = 1
+    ),
+    panel.grid.major.y = element_line(
+      colour = "gray", linewidth = 0.1,
+      linetype = 1
+    ),
+    legend.position = "none",
+    plot.margin = margin(10, 10, 10, 50)
+  ) +
+  annotation_custom(
+    grob = ggplotGrob(last_yer_growth_plot), 
+    xmin = 1995, xmax = 2020, 
+    ymin = 4, ymax = 7
+  ) +
+  geom_text(
+    data = tibble(
+      x = 1996, y = 7.2, color = "",
+      label = "2022թ․ ցուցանիշը",
+    ),
+    aes(x, y, label = label, color = color),
+    color = "#002040", size = 5, hjust = 0
+  )
+
+```
+
+
+```{r, include=FALSE}
+
+tibble(
+  fertility = seq(0.8, 3, 0.1)
+) |>
+  mutate(
+    gen1_decline = -(1 - fertility/2.1),
+    gen2_decline = -(1 - (fertility/2.1)^2),
+    gen3_decline = -(1 - (fertility/2.1)^3),
+    gen3_decline = gen3_decline - gen2_decline,
+    gen2_decline = gen2_decline - gen1_decline,
+  ) |> 
+  pivot_longer(
+    contains("decline"), 
+    names_to = "generation",
+    values_to = "decay"
+  ) |> 
+  mutate(
+    generation = ifelse(
+      fertility >= 2.1,
+      str_replace(generation, "decline", "growth"),
+      generation
+    ),
+    generation = fct_inorder(generation),
+    generation = fct_rev(generation),
+    direction = str_remove(generation, "^gen\\d_"),
+    direction = ifelse(fertility == 2.1, NA, direction)
+  ) |> 
+  ggplot(aes(x = fertility, y = decay)) +
+  geom_hline(yintercept = 0, color = new_palette_colors[1]) +
+  geom_col(
+    aes(fill = generation),
+    alpha = 1, position = position_stack()) +
+  geom_text(aes(
+    y = 0, label = ifelse(fertility == 2.1, NA, fertility), 
+    vjust = case_when(
+      direction == "growth" ~ 1.4,
+      direction == "decline" ~ -0.4,
+      TRUE ~ 0.5
+    )
+  )) +
+  geom_text(
+    data = tibble(x = 0.765, y = 0.3, label = "Births per Woman"),
+    mapping = aes(x, y, label = label),
+    hjust = 0, fontface = "bold"
+  ) +
+  geom_segment(
+    data = tibble(x = 2.1, y = 0, xend = 2.1, yend = 1.7),
+    aes(x, y, xend = xend, yend = yend),
+    color = new_palette_colors[1], linetype = 2
+  ) +
+  geom_text(
+    data = tibble(x = 2.05, y = 1.6, label = "2.1 երեխա 1 կնոջից\nհավասարակշռության կետ"),
+    aes(x, y, label = label),
+    color = new_palette_colors[1], hjust = 1,
+  ) +
+  geom_text(
+    data = tibble(x = 2, y = c(-0.7, -0.9), label = c("անկում", "աճ")),
+    aes(x, y, label = label),
+    color = new_palette_colors[1], hjust = 1,
+  ) +
+  scale_y_continuous(
+    breaks = seq(-1, 2, 0.2),
+    labels = scales::percent_format(),
+  ) +
+  scale_fill_manual(
+    values = colfunc2(16)[c(2,4,6,10,12,14)],
+    labels = c("3-րդ սերունդ", "2-րդ սերունդ", "1-ին սերունդ", "3-րդ սերունդ", "2-րդ սերունդ", "1-ին սերունդ")
+  ) +
+  labs(
+    x = NULL,
+    y = NULL,
+    fill = NULL,
+    title = "Population Decay Per Generation",
+    subtitle = "Population Decline",
+    caption = caption_f()
+  ) +
+  guides(fill = guide_legend(reverse = TRUE, byrow = TRUE)) +
+  theme(
+    panel.grid.major.x = element_blank(), 
+    panel.grid.major.y = element_line(
+      colour = "gray", linewidth = 0.1,
+      linetype = 1
+    ),
+    axis.text.x = element_blank(),
+    legend.position = "inside",
+    legend.position.inside = c(0.75, 0.1),
+    legend.background = element_blank()
+  )
+
+```
+
+
+
+```{r armenia population forecast, include=FALSE}
+text_anntotations <- 
+  tibble(
+    x = c(1985, 2062.5),
+    text = c("Իրական տվյալներ", "Կանխատեսում")
+  )
+
+plot_armenia_population_forecast <- 
+  pop_forecast |> 
+  filter(name == "Armenia") |> 
+  mutate(
+    popproj = ifelse(is.na(popproj), pop, popproj),
+    across(contains("pop"), ~.x / 1000)
+    ) |> 
+  ggplot() +
+  geom_col(
+    aes(year, popproj, fill = ifelse(year > 2020, "forecast", "real data")),
+    alpha = 1
+  ) +
+  geom_errorbar(aes(year, ymin = popproj95l, ymax = popproj95u)) +
+  geom_text(
+    data = text_anntotations,
+    mapping = aes(x = x, y = -0.15, label = text)
+  ) +
+  geom_vline(aes(xintercept = 2022.4), alpha = 0.5) +
+  scale_x_continuous(breaks = seq(1950, 2100, 10)) +
+  scale_y_continuous(label = number_format(accuracy = 1)) +
+  scale_fill_manual(values = new_palette_colors[c(6,2)]) +
+  labs(
+    x = NULL,
+    y = NULL,
+    fill = NULL,
+    title = "Հայաստանի բնակչության կանխատեսում",
+    subtitle = "Միլիոն մարդ, 0,95 անորոշության միջակայք",
+    caption = paste0(
+      caption_arm, "   |   Տվյալների աղբյուր` World Population Prospects 2019"
+    )   
+  ) +
+  theme(
+    panel.grid.major.x = element_blank(),
+    legend.position = "drop",
+    panel.grid.major.y = element_line(
+      colour = "gray", linewidth = 0.1,
+      linetype = 1
+    ),
+  )
+
+```
+
+
+```{r sex ratio plot, include=FALSE}
+
+sex_ratio_at_birth <- WDI::WDI(indicator = "SP.POP.BRTH.MF") |> 
+  rename(sex_ratio = SP.POP.BRTH.MF) |> 
+  as_tibble()
+
+sex_ratio_at_birth |> write_csv("sex_ratio_at_birth.csv")
+
+biggest_offenders <- 
+  c("CN", "AM", "AZ", "VN", "GE", "1W")
+
+plot_sex_ratio <- 
+  sex_ratio_at_birth |> 
+  filter(
+    !is.na(sex_ratio),
+    iso2c %in% biggest_offenders,
+    year >= 1970
+  ) |> 
+  left_join(
+    countrycode::codelist |> transmute(iso3c, country_arm = cldr.name.hy),
+    by = "iso3c"
+  ) |> 
+  mutate(
+    country_arm = ifelse(iso2c == "1W", "Աշխարհ", country_arm),
+    sex_ratio = sex_ratio * 100,
+    flag = iso_to_unicode_flag(iso2c),
+    flag = ifelse(iso2c == "1W", "🇺🇳", flag),
+    text = ifelse(
+      year == max(year, na.rm = TRUE),
+      paste0(flag, " ", country_arm, ", ", number(sex_ratio, accuracy = 0.1)),
+      NA
+    ),
+  ) |> 
+  ggplot(aes(year, sex_ratio, color = country, label = text)) +
+  geom_line(linewidth = 1.2) +
+  geom_text(
+    aes(y = ifelse(iso2c == "VN",  sex_ratio * 0.998, sex_ratio)),
+    hjust = -0.1
+  ) +
+  scale_x_continuous(breaks = seq(1960, 2030, 10)) +
+  scale_y_continuous(breaks = seq(100, 120, 2)) +
+  scale_color_manual(values = colfunc3(7)) +
+  coord_cartesian(clip = "off") +
+  labs(
+    x = NULL,
+    y = NULL,
+    fill = NULL,
+    title = "Սեռերի հարաբերակցությունը ծննդաբերության ժամանակ",
+    subtitle = "100 նորածին աղջկան բաժին հասնող նորածին տղաների քանակությունը",
+    caption = caption_f("World Bank Data")
+  ) +
+  theme(
+    legend.position = "drop",
+    plot.margin = margin(10,100,10,10),
+    panel.grid.major.x = element_line(
+      colour = "gray", linewidth = 0.1,
+      linetype = 1
+    ),
+    panel.grid.major.y = element_line(
+      colour = "gray", linewidth = 0.1,
+      linetype = 1
+    ),
+  )
+
+```
+
+
+
+```{r save plots, include=FALSE}
+
+# ggsave("plots/plot_brics_1.png", plot_brics_1, width = 9, height = 8)
+# ggsave("plots/plot_brics_2.png", plot_brics_2, width = 12, height = 8)
+ggsave("plots/plot_russia_president_gdp.png", plot_russia_president_gdp, width = 12, height = 8)
+ggsave("plots/plot_sex_ratio.png", plot_sex_ratio, width = 9, height = 8)
+
+```
+
+***English summary below.***
+
+Հարգելի գործընկեր,
+
+Հուսով եմ՝ լավ եք: 
+Ներկայացնում եմ այս շաբաթվա վերլուծությունները և աշխատանքները.
+
+## [🇷🇺🔗🌍 ԲՐԻՔՍ, 22,000 պատժամիջոց և բլոկչեյն](https://www.tvyal.com/newsletter/2024/2024_11_04)
+
+
+Գծապատկեր 1
+
+![](plots/plot_brics_1.png)
+
+
+
+Գծապատկեր 2
+
+![](plots/plot_russia_president_gdp.png)
+
+
+Գծապատկեր 3
+
+![](plots/plot_russia_sunctions.png)
+
+
+
+Գծապատկեր 4
+
+![](plots/plot_brics_2.png)
+
+
+
+>
+> Ծանոթացեք մեր նախորդ շաբաթական վերլուծությունների հետ
+>
+>* [👛💨💰 Դատարկ գրպաններ, բարձր աշխատավարձեր](https://www.tvyal.com/newsletter/2024/2024_08_12)
+>* [🔌⚡🇦🇲 էլեկտրիկ Հայաստան․ Ցանցի խոցելիությունից մինչև արևային հեռանկարներ](https://www.tvyal.com/newsletter/2024/2024_09_09)
+>* [🚨📉🕵 Քողարկված անկում․ Ինչո՞վ է ապրում Հայաստանի տնտեսությունը](https://www.tvyal.com/newsletter/2024/2024_09_30)
+>* [🆘🇦🇲🧑🏼‍💻 SOS ՀՀ ՏՏ․ ռազմավարական առաջնահերթությունից մինչև հնարավոր անկում](https://www.tvyal.com/newsletter/2024/2024_08_19)
+>
+> [Վերլուծությունների ամբողջական ցանկը այստեղ](https://www.tvyal.com/newsletter)
+
+
+
+
+-----
+
+-----
+
+Եթե հնարավոր է, խնդրում եմ այս նյութը ուղարկել նաև այն մարդկանց, ում այն կարծում եք կարող է հետաքրքրել:
+
+**ԱՅՍ ՀՈԴՎԱԾԻ ՀՂՈՒՄԸ**
+
+***Թավադյան, Աղ․Ա․ (2024) ԲՐԻՔՍ, 22,000 պատժամիջոց և բլոկչեյն [Beyond the Average Wage], tvyal.com հարթակ [tvyal.com platform], 04-11-2024․ https://www.tvyal.com/newsletter/2024/2024_11_04***
+
+**Արգելվում է այս հարթակի նյութերը արտատպել առանց հղում կատարելու։**    
+
+<small>\* Այս և մեր բոլոր այլ վերլուծությունների տվյալները վերցված են պաշտոնական աղբյուրներից։ Հաշվարկները ամբողջությամբ հասանելի են github-ում, դրանք կարելի է ստուգել` այցելելով [github-ի](https://github.com/tavad/tvyal_newsletter/blob/main/2024/) մեր էջը, որտեղ տրված են տվյալները, հաշվարկների և գծապատկերների կոդը։
+
+</small>
+
+
+-----
+
+# ՀԱՄԱԳՈՐԾԱԿՑՈՒԹՅՈՒՆ
+
+<style>
+.ai-services-banner-tvyal {
+background-color: #0a192f;
+color: #e6f1ff;
+padding: 30px;
+font-family: Arial, sans-serif;
+border-radius: 10px;
+box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+position: relative;
+overflow: hidden;
+min-height: 400px;
+display: flex;
+flex-direction: column;
+justify-content: center;
+}
+.ai-services-banner-tvyal::before {
+content: '';
+position: absolute;
+top: -25%;
+left: -25%;
+right: -25%;
+bottom: -25%;
+background: repeating-radial-gradient(
+circle at 50% 50%,
+rgba(100, 255, 218, 0.1),
+rgba(100, 255, 218, 0.1) 15px,
+transparent 15px,
+transparent 30px
+);
+animation: gaussianWaveTvyal 10s infinite alternate;
+opacity: 0.3;
+z-index: 0;
+}
+@keyframes gaussianWaveTvyal {
+0% {
+transform: scale(1.5) rotate(0deg);
+opacity: 0.2;
+}
+50% {
+transform: scale(2.25) rotate(180deg);
+opacity: 0.5;
+}
+100% {
+transform: scale(1.5) rotate(360deg);
+opacity: 0.2;
+}
+}
+.ai-services-banner-tvyal > * {
+position: relative;
+z-index: 1;
+}
+.ai-services-banner-tvyal h2,
+.ai-services-banner-tvyal h3 {
+margin-bottom: 20px;
+color: #ccd6f6;
+}
+.ai-services-banner-tvyal ul {
+margin-bottom: 30px;
+padding-left: 20px;
+}
+.ai-services-banner-tvyal li {
+margin-bottom: 10px;
+}
+.ai-services-banner-tvyal a {
+color: #64ffda;
+text-decoration: none;
+transition: color 0.3s ease;
+}
+.ai-services-banner-tvyal a:hover {
+color: #ffd700;
+text-decoration: underline;
+}
+</style>
+
+<div class="ai-services-banner-tvyal">
+## [Եթե ուզում եք  AI գործիքներով ձեր տվյալներից օգուտ քաղել` ԴԻՄԵՔ ՄԵԶ](mailto:a@tavadyan.com?subject=Let's Put Data to Work!)
+
+### Մենք առաջարկում ենք
+
+- Extensive databases for finding both international and local leads
+- Exclusive reports on the Future of the Armenian Economy
+- Work and browser automation to streamline operations and reduce staffing needs
+- AI models for forecasting growth and optimizing various aspects of your business
+- Advanced dashboarding and BI solutions
+- Algorithmic trading
+
+### [Let's Put Your Data to Work!](mailto:a@tavadyan.com?subject=Let's Put Data to Work!)
+
+### [ՄԻԱՑԵՔ ՄԵՐ ԹԻՄԻՆ](mailto:a@tavadyan.com?subject=Work application)
+</div>
+
+
+---
+
+
+## English Summary
+
+### 🇷🇺🔗🌍 BRICS, 22,000 Sanctions, and Blockchain
+
+***How BRICS+ is Reshaping the Global Economic Architecture***
+
+The 16th BRICS Summit in Kazan demonstrated a significant shift in global economic power dynamics, with BRICS+ nations now representing 46.9% of global GDP (PPP) and 57.4% of the world's population. The expansion to include 13 new partner countries, including strategic economies like Turkey, Indonesia, and Saudi Arabia, marks a pivotal moment in the organization's evolution.
+
+A particularly noteworthy development is Russia's economic resilience despite facing over 19,000 international sanctions since 2022. According to the IMF, Russia has become the world's fourth-largest economy by PPP, raising questions about the effectiveness of economic sanctions in a multipolar world. The summit also introduced concrete initiatives including the BRICS Pay system - a blockchain-based payment mechanism aimed at reducing dependence on SWIFT, and plans for a new grain exchange that could reshape global commodity markets by offering alternatives to dollar-denominated trade.
+
+---
+
+
+Հարգանքներով,            
+Աղասի Թավադյան         
+04.11.2024          
+[tvyal.com](https://www.tvyal.com/)      
+[tavadyan.com](https://www.tavadyan.com/)
+
+---
+
+[Was this email forwarded to you? Subscribe here.](https://www.tvyal.com/subscribe)
+
+[Բաժանորդագրվեք](https://www.tvyal.com/subscribe)
+
+       
+---              
+               
+
+
+####### **Ուշադրություն. Ձեր էլ.փոստը մեյլլիսթի մեջ է, որի միջոցով ես կիսվում եմ շաբաթական նյութեր, որոնք հիմնականում ներկայացնում են Հայաստանի տնտեսությունը: Նյութերը ներառում են գծապատկերներ, [տվյալների բազաներ](https://github.com/tavad/tvyal_newsletter), տեսանյութեր, հոդվածներ, [առցանց վահանակներ](https://www.tvyal.com/projects), տնտեսական գործիքներ, կանխատեսումներ և հաշվետվություններ: Եթե ցանկանում եք չեղարկել բաժանորդագրությունը, խնդրում եմ տեղեկացրեք ինձ, և ես կհեռացնեմ ձեր էլ. փոստը ցուցակից: Գրեք նաև եթե ունեք մենկնաբանություններ:**
+
+####### **Important! Your email is part of the mailing list where I share weekly materials primarily focused on the Armenian economy. These materials encompass charts, [databases](https://github.com/tavad/tvyal_newsletter), videos, articles, [online dashboards](https://www.tvyal.com/projects), economic tools, forecasts, and reports. If you wish to unsubscribe, please let me know, and I will remove your email from the list. Please share your comments as well․**
+
+
+
+
