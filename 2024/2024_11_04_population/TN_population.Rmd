@@ -1,15 +1,18 @@
 ---
 title: "Tvyal Newsletter"
 date: "2024-11-14"
-output: html_document
+output: 
+  html_document:
+    self_contained: false
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(
-  echo = FALSE,
-  out.extra='data-external="1"',
-  fig.path = "https://raw.githubusercontent.com/tavad/tvyal_newsletter/"
-)
+knitr::opts_chunk$set(echo = FALSE)
+
+knitr::knit_hooks$set(plot = function(x, options) {
+  url = paste0("https://raw.githubusercontent.com/tavad/tvyal_newsletter/", x)
+  sprintf('![Alt text](%s)', url)
+})
 
 library(tidyverse)
 library(scales)
