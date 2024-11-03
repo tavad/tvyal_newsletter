@@ -175,6 +175,7 @@ fertility_rate_plot_data <-
     ),
     linewidth_marker = ifelse(iso2c %in% c("AM"), "Armenia", "Others"),
     flag = iso_to_unicode_flag(iso2c),
+    country = countrycode(iso3c, origin = "iso3c", destination = "cldr.name.hy"),
     country_label = ifelse(year == min(year), paste(country, flag), NA)
   )
 
@@ -198,7 +199,7 @@ last_yer_growth_plot <-
   ) +
   scale_x_log10() +
   scale_color_manual(values = c("white","#002040")) +
-  scale_fill_manual(values = new_palette_colors[c(7,5,2,4,8,6)]) +
+  scale_fill_manual(values = new_palette_colors[c(7,8,2,4,5,6)]) +
   labs(
     x = NULL,
     y = NULL,
@@ -206,8 +207,8 @@ last_yer_growth_plot <-
   theme_void() +
   theme(legend.position = "drop")
 
-
-fertility_rate_plot_data |> 
+plot_fertility_change <-
+  fertility_rate_plot_data |> 
   ggplot(aes(year, fertility, color = country)) +
   geom_hline(yintercept = 2.1,  color = "#002040") +
   geom_text(aes(x = year - 1, label = country_label), hjust = 1) +
@@ -219,7 +220,7 @@ fertility_rate_plot_data |>
   geom_line(aes(linewidth = linewidth_marker), alpha = 1) +
   scale_x_continuous(breaks = seq(1960, 2030, 10)) +
   scale_y_continuous(breaks= 1:7, position = "right") +
-  scale_color_manual(values = new_palette_colors[c(2,4,5,6,7,8)]) +
+  scale_color_manual(values = new_palette_colors[c(4,5,6,2,7,8)]) +
   scale_linewidth_manual(values = c(2.2, rep(0.7, 5))) +
   coord_cartesian(clip = "off") +
   labs(
@@ -239,7 +240,7 @@ fertility_rate_plot_data |>
       linetype = 1
     ),
     legend.position = "none",
-    plot.margin = margin(10, 10, 10, 50)
+    plot.margin = margin(10, 10, 10, 66)
   ) +
   annotation_custom(
     grob = ggplotGrob(last_yer_growth_plot), 
@@ -260,9 +261,10 @@ fertility_rate_plot_data |>
 
 ```{r, include=FALSE}
 
-tibble(
-  fertility = seq(0.8, 3, 0.1)
-) |>
+fertility_factor_data <- 
+  tibble(
+    fertility = seq(0.8, 3, 0.1)
+  ) |>
   mutate(
     gen1_decline = -(1 - fertility/2.1),
     gen2_decline = -(1 - (fertility/2.1)^2),
@@ -285,7 +287,10 @@ tibble(
     generation = fct_rev(generation),
     direction = str_remove(generation, "^gen\\d_"),
     direction = ifelse(fertility == 2.1, NA, direction)
-  ) |> 
+  )
+
+plot_fertility_factor <- 
+  fertility_factor_data |> 
   ggplot(aes(x = fertility, y = decay)) +
   geom_hline(yintercept = 0, color = new_palette_colors[1]) +
   geom_col(
@@ -315,7 +320,7 @@ tibble(
     color = new_palette_colors[1], hjust = 1,
   ) +
   geom_text(
-    data = tibble(x = 2, y = c(-0.7, -0.9), label = c("անկում", "աճ")),
+    data = tibble(x = 2.07, y = c(-0.72, -0.88), label = c("անկում", "աճ")),
     aes(x, y, label = label),
     color = new_palette_colors[1], hjust = 1,
   ) +
@@ -344,7 +349,7 @@ tibble(
     ),
     axis.text.x = element_blank(),
     legend.position = "inside",
-    legend.position.inside = c(0.75, 0.1),
+    legend.position.inside = c(0.75, 0.092),
     legend.background = element_blank()
   )
 
@@ -359,7 +364,7 @@ text_anntotations <-
     text = c("Իրական տվյալներ", "Կանխատեսում")
   )
 
-plot_armenia_population_forecast <- 
+plot_arm_population_forecast <- 
   pop_forecast |> 
   filter(name == "Armenia") |> 
   mutate(
@@ -420,11 +425,8 @@ plot_sex_ratio <-
     iso2c %in% biggest_offenders,
     year >= 1970
   ) |> 
-  left_join(
-    countrycode::codelist |> transmute(iso3c, country_arm = cldr.name.hy),
-    by = "iso3c"
-  ) |> 
   mutate(
+    country_arm = countrycode(iso3c, origin = "iso3c", destination = "cldr.name.hy"),
     country_arm = ifelse(iso2c == "1W", "Աշխարհ", country_arm),
     sex_ratio = sex_ratio * 100,
     flag = iso_to_unicode_flag(iso2c),
@@ -436,10 +438,10 @@ plot_sex_ratio <-
     ),
   ) |> 
   ggplot(aes(year, sex_ratio, color = country, label = text)) +
-  geom_line(linewidth = 1.2) +
+  geom_line(linewidth = 1.5) +
   geom_text(
-    aes(y = ifelse(iso2c == "VN",  sex_ratio * 0.998, sex_ratio)),
-    hjust = -0.1
+    aes(x = year + 1, y = ifelse(iso2c == "VN",  sex_ratio * 0.998, sex_ratio)),
+    hjust = 0
   ) +
   scale_x_continuous(breaks = seq(1960, 2030, 10)) +
   scale_y_continuous(breaks = seq(100, 120, 2)) +
@@ -455,7 +457,7 @@ plot_sex_ratio <-
   ) +
   theme(
     legend.position = "drop",
-    plot.margin = margin(10,100,10,10),
+    plot.margin = margin(10,120,10,10),
     panel.grid.major.x = element_line(
       colour = "gray", linewidth = 0.1,
       linetype = 1
@@ -472,10 +474,10 @@ plot_sex_ratio <-
 
 ```{r save plots, include=FALSE}
 
-# ggsave("plots/plot_brics_1.png", plot_brics_1, width = 9, height = 8)
-# ggsave("plots/plot_brics_2.png", plot_brics_2, width = 12, height = 8)
-ggsave("plots/plot_russia_president_gdp.png", plot_russia_president_gdp, width = 12, height = 8)
-ggsave("plots/plot_sex_ratio.png", plot_sex_ratio, width = 9, height = 8)
+ggsave("plots/plot_fertility_change.png", plot_fertility_change, width = 12, height = 8)
+ggsave("plots/plot_fertility_factor.png", plot_fertility_factor, width = 12, height = 8)
+ggsave("plots/plot_arm_population_forecast.png", plot_arm_population_forecast, width = 12, height = 8)
+ggsave("plots/plot_sex_ratio.png", plot_sex_ratio, width = 12, height = 8)
 
 ```
 
