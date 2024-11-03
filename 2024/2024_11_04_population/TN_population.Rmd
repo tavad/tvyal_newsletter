@@ -5,7 +5,11 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(
+  cho = FALSE,
+  out.extra='data-external="1"',
+  fig.path = "https://raw.githubusercontent.com/tavad/tvyal_newsletter/"
+)
 
 library(tidyverse)
 library(scales)
