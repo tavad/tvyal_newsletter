@@ -487,7 +487,9 @@ plot_sex_ratio <-
 
 ```{r save plots, include=FALSE}
 
-ggsave("plots/plot_fertility_change.png", plot_fertility_change, width = 12, height = 8)
+ggsave("plots/plot_fertility_change.png", plot(iris), width = 12, height = 8)
+
+# ggsave("plots/plot_fertility_change.png", plot_fertility_change, width = 12, height = 8)
 ggsave("plots/plot_fertility_factor.png", plot_fertility_factor, width = 12, height = 8)
 ggsave("plots/plot_arm_population_forecast.png", plot_arm_population_forecast, width = 12, height = 8)
 ggsave("plots/plot_sex_ratio.png", plot_sex_ratio, width = 12, height = 8)
