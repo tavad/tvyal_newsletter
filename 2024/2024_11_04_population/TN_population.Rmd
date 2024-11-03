@@ -508,7 +508,9 @@ system("cd ../.. | git all")
 
 Գծապատկեր 1
 
-[ss](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_11_04_population/plots/plot_fertility_change.png)
+<!-- [![](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_11_04_population/plots/plot_fertility_change.png)](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_11_04_population/plots/plot_fertility_change.png) -->
+
+<a href="https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_11_04_population/plots/plot_fertility_change.png">Fertility Change Plot</a>
 
 
 
