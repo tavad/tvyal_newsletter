@@ -159,11 +159,28 @@ rm(datasets, datasets2,
 ``` 
 
 
-```{r get raw data download, include=FALSE}
+```{r get WDI data, include=FALSE}
+# # Uncomment to update data
+# 
+# fertility_rate <- WDI::WDI(indicator = "SP.DYN.TFRT.IN") |> 
+#   as_tibble() |> 
+#   rename(fertility = 5)
+# fertility_rate |> write_csv("fertility_rate.csv")
+# 
+# sex_ratio_at_birth <- WDI::WDI(indicator = "SP.POP.BRTH.MF") |> 
+#   rename(sex_ratio = SP.POP.BRTH.MF) |> 
+#   as_tibble()
+# sex_ratio_at_birth |> write_csv("sex_ratio_at_birth.csv")
 
-fertility_rate <- WDI::WDI(indicator = "SP.DYN.TFRT.IN") |> 
-  as_tibble() |> 
-  rename(fertility = 5)
+fertility_rate <- read_csv("fertility_rate.csv")
+
+sex_ratio_at_birth <- read_csv("sex_ratio_at_birth.csv")
+
+```
+
+
+
+```{r get raw data download, include=FALSE}
 
 fertility_rate_plot_data <- 
   fertility_rate |> 
@@ -358,6 +375,7 @@ plot_fertility_factor <-
 
 
 ```{r armenia population forecast, include=FALSE}
+
 text_anntotations <- 
   tibble(
     x = c(1985, 2062.5),
@@ -408,11 +426,6 @@ plot_arm_population_forecast <-
 
 
 ```{r sex ratio plot, include=FALSE}
-
-sex_ratio_at_birth <- WDI::WDI(indicator = "SP.POP.BRTH.MF") |> 
-  rename(sex_ratio = SP.POP.BRTH.MF) |> 
-  as_tibble()
-
 sex_ratio_at_birth |> write_csv("sex_ratio_at_birth.csv")
 
 biggest_offenders <- 
@@ -493,24 +506,24 @@ ggsave("plots/plot_sex_ratio.png", plot_sex_ratio, width = 12, height = 8)
 
 Գծապատկեր 1
 
-![](plots/plot_brics_1.png)
+![](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_11_04_population/plots/plot_fertility_change.png)
 
 
 
 Գծապատկեր 2
 
-![](plots/plot_russia_president_gdp.png)
+![](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_11_04_population/plots/plot_fertility_factor.png)
 
 
 Գծապատկեր 3
 
-![](plots/plot_russia_sunctions.png)
+![](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_11_04_population/plots/plot_arm_population_forecast.png)
 
 
 
 Գծապատկեր 4
 
-![](plots/plot_brics_2.png)
+![](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_11_04_population/plots/plot_sex_ratio.png)
 
 
 
