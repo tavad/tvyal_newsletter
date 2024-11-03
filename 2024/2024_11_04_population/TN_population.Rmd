@@ -1,7 +1,9 @@
 ---
 title: "Tvyal Newsletter"
 date: "2024-11-14"
-output: html_document
+output:
+  html_document:
+    fig_link: true
 ---
 
 ```{r setup, include=FALSE}
