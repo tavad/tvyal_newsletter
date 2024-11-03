@@ -9,11 +9,6 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 
-knitr::knit_hooks$set(plot = function(x, options) {
-  url = paste0("https://raw.githubusercontent.com/tavad/tvyal_newsletter/", x)
-  sprintf('![Alt text](%s)', url)
-})
-
 library(tidyverse)
 library(scales)
 library(RcppRoll)
