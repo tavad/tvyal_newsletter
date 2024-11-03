@@ -1,16 +1,30 @@
 ---
 title: "Tvyal Newsletter"
 date: "2024-11-14"
-output: html_document
+output: 
+  html_document:
+    self_contained: true
+    lib_dir: "libs"
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE)
-
 knitr::knit_hooks$set(plot = function(x, options) {
-  url = paste0("https://raw.githubusercontent.com/tavad/tvyal_newsletter/", x)
-  sprintf('![Alt text](%s)', url)
+  base_url = "https://raw.githubusercontent.com/tavad/tvyal_newsletter/"
+  if(grepl("^https?://", x)) {
+    # If already a URL, use as is
+    sprintf('<img src="%s" class="img-fluid">', x)
+  } else {
+    # Otherwise, construct the full GitHub URL
+    sprintf('<img src="%s%s" class="img-fluid">', base_url, x)
+  }
 })
+
+# Other standard settings
+knitr::opts_chunk$set(
+  echo = FALSE,
+  message = FALSE,
+  warning = FALSE
+)
 
 library(tidyverse)
 library(scales)
