@@ -508,7 +508,7 @@ system("cd ../.. | git all")
 
 Գծապատկեր 1
 
-[![](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_11_04_population/plots/plot_fertility_change.png)]()
+[![](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_11_04_population/plots/plot_fertility_change.png)](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_11_04_population/plots/plot_fertility_change.png)
 
 
 
