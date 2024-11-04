@@ -251,6 +251,16 @@ plot_5_ngo_media_change <-
 
 ```
 
+```{r save plots, include=FALSE}
+
+ggsave("plots/plot_1_organizations_change.png", plot_1_organizations_change, width = 12, height = 8)
+ggsave("plots/plot_2_organizations_annual.png", plot_2_organizations_annual, width = 12, height = 8)
+ggsave("plots/plot_3_organizations_monthly.png", plot_3_organizations_monthly, width = 12, height = 8)
+ggsave("plots/plot_4_ngo_change.png", plot_4_ngo_change, width = 10, height = 8)
+ggsave("plots/plot_5_ngo_media_change.png", plot_5_ngo_media_change, width = 10, height = 8)
+
+```
+
 
 ***English summary below.***
 
@@ -276,10 +286,7 @@ plot_5_ngo_media_change <-
 
 Գծապատկեր 1.
 
-```{r plot1, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 12, fig.height = 8}
-plot_1_organizations_change
-ggsave("plots/plot_1_organizations_change.png", plot_1_organizations_change, width = 12, height = 8)
-```
+[![](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_10_14_number_of_organizations/plots/plot_1_organizations_change.png)](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_10_14_number_of_organizations/plots/plot_1_organizations_change.png)
 
 **Բիզնես միջավայրի աճը**
 
@@ -287,10 +294,7 @@ ggsave("plots/plot_1_organizations_change.png", plot_1_organizations_change, wid
 
 Գծապատկեր 2.
 
-```{r plot2, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 12, fig.height = 8}
-plot_2_organizations_annual
-ggsave("plots/plot_2_organizations_annual.png", plot_2_organizations_annual, width = 12, height = 8)
-```
+[![](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_10_14_number_of_organizations/plots/plot_2_organizations_annual.png)](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_10_14_number_of_organizations/plots/plot_2_organizations_annual.png)
 
 **2024 թվականի անկումը**
 
@@ -305,10 +309,7 @@ ggsave("plots/plot_2_organizations_annual.png", plot_2_organizations_annual, wid
 
 Գծապատկեր 3.
 
-```{r plot3, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 12, fig.height = 8}
-plot_3_organizations_monthly
-ggsave("plots/plot_3_organizations_monthly.png", plot_3_organizations_monthly, width = 12, height = 8)
-```
+[![](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_10_14_number_of_organizations/plots/plot_3_organizations_monthly.png)](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_10_14_number_of_organizations/plots/plot_3_organizations_monthly.png)
 
 Երրորդ գծապատկերը ցույց է տալիս կազմակերպչաիրավական ձևերի գրանցման ամսական կտրվածքը, այստեղ հուշագրավն այն է, որ 2017 թվականի դեկտեմբերին [ավելի շատ հասարակական կազմակերպություն (ՀԿ) է գրանցվել, քան ՍՊԸ](https://armstat.am/file/article/sv_12_17a_150.pdf): Այս ամիսը միակն է ժամանակային շարքի մեջ, երբ գրանցված ՀԿ-ների քանակությունը գերազանցել է ամսվա կտրվածքով գրանցված ՍՊԸ-ների քանակությունը։ Այս ամիս գրանցվել է 512 ՀԿ և 284 ՍՊԸ. գրեթե 2 անգամ ավելի շատ ՀԿ է գրանցվել, քան ՍՊԸ։
 
@@ -322,10 +323,7 @@ ggsave("plots/plot_3_organizations_monthly.png", plot_3_organizations_monthly, w
 
 Գծապատկեր 4.
 
-```{r plot4, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 12, fig.height = 8}
-plot_4_ngo_change
-ggsave("plots/plot_4_ngo_change.png", plot_4_ngo_change, width = 10, height = 8)
-```
+[![](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_10_14_number_of_organizations/plots/plot_4_ngo_change.png)](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_10_14_number_of_organizations/plots/plot_4_ngo_change.png)
 
 Ինչպես երևում է գծապատկեր 4-ից, 2017 թվականին Հայաստանում գրանցվեց 1029 հասարակական կազմակերպություն (ՀԿ)՝ չորս անգամ ավելի, քան 2016-ին, և ավելի քան կրկնակի 2018-2023 թվականների միջին ցուցանիշից: Եվ դա դեռ ամենը չէ. այս ՀԿ-ների կեսը՝ 512-ը, գրանցվել է ընդամենը մեկ ամսում՝ [2017 թվականի դեկտեմբերին](https://armstat.am/file/article/sv_12_17a_150.pdf): Սա ոչ միայն գերազանցում է մյուս տարիների ցուցանիշները, այլև հարցեր է առաջացնում՝ ի՞նչ էր կատարվում այդ ժամանակ:
 
@@ -333,10 +331,7 @@ ggsave("plots/plot_4_ngo_change.png", plot_4_ngo_change, width = 10, height = 8)
 
 Գծապատկեր 5.
 
-```{r plot5, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 12, fig.height = 8}
-plot_5_ngo_media_change
-ggsave("plots/plot_5_ngo_media_change.png", plot_5_ngo_media_change, width = 10, height = 8)
-```
+[![](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_10_14_number_of_organizations/plots/plot_5_ngo_media_change.png)](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_10_14_number_of_organizations/plots/plot_5_ngo_media_change.png)
 
 Գծապատկեր 5-ը բացահայտում է էլ ավելի հետաքրքիր պատկեր. 2017 թվականին գրանցվեց 112 նոր լրատվամիջոց (ԶԼՄ), մինչդեռ մյուս տարիներին այս ցուցանիշը գրեթե զրոյական էր: Կարծես թե հանկարծակի բոլորը որոշել էին իրենց ձայնը լսելի դարձնել:
 

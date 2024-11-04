@@ -384,7 +384,7 @@ plot_3_gdp_growth <-
 
 ```{r gdp components calculation, include=FALSE}
 
-GDP_quarter_old <- read_csv("GDP_quarter_tidy_as_of_2024Q1.csv") |> 
+GDP_quarter_old <- read_csv("../2024_08_26_GDP_components/GDP_quarter_tidy_as_of_2024Q1.csv") |> 
   mutate(source = "old")
 
 GDP_quarter_new <- GDP_quarter |> 
@@ -575,6 +575,14 @@ plot_4_components_dynamics <-
 
 ```
 
+```{r save plots, include=FALSE}
+
+ggsave(filename = "plots/plot_1_gdp_annual_growth.png", plot_1_gdp_annual_growth, width = 12, height = 8)
+ggsave(filename = "plots/plot_2_gdp_main.png", plot_2_gdp_main, width = 12, height = 8)
+ggsave(filename = "plots/plot_3_gdp_growth.png", plot_3_gdp_growth, width = 12, height = 8)
+ggsave(filename = "plots/plot_4_components_dynamics.png", plot_4_components_dynamics, width = 12, height = 8)
+
+```
 
 
 ***English summary below.***
@@ -594,10 +602,7 @@ plot_4_components_dynamics <-
 
 Գծապատկեր 1.
 
-```{r plot1, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 12, fig.height = 8}
-plot_1_gdp_annual_growth
-ggsave(filename = "plots/plot_1_gdp_annual_growth.png", plot_1_gdp_annual_growth, width = 12, height = 8)
-```
+[![](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_09_30_GDP/plots/plot_1_gdp_annual_growth.png)](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_09_30_GDP/plots/plot_1_gdp_annual_growth.png)
 
 Առաջին գծապատկերը ցույց է տալիս Հայաստանի տնտեսական աճի դինամիկան վերջին տարիներին: Թեև վերջին տարիներին աճի տեմպերը տպավորիչ են եղել, կարևոր է նշել, որ Հայաստանի երկարաժամկետ միջին աճը կազմում է 4.5%: Ցանկացած համակարգ ձգտում է վերադառնալ իր միջին արժեքին, եթե չկան հիմնարար որակական փոփոխություններ: Որակական փոփոխություններ կարող է ապահովել արտադրության զարգացումը, որը կարող է երաշխավորել երկարաժամկետ կայուն ավելացված արժեքի ստեղծում: Հայաստանի տնտեսական աճը հիմնականում ապահովվում է արտաքին միտումներով, որոնք հիմնականում ունեն կարճաժամկետ բնույթ:
 
@@ -607,19 +612,13 @@ ggsave(filename = "plots/plot_1_gdp_annual_growth.png", plot_1_gdp_annual_growth
 
 Գծապատկեր 2.
 
-```{r plot2, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 12, fig.height = 8}
-plot_2_gdp_main
-ggsave(filename = "plots/plot_2_gdp_main.png", plot_2_gdp_main, width = 12, height = 8)
-```
+[![](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_09_30_GDP/plots/plot_2_gdp_main.png)](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_09_30_GDP/plots/plot_2_gdp_main.png)
 
 Երկրորդ գծապատկերն արտացոլում է Հայաստանի ՀՆԱ-ի կառուցվածքը ըստ տնտեսության ճյուղերի: Ակնհայտ է, որ վերջին տարիներին տեղի է ունեցել զգալի փոփոխություն՝ գյուղատնտեսության դերի նվազմամբ և ծառայությունների ոլորտի աճով: 2018 թվականին գյուղատնտեսությունն առաջին տեղում էր՝ ապահովելով տնտեսության 16.4 տոկոսը, իսկ այս պահին այն իջել է 4-րդ հորիզոնական՝ ապահովելով տնտեսության ընդամենը 9.0 տոկոսը:
 
 Գծապատկեր 3.
 
-```{r plot3, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 12, fig.height = 8}
-plot_3_gdp_growth
-ggsave(filename = "plots/plot_3_gdp_growth.png", plot_3_gdp_growth, width = 12, height = 8)
-```
+[![](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_09_30_GDP/plots/plot_3_gdp_growth.png)](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_09_30_GDP/plots/plot_3_gdp_growth.png)
 
 Երրորդ գծապատկերը ցույց է տալիս տնտեսության տարբեր ճյուղերի գումարային աճի տեմպերը 2018-2023 թվականներին: Հատկանշական է, որ գյուղատնտեսությունը կրճատվել է 16.2%-ով, մինչդեռ տեղեկատվական տեխնոլոգիաների և ֆինանսական ծառայությունների ոլորտները գրանցել են զգալի աճ, որոնք հիմնականում պայմանավորված են եղել [💸🔚🏦 Ռուսաստանից կապիտալի մեծ քանակության](https://www.tvyal.com/newsletter/2024/2024_09_16) և [🆘🇦🇲🧑🏼‍💻 ՏՏ ոլորտի աշխատողների ներհոսքով](https://www.tvyal.com/newsletter/2024/2024_08_19):
 
@@ -650,11 +649,7 @@ ggsave(filename = "plots/plot_3_gdp_growth.png", plot_3_gdp_growth, width = 12, 
 
 Գծապատկեր 4.
 
-```{r plot4, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 12, fig.height = 8}
-plot_4_components_dynamics
-ggsave(filename = "plots/plot_4_components_dynamics.png", plot_4_components_dynamics, width = 12, height = 8)
-```
-
+[![](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_09_30_GDP/plots/plot_4_components_dynamics.png)](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_09_30_GDP/plots/plot_4_components_dynamics.png)
 
 Վերջին գծապատկերը ցույց է տալիս Հայաստանի տնտեսական աճին նպաստող գործոնները ըստ եռամսյակների: Ակնհայտ է, որ աճը հիմնականում պայմանավորված է եղել արտաքին գործոններով և ժամանակավոր երևույթներով:
 

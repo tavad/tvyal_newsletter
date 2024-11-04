@@ -604,7 +604,8 @@ ggsave("plots/plot_russia_sunctions.png", plot_russia_sunctions, width = 9, heig
 
 Գծապատկեր 1
 
-![](plots/plot_brics_1.png)
+
+[![](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_10_28_brics/plots/plot_brics_1.png)](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_10_28_brics/plots/plot_brics_1.png)
 
 ԲՐԻՔՍ+ պետությունները 2023թ․ դրությամբ ապահովում են համաշխարհային ՀՆԱ-ի 34.73%-ը (գնողունակության համարժեքությամբ)՝ արդեն գերազանցելով G7 պետությունների ցուցանիշը՝ 28.22%։ Այս ցուցանիշն արտացոլում է համաշխարհային տնտեսական ուժերի հիմնարար վերադասավորումը։ Չինաստանը հանդիսանում է ԲՐԻՔՍ+ տնտեսական առաջատար անդամ՝ ապահովելով համաշխարհային ՀՆԱ-ի 18.2%-ը, մինչդեռ Հնդկաստանը՝ 7.7%-ը, իսկ Ռուսաստանը՝ 3.4%-ը։ Այս ցուցանիշները վկայում են 1990-ականների համեմատ տեղի ունեցած զգալի փոփոխության մասին, երբ G7 տնտեսությունները գերիշխում էին՝ ապահովելով համաշխարհային տնտեսության գրեթե կեսը՝ 46.4%։
 
@@ -612,7 +613,8 @@ ggsave("plots/plot_russia_sunctions.png", plot_russia_sunctions, width = 9, heig
 
 Գծապատկեր 2
 
-![](plots/plot_russia_president_gdp.png)
+[![](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_10_28_brics/plots/plot_russia_president_gdp.png)](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_10_28_brics/plots/plot_russia_president_gdp.png)
+
 
 Թերևս ամենահուշագրավ տնտեսական փաստարկը Ռուսաստանի տնտեսական դիմակայունությունն է։ Չնայած 2022 թվականից ի վեր կիրառված աննախադեպ՝ ավելի քան 19 հազար միջազգային պատժամիջոցներին, Արժույթի միջազգային հիմնադրամի վերջին տվյալների համաձայն, [Ռուսաստանը դարձել է աշխարհի չորրորդ խոշորագույն տնտեսությունը](https://www.imf.org/en/Publications/WEO/Issues/2024/10/22/world-economic-outlook-october-2024)՝ հաշվի առնելով գնողունակության համարժեքությունը։ Սա որոշակի հարցեր է բարձրացնում բազմաբևեռ աշխարհում տնտեսական պատժամիջոցների արդյունավետության վերաբերյալ։
 
@@ -620,7 +622,7 @@ ggsave("plots/plot_russia_sunctions.png", plot_russia_sunctions, width = 9, heig
 
 Գծապատկեր 3
 
-![](plots/plot_russia_sunctions.png)
+[![](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_10_28_brics/plots/plot_russia_sunctions.png)](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_10_28_brics/plots/plot_russia_sunctions.png)
 
 Մինչ արևմտյան երկրները կիրառել են հազարավոր պատժամիջոցներ, դրանք ակամայից արագացրել են այլընտրանքային ֆինանսական մեխանիզմների զարգացումը։ Գագաթնաժողովի ընթացքում հայտարարված ԲՐԻՔՍ Pay համակարգը թերևս ամենակոնկրետ քայլն է զուգահեռ ֆինանսական ենթակառուցվածքի ստեղծման ուղղությամբ։ [Այս բլոկչեյնի վրա հիմնված վճարային համակարգը նպատակ ունի դյուրացնել տեղական արժույթներով գործարքները՝ պոտենցիալ կերպով նվազեցնելով ԲՐԻՔՍ+ անդամ պետությունների կախվածությունը SWIFT-ից](https://www.financial-news.co.uk/brics-summit-unveils-groundbreaking-payment-system-xi-jinpings-vision/)։
 
@@ -638,7 +640,7 @@ ggsave("plots/plot_russia_sunctions.png", plot_russia_sunctions, width = 9, heig
 
 Գծապատկեր 4
 
-![](plots/plot_brics_2.png)
+[![](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_10_28_brics/plots/plot_brics_2.png)](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_10_28_brics/plots/plot_brics_2.png)
 
 ԲՐԻՔՍ+ անդամների միջև այլընտրանքային վճարման միջոցների ստեղծումը խոսուն է նաև մեծ յոթնյակի (G7) մասնաբաժնի համաշխարհային ՀՆԱ-ում կայուն անկման համատեքստում՝ 1990 թվականի 46.4%-ից հասնելով 2025 թվականի 29.6%-ին, մինչդեռ ԲՐԻՔՍ երկրները գրանցել են կայուն աճ։ Սա միայն հարաբերական տնտեսական կշռի մասին չէ. այն վերաբերում է զուգահեռ տնտեսական ինստիտուտների և մեխանիզմների ստեղծմանը։
 
@@ -648,7 +650,7 @@ ggsave("plots/plot_russia_sunctions.png", plot_russia_sunctions, width = 9, heig
 
 Ստորև ներկայացված սիմվոլիկ թղթադրամը, որը գագաթնաժողովի ընթացքում ընծայվել էր ՌԴ նախագահին, խորհրդանշում է ԲՐԻՔՍ Pay համակարգը
 
-![](media/brics_note_1.jpg)
+[![](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_10_28_brics/media/brics_note_1.jpg)](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_10_28_brics/media/brics_note_1.jpg)
 
 2. **Ապրանքների առևտրի ենթակառուցվածք**։ Առաջարկվող հացահատիկային բորսան, որը կարող է վերաճել ավելի լայն ապրանքային բորսայի, կարող է վերաձևավորել համաշխարհային ապրանքային շուկաները։ Այս նախաձեռնությունն ուղղակիորեն անդրադառնում է զարգացող տնտեսությունների հիմնական խոցելի կետերից մեկին՝ դոլարով արտահայտված ապրանքային առևտրից նրանց կախվածությանը։
 

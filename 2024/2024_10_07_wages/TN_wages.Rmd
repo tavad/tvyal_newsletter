@@ -481,7 +481,15 @@ plot5_public_to_non_public <-
 
 ```
 
+```{r save plots, include=FALSE}
 
+ggsave("plots/plot2_pct_non_public.png", plot2_public_wages_pct, width = 12, height = 8)
+ggsave("plots/plot1_wages_employees.png", plot1_wages_employees, width = 12, height = 8)
+ggsave("plots/plot3_emloyee_share.png", plot3_emloyee_share, width = 12, height = 8)
+ggsave("plots/plot4_job_avalability.png", plot4_job_avalability, width = 10, height = 8)
+ggsave("plots/plot5_public_to_non_public.png", plot5_public_to_non_public, width = 10, height = 8)
+
+```
 
 ***English summary below.***
 
@@ -498,19 +506,14 @@ plot5_public_to_non_public <-
 
 Գծապատկեր 1.
 
-```{r plot1, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 12, fig.height = 8}
-plot2_public_wages_pct
-ggsave("plots/plot2_pct_non_public.png", plot2_public_wages_pct, width = 12, height = 8)
-```
+[![](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_10_07_wages/plots/plot2_pct_non_public.png)](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_10_07_wages/plots/plot2_pct_non_public.png)
 
 2024 թվականի հունիսի դրությամբ գրանցված է եղել 759 հազար աշխատող, որը նախորդ տարվա նույն ժամանակահատվածի համեմատ ավել է 4,6 տոկոսով։ Այս միտումները հստակ երևում են երկրորդ գծապատկերում, որը ցույց է տալիս աշխատողների թվի և միջին աշխատավարձի դինամիկան Հայաստանում։
 
 Գծապատկեր 2.
 
-```{r plot2, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 12, fig.height = 8}
-plot1_wages_employees
-ggsave("plots/plot1_wages_employees.png", plot1_wages_employees, width = 12, height = 8)
-```
+[![](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_10_07_wages/plots/plot1_wages_employees.png)](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_10_07_wages/plots/plot1_wages_employees.png)
+
 
 Հայաստանում աշխատողների թիվը ունի կայուն աճ։ Աճի դանդաղման միտումներ նկատվում են միջին աշխատավարձի մեջ։ Ինչպես երևում է գծապատկերից, միջին աշխատավարձի հիմնական աճը նկատվել էր 2022 թվականից մինչև 2023 թվականի առաջին կիսամյակը։ 2024 թվականի հունիսի դրությամբ միջին ճշգրտված աշխատավարձը կազմում է 250 հազար դրամ, որը 3.8 տոկոսով ավել է նախորդ տարվա ցուցանիշից։
 
@@ -518,10 +521,7 @@ ggsave("plots/plot1_wages_employees.png", plot1_wages_employees, width = 12, hei
 
 Գծապատկեր 3.
 
-```{r plot3, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 12, fig.height = 8}
-plot3_emloyee_share
-ggsave("plots/plot3_emloyee_share.png", plot3_emloyee_share, width = 12, height = 8)
-```
+[![](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_10_07_wages/plots/plot3_emloyee_share.png)](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_10_07_wages/plots/plot3_emloyee_share.png)
 
 
 2024 առաջին կիսամյակի դրությամբ Հայաստանում մասնավոր աշխատատեղերի 77.7 տոկոսը գտնվում է Երևանում, ինչը նկատելի աճ է 2019 թվականի համեմատ, երբ աշխատատեղերի 73,5 տոկոսն է եղել Երևանում։ Մասնավոր հատվածի աշխատատեղերը հիմնականում աճել են Երևանում: Մեր հաշվարկով՝ 2024 թվականի դեկտեմբերին մասնավոր ոլորտի աշխատատեղերի 79 տոկոսը գրանցված է լինելու Երևանում։ Սա մտահոգիչ միտում է՝ մարզերը Երևանից անհամաչափ են զարգանում։ Մարզերում եկամուտները հիմնականում ապահովում են պետական հատվածի աշխատատեղերը:
@@ -541,10 +541,7 @@ ggsave("plots/plot3_emloyee_share.png", plot3_emloyee_share, width = 12, height 
 
 Գծապատկեր 4.
 
-```{r plot4, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 9, fig.height = 8}
-plot4_job_avalability
-ggsave("plots/plot4_job_avalability.png", plot4_job_avalability, width = 10, height = 8)
-```
+[![](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_10_07_wages/plots/plot4_job_avalability.png)](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_10_07_wages/plots/plot4_job_avalability.png)
 
 Պետությունը հնարավորություն ունի կառավարել պետության դրամական հոսքերը հարկաբյուջետային և դրամավարկային քաղաքականություններով։ Օրինակ, 2015 թվականին ընդունված եկամտային հարկի վերադարձի մասին օրենքը սահմանեց, որ շինարարությունում վարկի տոկոսադրույքը էֆեկտիվորեն դարձավ 0 տոկոս, որը խթանեց տնտեսություն մտնող կապիտալ հոսքերը հիմնականում դեպի շինարարություն և հիմնականում Երևանում։
 
@@ -554,10 +551,7 @@ ggsave("plots/plot4_job_avalability.png", plot4_job_avalability, width = 10, hei
 
 Գծապատկեր 5.
 
-```{r plot5, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 12, fig.height = 8}
-plot5_public_to_non_public
-ggsave("plots/plot5_public_to_non_public.png", plot5_public_to_non_public, width = 10, height = 8)
-```
+[![](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_10_07_wages/plots/plot5_public_to_non_public.png)](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_10_07_wages/plots/plot5_public_to_non_public.png)
 
 Այս արտոնությունը չեն գործի Երևանում և Կոտայքի մարզում, որտեղ այս հարաբերությունը արդեն համապատասխանաբար 3.77 և 2.52 է։ Այս արտոնությունը Սյունիքում կգործի ոչ ավելի քան 1-2 տարի, ինչպես նաև Արարատում, որտեղ այս հարաբերությունը 2024 թվականի առաջին կիսամյակի դրությամբ արդեն համապատասխանաբար 1.62 և 1.48 է։ Այս արտոնությունը երկար կգործի հատկապես թույլ զարգացած մարզերում՝ Տավուշ, Շիրակ, Արագածոտնի և Գեղարքունիքի մարզերում, որտեղ պետական աշխատատեղերի թիվը գերազանցում է մասնավորը։ Օրինակ, Գեղարքունիքի մարզում գրանցված պետական աշխատատեղերը գրեթե 2 անգամ ավել են մասնավոր աշխատատեղերից։
 
