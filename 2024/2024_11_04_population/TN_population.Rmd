@@ -373,7 +373,6 @@ plot_fertility_factor <-
 ```
 
 
-
 ```{r armenia population forecast, include=FALSE}
 
 text_anntotations <- 
@@ -503,43 +502,154 @@ system("cd ../.. | git all")
 Հուսով եմ՝ լավ եք: 
 Ներկայացնում եմ այս շաբաթվա վերլուծությունները և աշխատանքները.
 
-## [🇷🇺🔗🌍 ԲՐԻՔՍ, 22,000 պատժամիջոց և բլոկչեյն](https://www.tvyal.com/newsletter/2024/2024_11_04)
+## [Armenia's Population Crisis: Heading Towards 2 Million by 2100](https://www.tvyal.com/newsletter/2024/2024_11_04)
 
+Armenia faces a critical demographic challenge that will reshape its future. Current projections show that by 2100, Armenia's population could shrink to just 2 million people - a dramatic decline that threatens the country's economic and social fabric. Let's dive into the data to understand what's driving this trend and what it means for Armenia's future.
+
+In the long run, only two fundamental factors determine a country's economic growth potential: its future population and improvements in energy infrastructure. While we've covered Armenia's energy challenges and opportunities in our recent analysis [🔌⚡🇦🇲 էլեկտրիկ Հայաստան․ Ցանցի խոցելիությունից մինչև արևային հեռանկարներ](https://www.tvyal.com/newsletter/2024/2024_09_09), today we'll focus on the demographic challenges that could fundamentally reshape Armenia's future.
 
 Գծապատկեր 1
-
-[![](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_11_04_population/plots/plot_fertility_change.png)](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_11_04_population/plots/plot_fertility_change.png)
-
-
-
-
-
-Գծապատկեր 2
-
-[![](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_11_04_population/plots/plot_fertility_factor.png)](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_11_04_population/plots/plot_fertility_factor.png)
-
-
-Գծապատկեր 3
 
 [![](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_11_04_population/plots/plot_arm_population_forecast.png)](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_11_04_population/plots/plot_arm_population_forecast.png)
 
 
+The graph above shows Armenia's historical population trends and future projections. While neighboring countries like Azerbaijan have seen population growth, Armenia's trajectory points downward. This decline isn't just about numbers - it represents a fundamental shift in Armenian society that will affect everything from economic growth to national security.
+
+Կանխատեսված միտումը հիմնված է մինչև 2019թ. գրանցված տվյալների հիման վրա: Կանխատեսման մեջ հաշվի առնված չեն 2020 թվականի 44-օրյա Արցախյան պատերազմի, 2023 թվականի Արցախի կորուստի և որպես հետևանք արցախահայության արտագաղթի, ինչպես նաև ռուս-ուկրաինական հակամարտության հետևանքով Ռուսաստանի Դաշնությունից մոտ 100-140 հազար ռելոկանտների Հայաստան տեղափոխվելու, և վերջին երկու տարիների ընթացքում համեմատաբար մեծ քանակությամբ Հնդկաստանի քաղաքացիների՝ Հայաստան ներգաղթի հանգամանքները: ՌԴ 100-140 հազար քաղաքացիների ներգաղթը կազմում է Հայաստանի բնակչության 3-4 տոկոսը: ՌԴ ռելոկանտների զգալի մասը հայ է: Նշենք, որ [ըստ նախկին էկոնոմիկայի նախարարի, ռելոկանտների մոտ մեկ երրորդ մասը արդեն 6 ամիս առաջ լքել էր Հայաստանը](https://arm.sputniknews.ru/20240203/inchu-en-relvokantnery-heranum-hhic-pattsharneri-masin-khvosum-en-henc-irenq-ev-pvordzagetnery-71585615.html): Այս զգալի փոփոխությունները դեռևս հաշվի չեն առնված այս կանխատեսման մեջ: Սա որոշ չափով կարող է մեղմել ժողովրդագրական խնդիրը:
+
+Ընդգծենք նաև, որ Հայաստանում արդեն հաստատվել են մեծ քանակությամբ Հնդկաստանի քաղաքացիներ: Հնդկաստանից հիմնականում եկել են արական սեռի ներկայացուցիչներ՝ առանց իրենց ընտանիքների: Անհրաժեշտ է ուսումնասիրություն կատարել՝ պարզելու, թե ինչ ժամանակահատվածով են Հնդկաստանից եկած տղամարդիկ պլանավորում մնալ Հայաստանում և մշակել համապատասխան քայլեր՝ նրանց Հայաստանում լիարժեք ինտեգրման համար:
+
+
+### Understanding the Core Issue: Fertility Rates
+
+The key to understanding population decline lies in the fertility rate - the average number of children born to each woman. For a population to remain stable, this number needs to be about 2.1 children per woman (called the replacement rate). Why 2.1 and not simply 2? The extra 0.1 accounts for several real-world factors: some children may not survive to adulthood, some may not have children of their own, and some may emigrate. This subtle difference is crucial for maintaining population stability.
+
+However, Armenia's current fertility rate is just 1.6 children per woman, well below what's needed to maintain the population.
+
+Գծապատկեր 2
+
+[![](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_11_04_population/plots/plot_fertility_change.png)](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_11_04_population/plots/plot_fertility_change.png)
+
+
+This chart shows how fertility rates have changed in Armenia and neighboring countries over time. The trend is clear: Armenia, like many of its neighbors, has seen a steady decline in birth rates. However, there are important regional differences:
+
+* Azerbaijan maintained higher fertility rates through the 1990s and 2000s
+* Georgia shows similar patterns to Armenia but with slightly different timing
+* Turkey's demographic transition has been more gradual
+
+Հարկ է նշել, որ ԽՍՀՄ փլուզումից հետո Ադրբեջանում հակառակ միտումն է գրանցվել, բնակչությունն աճել է 7.3 տոկոսով: Սա բացատրվում է նրանով, որ Ադրբեջանում բնակչության կենսամակարդակը ավելի ցածր է եղել, քան հարևան անդրկովկասյան երկրներում, ուստի պատերազմի և տնտեսական փոփոխությունների ֆոնին կենսամակարդակի մեծ տատանում չի արձանագրվել: Ընդգծենք, որ 1990թ. Ադրբեջանի բնակչությունը կազմել է 7.2 միլիոն, իսկ 2020թ.՝ արդեն 10.2 միլիոն:
+
+
+### Ժողովրդի անկման հաշվարկ: A Generational Impact
+
+Գծապատկեր 3
+
+[![](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_11_04_population/plots/plot_fertility_factor.png)](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_11_04_population/plots/plot_fertility_factor.png)
+
+This chart reveals the mathematical reality of population decline over generations. With Armenia's current fertility rate of 1.6:
+
+* First generation (25-30 years): 23.8% decline
+* Second generation (50-60 years): 41.9% decline
+* Third generation (75-90 years): Even more severe decline
+
+To put this in perspective:
+Starting with 1000 people at current fertility rates:
+
+* By 2050: Down to 762 people
+* By 2080: Further down to 581 people
+ * By 2100: Continuing decline
+
+This compounding effect explains why small changes in fertility rates can have such dramatic long-term impacts on population size.
+
+
+>
+> Հայաստանի ընտանիքների ուսումնասիրությունը ըստ սեռատարիքային կազմի և եկամտի մակարդակի կարող եք կարդալ այստեղ.
+>
+> [👨‍👩‍👧‍👦✨ Ամուր ընտանիք․ հարուստ ընտանիք](https://www.tvyal.com/newsletter/2024/2024_01_26)։
+>
+> Ծանոթացեք նաև մեր նախորդ շաբաթական վերլուծությունների հետ
+>
+> [👛💨💰 Դատարկ գրպաններ, բարձր աշխատավարձեր](https://www.tvyal.com/newsletter/2024/2024_08_12)
+> [🆘🇦🇲🧑🏼‍💻 SOS ՀՀ ՏՏ․ ռազմավարական առաջնահերթությունից մինչև հնարավոր անկում](https://www.tvyal.com/newsletter/2024/2024_08_19)
+>
+> [Վերլուծությունների ամբողջական ցանկը այստեղ](https://www.tvyal.com/newsletter)
+
+
+
+
+### Հայաստանում սելեկտիվ աբորտների հիմնախնդիրը
+
+Նշենք, որ 2000 թվականին Հայաստանում 100 նորածին աղջկան բաժին էր ընկնում 117 նորածին տղա, ինչը մեծ շեղում է և առաջացնում է սեռերի դիսբալանս: Այդ տարի այս բացասական հարաբերությունը համեմատած աշխարհի այլ պետությունների ամենամեծը Հայաստանում էր: Այս հանգամանքը հիմնականում բացատրվում է սելեկտիվ աբորտներով, երբ ծնողները կամ ծնողը որոշում են դադարեցնել իգական սեռի պտղի զարգացումը:
+
+Գծապատկերում ներկայացված են նորածին երեխաների սեռերի հարաբերության ամենախոշոր շեղում ունեցող 4 պետությունները (Չինաստան, Ադրբեջան, Հայաստան, Վիետնամ), ինչպես նաև Վրաստանի և աշխարհի մակարդակները:
 
 Գծապատկեր 4
 
 [![](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_11_04_population/plots/plot_sex_ratio.png)](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_11_04_population/plots/plot_sex_ratio.png)
 
+Նշենք, որ բնական ծնունդների մակարդակով 100 նորածին աղջկան բաժին է ընկնում 105-ից 106 տղա: Այսինքն՝ առանց սելեկտիվ միջամտության արդեն իսկ առկա է որոշակի անհավասարություն ծննդի պահին: Դրա պատճառն այն է, որ համեմատած աղջիկների տղաները ավելի հավանական է, որ ծնվեն ներառական կամ այլ հիվանդություններով, և հասունացման ընթացքում ավելի հավանական է, որ մահանան: Բնականոն սեռերի հավասարությունը գալիս է սեռական հասունացումից հետո, երբ տղաների և աղջիկների քանակությունը հավասարվում է:
+
+Նշենք, որ մինչև 1990 թվականը Հայաստանը գտնվում էր բնականոն՝ 100 աղջկան 106 տղա մակարդակի վրա: Արցախի առաջին պատերազմից հետո և՛ Հայաստանում, և՛ Ադրբեջանում այս բնականոն հարաբերությունը կտրուկ խախտվեց՝ ի օգուտ տղաների ծննդի, ինչը կարող է բացատրվել նրանով, որ պատերազմի ընթացքում նշանակալի քանակով տղամարդիկ են զոհվել, որի արդյունքում կանայք մոտ 10 տոկոսով տղամարդկանցից ավել էին:
+
+2021 թվականին 100 նորածին աղջկան արդեն բաժին էր ընկնում 109.5 տղա, այսինքն իրավիճակը բարելավվում է: Ակնկալվում է, որ 2028 թվականին Հայաստանը կվերադառնա բնականոն՝ 100 նորածին աղջկան 106 տղա մակարդակին:
 
 
->
-> Ծանոթացեք մեր նախորդ շաբաթական վերլուծությունների հետ
->
->* [👛💨💰 Դատարկ գրպաններ, բարձր աշխատավարձեր](https://www.tvyal.com/newsletter/2024/2024_08_12)
->* [🔌⚡🇦🇲 էլեկտրիկ Հայաստան․ Ցանցի խոցելիությունից մինչև արևային հեռանկարներ](https://www.tvyal.com/newsletter/2024/2024_09_09)
->* [🚨📉🕵 Քողարկված անկում․ Ինչո՞վ է ապրում Հայաստանի տնտեսությունը](https://www.tvyal.com/newsletter/2024/2024_09_30)
->* [🆘🇦🇲🧑🏼‍💻 SOS ՀՀ ՏՏ․ ռազմավարական առաջնահերթությունից մինչև հնարավոր անկում](https://www.tvyal.com/newsletter/2024/2024_08_19)
->
-> [Վերլուծությունների ամբողջական ցանկը այստեղ](https://www.tvyal.com/newsletter)
+### The Real Impact on Armenia's Economy
+
+A shrinking population hits the economy in ways many don't expect. When the workforce shrinks, companies struggle to find skilled workers. This leads to higher wages - which might sound good at first, but it can make Armenian businesses less competitive globally.
+
+Innovation suffers too. With fewer young entrepreneurs entering the market, there's less fresh thinking and fewer new businesses. A smaller domestic market means local businesses have fewer customers, making it harder to grow and compete.
+
+The government faces its own challenges. Fewer workers mean less tax revenue, yet the cost of maintaining roads, schools, and other infrastructure stays the same - or even increases per person. This creates a difficult balance: how to provide the same services with less money?
+
+### The Healthcare System Under Pressure
+
+As Armenia's population ages, our healthcare system faces mounting pressure. We're seeing a sharp increase in the need for elderly care, while having fewer young workers to pay into the healthcare system.
+
+Hospitals and clinics need to adapt. They must shift their focus from general care to managing chronic conditions and elderly care. This means new training for medical staff and different types of medical facilities - all while working with a smaller tax base.
+
+### The Pension Problem
+
+The math is simple but concerning: fewer workers supporting more retirees isn't sustainable. Today's pension system was designed for a younger population, but that reality is changing fast.
+
+This isn't just about numbers - it's about real people. How do we ensure our elderly can live with dignity when there are fewer workers contributing to the pension system? This question demands urgent attention and creative solutions.
+
+### Beyond Economics: National Security and Culture
+
+A declining population affects Armenia's ability to maintain a strong defense force. In a region where security challenges persist, this demographic shift could have serious implications for national security.
+
+Our cultural heritage faces challenges too. With fewer young people, it becomes harder to keep traditional customs, languages, and arts vibrant and alive. Small communities, particularly in rural areas, may struggle to maintain their local traditions and institutions. There is a high chance that to keep the carrent demand and economic growtht the workforce and population will be replaced with the imigrants, from asia and africa, which have fartility rates above 4.
+
+### What Can Be Done?
+
+Some countries have found ways to address these challenges. Financial incentives for families with children, better childcare support, and housing assistance for young families can help encourage higher birth rates.
+
+Immigration policies could play a role too. Programs to attract skilled workers, engage with the Armenian diaspora, and support integration could help offset population decline.
+
+Economic reforms are equally crucial. By boosting productivity and supporting innovation, Armenia can partly compensate for a smaller workforce. Regional development initiatives could help distribute population more evenly across the country.
+
+### Հրդրո կանանց և ընտանիքներին
+
+While it's important to respect personal choices, the data clearly shows that Armenia's future depends on reversing the current demographic trend. Having children isn't just a personal choice - it's an investment in our nation's future.
+
+Supporting women to balance career and family life is crucial. This means better maternity benefits, flexible work arrangements, and affordable childcare. Countries that have successfully addressed demographic challenges have found that supporting women's choices - both in career and family life - leads to better outcomes.
+
+The decision to have children is deeply personal, but understanding its broader impact on society's future can help inform these choices. When women feel supported in both their professional and maternal roles, they're more likely to choose to have more children while maintaining their careers.
+
+### Looking Forward
+
+The challenge Armenia faces isn't just about numbers - it's about the kind of society we want to create for future generations. By understanding these challenges and acting now, we can work towards solutions that ensure a vibrant, sustainable future for Armenia.
+
+**Չկա ապահա սերունդ, չկա ապագա հասարակություն**
+
+### Աշխարհի բնակչության կանխատեսման վահանակ
+
+[Նշենք, որ այս հետազոտության հիման վրա մեր կողմից ստեղծվել է նաև առցանց վահանակ: Վահանակը տրամադրում է բնակչության կանխատեսումներ և ինտերակտիվ գծապատկերներ տարբեր երկրների և տարածաշրջանների համար: Այն մշակված է R և Python ծրագրավորման լեզուների համակցմամբ և Shiny հավելվածներով՝ այս գործիքը ձեզ հնարավորություն կտա ուսումնասիրել բնակչության միտումները տարբեր գծապատկերների միջոցով: Այս ինտերակտիվ հարթակը թույլ է տալիս նաև փոփոխել գծապատկերների ժամանակաշրջանը: Վահանակը ինտերակտիվ է, գծապատկերի տարբեր հատվածներ ցույց են տալիս հավելյալ տվյալներ:](https://tavad.shinyapps.io/population_projection/)
+
+Շնորհակալ կլինեմ, եթե առաջարկներ գրեք ինձ այս վահանակը կատարելագործելու համար, քանի որ մենք ձգտում ենք բարելավել դրա ֆունկցիոնալությունը և օգտագործման հեշտությունը:
+
+
+
 
 
 
@@ -556,7 +666,13 @@ system("cd ../.. | git all")
 
 **Արգելվում է այս հարթակի նյութերը արտատպել առանց հղում կատարելու։**    
 
-<small>\* Այս և մեր բոլոր այլ վերլուծությունների տվյալները վերցված են պաշտոնական աղբյուրներից։ Հաշվարկները ամբողջությամբ հասանելի են github-ում, դրանք կարելի է ստուգել` այցելելով [github-ի](https://github.com/tavad/tvyal_newsletter/blob/main/2024/) մեր էջը, որտեղ տրված են տվյալները, հաշվարկների և գծապատկերների կոդը։
+<small>\* 
+
+**Մեթոդաբանություն**
+
+The projections use standard demographic modeling techniques, accounting for fertility rates, mortality rates, and migration patterns. The population decline calculations are based on generational fertility rate comparisons against the replacement rate of 2.1 children per woman.
+
+Այս և մեր բոլոր այլ վերլուծությունների տվյալները վերցված են պաշտոնական աղբյուրներից։ Հաշվարկները ամբողջությամբ հասանելի են github-ում, դրանք կարելի է ստուգել` այցելելով [github-ի](https://github.com/tavad/tvyal_newsletter/blob/main/2024/) մեր էջը, որտեղ տրված են տվյալները, հաշվարկների և գծապատկերների կոդը։
 
 </small>
 
