@@ -322,7 +322,7 @@ plot_fertility_factor <-
     )
   )) +
   geom_text(
-    data = tibble(x = 0.765, y = 0.3, label = "Births per Woman"),
+    data = tibble(x = 0.765, y = 0.3, label = "Պտղաբերության մակարդակ (երեխա մեկ կնոջից)"),
     mapping = aes(x, y, label = label),
     hjust = 0, fontface = "bold"
   ) +
@@ -353,8 +353,8 @@ plot_fertility_factor <-
     x = NULL,
     y = NULL,
     fill = NULL,
-    title = "Population Decay Per Generation",
-    subtitle = "Population Decline",
+    title = "Ինչպես է հասարակությունը քայքայվում",
+    subtitle = "Պտղաբերության մակարդակի ազդեցությունը բնակչության անկման և աճի վրա",
     caption = caption_f()
   ) +
   guides(fill = guide_legend(reverse = TRUE, byrow = TRUE)) +
