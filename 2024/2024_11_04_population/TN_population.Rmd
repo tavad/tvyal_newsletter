@@ -500,7 +500,7 @@ system("cd ../.. | git all")
 Հարգելի գործընկեր,
 
 
-## [Ժողովրդագրական ճգնաժամ․ 2100 թվականին Հայաստանում 2 միլիոն հայ](https://www.tvyal.com/newsletter/2024/2024_11_04)
+## [👫📉⚰️ Ժողովրդագրական ճգնաժամ․ 2100 թվականին Հայաստանում 2 միլիոն հայ](https://www.tvyal.com/newsletter/2024/2024_11_04)
 
 Հայաստանը կանգնած է լուրջ ժողովրդագրական մարտահրավերների առջև, որոնք վճռորոշ դեր են խաղալու երկրի ապագայի համար։ Ըստ կանխատեսումների՝ 2100 թվականին Հայաստանի բնակչությունը կարող է նվազել մինչև ընդամենը 2 միլիոն մարդ։ Այս անկումը սպառնում է երկրի տնտեսական և սոցիալական հիմքերին։ Ուսումնասիրենք տվյալները և հասկանանք, թե ինչն է պայմանավորում այս միտումը և ինչ հետևանքներ այն կարող է ունենալ Հայաստանի համար։
 
@@ -651,7 +651,7 @@ system("cd ../.. | git all")
 
 **ԱՅՍ ՀՈԴՎԱԾԻ ՀՂՈՒՄԸ**
 
-***Թավադյան, Աղ․Ա․ (2024)  [], tvyal.com հարթակ [tvyal.com platform], 04-11-2024․ https://www.tvyal.com/newsletter/2024/2024_11_04***
+***Թավադյան, Աղ․Ա․ (2024) Ժողովրդագրական ճգնաժամ․ 2100 թվականին Հայաստանում 2 միլիոն հայ [], tvyal.com հարթակ [tvyal.com platform], 04-11-2024․ https://www.tvyal.com/newsletter/2024/2024_11_04***
 
 **Արգելվում է այս հարթակի նյութերը արտատպել առանց հղում կատարելու։**    
 
@@ -765,13 +765,12 @@ text-decoration: underline;
 
 ## English Summary
 
-### 🇷🇺🔗🌍 BRICS, 22,000 Sanctions, and Blockchain
+### 👫📉⚰️ Demographic Crisis: 2 Million Armenians in Armenia by 2100
 
-***How BRICS+ is Reshaping the Global Economic Architecture***
 
-The 16th BRICS Summit in Kazan demonstrated a significant shift in global economic power dynamics, with BRICS+ nations now representing 46.9% of global GDP (PPP) and 57.4% of the world's population. The expansion to include 13 new partner countries, including strategic economies like Turkey, Indonesia, and Saudi Arabia, marks a pivotal moment in the organization's evolution.
+Armenia faces a critical demographic challenge that could fundamentally reshape its future. According to projections, by 2100, Armenia's population could shrink to just 2 million people - a dramatic decline that threatens not only the country's economic and social fabric but also its national security and cultural preservation. This decline is driven by a fertility rate of just 1.6 children per woman, well below the replacement rate of 2.1 needed to maintain a stable population.
 
-A particularly noteworthy development is Russia's economic resilience despite facing over 19,000 international sanctions since 2022. According to the IMF, Russia has become the world's fourth-largest economy by PPP, raising questions about the effectiveness of economic sanctions in a multipolar world. The summit also introduced concrete initiatives including the BRICS Pay system - a blockchain-based payment mechanism aimed at reducing dependence on SWIFT, and plans for a new grain exchange that could reshape global commodity markets by offering alternatives to dollar-denominated trade.
+The implications of this demographic shift are far-reaching and complex. With each passing generation, Armenia faces a roughly 24% population decline, leading to a cascading effect that impacts everything from economic growth to pension systems. This challenge is further complicated by recent historical events like the Artsakh conflict, selective abortion practices that have created gender imbalances, and changing migration patterns including the recent influx of relocants from Russia and workers from India. Without intervention through comprehensive family support policies, immigration reforms, and economic initiatives, Armenia risks not just population decline but also significant changes to its social and cultural landscape.
 
 ---
 
@@ -787,7 +786,6 @@ A particularly noteworthy development is Russia's economic resilience despite fa
 [Was this email forwarded to you? Subscribe here.](https://www.tvyal.com/subscribe)
 
 [Բաժանորդագրվեք](https://www.tvyal.com/subscribe)
-
        
 ---              
                
