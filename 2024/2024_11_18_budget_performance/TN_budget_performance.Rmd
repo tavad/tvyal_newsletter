@@ -206,7 +206,7 @@ In the world of public finance, patterns matter. When a country breaks a two-dec
 
 Գծապատկեր 1
 
-[![](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_11_18_budget_performance/plots/plot_1_budget_performance.png)](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_11_18_budget_performance/plots/plot_1_budget_performance.png)
+[![](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_11_18_budget_performance/plots/plot_2_income_taxes.png)](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_11_18_budget_performance/plots/plot_2_income_taxes.png)
 
 This isn't just a statistical blip. To put it in perspective, Armenia's tax authorities have consistently met or exceeded their targets since the early 2000s, even during global financial crises. The current shortfall represents nearly 10 billion drams in missing revenues - money that was earmarked for everything from infrastructure projects to social programs.
 
@@ -226,7 +226,7 @@ Think of it as a house with a fresh coat of paint but creaking foundations. The 
 
 Գծապատկեր 2
 
-[![](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_11_18_budget_performance/plots/plot_2_income_taxes.png)](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_11_18_budget_performance/plots/plot_2_income_taxes.png)
+[![](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_11_18_budget_performance/plots/plot_1_budget_performance.png)](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_11_18_budget_performance/plots/plot_1_budget_performance.png)
 
 The contradiction between booming growth and falling tax revenues points to a fascinating economic phenomenon: what happens when an economy grows in ways that don't translate into sustainable tax bases. Armenia's recent growth has been heavily concentrated in sectors that either enjoy tax privileges or are difficult to tax effectively, as discussed in our previous analysis [💸🔚🏦 Capital Flows and Economic Miracles](https://www.tvyal.com/newsletter/2024/2024_09_16).
 
