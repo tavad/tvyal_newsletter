@@ -75,7 +75,7 @@ plot_2_income_taxes <-
   add_count(indicator) |> 
   filter(
     n > 10,
-    # year >= 2016,
+    year >= 2013,
     indicator == "Հարկային եկամուտներ և պետական տուրքեր"
   ) |> 
   # filter(indicator %in% c("ԵԿԱՄՈՒՏՆԵՐ", "ԾԱԽՍԵՐ")) |> 
@@ -205,16 +205,6 @@ system("cd ../.. | git all")
 
 
 
-
-
-
-
-
-
-
-
-
-
 ### Ժողովրդի անկման հաշվարկ
 
 
@@ -275,12 +265,6 @@ The IT sector's challenges are particularly troubling given its role in Armenia'
 Looking ahead, Armenia faces a critical juncture. The combination of falling tax revenues, unsustainable growth drivers, and struggles in strategic sectors like technology suggests the need for a fundamental rethink of economic strategy. The current situation calls for more than just tactical adjustments - it requires a comprehensive review of how Armenia builds and maintains its economic foundations.
 
 As one local economist puts it, "We're not just seeing numbers miss targets; we're watching the limits of an economic model become apparent." The question now is whether Armenia can translate these challenges into opportunities for genuine structural reform. The answer will determine not just budgetary outcomes, but the country's economic trajectory for years to come.
-
-
-
-
-
-
 
 
 -----
