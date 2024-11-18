@@ -1,6 +1,6 @@
 ---
 title: "Tvyal Newsletter"
-date: "2024-11-14"
+date: "2024-11-18"
 output: html_document
 ---
 
@@ -10,6 +10,7 @@ knitr::opts_chunk$set(echo = FALSE)
 library(tidyverse)
 library(scales)
 library(RcppRoll)
+library(gt)
 
 # rm(list = ls()); gc()
 
@@ -22,17 +23,157 @@ source("../../initial_setup.R")
 
 ```{r get data, include=FALSE}
 
- 
+budget_performance <- read_csv("budget_performance_db.csv")
+budget_aggregated <- read_csv("budget_aggregated_db.csv")
+
 ```
+
+```{r}
+
+budget_performance |> 
+  filter(sheet_type == "Ամփոփ") |> 
+  filter(indicator %in% c("ԵԿԱՄՈՒՏՆԵՐ", "ԾԱԽՍԵՐ")) |>
+  # filter(date >= ymd("2022-01-01")) |> 
+  mutate(
+    indicator = fct_inorder(indicator),
+    pct_done_period = ifelse(is.na(pct_done_period), pct_done_annual, pct_done_period),
+    pct_done_period = pct_done_period - 1,
+    date = date - days(43),
+    fill_ = ifelse(quarter == 4, paste0(indicator, "_annual"), indicator),
+  ) |> 
+  ggplot(aes(date, pct_done_period, fill = fill_)) +
+  geom_col(alpha = 1) +
+  geom_text(
+    aes(label = percent(pct_done_period, accuracy = 0.1), vjust = ifelse(pct_done_period > 0, -0.2, 1.2))
+  ) +
+  facet_wrap(~indicator, nrow = 2, scales = "free") +
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+  scale_y_continuous(labels = percent_format()) +
+  scale_fill_manual(values = new_palette_colors[c(2,6,1,4)]) +
+  labs(
+    x = NULL,
+    y = NULL,
+    fill = NULL,
+    title = "ՀՀ պետական բյուջեի Եկամուտներ",
+    subtitle = "Կատարման %-ը Ժամանակահատվածի ճշտված պլանի նկատմամբ\nհաշվարկված տվյալ տարվա սկզբից",
+    caption = caption_f()
+  ) +
+  theme(
+    legend.position = "drop"
+  )
+
+ggsave("~/budget_income.png", ggplot2::last_plot(), width = 12, height = 8)
+
+
+budget_performance |> 
+  filter(sheet_type == "Եկամուտ") |> 
+  add_count(indicator) |> 
+  filter(n > 10) |> 
+  # filter(indicator %in% c("ԵԿԱՄՈՒՏՆԵՐ", "ԾԱԽՍԵՐ")) |> 
+  # filter(date >= ymd("2022-01-01")) |> 
+  mutate(
+    indicator = fct_inorder(indicator),
+    pct_done_period = ifelse(is.na(pct_done_period), pct_done_annual, pct_done_period),
+    pct_done_period = pct_done_period - 1,
+    date = date - days(43)
+  ) |> 
+  ggplot(aes(date, pct_done_period, fill = indicator)) +
+  geom_col(alpha = 1) +
+  geom_text(
+    aes(label = percent(pct_done_period, accuracy = 0.1), vjust = ifelse(pct_done_period > 0, -0.2, 1.2))
+  ) +
+  facet_wrap(~indicator, nrow = 2, scales = "free") +
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+  scale_y_continuous(labels = percent_format()) +
+  scale_fill_manual(values = new_palette_colors[c(2,4,6,8)]) +
+  labs(
+    x = NULL,
+    y = NULL,
+    fill = NULL,
+    title = "ՀՀ պետական բյուջեի Եկամուտներ",
+    subtitle = "Կատարման %-ը Ժամանակահատվածի ճշտված պլանի նկատմամբ\nհաշվարկված տվյալ տարվա սկզբից",
+    caption = caption_f()
+  ) +
+  theme(
+    legend.position = "drop"
+  )
+
+```
+
+
+```{r}
+high_tech_performance <- 
+  tribble(
+    ~program, ~program_arm, ~fact_2023_9m, ~plan_2024_9m, ~fact_2024_9m, ~plan_completion_pct, ~yoy_change_pct, ~difference,
+    "TOTAL", "ԸՆԴԱՄԵՆԸ", 17398.1, 13388.8, 7825.6, 58.4, 45.0, -9572.5,
+    "High-Tech Industry Ecosystem and Market Development", "Բարձր տեխնոլոգիական արդյունաբերության էկոհամակարգի և շուկայի զարգացման ծրագիր", 15664.1, 8631.2, 6034.7, 69.9, 38.5, -9629.5,
+    "Digital Transformation Implementation", "Թվային փոխակերպման գործընթացի իրականացում", 0.0, 1974.8, 51.8, 2.6, NA, 51.8,
+    "Other Programs", "Այլ ծրագրեր", 1733.9, 2782.8, 1739.1, 62.5, 100.3, 5.1
+  )
+
+high_tech_performance |> 
+  select(-program) |> 
+  gt() |> 
+  tab_header(
+    title = "ՀՀ ԲՏԱ նախարարության կողմից իրականացված ծրագրերը",
+    subtitle = "2024թ. ինն ամիսներին (մլն դրամ)"
+  ) |>
+  cols_label(
+    program_arm = "",
+    fact_2023_9m = "2023թ. ինն ամիսների փաստ",
+    plan_2024_9m = "2024թ. ինն ամիսների ճշտված պլան",
+    fact_2024_9m = "2024թ. ինն ամիսների փաստ",
+    plan_completion_pct = "Կատարո-ղականն ինն ամիսների ճշտված պլանի նկատմամբ (%) ",
+    yoy_change_pct = "2024թ. ինն ամիսները 2023թ. ինն ամիսների նկատմամբ (%)",
+    difference = "2024թ. և 2023թ. տարբե-րությունը"
+  ) |>
+  fmt_number(
+    columns = c(fact_2023_9m, plan_2024_9m, fact_2024_9m, difference),
+    decimals = 1
+  ) |>
+  fmt_percent(
+    columns = c(plan_completion_pct, yoy_change_pct),
+    decimals = 1,
+    scale_values = FALSE
+  ) |>
+  sub_missing(
+    missing_text = "-"
+  ) |>
+  tab_style(
+    style = cell_borders(
+      sides = "bottom",
+      color = "black",
+      weight = px(2)
+    ),
+    locations = cells_body(
+      rows = 1
+    )
+  ) |>
+  tab_style(
+    style = list(
+      cell_text(weight = "bold")
+    ),
+    locations = cells_body(
+      rows = 1
+    )
+  ) |>
+  tab_options(
+    table.width = pct(100),
+    column_labels.border.bottom.color = "black",
+    column_labels.border.bottom.width = px(2)
+  )
+
+```
+
 
 
 
 ```{r save plots, include=FALSE}
 
-ggsave("plots/plot_fertility_change.png", plot_fertility_change, width = 12, height = 8)
-ggsave("plots/plot_fertility_factor.png", plot_fertility_factor, width = 12, height = 8)
-ggsave("plots/plot_arm_population_forecast.png", plot_arm_population_forecast, width = 12, height = 8)
-ggsave("plots/plot_sex_ratio.png", plot_sex_ratio, width = 12, height = 8)
+# ggsave("plots/plot_fertility_change.png", plot_fertility_change, width = 12, height = 8)
+# ggsave("plots/plot_fertility_factor.png", plot_fertility_factor, width = 12, height = 8)
+# ggsave("plots/plot_arm_population_forecast.png", plot_arm_population_forecast, width = 12, height = 8)
+# ggsave("plots/plot_sex_ratio.png", plot_sex_ratio, width = 12, height = 8)
 
 system("cd ../.. | git all")
 
@@ -43,13 +184,13 @@ system("cd ../.. | git all")
 Հարգելի գործընկեր,
 
 
-## [👫📉⚰️ Ժողովրդագրական ճգնաժամ․ 2100 թվականին Հայաստանում 2 միլիոն հայ](https://www.tvyal.com/newsletter/2024/2024_11_04)
+## [👫📉⚰️ Ժողովրդագրական ճգնաժամ․ 2100 թվականին Հայաստանում 2 միլիոն հայ](https://www.tvyal.com/newsletter/2024/2024_11_18)
 
 
 
 Գծապատկեր 1
 
-[![](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_11_04_population/plots/plot_arm_population_forecast.png)](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_11_04_population/plots/plot_arm_population_forecast.png)
+[![](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_11_18_budget_performance/plots/plot_arm_population_forecast.png)](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_11_18_budget_performance/plots/plot_arm_population_forecast.png)
 
 
 
@@ -60,7 +201,7 @@ system("cd ../.. | git all")
 
 Գծապատկեր 2
 
-[![](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_11_04_population/plots/plot_fertility_change.png)](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_11_04_population/plots/plot_fertility_change.png)
+[![](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_11_18_budget_performance/plots/plot_fertility_change.png)](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_11_18_budget_performance/plots/plot_fertility_change.png)
 
 
 
@@ -69,7 +210,7 @@ system("cd ../.. | git all")
 
 Գծապատկեր 3
 
-[![](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_11_04_population/plots/plot_fertility_factor.png)](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_11_04_population/plots/plot_fertility_factor.png)
+[![](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_11_18_budget_performance/plots/plot_fertility_factor.png)](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_11_18_budget_performance/plots/plot_fertility_factor.png)
 
 
 > 
@@ -88,7 +229,7 @@ system("cd ../.. | git all")
 
 Գծապատկեր 4
 
-[![](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_11_04_population/plots/plot_sex_ratio.png)](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_11_04_population/plots/plot_sex_ratio.png)
+[![](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_11_18_budget_performance/plots/plot_sex_ratio.png)](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_11_18_budget_performance/plots/plot_sex_ratio.png)
 
 
 
@@ -101,7 +242,7 @@ system("cd ../.. | git all")
 
 **ԱՅՍ ՀՈԴՎԱԾԻ ՀՂՈՒՄԸ**
 
-***Թավադյան, Աղ․Ա․ (2024) Ժողովրդագրական ճգնաժամ․ 2100 թվականին Հայաստանում 2 միլիոն հայ [Demographic Crisis: 2 Million Armenians in Armenia by 2100], tvyal.com հարթակ [tvyal.com platform], 04-11-2024․ https://www.tvyal.com/newsletter/2024/2024_11_04***
+***Թավադյան, Աղ․Ա․ (2024) Ժողովրդագրական ճգնաժամ․ 2100 թվականին Հայաստանում 2 միլիոն հայ [Demographic Crisis: 2 Million Armenians in Armenia by 2100], tvyal.com հարթակ [tvyal.com platform], 18-11-2024․ https://www.tvyal.com/newsletter/2024/2024_11_18***
 
 **Արգելվում է այս հարթակի նյութերը արտատպել առանց հղում կատարելու։**    
 
@@ -205,6 +346,46 @@ text-decoration: underline;
 ### [ՄԻԱՑԵՔ ՄԵՐ ԹԻՄԻՆ](mailto:a@tavadyan.com?subject=Work application)
 </div>
 
+---
+
+
+## ԶԼՄ հաղորդագրություն
+
+
+1. [Տնտեսության վերականգնման տպավորություն է ստեղծվում, բայց սա խաբկանք ու հեգնանք է](https://youtu.be/Qnylq8qqEQQ)
+
+ԱԺ-ում 2025 թվականի բյուջեի քննարկման ժամանակ ՔՊ-ական պատգամավորները հայտարարում են. որ հաջորդ տարի աշխատավարձի և թոշակների աճ չի լինելու, բայց առաջին անհրաժեշտության սննդամթերքը թանկանում է։ Դրան զուգահեռ պետական պարտքն է ավելացվելու մինչև պարտք/ՀՆԱ հարաբերակցության 54.6%-ը։ Առաջիկա տարվա բյուջեի ռիսկերի և դրա պատճառ դարձած կոռավարության վարած քաղաքականության շուրջ [«Panorama-հարցազրույցներ»](https://www.panorama.am/am/news/2024/11/13/%D4%B1%D5%B2%D5%A1%D5%BD%D5%AB-%D4%B9%D5%A1%D5%BE%D5%A1%D5%A4%D5%B5%D5%A1%D5%B6/3077888)-ի տաղավարում իր կարծիքն հայտնեց տնտեսագետ, tvyal.com հարթակի հիմնադիր Աղասի Թավադյանը։
+
+<a href="https://youtu.be/Qnylq8qqEQQ">
+  <img src="https://i3.ytimg.com/vi/Qnylq8qqEQQ/hqdefault.jpg" alt="YouTube Video" style="width:60%;">
+</a>
+
+ Հարցազրույցի հիմնական թեզերի առաջին մասը՝ ստորև։
+
+* Այս բյուջեն որոշ առումներով խնդրահարույց է։ Հիմնականն այն է, որ եկամուտները պակասում են ու պակասում, և դրանից թելադրվում են որոշակի խնդիրներ՝ նաև պետական բյուջեի ծախսային հատվածում։  Իշխանություններն ասում են, ինչ-որ մի բանով կապահովենք 7 % տնտեսական աճը, որպեսզի մեր տնտեսությունը 6 տարիներին 50 % աճ գրանցի։ Սա ողջունելի է, բայց եթե տնտեսությունում չկա իրական արտադրություն, որը կարող է ապահովել երկարաժամկետ տնտեսական աճը, ապա սա խնդրահարույց է։
+* Մեր տնտեսությունը ապրում է ոչ թե արտադրության վրա, այլ՝ դրսից եկած փողերի՝ ապահովելով տնտեսական աճը բանկային համակարգի վրա, բայց այն նաև նշանակում է, որ մեր տնտեսությունը կախված է ոչ թե ներքին ազդակներից, այլ արտաքին փոփոխություններից։
+* Ներկայում մեր արտահանման մոտ 70 %-ը՝ ահռելի մի թիվ, միլիարդների մասին է խոսքը, ոսկու վերաարտահանումն է։ Որը խեղաթյուրեց պատկերը։ Այդ ոսկին եկավ Հայաստան, ինչ-ինչ ճանապարհներով գրանցվեց որպես արտադրություն և ապահովեց մեր տնտեսական աճը։
+* 2024 թվականի առաջին եռամսյակում գրել էին, որ մեր տնտեսական աճը կազմել է 9.2 %, որը բավականին զգալի ցուցանիշ էր և առաջին հայացքից այնպիսի տպավորություն էր ստեղծվում, որ մեր տնտեսությունը վերականգնվում է, բայց սա պատրանք էր, խաբկանք ու հեգնանք, որովհետև 9.2  % տնտեսական աճի 4 տոկոսային կետը՝ գրեթե կեսը, ապահովում էր արդյունաբերությունը, իսկ ավելի ճիշտ՝ ոսկու վերաարտահանումը։ Այդ պատճառով այդ թիվը վերանայվեց, կրճառվեց և դարձավ 6.6 %, վերջին ցուցանիշներով 6.4% է և երրորդ եռամսյակով, կարելի է ենթադրել, որ ավելի են իջնելու, քանի որ ըստ վերջին ցուցանիշների տնտեսությունը բոլոր ճյուղերով անկում է գրանցում։
+* Մեր արտահանումը գրեթե բոլոր ուղղություններով ընկնում է. այս տարվա առաջին կիսամյակը՝ նախորդ տարվա առաջին կիսամյակի հետ համեմատած դեպի ԵԱՏՄ՝ մեր հիմնական գործընկերը մեր արտահանումը գրեթե 20 %-ով ընկել է։ Դեպի ԵՄ՝ 25 %-ով և այս պահին դեպի ԵՄ մեր արտահանումը կազմում է 3.6%։ Այսինքը՝ ուր ենք գնում։
+* Իրական տնտեսությունն անկում է ապրում և այս պայմաններում արդեն կառավարությունն է հասկանում, որ խնդիրներ կան և նշաձողը հաջորդ տարվա համար 7 %-ից այս տարի իջեցրել է 5,6% և 5,4% հաջորդ տարի։ Իմանալով կառավարությանը՝ սա լավատեսական պատկեր է։
+* Կառավարությունը բավականին լավ քայլեր է ձեռնարկել այն առումով, որ մեր պետական պարտքի 50 %-ից ավելը դրամային է, հեջավորել է այդ ռիսկը, բայց այն կա։ Հաշվի առնելով այն, որ հայկական դրամը ամենաարժևորվածն է բոլոր փոխարկելի արժույթների մեջ,արժեզրկման ռիսկը կա։
+
+[Հարցազրույցն ամբողջությամբ՝ կցված տեսանյութում։](https://youtu.be/Qnylq8qqEQQ)
+
+
+2. [Դիտեք 1in.am-ին տված հարցազրույցը որը քաննարկում է բյուջեի կատարման, ինչպես նաև Հայաստանի տնտեսության հիվանդությունները](https://youtu.be/tNEGkDCOvy4?t=123)
+
+📺 Հայաստանի տնտեսությունը շատ է կախված Ռուսաստանից. դա ազդում է մեր արտաքին քաղաքականության վրա 📺
+
+<a href="https://youtu.be/tNEGkDCOvy4?t=123">
+  <img src="https://i3.ytimg.com/vi/tNEGkDCOvy4/hqdefault.jpg" alt="YouTube Video" style="width:60%;">
+</a>
+
+
+
+
+
+---
 
 ---
 
@@ -223,7 +404,7 @@ The implications of this demographic shift are far-reaching and complex. With ea
 
 Հարգանքներով,            
 Աղասի Թավադյան         
-04.11.2024          
+18.11.2024          
 [tvyal.com](https://www.tvyal.com/)      
 [tavadyan.com](https://www.tavadyan.com/)
 
