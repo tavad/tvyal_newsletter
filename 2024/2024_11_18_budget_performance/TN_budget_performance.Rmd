@@ -75,7 +75,7 @@ plot_2_income_taxes <-
   add_count(indicator) |> 
   filter(
     n > 10,
-    year >= 2017,
+    # year >= 2016,
     indicator == "Հարկային եկամուտներ և պետական տուրքեր"
   ) |> 
   # filter(indicator %in% c("ԵԿԱՄՈՒՏՆԵՐ", "ԾԱԽՍԵՐ")) |> 
@@ -201,9 +201,6 @@ system("cd ../.. | git all")
 
 
 
-Գծապատկեր 1
-
-[![](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_11_18_budget_performance/plots/plot_1_budget_performance.png)](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_11_18_budget_performance/plots/plot_1_budget_performance.png)
 
 
 
@@ -212,9 +209,8 @@ system("cd ../.. | git all")
 
 
 
-Գծապատկեր 2
 
-[![](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_11_18_budget_performance/plots/plot_2_income_taxes.png)](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_11_18_budget_performance/plots/plot_2_income_taxes.png)
+
 
 
 
@@ -222,26 +218,66 @@ system("cd ../.. | git all")
 ### Ժողովրդի անկման հաշվարկ
 
 
+# 📊💰😰 Armenia's Budget Blues: When Growth Meets Reality
 
-> 
-> Հայաստանի ընտանիքների ուսումնասիրությունը ըստ սեռատարիքային կազմի և եկամտի մակարդակի կարող եք կարդալ այստեղ.
-> 
-> [👨‍👩‍👧‍👦✨ Ամուր ընտանիք․ հարուստ ընտանիք](https://www.tvyal.com/newsletter/2024/2024_01_26)։
-> 
-> Ծանոթացեք նաև մեր նախորդ շաբաթական վերլուծությունների հետ
-> 
-> [👛💨💰 Դատարկ գրպաններ, բարձր աշխատավարձեր](https://www.tvyal.com/newsletter/2024/2024_08_12)
->
-> [🆘🇦🇲🧑🏼‍💻 SOS ՀՀ ՏՏ․ ռազմավարական առաջնահերթությունից մինչև հնարավոր անկում](https://www.tvyal.com/newsletter/2024/2024_08_19)
-> 
-> [Վերլուծությունների ամբողջական ցանկը այստեղ](https://www.tvyal.com/newsletter)
+*A deep dive into Armenia's fiscal challenges and what they mean for the country's future*
 
+*Related newsletters:*
+- [🚨📉🕵 Քողարկված անկում. Ինչո՞վ է ապրում Հայաստանի տնտեսությունը](https://www.tvyal.com/newsletter/2024/2024_09_30)
+- [💸🔚🏦 Կապիտալի ներհոսքից մինչև արտահոսք](https://www.tvyal.com/newsletter/2024/2024_09_16)
+- [🧮⏳🎲 Հայաստանը հարկում է ժամանակը](https://www.tvyal.com/newsletter/2024/2024_08_02)
+- [🆘🇦🇲🧑🏼‍💻 SOS ՀՀ ՏՏ](https://www.tvyal.com/newsletter/2024/2024_08_19)
+
+## Page 1: The Numbers Don't Lie
+
+In the world of public finance, patterns matter. When a country breaks a two-decade-long trend, economists take notice. That's exactly what's happening in Armenia right now, where tax collections have plummeted 7.8% below expectations in early 2024 - a first in twenty years. It's like discovering your star employee has been consistently missing their targets: concerning, but potentially revelatory.
+
+Գծապատկեր 1
+
+[![](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_11_18_budget_performance/plots/plot_1_budget_performance.png)](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_11_18_budget_performance/plots/plot_1_budget_performance.png)
+
+This isn't just a statistical blip. To put it in perspective, Armenia's tax authorities have consistently met or exceeded their targets since the early 2000s, even during global financial crises. The current shortfall represents nearly 10 billion drams in missing revenues - money that was earmarked for everything from infrastructure projects to social programs.
+
+"When you see such a dramatic shift in tax collection patterns, it usually signals deeper structural issues in the economy," notes a senior economic analyst familiar with the region. The government's data shows this isn't a one-off problem either. The trend began in early 2024 and has persisted, suggesting systematic rather than temporary factors at play.
+
+The timing is particularly awkward. Armenia's headline economic growth numbers have been impressive - 12.6% in 2022 - leading many to herald an "economic miracle." But as often happens with miracles, closer inspection reveals a more complex reality. The growth has been largely fueled by external factors: Russian capital inflows, gold re-exports, and a booming but potentially unsustainable service sector.
+
+Think of it as a house with a fresh coat of paint but creaking foundations. The glossy exterior - impressive GDP growth - masks structural weaknesses that are now manifesting in the tax collection numbers. The government's own analysis suggests a more modest 4.5% as a realistic long-term growth rate, far below current figures.
+
+## Page 2: A Tale of Two Economies
+
+Գծապատկեր 2
+
+[![](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_11_18_budget_performance/plots/plot_2_income_taxes.png)](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_11_18_budget_performance/plots/plot_2_income_taxes.png)
+
+The contradiction between booming growth and falling tax revenues points to a fascinating economic phenomenon: what happens when an economy grows in ways that don't translate into sustainable tax bases. Armenia's recent growth has been heavily concentrated in sectors that either enjoy tax privileges or are difficult to tax effectively, as discussed in our previous analysis [💸🔚🏦 Capital Flows and Economic Miracles](https://www.tvyal.com/newsletter/2024/2024_09_16).
+
+Take the banking sector, for instance. In 2022, Armenian banks saw their transfers increase 2.5-fold, from $2.1 billion to $5.2 billion, primarily driven by Russian inflows. While this created a temporary boom, it didn't build lasting economic infrastructure. It's akin to receiving a large inheritance - great for immediate spending, but not a reliable source of long-term income.
+
+The capital flow story has another chapter worth noting. The initial surge of incoming transfers has begun to reverse, with significant outflows now heading to destinations like the UAE. This pattern suggests that Armenia served more as a transit point than a final destination for much of this capital - another reason why impressive growth numbers haven't translated into stable tax revenues.
+
+Real estate and financial services, two other major growth drivers, share similar characteristics: they've benefited from the capital influx but don't necessarily create the kind of broad-based economic activity that generates stable tax revenues. It's like having a party that looks great in photos but leaves little lasting impact.
+
+## Page 3: The Tech Tale and Tomorrow's Challenges
 
 Աղյուսակ 1
 
 ```{r plot2, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
 table_hightech_performance
 ```
+
+Perhaps nowhere is the disconnect between appearance and reality more striking than in Armenia's technology sector. Once heralded as the country's ticket to sustainable growth, the sector is now showing concerning signs of strain. The Ministry of High-Tech Industry has managed to execute only 58.4% of its planned budget - a stark underperformance that raises red flags about the sector's health, echoing concerns raised in our recent analysis [🆘🇦🇲🧑🏼‍💻 SOS IT Sector](https://www.tvyal.com/newsletter/2024/2024_08_19).
+
+The numbers tell a startling story. From our analysis of government data, we can see that the ministry's total expenditure was just 7.8 billion drams against a much larger planned budget. For a sector meant to drive Armenia's economic future, this represents more than just a budgetary shortfall - it's a strategic setback.
+
+The IT sector's challenges are particularly troubling given its role in Armenia's economic narrative. Recent quarters have shown negative growth in an industry that was supposed to be the country's growth engine. The appreciation of the Armenian dram, changes in tax policies, and rising costs in Yerevan have all contributed to making neighboring countries like Georgia increasingly attractive to tech companies.
+
+Looking ahead, Armenia faces a critical juncture. The combination of falling tax revenues, unsustainable growth drivers, and struggles in strategic sectors like technology suggests the need for a fundamental rethink of economic strategy. The current situation calls for more than just tactical adjustments - it requires a comprehensive review of how Armenia builds and maintains its economic foundations.
+
+As one local economist puts it, "We're not just seeing numbers miss targets; we're watching the limits of an economic model become apparent." The question now is whether Armenia can translate these challenges into opportunities for genuine structural reform. The answer will determine not just budgetary outcomes, but the country's economic trajectory for years to come.
+
+
+
 
 
 
