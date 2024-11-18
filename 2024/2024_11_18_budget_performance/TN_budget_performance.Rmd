@@ -197,28 +197,10 @@ system("cd ../.. | git all")
 Հարգելի գործընկեր,
 
 
-## [👫📉⚰️ Ժողովրդագրական ճգնաժամ․ 2100 թվականին Հայաստանում 2 միլիոն հայ](https://www.tvyal.com/newsletter/2024/2024_11_18)
+## [👫📉⚰️ A deep dive into Armenia's fiscal challenges and what they mean for the country's future](https://www.tvyal.com/newsletter/2024/2024_11_18)
 
 
-
-
-
-
-
-### Ժողովրդի անկման հաշվարկ
-
-
-# 📊💰😰 Armenia's Budget Blues: When Growth Meets Reality
-
-*A deep dive into Armenia's fiscal challenges and what they mean for the country's future*
-
-*Related newsletters:*
-- [🚨📉🕵 Քողարկված անկում. Ինչո՞վ է ապրում Հայաստանի տնտեսությունը](https://www.tvyal.com/newsletter/2024/2024_09_30)
-- [💸🔚🏦 Կապիտալի ներհոսքից մինչև արտահոսք](https://www.tvyal.com/newsletter/2024/2024_09_16)
-- [🧮⏳🎲 Հայաստանը հարկում է ժամանակը](https://www.tvyal.com/newsletter/2024/2024_08_02)
-- [🆘🇦🇲🧑🏼‍💻 SOS ՀՀ ՏՏ](https://www.tvyal.com/newsletter/2024/2024_08_19)
-
-## Page 1: The Numbers Don't Lie
+### The Numbers Don't Lie
 
 In the world of public finance, patterns matter. When a country breaks a two-decade-long trend, economists take notice. That's exactly what's happening in Armenia right now, where tax collections have plummeted 7.8% below expectations in early 2024 - a first in twenty years. It's like discovering your star employee has been consistently missing their targets: concerning, but potentially revelatory.
 
@@ -234,7 +216,13 @@ The timing is particularly awkward. Armenia's headline economic growth numbers h
 
 Think of it as a house with a fresh coat of paint but creaking foundations. The glossy exterior - impressive GDP growth - masks structural weaknesses that are now manifesting in the tax collection numbers. The government's own analysis suggests a more modest 4.5% as a realistic long-term growth rate, far below current figures.
 
-## Page 2: A Tale of Two Economies
+*Related newsletters:*
+- [🚨📉🕵 Քողարկված անկում. Ինչո՞վ է ապրում Հայաստանի տնտեսությունը](https://www.tvyal.com/newsletter/2024/2024_09_30)
+- [💸🔚🏦 Կապիտալի ներհոսքից մինչև արտահոսք](https://www.tvyal.com/newsletter/2024/2024_09_16)
+- [🧮⏳🎲 Հայաստանը հարկում է ժամանակը](https://www.tvyal.com/newsletter/2024/2024_08_02)
+- [🆘🇦🇲🧑🏼‍💻 SOS ՀՀ ՏՏ](https://www.tvyal.com/newsletter/2024/2024_08_19)
+
+### A Tale of Two Economies
 
 Գծապատկեր 2
 
@@ -248,7 +236,7 @@ The capital flow story has another chapter worth noting. The initial surge of in
 
 Real estate and financial services, two other major growth drivers, share similar characteristics: they've benefited from the capital influx but don't necessarily create the kind of broad-based economic activity that generates stable tax revenues. It's like having a party that looks great in photos but leaves little lasting impact.
 
-## Page 3: The Tech Tale and Tomorrow's Challenges
+### The Tech Tale and Tomorrow's Challenges
 
 Աղյուսակ 1
 
