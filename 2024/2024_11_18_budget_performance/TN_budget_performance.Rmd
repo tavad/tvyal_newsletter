@@ -185,7 +185,7 @@ table_hightech_performance <-
 
 ```{r save plots, include=FALSE}
 
-ggsave("plots/plot_1_budget_performance.png", plot_1_budget_performance, width = 12, height = 8)
+ggsave("plots/plot_1_budget_performance.png", plot_1_budget_performance, width = 12, height = 12)
 ggsave("plots/plot_2_income_taxes.png", plot_2_income_taxes, width = 12, height = 8)
 
 system("cd ../.. | git all")
