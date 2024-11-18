@@ -197,7 +197,9 @@ system("cd ../.. | git all")
 Հարգելի գործընկեր,
 
 
-## [👫📉⚰️ Հայաստանի ֆիսկալ մարտահրավերները և դրանց ազդեցությունը երկրի ապագայի վրա](https://www.tvyal.com/newsletter/2024/2024_11_18)
+## [🎭🇦🇲💸️ Վտանգավոր թվեր․ Հայաստանի տնտեսական «հրաշքի» մութ կողմը](https://www.tvyal.com/newsletter/2024/2024_11_18)
+
+### **Հայաստանի ֆիսկալ մարտահրավերները և դրանց ազդեցությունը երկրի ապագայի վրա**
 
 ### Թվերը չեն խաբում
 
@@ -259,6 +261,9 @@ table_hightech_performance
 
 Ինչպես նշում է տեղացի տնտեսագետներից մեկը, «Մենք ոչ միայն տեսնում ենք թիրախներից շեղում, այլև ականատես ենք լինում տնտեսական մոդելի սահմանափակումների բացահայտմանը»։ Հարցն այժմ այն է, թե արդյոք Հայաստանը կկարողանա այս մարտահրավերները վերածել իրական կառուցվածքային բարեփոխումների հնարավորությունների։ Պատասխանը կորոշի ոչ միայն բյուջետային արդյունքները, այլև երկրի տնտեսական ուղեգիծը առաջիկա տարիների համար։
 
+-----
+
+Ֆինանսների նախարարության կողմից տրված բյուջեի կատարողականի մասին հաշվետվություններին կարող եք ծանոթանալ՝ այցելելով այս [պաշտոնական հղումը](https://minfin.am/hy/page/petakan_byujei_hashvetvutyun/)։ Այս թեմային ավելի խորությամբ ծանոթանալու համար կարող եք կարդալ նաև [2024թ․ առաջին 9 ամիսների ՀՀ պետական բյուջեի կատարման վերլուծությունը](https://minfin.am/website/images/files/2.%20_2024_9%20.docx)։
 
 -----
 
@@ -268,7 +273,7 @@ table_hightech_performance
 
 **ԱՅՍ ՀՈԴՎԱԾԻ ՀՂՈՒՄԸ**
 
-***Թավադյան, Աղ․Ա․ (2024) Ժողովրդագրական ճգնաժամ․ 2100 թվականին Հայաստանում 2 միլիոն հայ [Demographic Crisis: 2 Million Armenians in Armenia by 2100], tvyal.com հարթակ [tvyal.com platform], 18-11-2024․ https://www.tvyal.com/newsletter/2024/2024_11_18***
+***Թավադյան, Աղ․Ա․ (2024) Վտանգավոր թվեր․ Հայաստանի տնտեսական «հրաշքի» մութ կողմը [Dangerous Numbers: The Dark Side of Armenia's Economic 'Miracle'], tvyal.com հարթակ [tvyal.com platform], 18-11-2024․ https://www.tvyal.com/newsletter/2024/2024_11_18***
 
 **Արգելվում է այս հարթակի նյութերը արտատպել առանց հղում կատարելու։**    
 
@@ -418,12 +423,13 @@ text-decoration: underline;
 
 ## English Summary
 
-### 👫📉⚰️ Demographic Crisis: 2 Million Armenians in Armenia by 2100
+### 🎭🇦🇲💸️ Dangerous Numbers: The Dark Side of Armenia's Economic 'Miracle'
 
+**Armenia's Fiscal Challenges and Their Impact on the Country's Future"**
 
-Armenia faces a critical demographic challenge that could fundamentally reshape its future. According to projections, by 2100, Armenia's population could shrink to just 2 million people - a dramatic decline that threatens not only the country's economic and social fabric but also its national security and cultural preservation. This decline is driven by a fertility rate of just 1.6 children per woman, well below the replacement rate of 2.1 needed to maintain a stable population.
+Armenia is facing unprecedented fiscal challenges as tax collections have fallen 7.8% below expectations in early 2024 - the first such decline in two decades. This downturn is particularly concerning because it comes amid seemingly impressive economic growth numbers (12.6% in 2022), revealing a disconnect between headline growth and sustainable economic fundamentals. The growth has been largely driven by temporary factors like Russian capital inflows, gold re-exports, and a potentially unsustainable service sector boom.
 
-The implications of this demographic shift are far-reaching and complex. With each passing generation, Armenia faces a roughly 24% population decline, leading to a cascading effect that impacts everything from economic growth to pension systems. This challenge is further complicated by recent historical events like the Artsakh conflict, selective abortion practices that have created gender imbalances, and changing migration patterns including the recent influx of relocants from Russia and workers from India. Without intervention through comprehensive family support policies, immigration reforms, and economic initiatives, Armenia risks not just population decline but also significant changes to its social and cultural landscape.
+The technology sector, once heralded as Armenia's ticket to sustainable growth, is showing significant signs of strain. The Ministry of High-Tech Industry has only executed 58.4% of its planned budget, while the sector is experiencing negative growth in recent quarters. Combined with currency appreciation and rising costs in Yerevan, these factors are making neighboring countries like Georgia more attractive to tech companies. The situation calls for more than just tactical adjustments - it requires a comprehensive review of Armenia's economic foundations, as the current model's limitations become increasingly apparent.
 
 ---
 
