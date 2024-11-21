@@ -140,6 +140,27 @@ money_base |>
   geom_line() +
   facet_wrap(~indicator, scales = "free_y")
 
+money_base |> 
+  filter(
+    year >= 2000,
+    !indicator %in% c(
+      "Government",
+      "CBA foreign currency swap (FX attraction)", "Deposits (-)", "Reverse repo (-)", 
+      "CBA foreign currency swap (FX allocation) (-)", "Securities issued by the CBA (-)",
+      "Other assets, net"
+    )
+  ) |> 
+  filter(indicator == "Correspondent accounts in FX") |> 
+  
+  mutate(
+    indicator = fct_inorder(indicator)
+  ) |> 
+  ggplot(aes(date, value, color = indicator_arm)) +
+  geom_line() +
+  facet_wrap(~indicator, scales = "free_y") +
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+  scale_y_log10()
+
 
 money_base |> 
   group_by(year) |> 
