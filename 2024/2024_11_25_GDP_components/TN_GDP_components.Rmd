@@ -202,8 +202,6 @@ plot_3_gdp_comporation <-
     plot.subtitle = element_text(hjust = -0.36)
   )
 
-ggsave("plots/plot_3_gdp_comporation.png", plot_3_gdp_comporation, width = 12, height = 8)
-
 ```
 
 
@@ -255,8 +253,10 @@ plot_1_growth_revision <-
 ```
 
 
-```{r}
-GDP_quarter_pct |> 
+```{r gdp quarter gowth plot, include=FALSE}
+
+plot_2_gdp_quarter_gowth <- 
+  GDP_quarter_pct |> 
   mutate(
     quarter = str_extract(date, "\\d$") |> as.numeric(),
     quarter_text = paste0(quarter, ifelse(quarter == 1, "-ին", "րդ"), " քարրորդ"),
@@ -276,7 +276,7 @@ GDP_quarter_pct |>
   ) +
   geom_text(
     aes(
-      y = GDP_growth + 0.4, label = number(GDP_growth, accuracy = 0.1),
+      y = GDP_growth + 0.4, label = percent(GDP_growth/100, accuracy = 0.1),
       color = ifelse(GDP_growth >= 0, "black", "white")
     ),
     position = position_dodge(width = 0.8)
@@ -290,7 +290,7 @@ GDP_quarter_pct |>
     y = NULL,
     fill = NULL,
     title = "ՀՆԱ-ի աճի ցուցանիշը",
-    subtitle = "քարորդային կտրվածքով",
+    subtitle = "նախորդ տարվա համապատասխան եռամսյակի նկատմամբ, %",
     caption = caption_f(source = "Armstat")
   ) +
   theme(
@@ -502,8 +502,8 @@ last_year_segment <-
     contribution = sum(contribution)
   )
 
-# plot_5_components_dynamics <- 
-tbl_groupped_full_positives |> 
+plot_5_components_dynamics <-
+  tbl_groupped_full_positives |> 
   ungroup() |> 
   mutate(groupped_codes = as.character(groupped_codes)) |> 
   arrange(groupped_codes) |> 
@@ -534,7 +534,7 @@ tbl_groupped_full_positives |>
   geom_segment(
     data = last_year_segment,
     mapping = aes(x = date, y = 0, xend = date, yend = contribution + 0.05),
-    linewidth = 1, linetype = 2, color = new_palette_colors[1]
+    linewidth = 0.7, linetype = 2, color = new_palette_colors[1]
   ) +
   geom_text(
     data = last_year_segment,
@@ -544,11 +544,6 @@ tbl_groupped_full_positives |>
     ),
     hjust = 1, vjust = 1.5, color = new_palette_colors[1]
   ) +
-  
-  
-  # geom_area() +
-  # scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
-  
   scale_y_continuous(breaks = seq(-0.18,0.18,0.02), labels = percent_format(accuracy = 1)) +
   # ggthemes::scale_fill_stata() +
   # scale_fill_brewer(type = "qual", palette = 3) +
@@ -567,6 +562,20 @@ tbl_groupped_full_positives |>
 
 ```
 
+
+```{r save plots, include=FALSE}
+
+ggsave("plots/plot_3_gdp_comporation.png", plot_3_gdp_comporation, width = 12, height = 8)
+ggsave("plots/plot_1_growth_revision.png", plot_1_growth_revision, width = 12, height = 8)
+ggsave("plots/plot_2_gdp_quarter_gowth.png", plot_2_gdp_quarter_gowth, width = 12, height = 8)
+ggsave("plots/plot_4_components_2024_Q3.png", plot_4_components_2024_Q3, width = 12, height = 8)
+ggsave("plots/plot_5_components_dynamics.png", plot_5_components_dynamics, width = 12, height = 8)
+
+
+
+system("cd ../.. | git all")
+
+```
 
 
 ***English summary below.***
