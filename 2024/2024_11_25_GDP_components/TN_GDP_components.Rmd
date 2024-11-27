@@ -125,7 +125,14 @@ armenian_short_names <- tibble::tribble(
 
 ```{r GDP growth comparation, include=FALSE}
 
-plot_3_gdp_comporation <- 
+legend_data <- 
+  tibble(
+    x = 0.423, y = c(2.5, 1.5),
+    label = c("2023 3-րդ եռամսյակ", "2024 3-րդ եռամսյակ")
+  )
+
+
+plot_3_gdp_comporation <-
   GDP_quarter |> 
   left_join(armenian_short_names, by = "code") |> 
   mutate(  
@@ -168,11 +175,13 @@ plot_3_gdp_comporation <-
   geom_point(aes(x = min_year, y = eng), color = "#f95d6a", size = 3) +
   geom_point(aes(x = max_year, y = eng), color = "#005C4B", size = 3) +
   # geom_text(aes(x = middle_year, y = eng, label = pct_10y_change), vjust = 0) +
-  geom_point(aes(x = 0.38, y = 2.5), color = "#f95d6a", size = 3) +
-  geom_point(aes(x = 0.38, y = 1.5), color = "#005C4B", size = 3) +
-  geom_text(aes(x = 0.41, y = 2.5, label =  "2023 2-րդ եռամսյակ"), hjust = 0) +
-  geom_text(aes(x = 0.41, y = 1.5, label = "2024 2-րդ եռամսյակ"), hjust = 0) +
-  scale_x_continuous(labels = percent_format()) +
+  geom_point(aes(x = 0.41, y = 2.5), color = "#f95d6a", size = 3) +
+  geom_point(aes(x = 0.41, y = 1.5), color = "#005C4B", size = 3) +
+  geom_text(
+    data = legend_data,
+    aes(x, y, label = label), hjust = 0
+  ) +
+  scale_x_continuous(breaks = seq(-0.2, 1, 0.1), labels = percent_format()) +
   coord_cartesian(clip = "off") +
   labs(
     x = NULL,
@@ -182,14 +191,18 @@ plot_3_gdp_comporation <-
     captions = caption_f("Armstat")
   ) +
   theme(
-    panel.grid.minor.x = element_line(
-      colour = "#D2D2D2", 
-      linetype = "dotted"
-    ),
+    # panel.grid.minor.x = element_line(
+    #   colour = "#D2D2D2", 
+    #   linetype = "dotted"
+    # ),
     panel.grid.major.y = element_blank(),
     axis.text.y = element_blank(),
-    plot.margin = margin(10,10,10,110),
+    plot.margin = margin(10,10,10,150),
+    plot.title = element_text(hjust = -0.32),
+    plot.subtitle = element_text(hjust = -0.36)
   )
+
+ggsave("plots/plot_3_gdp_comporation.png", plot_3_gdp_comporation, width = 12, height = 8)
 
 ```
 
@@ -219,7 +232,7 @@ plot_1_growth_revision <-
   ) |> 
   filter(
     !(source != "revised" & date <= ymd("2023-07-01")),
-    date >= ymd("2017-12-31")
+    date >= ymd("2020-12-31")
   ) |> arrange(date) |> 
   ggplot(aes(date, GDP_growth, color = source)) +
   geom_hline(yintercept = 0, color = "gray") +
@@ -239,6 +252,58 @@ plot_1_growth_revision <-
     captions = caption_f()
   )
   
+```
+
+
+```{r}
+GDP_quarter_pct |> 
+  mutate(
+    quarter = str_extract(date, "\\d$") |> as.numeric(),
+    quarter_text = paste0(quarter, ifelse(quarter == 1, "-ին", "րդ"), " քարրորդ"),
+    date = yq(date) + months(3) - days(1),
+    year = year(date),
+    GDP_growth = GDP_growth * 100
+  ) |> 
+  filter(
+    year >= 2021,
+    source == "revised"
+  ) |> 
+  complete(nesting(quarter, quarter_text), year, source) |> 
+  ggplot(aes(year, GDP_growth, fill = as.factor(year))) +
+  geom_col(
+    position = position_dodge(width = 0.8),
+    width = 0.9, alpha = 1
+  ) +
+  geom_text(
+    aes(
+      y = GDP_growth + 0.4, label = number(GDP_growth, accuracy = 0.1),
+      color = ifelse(GDP_growth >= 0, "black", "white")
+    ),
+    position = position_dodge(width = 0.8)
+  ) +
+  scale_y_continuous(breaks = seq(0, 16, 2)) +
+  scale_fill_manual(values = new_palette_colors[c(2,4,5,6)]) +
+  scale_color_manual(values = c("black", "white"), guide = "none") + 
+  facet_wrap(~quarter_text, nrow = 1, strip.position = "bottom") + 
+  labs(
+    x = NULL,
+    y = NULL,
+    fill = NULL,
+    title = "ՀՆԱ-ի աճի ցուցանիշը",
+    subtitle = "քարորդային կտրվածքով",
+    caption = caption_f(source = "Armstat")
+  ) +
+  theme(
+    panel.grid.major.x = element_blank(),
+    panel.grid.major.y = element_line(
+      colour = "gray", linewidth = 0.1,
+      linetype = 1
+    ),
+    axis.text = element_blank(),
+    strip.background = element_rect(fill = "#2f4b7c11"),
+    strip.text = element_text(size = 10, face = "bold")
+  )
+
 ```
 
 
@@ -347,65 +412,16 @@ GDP_quarter_contribution |>
 ```
 
 
-```{r GDP components 2024 Q1 revsion, include=FALSE}
-
-plot_2_components_2024_Q1 <- 
-  groupping_contributions(
-    select_date = "2024-Q1", 
-    groupped_codes_ = c("H","I","M","N","P","Q","R","S","T")
-  ) |> 
-  mutate(
-    source = ifelse(
-      source == "old",
-      "ՀՆԱ աճի տվյալները մինչև 2024թ․ օգոստոսի վերանայումը",
-      "վերանայված ՀՆԱ աճի տվյալներ"
-    )
-  ) |> 
-  ggplot() +
-  geom_hline(yintercept = 0, color = new_palette_colors[3]) +
-  geom_rect(
-    aes(xmin = id - 0.45, xmax = id + 0.45,
-        ymin = end, ymax = start, fill = fill_, linetype = annotation)
-  ) +
-  geom_text(aes(x = groupped_codes, y = (end+start)/2, label = labels)) +
-  geom_segment(
-    aes(x = id - 0.45, xend = ifelse(id == max(id), id + 0.45, id + 0.45 + 1),
-        y = end, yend = end),
-    linetype = 1, color = new_palette_colors[3]
-  ) +
-  facet_wrap(~source, nrow = 2) +
-  scale_y_continuous(labels = percent_format(), n.breaks = 6) +
-  scale_fill_manual(values = new_palette_colors[c(6,2,8)]) + 
-  labs(
-    x = NULL,
-    y = NULL,
-    fill = NULL,
-    linetype = NULL,
-    title = "ՀՆԱ-ի աճը վերանայվել է 9.2%-ից 6.6%",
-    subtitle = "ՀՆԱ-ի աճին նպաստող գործոնները, 2024թ․ առաւին, Տոկոսային կետ",
-    captions = caption_f("Armstat", suffix_text = "FISIM — Ֆինանս.միջնորդության անուղղակի չափվող ծառայություններ"),
-    # title = paste("Factors Contributing to", year_, "Economic Growth")
-  ) +
-  guides(
-    linetype = guide_legend(override.aes = list(fill = "#FFFFFF00")),
-    color = guide_legend(order = 2),
-    fill = guide_legend(order = 1),
-  ) +
-  theme(
-    panel.grid.major.x = element_blank(),
-    legend.text = element_text(size = 9)
-  )
-
-```
-
-
 ```{r GDP components 2024 Q2 revsion, include=FALSE}
 
-plot_4_components_2024_Q2 <- 
+plot_4_components_2024_Q3 <- 
   groupping_contributions(
-    select_date = "2024-Q2", 
+    select_date = "2024-Q3", 
     groupped_codes_ = c("H","I","M","N","P","Q","R","S","T")
     # groupped_codes_ = c("H","I","L","M","N","P","Q","S","T")
+  ) |> 
+  mutate(
+    labels = ifelse(groupped_codes == "ՀՆԱ\nաճ", labels, str_remove(labels, "\\%$"))
   ) |> 
   ggplot() +
   geom_hline(yintercept = 0, color = new_palette_colors[3]) +
@@ -473,8 +489,21 @@ library(ggstream)
 #   pull(groupped_codes) |>
 #   paste(collapse = '", "')
 
-plot_5_components_dynamics <- 
+
+last_year_segment <- 
   tbl_groupped_full_positives |> 
+  mutate(
+    date = yq(date) + months(3) - days(1),
+  ) |> 
+  ungroup() |> 
+  filter(date == max(date)) |> 
+  group_by(date) |> 
+  summarise(
+    contribution = sum(contribution)
+  )
+
+# plot_5_components_dynamics <- 
+tbl_groupped_full_positives |> 
   ungroup() |> 
   mutate(groupped_codes = as.character(groupped_codes)) |> 
   arrange(groupped_codes) |> 
@@ -494,16 +523,35 @@ plot_5_components_dynamics <-
   arrange(groupped_codes) |> 
   mutate(
     annotation = fct_inorder(annotation)
-    ) |> 
-  ggplot(aes(date, contribution, fill = annotation)) +
-
-  geom_stream(type = "ridge", bw=0.95,  extra_span = 0.025,  n_grid = 4000)  +
+  ) |> 
+  ggplot(aes(date, contribution)) +
+  
+  geom_stream(
+    aes(fill = annotation),
+    type = "ridge", bw=0.95,  extra_span = 0.025,  n_grid = 4000
+  )  +
+  
+  geom_segment(
+    data = last_year_segment,
+    mapping = aes(x = date, y = 0, xend = date, yend = contribution + 0.05),
+    linewidth = 1, linetype = 2, color = new_palette_colors[1]
+  ) +
+  geom_text(
+    data = last_year_segment,
+    mapping = aes(
+      x = date - days(20), y = contribution + 0.05, 
+      label = paste("2024թ․ 3-րդ եռամսյակում\nՀՆԱ-ի աճը կամել է 5.2%")
+    ),
+    hjust = 1, vjust = 1.5, color = new_palette_colors[1]
+  ) +
+  
+  
   # geom_area() +
   # scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
   
   scale_y_continuous(breaks = seq(-0.18,0.18,0.02), labels = percent_format(accuracy = 1)) +
   # ggthemes::scale_fill_stata() +
-  scale_fill_brewer(type = "qual", palette = 3) +
+  # scale_fill_brewer(type = "qual", palette = 3) +
   scale_fill_manual(values = colfunc3(12)) +
   guides(fill = guide_legend(ncol = 3)) +
   labs(
