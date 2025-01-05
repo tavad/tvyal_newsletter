@@ -384,17 +384,7 @@ system("cd ../.. | git all")
 
 ***English summary below.***
 
-Հարգելի գործընկեր,
-
-Հուսով եմ լավ եք:
-Ներկայացնում եմ անցած շաբաթվա վերլուծությունները և աշխատանքները.
-
-1. Տնային տնտեսությունները աղքատացել են 2022 թվականին
-2. ԶԼՄ հաղորդագրություններ
-3. English summary
-
-
-## 1. Տնային տնտեսությունները աղքատացել են 2022 թվականին
+## [🏠💰📉 Տնային տնտեսությունները աղքատացել են](https://www.tvyal.com/newsletter/2025/2025_01_06)
 
 2022-ին գրանցվել է 12.6 տոկոս տնտեսական աճ, մեկ շնչին ընկնող ՀՆԱ-ն աճել է 4 972 դոլարից մինչև 7 018 դոլար, այսինքն 41 տոկոսով, սակայն ժողովրդի իրակական եկամուտները ընկել են։
 
@@ -594,7 +584,7 @@ text-decoration: underline;
 
 ## English Summary
 
-**2022- A Year of Declining Household Incomes in Armenia**
+### 🏠💰📉 2022- A Year of Declining Household Incomes in Armenia
 
 In 2022, household incomes in Armenia witnessed a notable shift, with declines evident in most regions, except for Kotayk, Gegharkunik, and Tavush marzes. Within the capital city, Yerevan, and Aragatsotn, the affluent experienced a rise in income while the less privileged faced a further decrease. A broader analysis of income trends since 2018 reveals that Armenia reached its peak in 2020, with the average monthly household income standing at 278,000 AMD. However, by the end of 2022, this figure dropped by 15,000 drams to 263,000 AMD. Although the income for an average family in Yerevan remained unchanged over the two years, a decline was observed in other marzes. Notably, the top 10% of wealthy families in Yerevan saw an increase in real income from 629,000 to 671,000 drams during this period.
 
