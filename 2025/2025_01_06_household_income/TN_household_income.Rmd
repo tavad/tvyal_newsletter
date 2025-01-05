@@ -217,7 +217,7 @@ plot_household_change_18_23 <-
     text = number(value / 1000, accuracy = 1)
   ) |> 
   ggplot(aes(as.factor(year), value, label = text, fill = as.factor(year))) +
-  geom_col() +
+  geom_col(alpha = 1) +
   geom_text(aes(y = 50000), color = "white") +
   facet_grid(settlement~name, switch = "both") +
   scale_fill_manual(values = new_palette_colors[7:2]) +
@@ -229,9 +229,11 @@ plot_household_change_18_23 <-
     subtitle = "Հազար դրամ, եկամուտնեը ճշգրտվել են 2022 թվականի վերջի գներով և կշռվել",
     caption = paste0(caption_arm, "    |    տվյալների աղբյուր` armstat.am")
   ) +
+  guides(fill = guide_legend(nrow = 1)) +
   theme(
     axis.text = element_blank(),
-    panel.grid.major = element_blank()
+    panel.grid.major.x = element_blank(),
+    panel.grid.major.y = element_blank()
   )
 ```
 
@@ -292,7 +294,11 @@ plot_household_pct_change <-
     caption = paste0(caption_arm, "    |    տվյալների աղբյուր` armstat.am")
   ) +
   theme(
-    panel.grid.major.x = element_blank()
+    panel.grid.major.x = element_blank(),
+    panel.grid.major.y = element_line(
+      colour = "gray90",
+      linetype = 1
+    ),
   )
 
 ```
@@ -328,9 +334,19 @@ plot_household_pct_change_2 <-
     y = NULL,
     title = "Որքա՞ն է Հայաստանի ընտանիքների ամսական եկամուտը",
     subtitle = "Տնային տնտեսությունների եկամուտների բաշխվածությունը ըստ տարիների\nԵկամուտնեը ճշգրտվել են 2023 թվականի գներով",
-     caption = paste0(caption_arm, "    |    տվյալների աղբյուր` armstat.am")
+    caption = paste0(caption_arm, "    |    տվյալների աղբյուր` armstat.am")
   ) +
-  annotation_logticks(base = 10, sides = "b")
+  annotation_logticks(base = 10, sides = "b") +
+  theme(
+    panel.grid.major.x = element_line(
+      colour = "gray90",
+      linetype = 1
+    ),
+    panel.grid.major.y = element_line(
+      colour = "gray90",
+      linetype = 1
+    ),
+  )
 ```
 
 
