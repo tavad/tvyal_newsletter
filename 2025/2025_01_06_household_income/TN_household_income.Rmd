@@ -1,0 +1,633 @@
+---
+title: "Tvyal Newsletter"
+date: "2025-01-06"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(scales)
+library(readxl)
+library(Hmisc)
+library(ggridges)
+
+# rm(list = ls()); gc()
+
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+
+source("../../initial_setup.R")
+
+```
+
+
+
+```{r data download, include=FALSE}
+# Household database is aggregated from this official source:
+# https://www.armstat.am/en/?nid=205
+
+household_income_db <- read_csv("household_income_db.csv")
+
+# consumer price index is downloaded from cba.am:
+# https://www.cba.am/en/sitepages/statrealsector.aspx
+# commencement and run only to update the database
+
+# system(
+#   paste0(
+#     "curl \"", "https://www.cba.am/stat/stat_data_eng/6_CPI_eng.xls", "\"",
+#     " -o ", "\"cpi_armenia_eng.xls\""
+#   )
+# )
+
+inflation_row <- read_excel("cpi_armenia_eng.xls", skip = 3)
+
+inf_cumprod <- 
+  inflation_row |> 
+  rename(date = 1, cpi_m = 2) |> 
+  select(date, cpi_m) |> 
+  mutate(
+    date = ym(date),
+    cpi_m = cpi_m / 100,
+    year = year(date)
+  ) |> 
+  filter(year <= 2023) |>
+  select(-year) |> 
+  arrange(desc(date)) |> 
+  mutate(
+    adj_price = cumprod(cpi_m),
+    adj_price = lag(adj_price),
+    adj_price = ifelse(is.na(adj_price), 1, adj_price)
+  )
+
+marz_dict <- 
+  tibble(
+    marz = 1:12,
+    marz_eng = c(
+      "Yerevan", "Aragatsotn", "Ararat", "Armavir", "Gegharkunik", "Lori", 
+      "Kotayk", "Shirak", "Syunik", "Vayots Dzor", "Tavush", "Armenia"
+    ),
+     marz_arm = c(
+      "Երևան", "Արագածոտն", "Արարատ", "Արմավիր", "Գեղարքունիք", "Լոռի",
+       "Կոտայք", "Շիրակ", "Սյունիք", "Վայոց ձոր", "Տավուշ", "Հայաստան"
+    )
+  )
+```
+
+
+```{r income_table, include=FALSE}
+income_table <- 
+  household_income_db |> 
+  left_join(inf_cumprod, by = "date") |> 
+  mutate(totincome = totincome * adj_price) |> 
+  filter(marz == 1) |>
+  group_by(year) |> 
+  summarise(
+    q10 = wtd.quantile(totincome, weight, probs = 0.1),
+    median = wtd.quantile(totincome, weight, probs = 0.5),
+    mean = sum(totincome*weight)/sum(weight),
+    q90 = wtd.quantile(totincome, weight, probs = 0.9),
+  ) |> 
+  mutate(
+    across(-year, ~number(.x/1000, accuracy = 1))
+  ) |> 
+  knitr::kable(
+    align = c("l", "r", "r", "r", "r"),
+    col.names = c(
+      "Տարի", "Ամենաաղքատ 10%-ի վերին շեմը (1-ին դեցիլ)",
+      "Միջին ընտանիքի եկամուտ (median)",
+      "Միջին եկամուտ (mean)", "Ամենահարուստ 10%-ի ստորին շեմը (9-րդ դեցիլ)"
+    ),
+    caption = "**Հայաստանի տնային տնտեսությունների եկամուտների փոփխությունը\nհազար դրամ, եկամուտնեը ճշգրտվել են 2023 թվականի վերջի գներով և կշռվել**",
+    label = paste0(caption_arm, "    |    տվյալների աղբյուր` armstat.am"),
+    col.width = c("5cm", "2cm", "2cm")
+  )
+  
+```
+
+
+```{r 2021 2022 change, include=FALSE}
+
+years_select = c(2022, 2023) # provide 2 consecutive years that are in household_income_db
+
+date_legend <- 
+  tibble(
+    x = 710, y = c(1.5, 2.5), 
+    color = c("#2f4b7c", "#f95d6a"), text = rev(years_select)
+  )
+
+plot_household_change_in_2_years <- 
+  household_income_db %>%
+  bind_rows(
+    mutate(., marz = 12)
+  ) |> 
+  left_join(inf_cumprod, by = "date") |> 
+  mutate(totincome = totincome * adj_price) |> 
+  group_by(year, marz) |>  
+  summarise(
+    mean = sum(totincome*weight)/sum(weight),
+    median = wtd.quantile(totincome, weight, probs = 0.5),
+    q10 = wtd.quantile(totincome, weight, probs = 0.1),
+    q90 = wtd.quantile(totincome, weight, probs = 0.9),
+  ) |>
+  pivot_longer(-c(year, marz)) |> 
+  left_join(marz_dict, by = "marz") |> 
+  filter(
+    year %in% years_select,
+    name != "mean"
+  ) |> 
+  ungroup() |> 
+  mutate(
+    value = value / 1000,
+    year = ifelse(year == min(year), "begining", "end")
+  ) |> 
+  pivot_wider(names_from = year, values_from = value) |> 
+  mutate(
+    marz_arm = fct_reorder(marz_arm, (begining + end)/2, .fun = mean),
+    marz_eng = fct_reorder(marz_eng, (begining + end)/2, .fun = mean),
+    color = ifelse(begining > end, "#f95d6a", "#2f4b7c")
+  ) |> 
+  ggplot() +
+  geom_segment(
+    aes(x = begining, xend= end,  y= marz_arm, 
+        yend=marz_arm, group = name, color = I(color)),
+    linewidth = 1.2,
+    lineend = 'round', linejoin = 'round',
+   arrow = arrow(length = unit(0.1, "inches"))
+  ) +
+  geom_point(aes(x=begining, y=marz_arm, color=I("#f95d6a")), size = 3) +
+  geom_point(aes(x=end, y=marz_arm, color=I("#2f4b7c")), size = 3) +
+  geom_point(data = date_legend, aes(x, y, color = I(color)), size = 3) +
+  geom_text(data = date_legend, aes(x + 25, y, label = text)) +
+  geom_vline(xintercept = c(170, 390)) +  #dividers are changed manually
+  annotate(
+    geom = "text", x = c(95, 280, 595), y = 13, #dividers are changed manually
+    label = c(
+      "Ամենաաղքատ 10%-ի\nվերին շեմը (1-ին դեցիլ)",
+      "Միջին ընտանիքի\nեկամուտ (median)",
+      "Ամենահարուստ 10%-ի\nստորին շեմը (9-րդ դեցիլ)"
+    )
+  ) +
+  scale_x_continuous(breaks = seq(0, 800, 100), labels = number_format()) +
+  scale_y_discrete(expand = c(0.05,0,0.2,0)) +
+  labs(
+    x = NULL,
+    y = NULL,
+    color = NULL,
+    title = "Տնային տնտեսությունների եկամուտների փոփոխությունը ըստ մարզերի",
+    subtitle = "2022-ին Հայաստանի եկամուտները պակասել են, բացի Կոտայքի, Գեղարքունիքի և Տավուշի մարզից,\nհազար ՀՀ դրամ",
+    caption = paste0(caption_arm, "    |    տվյալների աղբյուր` armstat.am")
+  )
+```
+
+
+```{r income change from 2018 to 2022, include=FALSE}
+
+wealth_change_data <- 
+  household_income_db %>%
+  bind_rows(
+    mutate(., settlement = "Total")
+  ) |> 
+  left_join(inf_cumprod, by = "date") |> 
+  mutate(totincome = totincome * adj_price) |> 
+  group_by(year, settlement) |> 
+  summarise(
+    mean = sum(totincome*weight)/sum(weight),
+    median = wtd.quantile(totincome, weight, probs = 0.5),
+    q10 = wtd.quantile(totincome, weight, probs = 0.1),
+    q90 = wtd.quantile(totincome, weight, probs = 0.9),
+  )
+
+plot_household_change_18_23 <- 
+  wealth_change_data |> 
+  pivot_longer(c(mean, median, q10, q90)) |> 
+  filter(year %in% 2018:2023) |> 
+  mutate(
+    settlement = factor(
+      settlement,
+      levels = c("Total", "Yerevan", "urban", "rural"),
+      labels = c("Հայաստան", "Երևան", "այլ քաղաքներ", "գյուղեր")
+    ),
+    name = factor(
+      name, 
+      levels = c("q10", "median", "mean", "q90"),
+      labels = c("Ամենաաղքատ 10%-ի վերին\nշեմը (1-ին դեցիլ)", "Միջին ընտանիքի եկամուտ\n(median)",
+                 "Միջին եկամուտ\n(mean)", "Ամենահարուստ 10%-ի ստորին\nշեմը (9-րդ դեցիլ)")
+    ),
+    text = number(value / 1000, accuracy = 1)
+  ) |> 
+  ggplot(aes(as.factor(year), value, label = text, fill = as.factor(year))) +
+  geom_col() +
+  geom_text(aes(y = 50000), color = "white") +
+  facet_grid(settlement~name, switch = "both") +
+  scale_fill_manual(values = new_palette_colors[7:2]) +
+  labs(
+    y = NULL,
+    x = NULL,
+    fill = NULL,
+    title = "Հայաստանի տնային տնտեսությունների եկամուտների փոփոխությունը",
+    subtitle = "Հազար դրամ, եկամուտնեը ճշգրտվել են 2022 թվականի վերջի գներով և կշռվել",
+    caption = paste0(caption_arm, "    |    տվյալների աղբյուր` armstat.am")
+  ) +
+  theme(
+    axis.text = element_blank(),
+    panel.grid.major = element_blank()
+  )
+```
+
+
+```{r percentage change, include=FALSE}
+
+plot_household_pct_change <- 
+  household_income_db |> 
+  select(year, date, weight, marz, totincome) |> 
+  left_join(inf_cumprod, join_by(date)) |> 
+  mutate(totincome = totincome * adj_price) |>
+  mutate(
+    income_bin = cut(
+      totincome/1000,
+      breaks = c(0, 2^(5:10), 1e5),
+      include.lowest = TRUE
+    )
+  ) |> 
+  group_by(year) |> 
+  # begin weighting data
+  count(year, income_bin, wt = weight) |> 
+  # end weighting data
+  group_by(year) |> 
+  extract(income_bin, into = c("lower_cut", "upper_cut"),
+          regex = ".(.*),(.*)\\]", remove = FALSE, convert = TRUE) |> 
+  mutate(
+    pct = n/sum(n),
+    label = case_when(
+      lower_cut == 0 ~ paste0(upper_cut, " հազար դրամից պակաս"),
+      upper_cut == 1e5 ~ paste0(round(lower_cut/1000), " մլն. դրամից ավել"),
+      lower_cut == 512 ~ paste0(lower_cut, " հազար դրամից մինչև ",
+                                round(upper_cut/1000), " մլն. դրամ"),
+      lower_cut > 1000 ~ paste0(round(lower_cut/1000), "-ից մինչև ",
+                                round(upper_cut/1000), " մլն. դրամ"),
+      TRUE ~ paste0(lower_cut, "-ից մինչև ", upper_cut, " հազար դրամ")
+    )
+  ) |> 
+  arrange(lower_cut) |> 
+  mutate(
+    label = fct_inorder(label),
+    label = fct_rev(label),
+    pct_text = ifelse(pct <= 0.01, NA, percent(pct, accuracy = 1))
+  ) |> 
+  ungroup() |> 
+  ggplot(aes(year, pct, fill = label, label = pct_text)) +
+  geom_col(alpha = 1) +
+  geom_text(position = position_stack(vjust = .5)) +
+  scale_x_continuous(breaks = seq(2005, 2023, 1)) +
+  scale_y_continuous(labels = percent_format()) +
+  # scale_fill_brewer(type = "div", palette = 1, direction = -1) +
+  scale_fill_manual(values = colfunc(7)) +
+  labs(
+    x = NULL,
+    y = NULL,
+    fill = NULL,
+    title = "Որքա՞ն է Հայաստանի ընտանիքների ամսական եկամուտը",
+    subtitle = "Տնային տնտեսությունների եկամուտների բաշխվածությունը ըստ տարիների\nԵկամուտնեը ճշգրտվել են 2023 թվականի վերջի գներով և կշռվել",
+    caption = paste0(caption_arm, "    |    տվյալների աղբյուր` armstat.am")
+  ) +
+  theme(
+    panel.grid.major.x = element_blank()
+  )
+
+```
+
+
+```{r percentage change 2, include=FALSE}
+
+plot_household_pct_change_2 <-
+  household_income_db |> 
+  filter(
+    year >= 2005,
+    totincome != 0,
+    !is.na(totincome)
+  ) |> 
+  select(year, date, marz, totincome, weight) |> 
+  left_join(inf_cumprod, join_by(date)) |> 
+  mutate(totincome = totincome * adj_price) |> 
+  ggplot(aes(
+    x = totincome, y = as.factor(year), 
+    fill = 0.5 - abs(0.5 - after_stat(ecdf)),
+    # weight = weight
+  )) +
+  stat_density_ridges(
+    quantile_lines = TRUE, scale = 3,
+    rel_min_height = 0.01,  quantiles = 4, alpha = 0.5,
+    geom = "density_ridges_gradient", calc_ecdf = TRUE
+  ) +
+  scale_x_log10(breaks = 10^(4:6), labels = number_format(), limits = c(10^3.5, 10^6.5)) +
+  # scale_fill_viridis_c(name = "Հավանականություն", direction = -1) +
+  scale_fill_gradientn(name = "Հավանականություն", colors = rev(colfunc(100))) +
+  labs(
+    x = "դրամ",
+    y = NULL,
+    title = "Որքա՞ն է Հայաստանի ընտանիքների ամսական եկամուտը",
+    subtitle = "Տնային տնտեսությունների եկամուտների բաշխվածությունը ըստ տարիների\nԵկամուտնեը ճշգրտվել են 2023 թվականի գներով",
+     caption = paste0(caption_arm, "    |    տվյալների աղբյուր` armstat.am")
+  ) +
+  annotation_logticks(base = 10, sides = "b")
+```
+
+
+```{r, include=FALSE}
+# yereven_mean_price <- read_csv("~/R/projects/Cadastre_v0.1/data_prices/data_yerevan_finish.csv")
+# 
+# household_income_db |> 
+#   filter(settlement == "Yerevan") |> 
+#   group_by(year) |> 
+#   summarise(
+#     mean = sum(totincome*weight) / sum(weight),
+#     median = wtd.quantile(totincome, weight, probs = 0.5),
+#   ) |> 
+#   left_join(
+#     yereven_mean_price |> 
+#       filter(place == "Արաբկիր միջին") |> 
+#       group_by(year) |> 
+#       summarise(price = mean(price)),
+#     by = "year"
+#   ) |> 
+#   mutate(
+#     price = price * 60,
+#     months_to_by_a_flat = price / median / 12
+#   ) |> 
+#   ggplot(
+#     aes(year, months_to_by_a_flat)
+#   ) +
+#   geom_col()
+
+
+
+
+
+```
+
+
+```{r save plots, include=FALSE}
+
+ggsave("plots/plot_household_change_in_2_years.png", plot_household_change_in_2_years, width = 12, height = 8)
+ggsave("plots/plot_household_change_18_23.png", plot_household_change_18_23, width = 12, height = 8)
+ggsave("plots/plot_household_pct_change.png", plot_household_pct_change, width = 12, height = 8)
+ggsave("plots/plot_household_pct_change_2.png", plot_household_pct_change_2, width = 12, height = 8)
+
+# ggsave("plots/plot_loans_per_capita.png", plot_loans_per_capita, width = 12, height = 8)
+
+system("cd ../.. | git all")
+
+```
+
+
+
+***English summary below.***
+
+Հարգելի գործընկեր,
+
+Հուսով եմ լավ եք:
+Ներկայացնում եմ անցած շաբաթվա վերլուծությունները և աշխատանքները.
+
+1. Տնային տնտեսությունները աղքատացել են 2022 թվականին
+2. ԶԼՄ հաղորդագրություններ
+3. English summary
+
+
+## 1. Տնային տնտեսությունները աղքատացել են 2022 թվականին
+
+2022-ին գրանցվել է 12.6 տոկոս տնտեսական աճ, մեկ շնչին ընկնող ՀՆԱ-ն աճել է 4 972 դոլարից մինչև 7 018 դոլար, այսինքն 41 տոկոսով, սակայն ժողովրդի իրակական եկամուտները ընկել են։
+
+2021-ին տնային տնտեսությունների միջին ճշգրտված եկամուտը կազմել էր 333 հազար դրամ, իսկ 2022-ին՝ 320 հազար դրամ։ Բնակչության ամենաաղքատ 10% շեմը ստանում էր մինչև 101 հազար դրամ 2021 թվականին, իսկ 2022-ին՝ արդեն 88 հազար դրամ:
+
+Առաջին գծապատկերում տողերը ներկայացնում են մարզերը, իսկ սյուները հասարակության խավերը (անապահով խավ, միջին խավ և հարուստներ)։ Եթե գիծը կարմիր է, ապա նախորդ տարվա համեմատ եկամուտները պակասել են, եթե կապույտ ապա՝ աճել։
+
+Գծապատկեր 1.
+<!-- Տնային տնտեսությունների համախառն եկամուտների փոփոխությունը ըստ մարզերի -->
+
+![](plots/plot_household_change_in_2_years.png)
+
+Տնային տնտեսությունների եկամուտները 2022 թվականին պակասել են բոլոր մարզերում բացի Կոտայքի, Գեղարքունիքի և Տավուշի մարզերից։
+
+Երևանում և Արագածոտնում 2022 թվականին հարուստները ավելի են հարստացել, իսկ աղքատները ավելի են աղքատացնել։
+
+Մնացած մարզերում, ինչպես նաև ամբողջ Հայաստանի համար, բոլոր խավերի եկամուտները համեմատած 2021 թվականի հետ պակասել են։
+
+Դիտարկենք տնային տնտեսությունների եկամուտների փոփոխությունը 2018 թվականից սկսած։ Ինչպես երևում է գնաճով ճշգրտված եկամուտները Հայաստանի համար ամենաբարձր կետում էին 2020 թվականին, միջին վիճակագրական ընտանիքը ստանում էր ամսական 278 հազար դրամ (2022 տարեվերջի գներով): Երկու տարվա ընթացքում միջին ընտանիքի եկամուտը ընկել է 15 հազար դրամով՝ մինչև 263 հազար դրամ։ Երևանում միջին ընտանիքի եկամտաբերությունը չի փոխվել այս 2 տարիների ընթացքում, այն հիմականում ընկել է մարզերում։ Նշված 2 տարիների ընթացքում եկամուտի աճ են գրանցել Երևանի հարուստ խաղվի ներկայացուցչները (9-րդ դեցիլ), որոնց ընտանեկան իրական եկամուտի շեմը բարձրացել է 629 հազարից 2022 թվականին մինչև 671 հազար դրամ։
+
+Գծապատկեր 2.
+<!-- Հայաստանի տնային տնտեսությունների եկամուտների փոփոխությունը 2018-ից 2022 թվականներին -->
+
+![](plots/plot_household_change_18_23.png)
+
+
+Հաջորդ գծապատկերը համեմատում է գնաճով ճշգրտված տնային տնտեսությունների տարեկան եկամուտները 2005 թվականից սկսած։ Եկամուտները բաժանվել են աճողական զամբյուղների։ 
+
+Գծապատկեր 3.
+<!-- Որքա՞ն է Հայաստանի ընտանիքների ամսական եկամուտը -->
+
+![](plots/plot_household_pct_change.png)
+
+Ինչպես երևում է գծապատկերից մինչև 128 հազար դրամ ստացողները 3.5 տոկոսային կետով աճել են համեմատած 2021-ի։ 128-256 հազար դրամ ստացողների թիվը կրճատվել է 1.9 տոկոսային կետով։
+
+Տվյալները առկա են 2005 թվականից։ Գծապատկերից նաև երևում է որ 2005 թվականից տնային տնտեսություններ գնաճով ճշգրտված եկամուտները գրանցել են կայուն աճ։ Ըստ տվյալների տնային տնտեսությունների իրական եկամուտները ամենամեծ աճն են արձանագրել 2006 և 2007, ինչպես նաև 2019 թվականին։
+
+Անվանական եկամուտների աճ գրանցվել է նաև 2021 և 2022 թվականներին, սակայն այդ տարիներին գրանցվել է համապատասխանաբար 7.2 և 8.6 տոկոս գնաճ, որը զգալի իջեցրել է իրական եկամուտները։ Սա նշանակում է որ 2022 թվականի վերջին աշխատավարձերը դեռ չեն հասել գնաճի տեմպին և 2022 թվականին գրանցված 12.6 տոկոս տնտեսական աճը դեռ չի անդրադարձել տնային տնտեսությունների եկամուտների կամ աշխատավարձերի աճի վրա։ Նշեմ որ 2023 թվականի վերջին գրանցվել է գրեթե զրոյական գնաճ։ Զրոյական գնաճի տեսակետը ներկայացված է [տեսանյութում](https://youtu.be/Va5q9efWaI4)։
+
+Երրորդ գծապատկերում ներկայացված միտքը այլընտրանքային կերպով արտացոլում է նաև հաջորդ գծապատկերը։
+
+**Գծապատկեր 4.** 
+<!-- Որքա՞ն է Հայաստանի ընտանիքների ամսական եկամուտը, այլընտրանքային հայացք -->
+![](plots/plot_household_pct_change_2.png)
+
+
+Այղուսակի տեսքով ներկայացնենք նաև տնային տնտեսությունների եկամուտների փոփոխությունը տարիների ընթացքում։
+
+```{r, echo=FALSE, fig.width = 6}
+income_table
+```
+
+
+
+Տվյալները վերցված են պաշտոնական աղբյուրներից, մասնավորապես՝ [տնային տնտեսությունների կենսամակարդակի (կենսապայմանների) ամբողջացված հետազոտության անվանազերծված միկրոտվյալների բազա (ըստ տնային տնտեսությունների)](https://www.armstat.am/en/?nid=205) և [Հայաստանի սպառողական գների ամսական ինդեքսը](https://www.cba.am/stat/stat_data_arm/6_CPI_arm.xls): Տնային տնտեսությունների կենսամակարդակի ցուցանիշները ճշգրտվել են ամսական կումուլատիվ գնաճով, այսինքն յուրաքանչյուր ցուցանիշ ներկայացնում է 2023 թվականի վերջի գնողունակությունը։ Ցուցանիշները նաև կշռվել են։ Հաշվարկները կարելի է ստուգել այցելելով [github-ի](https://github.com/tavad/tvyal_newsletter) մեր էջը, որտեղ տրված են տվյալները, հաշվարկների և գծապատկերների կոդը։ 
+
+
+-----
+
+-----
+
+Եթե հնարավոր է, խնդրում եմ այս նյութը ուղարկել նաև այն մարդկանց, ում այն կարծում եք կարող է հետաքրքրել:
+
+**ԱՅՍ ՀՈԴՎԱԾԻ ՀՂՈՒՄԸ**
+
+***Թավադյան, Աղ․Ա․ (2024)․ Անհուսալի վարկառուների աջակցության ծրագիր. պոպուլիստական քայլ, թե՞ տնտեսական անհրաժեշտություն [USupport Program for Unreliable Borrowers: A Populist Move or Economic Necessity?]․ Tvyal.com հարթակ [Tvyal.com platform], 06-01-2025․ https://www.tvyal.com/newsletter/2025/2025_01_06***
+
+**Արգելվում է այս հարթակի նյութերը արտատպել առանց հղում կատարելու։**    
+
+<small>\* Այս և մեր բոլոր այլ վերլուծությունների տվյալները վերցված են պաշտոնական աղբյուրներից։ Հաշվարկները ամբողջությամբ հասանելի են github-ում, դրանք կարելի է ստուգել` այցելելով [github-ի](https://github.com/tavad/tvyal_newsletter/blob/main/2024/) մեր էջը, որտեղ տրված են տվյալները, հաշվարկների և գծապատկերների կոդը։</small>
+
+
+-----
+
+# ՀԱՄԱԳՈՐԾԱԿՑՈՒԹՅՈՒՆ
+
+<style>
+.ai-services-banner-tvyal {
+background-color: #0a192f;
+color: #e6f1ff;
+padding: 30px;
+font-family: Arial, sans-serif;
+border-radius: 10px;
+box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+position: relative;
+overflow: hidden;
+min-height: 400px;
+display: flex;
+flex-direction: column;
+justify-content: center;
+}
+.ai-services-banner-tvyal::before {
+content: '';
+position: absolute;
+top: -25%;
+left: -25%;
+right: -25%;
+bottom: -25%;
+background: repeating-radial-gradient(
+circle at 50% 50%,
+rgba(100, 255, 218, 0.1),
+rgba(100, 255, 218, 0.1) 15px,
+transparent 15px,
+transparent 30px
+);
+animation: gaussianWaveTvyal 10s infinite alternate;
+opacity: 0.3;
+z-index: 0;
+}
+@keyframes gaussianWaveTvyal {
+0% {
+transform: scale(1.5) rotate(0deg);
+opacity: 0.2;
+}
+50% {
+transform: scale(2.25) rotate(180deg);
+opacity: 0.5;
+}
+100% {
+transform: scale(1.5) rotate(360deg);
+opacity: 0.2;
+}
+}
+.ai-services-banner-tvyal > * {
+position: relative;
+z-index: 1;
+}
+.ai-services-banner-tvyal h2,
+.ai-services-banner-tvyal h3 {
+margin-bottom: 20px;
+color: #ccd6f6;
+}
+.ai-services-banner-tvyal ul {
+margin-bottom: 30px;
+padding-left: 20px;
+}
+.ai-services-banner-tvyal li {
+margin-bottom: 10px;
+}
+.ai-services-banner-tvyal a {
+color: #64ffda;
+text-decoration: none;
+transition: color 0.3s ease;
+}
+.ai-services-banner-tvyal a:hover {
+color: #ffd700;
+text-decoration: underline;
+}
+</style>
+
+<div class="ai-services-banner-tvyal">
+## [Եթե ուզում եք ձեր տվյլներից օգուտ քաղել AI գործիքներով` ԴԻՄԵՔ ՄԵԶ](mailto:a@tavadyan.com?subject=Let's Put Data to Work!)
+
+### Մենք առաջարկում ենք
+
+- Extensive databases for finding both international and local leads
+- Exclusive reports on the Future of the Armenian Economy
+- Work and browser automation to streamline operations and reduce staffing needs
+- AI models for forecasting growth and optimizing various aspects of your business
+- Advanced dashboarding and BI solutions
+- Algorithmic trading
+
+### [Let's Put Your Data to Work!](mailto:a@tavadyan.com?subject=Let's Put Data to Work!)
+
+### [ՄԻԱՑԵՔ ՄԵՐ ԹԻՄԻՆ](mailto:a@tavadyan.com?subject=Work application)
+</div>
+
+
+
+-----
+
+
+
+
+## ԶԼՄ հաղորդագրություն
+
+
+[Դիտեք news.am-ին տրված իմ ակնարկը այս թեմայի մասին](https://youtu.be/WbS1mjPK1Qw)
+
+📺 Նախընտրական կաշա՞ռք. ինչու է Փաշինյանն օգնում անհուսալի վարկառուներին 📺
+
+<a href="https://youtu.be/WbS1mjPK1Qw">
+  <img src="https://i3.ytimg.com/vi/WbS1mjPK1Qw/hqdefault.jpg" alt="YouTube Video" style="width:60%;">
+</a>
+
+[Դիտեք 1in.am-ին տրված հարցազրույցը 2025 թվականի հարկային փոփոխությունների մաիսն](https://youtu.be/tqXdEhCI3ok?t=11)
+
+📺 Կառավարության ընդունած հարկային փոփոխություններն ավելի է վատացնելու բնակչության սոցիալական վիճակը 📺
+
+<a href="https://youtu.be/tqXdEhCI3ok?t=11">
+  <img src="https://i3.ytimg.com/vi/tqXdEhCI3ok/hqdefault.jpg" alt="YouTube Video" style="width:60%;">
+</a>
+
+
+
+
+
+## English Summary
+
+**2022- A Year of Declining Household Incomes in Armenia**
+
+In 2022, household incomes in Armenia witnessed a notable shift, with declines evident in most regions, except for Kotayk, Gegharkunik, and Tavush marzes. Within the capital city, Yerevan, and Aragatsotn, the affluent experienced a rise in income while the less privileged faced a further decrease. A broader analysis of income trends since 2018 reveals that Armenia reached its peak in 2020, with the average monthly household income standing at 278,000 AMD. However, by the end of 2022, this figure dropped by 15,000 drams to 263,000 AMD. Although the income for an average family in Yerevan remained unchanged over the two years, a decline was observed in other marzes. Notably, the top 10% of wealthy families in Yerevan saw an increase in real income from 629,000 to 671,000 drams during this period.
+
+Examining the longer-term perspective, the second chart highlights the evolution of annual household incomes since 2005, categorized into ascending income brackets. Notably, the data reveals a 3.5 percentage point increase in recipients earning up to 128,000 AMD, while the 128,000-256,000 AMD bracket witnessed a 1.9 percentage point reduction. Despite nominal income growth in 2021 and 2022, high inflation rates of 7.2% and 8.6%, respectively, have mitigated real income gains. The disparity is emphasized by the fact that the 12.6% economic growth in 2022 has yet to translate into household income or wage growth, with the impact only starting to show in late 2023 due to almost zero inflation. These insights are supported by an alternative view presented in the fourth diagram, underscoring the intricate relationship between inflation, economic growth, and household income shifts.
+
+
+
+---
+
+
+
+Հարգանքներով,            
+Աղասի Թավադյան         
+06.01.2025          
+[tvyal.com](https://www.tvyal.com/)      
+[tavadyan.com](https://www.tavadyan.com/)
+
+---
+
+[Was this email forwarded to you? Subscribe here.](https://www.tvyal.com/subscribe)
+
+[Բաժանորդագրվեք](https://www.tvyal.com/subscribe)
+
+       
+---              
+               
+
+
+####### **Ուշադրություն. Ձեր էլ.փոստը մեյլլիսթի մեջ է, որի միջոցով ես կիսվում եմ շաբաթական նյութեր, որոնք հիմնականում ներկայացնում են Հայաստանի տնտեսությունը: Նյութերը ներառում են գծապատկերներ, [տվյալների բազաներ](https://github.com/tavad/tvyal_newsletter), տեսանյութեր, հոդվածներ, [առցանց վահանակներ](https://www.tvyal.com/projects), տնտեսական գործիքներ, կանխատեսումներ և հաշվետվություններ: Եթե ցանկանում եք չեղարկել բաժանորդագրությունը, խնդրում եմ տեղեկացրեք ինձ, և ես կհեռացնեմ ձեր էլ. փոստը ցուցակից: Գրեք նաև եթե ունեք մենկնաբանություններ:**
+
+####### **Important! Your email is part of the mailing list where I share weekly materials primarily focused on the Armenian economy. These materials encompass charts, [databases](https://github.com/tavad/tvyal_newsletter), videos, articles, [online dashboards](https://www.tvyal.com/projects), economic tools, forecasts, and reports. If you wish to unsubscribe, please let me know, and I will remove your email from the list. Please share your comments as well․**
+
+
+
+
+
