@@ -389,6 +389,257 @@ plot_household_pct_change_2 <-
 
 ```
 
+```{r, include=FALSE}
+# Regional changes analysis 2022-2023
+regional_changes <- 
+  household_income_db %>%
+  left_join(inf_cumprod, by = "date") |> 
+  mutate(totincome = totincome * adj_price) |> 
+  filter(year %in% c(2022, 2023)) |> 
+  group_by(year, marz) |> 
+  summarise(
+    mean = sum(totincome*weight)/sum(weight),
+    median = wtd.quantile(totincome, weight, probs = 0.5),
+    q10 = wtd.quantile(totincome, weight, probs = 0.1),
+    q90 = wtd.quantile(totincome, weight, probs = 0.9)
+  ) |> 
+  pivot_wider(
+    names_from = year,
+    values_from = c(mean, median, q10, q90)
+  ) |>
+  left_join(marz_dict, by = "marz") |>
+  mutate(across(contains("2023"), ~./1000)) |> # Convert to thousands
+  mutate(across(contains("2022"), ~./1000)) |> # Convert to thousands
+  mutate(
+    mean_change = (mean_2023/mean_2022 - 1) * 100,
+    median_change = (median_2023/median_2022 - 1) * 100,
+    q10_change = (q10_2023/q10_2022 - 1) * 100,
+    q90_change = (q90_2023/q90_2022 - 1) * 100
+  )
+
+print("Regional changes 2022-2023:")
+print(regional_changes)
+
+# Income brackets detailed analysis for 2023
+income_brackets_2023 <- 
+  household_income_db |> 
+  filter(year == 2023) |> 
+  left_join(inf_cumprod, by = "date") |> 
+  mutate(totincome = totincome * adj_price) |>
+  mutate(
+    income_bin = cut(
+      totincome/1000,
+      breaks = c(0, 32, 64, 128, 256, 512, 1000, Inf),
+      labels = c("<32K", "32K-64K", "64K-128K", "128K-256K", 
+                 "256K-512K", "512K-1M", ">1M")
+    )
+  ) |> 
+  count(income_bin, wt = weight) |> 
+  mutate(pct = n/sum(n) * 100)
+
+print("\nIncome brackets distribution 2023:")
+print(income_brackets_2023)
+
+inf_cumprod |> 
+  mutate(year = year(date)) |> 
+  group_by(year) |> 
+  summarise(cpi = (prod(cpi_m) - 1) * 100) |> 
+  arrange(desc(year))
+
+```
+
+
+
+```{r, include=FALSE}
+
+incomes <- 
+  household_income_db |> 
+  filter(year %in% c(2023)) |> 
+  group_by(year) |> 
+  summarise(
+    mean = sum(totincome*weight)/sum(weight),
+    median = wtd.quantile(totincome, weight, probs = 0.5),
+    q10 = wtd.quantile(totincome, weight, probs = 0.1),
+    q90 = wtd.quantile(totincome, weight, probs = 0.9)
+  )
+
+
+# Creating comparison with basic goods
+basic_goods_comparison <-
+  tibble(
+    item = c(
+      "iPhone 15 (128GB)\n300 հազար դրամ", 
+      "1 տարվա սնունդ 4 հոգանոց ընտանիքի համար\n(օրական 5 հազար դրամ)",
+      "Նոր Toyota Corolla Sedan 1.6l 97kW Comfort\nմիջինը՝ 13.8 մլն դրամ",  
+      "Բնակարան Երևանում (60ք.մ.)\nկենտրոնից դուրս՝ միջին ք․մ արժեքը 615 հազար դրամ"
+    ),
+    price_amd = c(
+      300000, 12*30*5000, 13881818, 615355*60
+    )
+  ) |> 
+  mutate(
+    months_median = price_amd / (incomes$median),
+    months_q10 = price_amd / (100000),
+    months_q90 = price_amd / (incomes$q90),
+    item = fct_inorder(item)
+  )
+
+
+# Function to format time duration
+format_duration <- function(months) {
+  years <- floor(months / 12)
+  remaining_months <- floor(months %% 12)
+  days <- floor((months %% 1) * 30)
+  
+  if (years > 0) {
+    if (remaining_months > 0) {
+      return(sprintf("%d տ․ %d ամ․", years, remaining_months))
+    } else {
+      return(sprintf("%d տ․", years))
+    }
+  } else if (remaining_months > 0) {
+    if (days > 0) {
+      return(sprintf("%d ամ․ %d օր", remaining_months, days))
+    } else {
+      return(sprintf("%d ամ․", remaining_months))
+    }
+  } else {
+    return(sprintf("%d օր", days))
+  }
+}
+
+# Modify the plot with new formatting
+plot_months_to_buy <-
+  basic_goods_comparison |> 
+  pivot_longer(cols = starts_with("months")) |> 
+  mutate(
+    name = factor(
+      name,
+      levels = c("months_q10", "months_median", "months_q90"),
+      labels = c("Ցածր եկամուտով\nընտանիք", "Միջին\nընտանիք", "Բարձր եկամուտով\nընտանիք")
+    ),
+    duration_label = sapply(value, format_duration)
+  ) |>
+  ggplot(aes(x = name, y = value, fill = name)) +
+  geom_col(alpha = 1) +
+  facet_wrap(~item, scales = "free") +
+  geom_text(aes(y = 0, label = duration_label), vjust = -1, color = "white", size = 4) +
+  scale_fill_manual(values = new_palette_colors[c(6,4,2)]) +
+  labs(
+    title = "Որքա՞ն ժամանակ է պետք ապրելու համար",
+    subtitle = "2023թ. տվյալներով, եթե ընտանիքի ամբողջ եկամուտը ուղղվի տվյալ ապրանքի ձեռքբերմանը",
+    x = NULL, y = NULL,
+    fill = NULL,
+    caption = caption_f(source = "Number, Armstat", suffix_text = "\nՑածր եկամուտ՝ 100 հազար դրամ, միջին եակամուտ՝ 285 հազար դրամ, բարձր եկամուտ՝ 674 հազար դրամ")
+  ) +
+  theme(
+    legend.position = "none",
+    axis.text.y = element_blank(),
+    panel.grid.major.y = element_blank(),
+    panel.grid.major.x = element_blank()
+  )
+  
+ggsave("plots/plot_months_to_buy.png", plot_months_to_buy, width = 9, height = 8)
+```
+
+
+
+```{r, include=FALSE}
+# Creating purchasing power comparison across regions
+regional_basket <- 
+  household_income_db |> 
+  filter(year == 2023) |> 
+  group_by(marz) |> 
+  summarise(median_income = median(totincome) / 1000) |> 
+  left_join(marz_dict, by = "marz") |> 
+  mutate(
+    bread = median_income / 0.6,    # հաց 600 դրամ
+    meat = median_income / 4,       # 1կգ միս 4000 դրամ
+    fuel = median_income / 0.5,     # 1լ բենզին 500 դրամ
+    restaurant = median_income / 5   # 1 անգամ ռեստորանում ճաշել 5000 դրամ
+  ) |> 
+  select(-median_income, -marz) |> 
+  pivot_longer(-c(marz_arm, marz_eng)) |> 
+  mutate(
+    name = factor(
+      name,
+      levels = c("bread", "meat", "fuel", "restaurant"),
+      labels = c("Հաց (հատ)", "Միս (կգ)", "Բենզին (լիտր)", "Ռեստորան (անգամ)")
+    )
+  )
+
+plot_purchasing_power <- 
+  regional_basket |> 
+  ggplot(aes(x = value, y = reorder(marz_arm, value), fill = name)) +
+  geom_col() +
+  facet_wrap(~name, scales = "free_x") +
+  geom_text(aes(label = round(value)), hjust = -0.1) +
+  scale_fill_brewer(palette = "Set2") +
+  labs(
+    title = "Ի՞նչ կարող եք գնել միջին աշխատավարձով տարբեր մարզերում",
+    subtitle = "2023թ. միջին ամսական եկամտով",
+    x = "Քանակ", y = NULL,
+    fill = NULL
+  ) +
+  theme(legend.position = "none")
+```
+
+
+```{r, include=FALSE}
+# Creating winners and losers visualization
+income_changes_summary <- 
+  regional_changes |> 
+  select(marz_arm, mean_change) |> 
+  mutate(
+    direction = if_else(mean_change > 0, "Աճ", "Նվազում"),
+    marz_arm = fct_reorder(marz_arm, mean_change)
+  )
+
+plot_winners_losers <- 
+  income_changes_summary |> 
+  ggplot(aes(x = mean_change, y = marz_arm, fill = direction)) +
+  geom_col() +
+  geom_text(
+    aes(label = paste0(round(mean_change, 1), "%"),
+        hjust = if_else(mean_change > 0, -0.1, 1.1))
+  ) +
+  scale_fill_manual(values = c("Աճ" = "#2f4b7c", "Նվազում" = "#f95d6a")) +
+  labs(
+    title = "Որտե՞ղ են եկամուտներն ամենաշատը փոխվել",
+    subtitle = "2023թ. փոփոխությունը 2022-ի համեմատ",
+    x = "Փոփոխություն (%)", y = NULL,
+    fill = NULL
+  )
+```
+
+
+```{r, include=FALSE}
+living_standards_table <- 
+  tibble(
+    category = c(
+      "Նվազագույն սպառողական զամբյուղ",
+      "Վարձով ապրող ընտանիքի նվազագույն ծախսեր",
+      "Հարմարավետ կյանքի համար անհրաժեշտ եկամուտ",
+      "Միջին եկամուտ (2023)",
+      "Միջին եկամուտ Երևանում (2023)"
+    ),
+    amount = c(
+      85000, 250000, 500000, 410000, 450000
+    ),
+    description = c(
+      "Սնունդ, կոմունալ, տրանսպորտ",
+      "Զամբյուղ + վարձ + տարրական ժամանց",
+      "Զամբյուղ + վարձ + ժամանց + խնայողություններ",
+      "Փաստացի միջին եկամուտ",
+      "Փաստացի միջին եկամուտ մայրաքաղաքում"
+    )
+  ) |> 
+  knitr::kable(
+    col.names = c("Կատեգորիա", "Գումար (դրամ)", "Նկարագրություն"),
+    caption = "Կյանքի արժեքը Հայաստանում (2023թ.)"
+  )
+```
+
 
 ```{r save plots, include=FALSE}
 
