@@ -1,7 +1,7 @@
 ---
 title: "Tvyal Newsletter"
 date: "2025-01-06"
-output: html_document
+output: word_document
 ---
 
 ```{r setup, include=FALSE}
@@ -906,10 +906,7 @@ Armenia experienced a remarkable economic turnaround in 2023, with household rea
 
 However, the recovery has been uneven across regions, highlighting persistent economic disparities within the country. While the Ararat region recorded a remarkable 35.5% growth in median income, some regions like Vayots Dzor saw declines. Income inequality showed modest improvement, with the ratio between the richest and poorest deciles decreasing from 7.05 to 6.56, though the middle class strengthened with 35.1% of families now in the upper-middle income bracket (256,000-512,000 AMD). Despite these positive trends, challenges remain, particularly in addressing regional economic imbalances and supporting the 2.7% of households still living on extremely low incomes.
 
-
-
 ---
-
 
 
 Հարգանքներով,            
