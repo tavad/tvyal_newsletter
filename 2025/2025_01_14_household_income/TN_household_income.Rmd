@@ -175,7 +175,7 @@ plot_household_change_in_2_years <-
     y = NULL,
     color = NULL,
     title = "Տնային տնտեսությունների եկամուտների փոփոխությունը ըստ մարզերի",
-    subtitle = "2022-ին Հայաստանի եկամուտները պակասել են, բացի Կոտայքի, Գեղարքունիքի և Տավուշի մարզից,\nհազար ՀՀ դրամ",
+    subtitle = "հազար ՀՀ դրամ",
     caption = paste0(caption_arm, "    |    տվյալների աղբյուր` armstat.am")
   ) +
   theme(
