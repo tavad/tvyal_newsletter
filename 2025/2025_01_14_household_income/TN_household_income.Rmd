@@ -108,7 +108,7 @@ income_table <-
 
 ```{r 2021 2022 change, include=FALSE}
 
-years_select = c(2022, 2023) # provide 2 consecutive years that are in household_income_db
+years_select = c(2020, 2023) # provide 2 consecutive years that are in household_income_db
 
 date_legend <- 
   tibble(
@@ -646,7 +646,7 @@ living_standards_table <-
 
 ```{r save plots, include=FALSE}
 
-ggsave("plots/plot_household_change_in_2_years.png", plot_household_change_in_2_years, width = 12, height = 8)
+ggsave("plots/plot_household_change_in_2_years_2020_23.png", plot_household_change_in_2_years, width = 12, height = 8)
 ggsave("plots/plot_household_change_18_23.png", plot_household_change_18_23, width = 12, height = 8)
 ggsave("plots/plot_household_pct_change.png", plot_household_pct_change, width = 12, height = 8)
 ggsave("plots/plot_household_pct_change_2.png", plot_household_pct_change_2, width = 12, height = 8)
