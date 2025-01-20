@@ -19,16 +19,26 @@ iso_to_unicode_flag <- function(iso2c) {
 }
 
 
+# indicator_gr <- 
+#   numbeo_db_countries_clean |> 
+#   mutate(indicator_group = fct_inorder(indicator_group)) |> 
+#   count(indicator_group) |> 
+#   pull(indicator_group)
+
 indicator_gr <- 
-  numbeo_db_countries_clean |> 
-  mutate(indicator_group = fct_inorder(indicator_group)) |> 
-  count(indicator_group) |> 
-  pull(indicator_group)
+  c(
+    "Restaurants", "Markets", "Transportation", "Utilities (Monthly)", "Sports And Leisure", 
+    "Childcare", "Clothing And Shoes", "Rent Per Month", "Buy Apartment Price", "Salaries And Financing"
+  )
 
 numbeo_db_cities_transport <- 
   numbeo_db_cities_clean |> 
   filter(indicator_group %in% indicator_gr[c(3,10)]) |> 
   select(-url, -city_urls)
+
+# numbeo_db_cities_transport |> write_csv("numbeo_db_cities_transport")
+
+numbeo_db_cities_transport <- read_csv("numbeo_db_cities_transport")
 
 major_cities_dict <-
   tibble(
