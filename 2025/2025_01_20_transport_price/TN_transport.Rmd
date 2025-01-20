@@ -23,7 +23,7 @@ system("cd ../.. | git all")
 
 ***English summary below.***
 
-## [🏠💰📈 Առաջընթացի գինը․ Երևանի հասարակական տրանսպորտի բարեփոխումները և մատչելիության սահմանները](https://www.tvyal.com/newsletter/2025/2025_01_20)
+## [💸💳🚍 Տրանսպորտի թանկացում․ Երևանի հասարակական տրանսպորտի բարեփոխումները և մատչելիության սահմանները](https://www.tvyal.com/newsletter/2025/2025_01_20)
 
 Ավելի քան երկու տասնամյակ Երևանի բնակիչները հասարակական տրանսպորտից օգտվելու համար վճարում էին 100 դրամ (\$0.25)՝ գին, որը մնաց անփոփոխ տնտեսական ցիկլերի, արժութային տատանումների և երեք տարբեր նախագահական վարչակազմերի ընթացքում։ Այս գինը փոխվելու է 2025թ․ փետրվարի 1-ից, երբ ուղեվարձը եռապատկվելու է՝ հասնելով 300 դրամի (\$0.75) մեկ ուղերթի համար։ Գնի բարձրացումը համընկնում է քաղաքի՝ հնացած միկրոավտոբուսներից դեպի չինական արտադրության ժամանակակից ավտոբուսների անցման հետ, ինչը վերջին տարիների ընթացքում Երևանի հասարակական տրանսպորտի համակարգի ամենանշանակալի վերափոխումն է։
 
@@ -107,6 +107,10 @@ system("cd ../.. | git all")
 
 Երևանի առջև ծառացած հիմնական հարցը ոչ թե արդիականացման անհրաժեշտությունն է՝ դա ակնհայտ է, այլ այն, թե ինչպես պետք է պլանավորել և ֆինանսավորել այս բարելավումները՝ առանց հասարակական տրանսպորտը դարձնելու չափազանց թանկ իր հիմնական օգտագործողների համար։ Երբ երեք հոգուց բաղկացած խումբը նախընտրում է տաքսի վերցնել՝ հասարակական տրանսպորտից օգտվելու փոխարեն, համակարգը հավանաբար հակասում է իր իսկ նպատակներին՝ երթևեկության նվազեցմանը և բոլորի համար մատչելի տրանսպորտ ապահովելուն։ Մինչ Երևանի բնակիչները հարմարվում են այս փոփոխություններին, քաղաքի փորձը կարող է ցույց տալ, թե արդյոք մատչելիության հաշվին արագ արդիականացումը կայուն ճանապարհ է Հայաստանի քաղաքային զարգացման համար։
 
+<small>
+Նշում․ Նյութում առկա գծապատկերների և առաջին աղյուսակի մեջ ներկայացված գների միջև կան տարբերություններ։ Քանի որ առաջին աղյուսակը կազմվել է օգտագործելով ուղղակի և թարմ աղբյուրներ, իսկ գծապատկերներում բերված տվյալները վերցվել են [Numbeo.com](https://www.numbeo.com/cost-of-living/in/Yerevan?displayCurrency=USD) կայքէջից, որն անհատական հարցումների միջոցով ագրեգացնում է տվյալները։ Այս պարագայում Numbeo կայքէջի տվյալները կարող են չհամապատասխանել իրականությանը, քանի որ կարող են հաշվի չառնվել գնաճային կամ այլ էֆեկտները։
+</small>
+
 -----
 
 -----
@@ -115,11 +119,11 @@ system("cd ../.. | git all")
 
 **ԱՅՍ ՀՈԴՎԱԾԻ ՀՂՈՒՄԸ**
 
-***Թավադյան, Աղ․Ա․ (2024)․ Անհուսալի վարկառուների աջակցության ծրագիր. պոպուլիստական քայլ, թե՞ տնտեսական անհրաժեշտություն [USupport Program for Unreliable Borrowers: A Populist Move or Economic Necessity?]․ Tvyal.com հարթակ [Tvyal.com platform], 20-01-2025․ https://www.tvyal.com/newsletter/2025/2025_01_20***
+***Թավադյան, Աղ․Ա․ (2025)․ Տրանսպորտի թանկացում․ Երևանի հասարակական տրանսպորտի բարեփոխումները և մատչելիության սահմանները [Transportation Price Increase: Yerevan's Public Transport Reforms and the Limits of Affordability]․ Tvyal.com հարթակ [Tvyal.com platform], 20-01-2025․ https://www.tvyal.com/newsletter/2025/2025_01_20***
 
 **Արգելվում է այս հարթակի նյութերը արտատպել առանց հղում կատարելու։**    
 
-<small>\* Այս և մեր բոլոր այլ վերլուծությունների տվյալները վերցված են պաշտոնական աղբյուրներից։ Հաշվարկները ամբողջությամբ հասանելի են github-ում, դրանք կարելի է ստուգել` այցելելով [github-ի](https://github.com/tavad/tvyal_newsletter/blob/main/2024/) մեր էջը, որտեղ տրված են տվյալները, հաշվարկների և գծապատկերների կոդը։</small>
+<small>\* Այս և մեր բոլոր այլ վերլուծությունների տվյալները վերցված են պաշտոնական աղբյուրներից։ Հաշվարկները ամբողջությամբ հասանելի են github-ում, դրանք կարելի է ստուգել` այցելելով [github-ի](https://github.com/tavad/tvyal_newsletter/blob/main/2025/) մեր էջը, որտեղ տրված են տվյալները, հաշվարկների և գծապատկերների կոդը։</small>
 
 
 -----
@@ -243,11 +247,11 @@ text-decoration: underline;
 -----
 
 ## English Summary
-### 🏠💰📉 Armenian Household Incomes Show Growth in 2023
+### 💸💳🚍 Transportation Price Increase: Yerevan's Public Transport Reforms and the Limits of Affordability
 
-Armenia experienced a remarkable economic turnaround in 2023, with household real incomes growing substantially amid unprecedented price stability. The median household income rose by 15.3% to 331,000 AMD, while the poorest segment saw an even more impressive 23.2% increase, reaching 117,000 AMD. This growth was largely facilitated by negative inflation (-0.6%), contrasting sharply with 2022's high inflation rate of 8.3% that had previously eroded purchasing power.
+For more than two decades, residents of Armenia's capital Yerevan paid a consistent fare of 100 drams (\$0.25) for public transport, a price that remained unchanged through economic cycles, currency fluctuations, and three different presidential administrations. However, starting February 1st, 2025, this will change dramatically as the fare triples to 300 drams (\$0.75) per ride, coinciding with the city's transition from aging minibuses to a modern fleet of Chinese-manufactured buses.
 
-However, the recovery has been uneven across regions, highlighting persistent economic disparities within the country. While the Ararat region recorded a remarkable 35.5% growth in median income, some regions like Vayots Dzor saw declines. Income inequality showed modest improvement, with the ratio between the richest and poorest deciles decreasing from 7.05 to 6.56, though the middle class strengthened with 35.1% of families now in the upper-middle income bracket (256,000-512,000 AMD). Despite these positive trends, challenges remain, particularly in addressing regional economic imbalances and supporting the 2.7% of households still living on extremely low incomes.
+The impact of this price increase becomes particularly stark when measured against local wages. While the monthly transport expenditure for Yerevan residents has increased from 5,000 to 9,000 drams, this represents 4.2% of the average local income, compared to just 1.5% in Warsaw. The pricing structure also creates an unexpected incentive for private transport use, as a group of three people traveling together would pay 900 drams for public transport – more than a short taxi ride, potentially undermining the system's goal of reducing urban traffic.
 
 ---
 
