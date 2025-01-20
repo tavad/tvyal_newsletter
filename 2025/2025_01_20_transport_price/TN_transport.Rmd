@@ -17,18 +17,6 @@ setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 
 source("../../initial_setup.R")
 
-```
-
-
-
-```{r save plots, include=FALSE}
-# 
-# ggsave("plots/plot_one_way_price.png", plot_one_way_price, width = 12, height = 8)
-# ggsave("plots/plot_monthly_price.png", plot_monthly_price, width = 12, height = 8)
-# ggsave("plots/plot_taxi_price.png", plot_taxi_price, width = 12, height = 8)
-# ggsave("plots/plot_taxi_vs_transport.png", plot_taxi_vs_transport, width = 12, height = 8)
-# ggsave("plots/plot_monthly_pass_per_wage.png", plot_monthly_pass_per_wage, width = 12, height = 8)
-
 system("cd ../.. | git all")
 
 ```

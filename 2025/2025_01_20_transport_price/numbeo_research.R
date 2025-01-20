@@ -3,6 +3,11 @@ library(scales)
 library(countrycode)
 
 
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+
+source("../../initial_setup.R")
+
+
 iso_to_unicode_flag <- function(iso2c) {
   sapply(iso2c, function(code) {
     if (is.na(code)) return(NA)
@@ -349,7 +354,8 @@ plot_taxi_vs_transport
 
 label_4 = "Տրանսպորտի նոր գների ներդրմամբ երևանցին միջին աշխատավարձով կարող է ձեռք բերել 24 ամսական աբոնեմենտ՝ նախկին 43-ի փոխարեն։ Սա ավելի քան 1.5 անգամ պակաս է և զգալիորեն զիջում է եվրոպական քաղաքներին, որտեղ այս ցուցանիշը հասնում է 70-80-ի։"
 
-numbeo_db_cities_transport |>
+plot_monthly_pass_per_wage <- 
+  numbeo_db_cities_transport |>
   filter(
     indicator %in% c("Monthly Pass (Regular Price)", "Average Monthly Net Salary (After Tax)"),
     !is.na(info_entries),
@@ -417,3 +423,11 @@ numbeo_db_cities_transport |>
     strip.text = element_blank(),
   )
 
+plot_monthly_pass_per_wage
+
+
+ggsave("plots/plot_one_way_price.png", plot_one_way_price, width = 12, height = 8)
+ggsave("plots/plot_monthly_price.png", plot_monthly_price, width = 12, height = 8)
+ggsave("plots/plot_taxi_price.png", plot_taxi_price, width = 12, height = 8)
+ggsave("plots/plot_taxi_vs_transport.png", plot_taxi_vs_transport, width = 12, height = 8)
+ggsave("plots/plot_monthly_pass_per_wage.png", plot_monthly_pass_per_wage, width = 12, height = 8)
