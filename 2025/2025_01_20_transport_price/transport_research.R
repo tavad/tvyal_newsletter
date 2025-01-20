@@ -5,9 +5,9 @@ source("~/R/newsletter/initial_setup.R")
 
 
 # Create the data frame with Armenian translations
-metro_fares <- tribble(
+metro_fares_ <- tribble(
   ~City, ~Country, ~Fare_Type, ~Local_Cost, ~Local_Currency, ~Cost_AMD, ~average_net_salary_amd,
-  "Երևան", "Հայաստան", "Ստանդարտ ուղևորություն", 220, "AMD", 220, 215988,
+  "Երևան", "Հայաստան", "Ստանդարտ ուղևորություն", 300, "AMD", 300, 215988,
   "Թբիլիսի", "Վրաստան", "Ստանդարտ ուղևորություն", 1, "GEL", 130, 222744,
   "Բաքու", "Ադրբեջան", "Մետրոյի մեկ ուղևորություն", 0.50, "AZN", 113, 194244,
   "Թեհրան", "Իրան", "Մետրոյի մեկ ուղևորություն", 10000, "IRR", 94, 105224,
@@ -24,16 +24,71 @@ metro_fares <- tribble(
   "Սոֆիա", "Բուլղարիա", "Մեկ ուղևորություն", 1.60, "BGN", 290, 551628
 )
 
+exchanges <- read_csv("~/R/Gcapatker/2024_03_24_CBA_FX/CBA_FX_data.csv") |> 
+  filter(year >= 2025) |>
+  group_by(FX_ISO) |> 
+  filter(date == max(date)) |> 
+  ungroup() |> 
+  extract(
+    FX_ISO, into = c("Local_Currency", "factor"),
+    regex = "([A-Z]+)(\\d+)", convert = TRUE
+  ) |> 
+  mutate(AMD = AMD/factor) |> 
+  select(-factor, -date) |> 
+  filter(!Local_Currency %in% c("TRY", "HUF")) |> 
+  bind_rows(
+    tribble(
+      ~Local_Currency, ~AMD, ~year,
+      "AMD", 1, 2025,
+      "AZN", 235.75, 2025,
+      "TRY", 11.25, 2025,
+      "HUF", 1.002, 2025,
+      "RON", 83.09, 2025,
+      "BGN", 211.42, 2025
+    )
+  )
+
+
+metro_fares <- 
+  metro_fares_ |> 
+  left_join(exchanges, by = "Local_Currency") |> 
+  mutate(Cost_AMD_adjasted = Local_Cost * AMD)
+
+
 # Create the formatted table
+# Create the formatted table with hyperlinks
+# Create the formatted table with hyperlinks
 metro_fares %>%
-  select(-average_net_salary_amd) |> 
+  select(
+    City, 
+    Country, 
+    Fare_Type, #= case_when(
+    #   City == "Երևան" ~ glue::glue("<a href='https://www.301.am/yerevans-public-transport-fare-hike-to-300-amd-places-city-among-most-expensive-in-cis-capitals/'>Ստանդարտ ուղևորություն</a>"),
+    #   City == "Թբիլիսի" ~ glue::glue("<a href='https://www.worldofmetro.com/tbilisi-metro/'>Մետրոյի մեկ ուղևորություն</a>"),
+    #   City == "Բաքու" ~ glue::glue("<a href='https://turan.az/en/social/subway-and-bus-fares-have-increased-in-azerbaijan-782016'>Մետրոյի մեկ ուղևորություն</a>"),
+    #   City == "Թեհրան" ~ glue::glue("<a href='https://www.iraniantours.com/price/'>Մետրոյի մեկ ուղևորություն</a>"),
+    #   City == "Ստամբուլ" ~ glue::glue("<a href='https://www.duvarenglish.com/public-transportation-fares-in-istanbul-increased-by-35-pct-news-65538'>Մետրոյի մեկ ուղևորություն</a>"),
+    #   City == "Մոսկվա" ~ glue::glue("<a href='https://weheart.moscow/publictransport/'>Մետրոյի մեկ ուղևորություն</a>"),
+    #   City == "Կիև" ~ glue::glue("<a href='https://en.tripmydream.com/ukraine/kiev/local-transport'>Ստանդարտ ուղևորություն</a>"),
+    #   City == "Մինսկ" ~ glue::glue("<a href='https://www.belarus.by/en/travel/transport-in-belarus/minsk-metro'>Մետրոյի մեկ ժետոն</a>"),
+    #   City == "Տաշքենդ" ~ glue::glue("<a href='https://www.uzdaily.uz/en/public-transport-fares-in-tashkent-to-increase-from-1-november/'>Կանխիկ/բանկային քարտ</a>"),
+    #   City == "Ալմաթի" ~ glue::glue("<a href='https://www.lonelyplanet.com/articles/getting-around-kazakhstan'>Մեկ ուղևորություն</a>"),
+    #   City == "Վարշավա" ~ glue::glue("<a href='https://community.ricksteves.com/travel-forum/poland/senior-transit-in-warsaw'>20 րոպեանոց տոմս</a>"),
+    #   City == "Պրահա" ~ glue::glue("<a href='https://pragueclassicalconcerts.com/en/public-transport-tickets'>30 րոպեանոց տոմս</a>"),
+    #   City == "Բուդապեշտ" ~ glue::glue("<a href='https://housinganywhere.com/Budapest--Hungary/budapest-public-transport'>Մեկ տոմս</a>"),
+    #   City == "Բուխարեստ" ~ glue::glue("<a href='https://www.inyourpocket.com/bucharest/Bucharest-Public-Transport'>Մեկ ուղևորություն</a>"),
+    #   City == "Սոֆիա" ~ glue::glue("<a href='https://openbulgaria.org/post/public-transport-sofia/'>Մեկ ուղևորություն</a>")
+    # ),
+    Local_Cost, 
+    Local_Currency, 
+    Cost_AMD = Cost_AMD_adjasted
+  ) |> 
+  arrange(desc(Cost_AMD)) |> 
   gt() %>%
-  # Add title and subtitle in Armenian
   tab_header(
     title = md("**Հասարակական տրանսպորտի ուղեվարձերի համեմատություն<br>տարբեր քաղաքներում**"),
     subtitle = "Գները ցուցադրված են տեղական արժույթով և հայկական դրամով (AMD)"
   ) %>%
-  # Format columns
   fmt_number(
     columns = c(Local_Cost),
     decimals = 2,
@@ -46,12 +101,10 @@ metro_fares %>%
     dec_mark = ",",
     sep_mark = "."
   ) %>%
-  # Combine local cost and currency
   cols_merge(
     columns = c(Local_Cost, Local_Currency),
     pattern = "{1} {2}"
   ) %>%
-  # Rename columns in Armenian
   cols_label(
     City = "Քաղաք",
     Country = "Երկիր",
@@ -59,11 +112,9 @@ metro_fares %>%
     Local_Cost = "Տեղական գին",
     Cost_AMD = "Գինը դրամով"
   ) %>%
-  # Add source note in Armenian
   tab_source_note(
     source_note = caption_f(suffix_text = "Գները առ 2025թ․ հունվար               |      ")
   ) %>%
-  # Style the table
   tab_style(
     style = list(
       cell_text(weight = "bold")
@@ -78,7 +129,10 @@ metro_fares %>%
       rows = seq(1, nrow(metro_fares), 2)
     )
   ) %>%
-  # Add borders
+  text_transform(
+    locations = cells_body(columns = Fare_Type),
+    fn = function(x) map_chr(x, ~ as.character(html(.x)))
+  ) %>%
   tab_options(
     table.border.top.style = "hidden",
     table.border.bottom.style = "hidden",
@@ -169,7 +223,7 @@ metro_fares |>
   left_join(numbeo_db_cities_one_way, by = "cities") |> 
   relocate(mean_price, mean_price_amd, cost_amd, .after = "country") |> 
   mutate(discrepancy = abs((mean_price_amd - cost_amd)/cost_amd)) |> 
-  filter(discrepancy >= 0.15)
+  filter(discrepancy <= 0.15)
 
 #########################
 
