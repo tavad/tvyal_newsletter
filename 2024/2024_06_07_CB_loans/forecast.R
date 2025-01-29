@@ -11,13 +11,13 @@ setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 source("../../initial_setup.R")
 
 system("curl --insecure 'https://www.cba.am/stat/stat_data_eng/2_Money%20Base_eng.xlsx' -o '2_Money_Base_eng.xlsx'")
-system("curl --insecure 'https://www.cba.am/stat/stat_data_eng/Internet-Baza_2024%20ENGnew.xlsx' -o '2_Money_Base_dayly_eng.xlsx'")
-
-
+# system("curl --insecure 'https://www.cba.am/stat/stat_data_eng/Internet-Baza_2024%20ENGnew.xlsx' -o '2_Money_Base_dayly_2024.xlsx'")
+system("curl 'https://www.cba.am/stat/stat_data_eng/Internet-Baza_Daily_ENGnew.xlsx' -o '2_Money_Base_dayly_2025.xlsx'")
 
 
 money_base_raw <- read_excel("2_Money_Base_eng.xlsx", skip = 3)
-money_base_daily_raw <- read_excel("2_Money_Base_dayly_eng.xlsx", skip = 3)
+money_base_daily_raw_2024 <- read_excel("2_Money_Base_dayly_2024.xlsx", skip = 3)
+money_base_daily_raw_2025 <- read_excel("2_Money_Base_dayly_2025.xlsx", skip = 3)
 
 indicator_names_dict <- 
   tibble(
@@ -66,28 +66,42 @@ money_base <-
   relocate(date, year, month) |> 
   left_join(indicator_names_dict, by = "indicator")
 
+clean_dayly_indicators <- function(data){
+  
+  data_return <- 
+    data |> 
+    slice_head(n = 25) |> 
+    rename(indicator = 1) |> 
+    pivot_longer(-indicator, names_to = "date") |> 
+    filter(!is.na(value), !is.na(indicator)) |> 
+    mutate(
+      date = str_trim(date),
+      date_temp = ifelse(grepl("-|\\.", date), date, NA),
+      date_temp = str_remove_all(date_temp, " \\d$"),
+      date_temp = dmy(date_temp),
+      date = as.integer(date),
+      date = as.Date(date, origin = "1899-12-30"),
+      date = if_else(is.na(date), date_temp, date),
+      year = year(date),
+      month = month(date),
+      indicator = str_trim(indicator),
+      indicator = fct_inorder(indicator)
+    ) |> 
+    select(-date_temp) |> 
+    relocate(date, year, month) |> 
+    left_join(indicator_names_dict, by = "indicator") 
+  
+  return(data_return)
+  
+}
+
+money_base_daily_2024 <- clean_dayly_indicators(money_base_daily_raw_2024)
+money_base_daily_2025 <- 
+  clean_dayly_indicators(money_base_daily_raw_2025) |> 
+  filter(year >= 2025, !is.na(date))
+
 money_base_daily <- 
-  money_base_daily_raw |> 
-  slice_head(n = 25) |> 
-  rename(indicator = 1) |> 
-  pivot_longer(-indicator, names_to = "date") |> 
-  filter(!is.na(value), !is.na(indicator)) |> 
-  mutate(
-    date = str_trim(date),
-    date_temp = ifelse(grepl("-|\\.", date), date, NA),
-    date_temp = str_remove_all(date_temp, " \\d$"),
-    date_temp = dmy(date_temp),
-    date = as.integer(date),
-    date = as.Date(date, origin = "1899-12-30"),
-    date = if_else(is.na(date), date_temp, date),
-    year = year(date),
-    month = month(date),
-    indicator = str_trim(indicator),
-    indicator = fct_inorder(indicator)
-  ) |> 
-  select(-date_temp) |> 
-  relocate(date, year, month) |> 
-  left_join(indicator_names_dict, by = "indicator") 
+  bind_rows(money_base_daily_2024, money_base_daily_2025)
 
 money_base_daily |> 
   count(indicator, indicator_arm) |>
@@ -99,6 +113,7 @@ money_base_daily |>
   geom_line()
 
 max_date <- money_base_daily$date |> max()
+max_date
 
 money_base_daily |> 
   filter(indicator == "Correspondent accounts (in FX)") |> 
