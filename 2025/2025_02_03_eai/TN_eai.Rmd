@@ -232,7 +232,7 @@ text-decoration: underline;
 ### [Let's Put Your Data to Work!](mailto:a@tavadyan.com?subject=Let's Put Data to Work!)
 
 ### [ՄԻԱՑԵՔ ՄԵՐ ԹԻՄԻՆ](mailto:a@tavadyan.com?subject=Work application)
-<!-- </div> -->
+</div>
 
 
 <!-- ----- -->
