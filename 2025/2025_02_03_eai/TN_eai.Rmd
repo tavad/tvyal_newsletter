@@ -237,18 +237,18 @@ text-decoration: underline;
 
 -----
 
-## English Summary
-### 💸💳🚍 Transportation Price Increase: Yerevan's Public Transport Reforms and the Limits of Affordability
+<!-- ## English Summary -->
+<!-- ### 💸💳🚍 Transportation Price Increase: Yerevan's Public Transport Reforms and the Limits of Affordability -->
 
 
 
 ---
 
-<!-- Հարգանքներով,             -->
-<!-- Աղասի Թավադյան          -->
-<!-- 03.02.2025           -->
-<!-- [tvyal.com](https://www.tvyal.com/)       -->
-<!-- [tavadyan.com](https://www.tavadyan.com/) -->
+Հարգանքներով,
+Աղասի Թավադյան
+03.02.2025
+[tvyal.com](https://www.tvyal.com/)
+[tavadyan.com](https://www.tavadyan.com/)
 
 <!-- --- -->
 
