@@ -242,20 +242,20 @@ text-decoration: underline;
 
 
 
-<!-- --- -->
+---
 
-<!-- Հարգանքներով,             -->
-<!-- Աղասի Թավադյան          -->
-<!-- 03.02.2025           -->
-<!-- [tvyal.com](https://www.tvyal.com/)       -->
-<!-- [tavadyan.com](https://www.tavadyan.com/) -->
+Հարգանքներով,
+Աղասի Թավադյան
+03.02.2025
+[tvyal.com](https://www.tvyal.com/)
+[tavadyan.com](https://www.tavadyan.com/)
 
-<!-- --- -->
+---
 
-<!-- [Was this email forwarded to you? Subscribe here.](https://www.tvyal.com/subscribe) -->
-<!-- [Բաժանորդագրվեք](https://www.tvyal.com/subscribe) -->
+[Was this email forwarded to you? Subscribe here.](https://www.tvyal.com/subscribe)
+[Բաժանորդագրվեք](https://www.tvyal.com/subscribe)
 
-<!-- ---               -->
+---
 
 
 
