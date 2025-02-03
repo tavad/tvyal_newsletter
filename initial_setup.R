@@ -1,6 +1,6 @@
 library(tidyverse)
 
-theme_tvyal <- function(base_size = 12, base_family = "sans")
+theme_tvyal <- function(base_size = 12, base_family = "GHEA Mariam")
 {
   colors <- deframe(ggthemes::ggthemes_data[["fivethirtyeight"]])
   (ggthemes::theme_foundation(
@@ -8,9 +8,21 @@ theme_tvyal <- function(base_size = 12, base_family = "sans")
       theme(
         line = element_line(colour = "black"),
         rect = element_rect(fill = "white", linetype = 0, colour = NA),
-        text = element_text(colour = colors["Dark Gray"]),
-        # axis.title = element_blank(),
-        # axis.text = element_text(),
+        text = element_text(
+          family = "GHEA Mariam",
+          colour = colors["Dark Gray"]
+        ),
+        # Additional text elements to ensure font consistency
+        axis.text = element_text(family = "GHEA Mariam"),
+        axis.title = element_text(family = "GHEA Mariam"),
+        plot.title = element_text(
+          family = "GHEA Mariam",
+          hjust = 0,
+          size = rel(1.5),
+          face = "bold"
+        ),
+        legend.text = element_text(family = "GHEA Mariam"),
+        # Rest of your theme elements
         axis.ticks = element_blank(),
         axis.line = element_blank(),
         legend.background = element_rect(),
@@ -27,11 +39,45 @@ theme_tvyal <- function(base_size = 12, base_family = "sans")
           linetype = "dotted"
         ),
         panel.grid.minor = element_blank(),
-        plot.title = element_text(hjust = 0, size = rel(1.5), face = "bold"),
-        plot.margin = unit(c(1, 1, 1, 1), "lines"), strip.background = element_rect()
+        plot.margin = unit(c(1, 1, 1, 1), "lines"),
+        strip.background = element_rect()
       )
   )
 }
+
+# 
+# theme_tvyal <- function(base_size = 12, base_family = "sans")
+# {
+#   colors <- deframe(ggthemes::ggthemes_data[["fivethirtyeight"]])
+#   (ggthemes::theme_foundation(
+#     base_size = base_size, base_family = base_family) +
+#       theme(
+#         line = element_line(colour = "black"),
+#         rect = element_rect(fill = "white", linetype = 0, colour = NA),
+#         text = element_text(colour = colors["Dark Gray"]),
+#         # axis.title = element_blank(),
+#         # axis.text = element_text(),
+#         axis.ticks = element_blank(),
+#         axis.line = element_blank(),
+#         legend.background = element_rect(),
+#         legend.position = "bottom",
+#         legend.direction = "horizontal",
+#         legend.box = "vertical",
+#         panel.grid = element_line(colour = NULL),
+#         panel.grid.major.x = element_line(
+#           colour = colors["Medium Gray"],
+#           linetype = "dotted"
+#         ),
+#         panel.grid.major.y = element_line(
+#           colour = colors["Medium Gray"],
+#           linetype = "dotted"
+#         ),
+#         panel.grid.minor = element_blank(),
+#         plot.title = element_text(hjust = 0, size = rel(1.5), face = "bold"),
+#         plot.margin = unit(c(1, 1, 1, 1), "lines"), strip.background = element_rect()
+#       )
+#   )
+# }
 
 theme_set(theme_tvyal())
 
