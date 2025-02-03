@@ -235,7 +235,7 @@ text-decoration: underline;
 </div>
 
 
-<!-- ----- -->
+-----
 
 <!-- ## English Summary -->
 <!-- ### 💸💳🚍 Transportation Price Increase: Yerevan's Public Transport Reforms and the Limits of Affordability -->
