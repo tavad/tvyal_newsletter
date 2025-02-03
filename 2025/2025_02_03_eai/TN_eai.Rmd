@@ -237,8 +237,8 @@ text-decoration: underline;
 
 -----
 
-<!-- ## English Summary -->
-<!-- ### 💸💳🚍 Transportation Price Increase: Yerevan's Public Transport Reforms and the Limits of Affordability -->
+## English Summary
+### 💸💳🚍 Transportation Price Increase: Yerevan's Public Transport Reforms and the Limits of Affordability
 
 
 
