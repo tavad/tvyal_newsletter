@@ -1,7 +1,7 @@
 ---
 title: "Tvyal Newsletter"
 date: "2025-02-03"
-output: html_document
+output: word_document
 ---
 
 ```{r setup, include=FALSE}
