@@ -65,6 +65,10 @@ GDP_factors <-
 
 newsletter_dir <- "/home/tavad/R/newsletter/2025/2025_02_03_eai"
 
+GDP_factors |> 
+  filter(year == 2024, month %in% 1:11, name == "mln dram") |> 
+  summarise(sum(industry))
+
 # GDP_factors |> write_excel_csv(file.path(newsletter_dir, "eai_components_db.csv"))
 
 
@@ -181,6 +185,52 @@ GDP_factors_full_year |>
 
 ggsave(
   file.path(newsletter_dir, "plots", "plot_eai_2024_annual_share.png"), 
+  ggplot2::last_plot(), width = 12, height = 8
+)
+
+
+GDP_factors_full_year |> 
+  mutate(
+    # factor = fct_inorder(factor),
+    factor_pct_txt = percent(factor_pct, accuracy = 0.1),
+    mln_dram = mln_dram / 1e3,
+    text = number(mln_dram, 1)
+  ) |> 
+  ggplot(aes(year, mln_dram, fill = factor, label = text)) +
+  geom_col(alpha = 1) +
+  geom_text(position = position_stack(vjust = .5), color = "white") +
+  scale_x_continuous(breaks = 2017:2024) +
+  scale_y_continuous(n.breaks = 8, labels = number_format()) +
+  scale_fill_manual(
+    values = colfunc2(5),
+    labels = c(
+      "🌾 Գյուղատնտեսություն",
+      "🏗 Շինարարություն", 
+      "🏭 Արդյունաբերություն", 
+      "💼 Ծառայություններ", 
+      "🛒 Առևտուր"
+    )
+  ) +
+  labs(
+    x = NULL,
+    y = NULL,
+    fill = NULL,
+    title = "Տնտեսական ակտիվության ինդեքսի բաղադրիչները",
+    subtitle = "2017-2024 թթ․ տեսակարար, մլրդ․ դրամ",
+    caption = caption_f()
+  ) +
+  theme(
+    panel.grid.major.x = element_blank(),
+    panel.grid.major.y = element_line(
+      colour = "gray", linewidth = 0.1,
+      linetype = 1
+    ),
+    axis.text.x.top = element_text(size = 13, vjust = -4),
+    legend.text = element_text(size = 12)
+  )
+
+ggsave(
+  file.path(newsletter_dir, "plots", "plot_eai_2024_annual_dram.png"), 
   ggplot2::last_plot(), width = 12, height = 8
 )
 
@@ -462,7 +512,7 @@ economic_activity |>
     y = NULL,
     color = NULL, fill = NULL, 
     title = "ՏԱՑ բաղադրիչներ, 2023 և 2024 թվականների համեմատություն",
-    subtitle = "Նախորդ տարվա նույն ամսվա համեմատ (ճշգրտված),\nՀետագիծը ներկայացնում է տվյալ տարվա կուտակային աճը",
+    subtitle = "Տարեկան կտրվածքով,\nՏվյալ տարվա 12 ամսյա կտրվածքը նախորդ տարվա նույն ժամանակաշրջանի համեմատ,\nՀետագիծը ներկայացնում է տվյալ տարվա կուտակային աճը",
     caption = caption_f(source = "ԱՎԾ")
   ) +
   theme(
