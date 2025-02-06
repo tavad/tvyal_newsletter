@@ -41546,7 +41546,7 @@
 "2024-02-29","2024",2,"February","Kuwait","Inflow","total",687.11
 "2024-02-29","2024",2,"February","France","Inflow","total",3825.15
 "2024-02-29","2024",2,"February","Others","Inflow","total",5398.57
-"2024-02-29","2024",2,"February","Total","Inflow","total",410499.65
+"2024-02-29","2024",2,"February","Total","Inflow","total",410499.66
 "2024-02-29","2024",2,"February","Australia","Outflow","total",814.55
 "2024-02-29","2024",2,"February","Austria","Outflow","total",2308.28
 "2024-02-29","2024",2,"February","United Arab Emirates","Outflow","total",57730.8
@@ -41598,59 +41598,59 @@
 "2024-02-29","2024",2,"February","Kuwait","Outflow","total",17.43
 "2024-02-29","2024",2,"February","France","Outflow","total",5975.02
 "2024-02-29","2024",2,"February","Others","Outflow","total",7885.92
-"2024-02-29","2024",2,"February","Total","Outflow","total",289457.29
+"2024-02-29","2024",2,"February","Total","Outflow","total",289457.3
 "2024-02-29","2024",2,"February","Australia","Net inflow","total",-279.77
-"2024-02-29","2024",2,"February","Austria","Net inflow","total",-85.63000000000011
-"2024-02-29","2024",2,"February","United Arab Emirates","Net inflow","total",-52694.96000000001
-"2024-02-29","2024",2,"February","USA","Net inflow","total",-4695.709999999999
-"2024-02-29","2024",2,"February","Belgium","Net inflow","total",-2266.9100000000003
-"2024-02-29","2024",2,"February","Belarus","Net inflow","total",429.6600000000001
-"2024-02-29","2024",2,"February","Bulgaria","Net inflow","total",367.05999999999995
-"2024-02-29","2024",2,"February","Germany","Net inflow","total",-1533.1599999999999
-"2024-02-29","2024",2,"February","Denmark","Net inflow","total",235.99
-"2024-02-29","2024",2,"February","Egypt","Net inflow","total",-251.14999999999998
+"2024-02-29","2024",2,"February","Austria","Net inflow","total",-85.63
+"2024-02-29","2024",2,"February","United Arab Emirates","Net inflow","total",-52694.96
+"2024-02-29","2024",2,"February","USA","Net inflow","total",-4695.71
+"2024-02-29","2024",2,"February","Belgium","Net inflow","total",-2266.9
+"2024-02-29","2024",2,"February","Belarus","Net inflow","total",429.66
+"2024-02-29","2024",2,"February","Bulgaria","Net inflow","total",367.06
+"2024-02-29","2024",2,"February","Germany","Net inflow","total",-1533.16
+"2024-02-29","2024",2,"February","Denmark","Net inflow","total",236
+"2024-02-29","2024",2,"February","Egypt","Net inflow","total",-251.15
 "2024-02-29","2024",2,"February","Turkey","Net inflow","total",-906.73
-"2024-02-29","2024",2,"February","Israel","Net inflow","total",323.2700000000001
-"2024-02-29","2024",2,"February","Spain","Net inflow","total",-7859.959999999999
-"2024-02-29","2024",2,"February","Ireland","Net inflow","total",5155.280000000001
+"2024-02-29","2024",2,"February","Israel","Net inflow","total",323.26
+"2024-02-29","2024",2,"February","Spain","Net inflow","total",-7859.97
+"2024-02-29","2024",2,"February","Ireland","Net inflow","total",5155.28
 "2024-02-29","2024",2,"February","Italy","Net inflow","total",-2454.41
 "2024-02-29","2024",2,"February","Iran","Net inflow","total",-639.99
 "2024-02-29","2024",2,"February","Poland","Net inflow","total",-533.41
-"2024-02-29","2024",2,"February","Latvia","Net inflow","total",-65.36000000000001
-"2024-02-29","2024",2,"February","Luxembourg","Net inflow","total",-118.86000000000001
+"2024-02-29","2024",2,"February","Latvia","Net inflow","total",-65.37
+"2024-02-29","2024",2,"February","Luxembourg","Net inflow","total",-118.86
 "2024-02-29","2024",2,"February","Lebanon","Net inflow","total",61.56
 "2024-02-29","2024",2,"February","Liechtenstein","Net inflow","total",195.21
-"2024-02-29","2024",2,"February","Lithuania","Net inflow","total",-1315.1799999999998
-"2024-02-29","2024",2,"February","Canada","Net inflow","total",558.6099999999999
-"2024-02-29","2024",2,"February","Korea","Net inflow","total",-158.46000000000004
-"2024-02-29","2024",2,"February","Cyprus","Net inflow","total",-97.94999999999982
-"2024-02-29","2024",2,"February","Hong Kong","Net inflow","total",-10.059999999999945
-"2024-02-29","2024",2,"February","Jordan","Net inflow","total",-19.30000000000001
-"2024-02-29","2024",2,"February","Greece","Net inflow","total",-4231.759999999999
-"2024-02-29","2024",2,"February","India","Net inflow","total",5.960000000000008
-"2024-02-29","2024",2,"February","Kazakhstan","Net inflow","total",2958.96
-"2024-02-29","2024",2,"February","Kyrgyzstan","Net inflow","total",35.129999999999995
-"2024-02-29","2024",2,"February","Japan","Net inflow","total",-245.98000000000002
-"2024-02-29","2024",2,"February","United Kingdom of Great Britain and Northern Ireland","Net inflow","total",-446.47999999999956
+"2024-02-29","2024",2,"February","Lithuania","Net inflow","total",-1315.19
+"2024-02-29","2024",2,"February","Canada","Net inflow","total",558.62
+"2024-02-29","2024",2,"February","Korea","Net inflow","total",-158.46
+"2024-02-29","2024",2,"February","Cyprus","Net inflow","total",-97.94
+"2024-02-29","2024",2,"February","Hong Kong","Net inflow","total",-10.06
+"2024-02-29","2024",2,"February","Jordan","Net inflow","total",-19.3
+"2024-02-29","2024",2,"February","Greece","Net inflow","total",-4231.76
+"2024-02-29","2024",2,"February","India","Net inflow","total",5.95
+"2024-02-29","2024",2,"February","Kazakhstan","Net inflow","total",2958.97
+"2024-02-29","2024",2,"February","Kyrgyzstan","Net inflow","total",35.13
+"2024-02-29","2024",2,"February","Japan","Net inflow","total",-245.98
+"2024-02-29","2024",2,"February","United Kingdom of Great Britain and Northern Ireland","Net inflow","total",-446.49
 "2024-02-29","2024",2,"February","Isle of Man","Net inflow","total",550.62
-"2024-02-29","2024",2,"February","Monaco","Net inflow","total",-13221.39
-"2024-02-29","2024",2,"February","Netherlands","Net inflow","total",-515.3300000000002
+"2024-02-29","2024",2,"February","Monaco","Net inflow","total",-13221.38
+"2024-02-29","2024",2,"February","Netherlands","Net inflow","total",-515.34
 "2024-02-29","2024",2,"February","Sweden","Net inflow","total",357.16
-"2024-02-29","2024",2,"February","Switzerland","Net inflow","total",-17189.489999999998
-"2024-02-29","2024",2,"February","Czechia","Net inflow","total",-290.1600000000001
-"2024-02-29","2024",2,"February","China","Net inflow","total",-3956.2000000000003
-"2024-02-29","2024",2,"February","Portugal","Net inflow","total",-1089.08
+"2024-02-29","2024",2,"February","Switzerland","Net inflow","total",-17189.49
+"2024-02-29","2024",2,"February","Czechia","Net inflow","total",-290.15
+"2024-02-29","2024",2,"February","China","Net inflow","total",-3956.21
+"2024-02-29","2024",2,"February","Portugal","Net inflow","total",-1089.09
 "2024-02-29","2024",2,"February","Russian Federation","Net inflow","total",245610.35
 "2024-02-29","2024",2,"February","Saudi Arabia","Net inflow","total",294.31
 "2024-02-29","2024",2,"February","Singapore","Net inflow","total",-10425.86
-"2024-02-29","2024",2,"February","Georgia","Net inflow","total",-4166.6900000000005
-"2024-02-29","2024",2,"February","Uzbekistan","Net inflow","total",46.02999999999997
-"2024-02-29","2024",2,"February","Ukraine","Net inflow","total",-723.9300000000001
+"2024-02-29","2024",2,"February","Georgia","Net inflow","total",-4166.69
+"2024-02-29","2024",2,"February","Uzbekistan","Net inflow","total",46.03
+"2024-02-29","2024",2,"February","Ukraine","Net inflow","total",-723.93
 "2024-02-29","2024",2,"February","Qatar","Net inflow","total",314.05
-"2024-02-29","2024",2,"February","Kuwait","Net inflow","total",669.6800000000001
-"2024-02-29","2024",2,"February","France","Net inflow","total",-2149.8700000000003
-"2024-02-29","2024",2,"February","Others","Net inflow","total",-2487.3500000000004
-"2024-02-29","2024",2,"February","Total","Net inflow","total",121042.35999999999
+"2024-02-29","2024",2,"February","Kuwait","Net inflow","total",669.68
+"2024-02-29","2024",2,"February","France","Net inflow","total",-2149.87
+"2024-02-29","2024",2,"February","Others","Net inflow","total",-2487.34
+"2024-02-29","2024",2,"February","Total","Net inflow","total",121042.37
 "2024-02-29","2024",2,"February","Australia","Inflow","non-commercial",162.96
 "2024-02-29","2024",2,"February","Austria","Inflow","non-commercial",464.42
 "2024-02-29","2024",2,"February","United Arab Emirates","Inflow","non-commercial",639.47
@@ -44612,3 +44612,315 @@
 "2024-11-30","2024",11,"November","France","Net inflow","non-commercial",1957.21
 "2024-11-30","2024",11,"November","Others","Net inflow","non-commercial",153.35
 "2024-11-30","2024",11,"November","Total","Net inflow","non-commercial",40084.64
+"2024-12-31","2024",12,"December","Australia","Inflow","total",579.08
+"2024-12-31","2024",12,"December","Austria","Inflow","total",3774
+"2024-12-31","2024",12,"December","United Arab Emirates","Inflow","total",19996.17
+"2024-12-31","2024",12,"December","USA","Inflow","total",66925.45
+"2024-12-31","2024",12,"December","Belgium","Inflow","total",1711.94
+"2024-12-31","2024",12,"December","Belarus","Inflow","total",398
+"2024-12-31","2024",12,"December","Bulgaria","Inflow","total",478.94
+"2024-12-31","2024",12,"December","Germany","Inflow","total",8991.69
+"2024-12-31","2024",12,"December","Denmark","Inflow","total",278.91
+"2024-12-31","2024",12,"December","Egypt","Inflow","total",65.25
+"2024-12-31","2024",12,"December","Turkey","Inflow","total",100.91
+"2024-12-31","2024",12,"December","Israel","Inflow","total",1300.67
+"2024-12-31","2024",12,"December","Spain","Inflow","total",2753.2
+"2024-12-31","2024",12,"December","Ireland","Inflow","total",6870.22
+"2024-12-31","2024",12,"December","Italy","Inflow","total",1627.4
+"2024-12-31","2024",12,"December","Iran","Inflow","total",140.82
+"2024-12-31","2024",12,"December","Poland","Inflow","total",1520.7
+"2024-12-31","2024",12,"December","Latvia","Inflow","total",293.09
+"2024-12-31","2024",12,"December","Luxembourg","Inflow","total",752.94
+"2024-12-31","2024",12,"December","Lebanon","Inflow","total",529.54
+"2024-12-31","2024",12,"December","Liechtenstein","Inflow","total",119.14
+"2024-12-31","2024",12,"December","Lithuania","Inflow","total",3770.18
+"2024-12-31","2024",12,"December","Canada","Inflow","total",1733.08
+"2024-12-31","2024",12,"December","Korea","Inflow","total",114.18
+"2024-12-31","2024",12,"December","Cyprus","Inflow","total",3196.21
+"2024-12-31","2024",12,"December","Hong Kong","Inflow","total",667.53
+"2024-12-31","2024",12,"December","Jordan","Inflow","total",222.29
+"2024-12-31","2024",12,"December","Greece","Inflow","total",1257.59
+"2024-12-31","2024",12,"December","India","Inflow","total",83.59
+"2024-12-31","2024",12,"December","Kazakhstan","Inflow","total",4354.48
+"2024-12-31","2024",12,"December","Kyrgyzstan","Inflow","total",569.57
+"2024-12-31","2024",12,"December","Japan","Inflow","total",237.04
+"2024-12-31","2024",12,"December","United Kingdom of Great Britain and Northern Ireland","Inflow","total",14012.67
+"2024-12-31","2024",12,"December","Isle of Man","Inflow","total",22087.2
+"2024-12-31","2024",12,"December","Monaco","Inflow","total",1730.13
+"2024-12-31","2024",12,"December","Netherlands","Inflow","total",2490.21
+"2024-12-31","2024",12,"December","Sweden","Inflow","total",395.45
+"2024-12-31","2024",12,"December","Switzerland","Inflow","total",6893.54
+"2024-12-31","2024",12,"December","Czechia","Inflow","total",836.08
+"2024-12-31","2024",12,"December","China","Inflow","total",599.57
+"2024-12-31","2024",12,"December","Portugal","Inflow","total",74.21
+"2024-12-31","2024",12,"December","Russian Federation","Inflow","total",647962.62
+"2024-12-31","2024",12,"December","Saudi Arabia","Inflow","total",1074.97
+"2024-12-31","2024",12,"December","Singapore","Inflow","total",8251.94
+"2024-12-31","2024",12,"December","Georgia","Inflow","total",5607.08
+"2024-12-31","2024",12,"December","Uzbekistan","Inflow","total",633.63
+"2024-12-31","2024",12,"December","Ukraine","Inflow","total",156.99
+"2024-12-31","2024",12,"December","Qatar","Inflow","total",373.61
+"2024-12-31","2024",12,"December","Kuwait","Inflow","total",589.77
+"2024-12-31","2024",12,"December","France","Inflow","total",5820.96
+"2024-12-31","2024",12,"December","Others","Inflow","total",5223.54
+"2024-12-31","2024",12,"December","Total","Inflow","total",860227.99
+"2024-12-31","2024",12,"December","Australia","Outflow","total",2134.31
+"2024-12-31","2024",12,"December","Austria","Outflow","total",1736.39
+"2024-12-31","2024",12,"December","United Arab Emirates","Outflow","total",68873.07
+"2024-12-31","2024",12,"December","USA","Outflow","total",56413.93
+"2024-12-31","2024",12,"December","Belgium","Outflow","total",1906.18
+"2024-12-31","2024",12,"December","Belarus","Outflow","total",497.92
+"2024-12-31","2024",12,"December","Bulgaria","Outflow","total",799.99
+"2024-12-31","2024",12,"December","Germany","Outflow","total",11663.36
+"2024-12-31","2024",12,"December","Denmark","Outflow","total",78.98
+"2024-12-31","2024",12,"December","Egypt","Outflow","total",174.62
+"2024-12-31","2024",12,"December","Turkey","Outflow","total",1005.05
+"2024-12-31","2024",12,"December","Israel","Outflow","total",4407.9
+"2024-12-31","2024",12,"December","Spain","Outflow","total",12698.15
+"2024-12-31","2024",12,"December","Ireland","Outflow","total",72.76
+"2024-12-31","2024",12,"December","Italy","Outflow","total",4804.53
+"2024-12-31","2024",12,"December","Iran","Outflow","total",17.71
+"2024-12-31","2024",12,"December","Poland","Outflow","total",9806.59
+"2024-12-31","2024",12,"December","Latvia","Outflow","total",1199.73
+"2024-12-31","2024",12,"December","Luxembourg","Outflow","total",245.57
+"2024-12-31","2024",12,"December","Lebanon","Outflow","total",271.4
+"2024-12-31","2024",12,"December","Liechtenstein","Outflow","total",503.77
+"2024-12-31","2024",12,"December","Lithuania","Outflow","total",2574.91
+"2024-12-31","2024",12,"December","Canada","Outflow","total",2639.21
+"2024-12-31","2024",12,"December","Korea","Outflow","total",104.54
+"2024-12-31","2024",12,"December","Cyprus","Outflow","total",2733.45
+"2024-12-31","2024",12,"December","Hong Kong","Outflow","total",4715.07
+"2024-12-31","2024",12,"December","Jordan","Outflow","total",202.67
+"2024-12-31","2024",12,"December","Greece","Outflow","total",4973.43
+"2024-12-31","2024",12,"December","India","Outflow","total",359.89
+"2024-12-31","2024",12,"December","Kazakhstan","Outflow","total",1162.47
+"2024-12-31","2024",12,"December","Kyrgyzstan","Outflow","total",159.94
+"2024-12-31","2024",12,"December","Japan","Outflow","total",644.67
+"2024-12-31","2024",12,"December","United Kingdom of Great Britain and Northern Ireland","Outflow","total",22444.63
+"2024-12-31","2024",12,"December","Isle of Man","Outflow","total",0
+"2024-12-31","2024",12,"December","Monaco","Outflow","total",3642.3
+"2024-12-31","2024",12,"December","Netherlands","Outflow","total",1164.31
+"2024-12-31","2024",12,"December","Sweden","Outflow","total",239.86
+"2024-12-31","2024",12,"December","Switzerland","Outflow","total",120906.12
+"2024-12-31","2024",12,"December","Czechia","Outflow","total",1831.85
+"2024-12-31","2024",12,"December","China","Outflow","total",16158.44
+"2024-12-31","2024",12,"December","Portugal","Outflow","total",3426.69
+"2024-12-31","2024",12,"December","Russian Federation","Outflow","total",74881.37
+"2024-12-31","2024",12,"December","Saudi Arabia","Outflow","total",1.47
+"2024-12-31","2024",12,"December","Singapore","Outflow","total",194.66
+"2024-12-31","2024",12,"December","Georgia","Outflow","total",7746.94
+"2024-12-31","2024",12,"December","Uzbekistan","Outflow","total",599.06
+"2024-12-31","2024",12,"December","Ukraine","Outflow","total",811.07
+"2024-12-31","2024",12,"December","Qatar","Outflow","total",10.48
+"2024-12-31","2024",12,"December","Kuwait","Outflow","total",12.22
+"2024-12-31","2024",12,"December","France","Outflow","total",10008.66
+"2024-12-31","2024",12,"December","Others","Outflow","total",11611.02
+"2024-12-31","2024",12,"December","Total","Outflow","total",475273.31
+"2024-12-31","2024",12,"December","Australia","Net inflow","total",-1555.23
+"2024-12-31","2024",12,"December","Austria","Net inflow","total",2037.62
+"2024-12-31","2024",12,"December","United Arab Emirates","Net inflow","total",-48876.9
+"2024-12-31","2024",12,"December","USA","Net inflow","total",10511.52
+"2024-12-31","2024",12,"December","Belgium","Net inflow","total",-194.24
+"2024-12-31","2024",12,"December","Belarus","Net inflow","total",-99.92
+"2024-12-31","2024",12,"December","Bulgaria","Net inflow","total",-321.05
+"2024-12-31","2024",12,"December","Germany","Net inflow","total",-2671.67
+"2024-12-31","2024",12,"December","Denmark","Net inflow","total",199.93
+"2024-12-31","2024",12,"December","Egypt","Net inflow","total",-109.36
+"2024-12-31","2024",12,"December","Turkey","Net inflow","total",-904.14
+"2024-12-31","2024",12,"December","Israel","Net inflow","total",-3107.23
+"2024-12-31","2024",12,"December","Spain","Net inflow","total",-9944.95
+"2024-12-31","2024",12,"December","Ireland","Net inflow","total",6797.46
+"2024-12-31","2024",12,"December","Italy","Net inflow","total",-3177.13
+"2024-12-31","2024",12,"December","Iran","Net inflow","total",123.11
+"2024-12-31","2024",12,"December","Poland","Net inflow","total",-8285.89
+"2024-12-31","2024",12,"December","Latvia","Net inflow","total",-906.64
+"2024-12-31","2024",12,"December","Luxembourg","Net inflow","total",507.38
+"2024-12-31","2024",12,"December","Lebanon","Net inflow","total",258.14
+"2024-12-31","2024",12,"December","Liechtenstein","Net inflow","total",-384.63
+"2024-12-31","2024",12,"December","Lithuania","Net inflow","total",1195.27
+"2024-12-31","2024",12,"December","Canada","Net inflow","total",-906.13
+"2024-12-31","2024",12,"December","Korea","Net inflow","total",9.63
+"2024-12-31","2024",12,"December","Cyprus","Net inflow","total",462.76
+"2024-12-31","2024",12,"December","Hong Kong","Net inflow","total",-4047.54
+"2024-12-31","2024",12,"December","Jordan","Net inflow","total",19.62
+"2024-12-31","2024",12,"December","Greece","Net inflow","total",-3715.84
+"2024-12-31","2024",12,"December","India","Net inflow","total",-276.3
+"2024-12-31","2024",12,"December","Kazakhstan","Net inflow","total",3192.01
+"2024-12-31","2024",12,"December","Kyrgyzstan","Net inflow","total",409.64
+"2024-12-31","2024",12,"December","Japan","Net inflow","total",-407.64
+"2024-12-31","2024",12,"December","United Kingdom of Great Britain and Northern Ireland","Net inflow","total",-8431.97
+"2024-12-31","2024",12,"December","Isle of Man","Net inflow","total",22087.2
+"2024-12-31","2024",12,"December","Monaco","Net inflow","total",-1912.17
+"2024-12-31","2024",12,"December","Netherlands","Net inflow","total",1325.9
+"2024-12-31","2024",12,"December","Sweden","Net inflow","total",155.59
+"2024-12-31","2024",12,"December","Switzerland","Net inflow","total",-114012.57
+"2024-12-31","2024",12,"December","Czechia","Net inflow","total",-995.77
+"2024-12-31","2024",12,"December","China","Net inflow","total",-15558.87
+"2024-12-31","2024",12,"December","Portugal","Net inflow","total",-3352.49
+"2024-12-31","2024",12,"December","Russian Federation","Net inflow","total",573081.25
+"2024-12-31","2024",12,"December","Saudi Arabia","Net inflow","total",1073.5
+"2024-12-31","2024",12,"December","Singapore","Net inflow","total",8057.28
+"2024-12-31","2024",12,"December","Georgia","Net inflow","total",-2139.86
+"2024-12-31","2024",12,"December","Uzbekistan","Net inflow","total",34.57
+"2024-12-31","2024",12,"December","Ukraine","Net inflow","total",-654.08
+"2024-12-31","2024",12,"December","Qatar","Net inflow","total",363.14
+"2024-12-31","2024",12,"December","Kuwait","Net inflow","total",577.55
+"2024-12-31","2024",12,"December","France","Net inflow","total",-4187.7
+"2024-12-31","2024",12,"December","Others","Net inflow","total",-6387.48
+"2024-12-31","2024",12,"December","Total","Net inflow","total",384954.67
+"2024-12-31","2024",12,"December","Australia","Inflow","non-commercial",281.48
+"2024-12-31","2024",12,"December","Austria","Inflow","non-commercial",459.73
+"2024-12-31","2024",12,"December","United Arab Emirates","Inflow","non-commercial",5434.41
+"2024-12-31","2024",12,"December","USA","Inflow","non-commercial",33264.62
+"2024-12-31","2024",12,"December","Belgium","Inflow","non-commercial",1155.87
+"2024-12-31","2024",12,"December","Belarus","Inflow","non-commercial",150.36
+"2024-12-31","2024",12,"December","Bulgaria","Inflow","non-commercial",112.13
+"2024-12-31","2024",12,"December","Germany","Inflow","non-commercial",3854.2
+"2024-12-31","2024",12,"December","Denmark","Inflow","non-commercial",58.18
+"2024-12-31","2024",12,"December","Egypt","Inflow","non-commercial",28.29
+"2024-12-31","2024",12,"December","Turkey","Inflow","non-commercial",68.48
+"2024-12-31","2024",12,"December","Israel","Inflow","non-commercial",556.15
+"2024-12-31","2024",12,"December","Spain","Inflow","non-commercial",1042.57
+"2024-12-31","2024",12,"December","Ireland","Inflow","non-commercial",697.95
+"2024-12-31","2024",12,"December","Italy","Inflow","non-commercial",307.8
+"2024-12-31","2024",12,"December","Iran","Inflow","non-commercial",16.15
+"2024-12-31","2024",12,"December","Poland","Inflow","non-commercial",326.58
+"2024-12-31","2024",12,"December","Latvia","Inflow","non-commercial",59.1
+"2024-12-31","2024",12,"December","Luxembourg","Inflow","non-commercial",50.11
+"2024-12-31","2024",12,"December","Lebanon","Inflow","non-commercial",102.64
+"2024-12-31","2024",12,"December","Liechtenstein","Inflow","non-commercial",7.93
+"2024-12-31","2024",12,"December","Lithuania","Inflow","non-commercial",449.79
+"2024-12-31","2024",12,"December","Canada","Inflow","non-commercial",643.96
+"2024-12-31","2024",12,"December","Korea","Inflow","non-commercial",25.41
+"2024-12-31","2024",12,"December","Cyprus","Inflow","non-commercial",308.95
+"2024-12-31","2024",12,"December","Hong Kong","Inflow","non-commercial",59.59
+"2024-12-31","2024",12,"December","Jordan","Inflow","non-commercial",107.58
+"2024-12-31","2024",12,"December","Greece","Inflow","non-commercial",752.94
+"2024-12-31","2024",12,"December","India","Inflow","non-commercial",15.64
+"2024-12-31","2024",12,"December","Kazakhstan","Inflow","non-commercial",2747.21
+"2024-12-31","2024",12,"December","Kyrgyzstan","Inflow","non-commercial",130.93
+"2024-12-31","2024",12,"December","Japan","Inflow","non-commercial",12.14
+"2024-12-31","2024",12,"December","United Kingdom of Great Britain and Northern Ireland","Inflow","non-commercial",1359.03
+"2024-12-31","2024",12,"December","Isle of Man","Inflow","non-commercial",1.7
+"2024-12-31","2024",12,"December","Monaco","Inflow","non-commercial",7.34
+"2024-12-31","2024",12,"December","Netherlands","Inflow","non-commercial",659.48
+"2024-12-31","2024",12,"December","Sweden","Inflow","non-commercial",211.74
+"2024-12-31","2024",12,"December","Switzerland","Inflow","non-commercial",602.5
+"2024-12-31","2024",12,"December","Czechia","Inflow","non-commercial",199.14
+"2024-12-31","2024",12,"December","China","Inflow","non-commercial",48.08
+"2024-12-31","2024",12,"December","Portugal","Inflow","non-commercial",20.45
+"2024-12-31","2024",12,"December","Russian Federation","Inflow","non-commercial",42602.1
+"2024-12-31","2024",12,"December","Saudi Arabia","Inflow","non-commercial",67.02
+"2024-12-31","2024",12,"December","Singapore","Inflow","non-commercial",95.9
+"2024-12-31","2024",12,"December","Georgia","Inflow","non-commercial",1377.34
+"2024-12-31","2024",12,"December","Uzbekistan","Inflow","non-commercial",458.84
+"2024-12-31","2024",12,"December","Ukraine","Inflow","non-commercial",10.6
+"2024-12-31","2024",12,"December","Qatar","Inflow","non-commercial",65.81
+"2024-12-31","2024",12,"December","Kuwait","Inflow","non-commercial",144.69
+"2024-12-31","2024",12,"December","France","Inflow","non-commercial",3312.25
+"2024-12-31","2024",12,"December","Others","Inflow","non-commercial",1090.64
+"2024-12-31","2024",12,"December","Total","Inflow","non-commercial",105623.49
+"2024-12-31","2024",12,"December","Australia","Outflow","non-commercial",47.8
+"2024-12-31","2024",12,"December","Austria","Outflow","non-commercial",207.41
+"2024-12-31","2024",12,"December","United Arab Emirates","Outflow","non-commercial",751.43
+"2024-12-31","2024",12,"December","USA","Outflow","non-commercial",6393.01
+"2024-12-31","2024",12,"December","Belgium","Outflow","non-commercial",281.68
+"2024-12-31","2024",12,"December","Belarus","Outflow","non-commercial",80.65
+"2024-12-31","2024",12,"December","Bulgaria","Outflow","non-commercial",94.92
+"2024-12-31","2024",12,"December","Germany","Outflow","non-commercial",1113.61
+"2024-12-31","2024",12,"December","Denmark","Outflow","non-commercial",16.54
+"2024-12-31","2024",12,"December","Egypt","Outflow","non-commercial",119.79
+"2024-12-31","2024",12,"December","Turkey","Outflow","non-commercial",19.88
+"2024-12-31","2024",12,"December","Israel","Outflow","non-commercial",93.64
+"2024-12-31","2024",12,"December","Spain","Outflow","non-commercial",2827.83
+"2024-12-31","2024",12,"December","Ireland","Outflow","non-commercial",5.89
+"2024-12-31","2024",12,"December","Italy","Outflow","non-commercial",358.39
+"2024-12-31","2024",12,"December","Iran","Outflow","non-commercial",0
+"2024-12-31","2024",12,"December","Poland","Outflow","non-commercial",505.3
+"2024-12-31","2024",12,"December","Latvia","Outflow","non-commercial",62.06
+"2024-12-31","2024",12,"December","Luxembourg","Outflow","non-commercial",16.45
+"2024-12-31","2024",12,"December","Lebanon","Outflow","non-commercial",28.44
+"2024-12-31","2024",12,"December","Liechtenstein","Outflow","non-commercial",0
+"2024-12-31","2024",12,"December","Lithuania","Outflow","non-commercial",436.47
+"2024-12-31","2024",12,"December","Canada","Outflow","non-commercial",1076.73
+"2024-12-31","2024",12,"December","Korea","Outflow","non-commercial",11.23
+"2024-12-31","2024",12,"December","Cyprus","Outflow","non-commercial",172.03
+"2024-12-31","2024",12,"December","Hong Kong","Outflow","non-commercial",74.73
+"2024-12-31","2024",12,"December","Jordan","Outflow","non-commercial",3.45
+"2024-12-31","2024",12,"December","Greece","Outflow","non-commercial",290.36
+"2024-12-31","2024",12,"December","India","Outflow","non-commercial",87.63
+"2024-12-31","2024",12,"December","Kazakhstan","Outflow","non-commercial",425.34
+"2024-12-31","2024",12,"December","Kyrgyzstan","Outflow","non-commercial",92.93
+"2024-12-31","2024",12,"December","Japan","Outflow","non-commercial",39.78
+"2024-12-31","2024",12,"December","United Kingdom of Great Britain and Northern Ireland","Outflow","non-commercial",1136.61
+"2024-12-31","2024",12,"December","Isle of Man","Outflow","non-commercial",0
+"2024-12-31","2024",12,"December","Monaco","Outflow","non-commercial",6.72
+"2024-12-31","2024",12,"December","Netherlands","Outflow","non-commercial",383.34
+"2024-12-31","2024",12,"December","Sweden","Outflow","non-commercial",41.27
+"2024-12-31","2024",12,"December","Switzerland","Outflow","non-commercial",790.51
+"2024-12-31","2024",12,"December","Czechia","Outflow","non-commercial",113.01
+"2024-12-31","2024",12,"December","China","Outflow","non-commercial",361.57
+"2024-12-31","2024",12,"December","Portugal","Outflow","non-commercial",128.32
+"2024-12-31","2024",12,"December","Russian Federation","Outflow","non-commercial",13485.69
+"2024-12-31","2024",12,"December","Saudi Arabia","Outflow","non-commercial",1.47
+"2024-12-31","2024",12,"December","Singapore","Outflow","non-commercial",12.51
+"2024-12-31","2024",12,"December","Georgia","Outflow","non-commercial",1873.74
+"2024-12-31","2024",12,"December","Uzbekistan","Outflow","non-commercial",189.33
+"2024-12-31","2024",12,"December","Ukraine","Outflow","non-commercial",708.66
+"2024-12-31","2024",12,"December","Qatar","Outflow","non-commercial",8.19
+"2024-12-31","2024",12,"December","Kuwait","Outflow","non-commercial",1
+"2024-12-31","2024",12,"December","France","Outflow","non-commercial",1364.33
+"2024-12-31","2024",12,"December","Others","Outflow","non-commercial",975.38
+"2024-12-31","2024",12,"December","Total","Outflow","non-commercial",37317.06
+"2024-12-31","2024",12,"December","Australia","Net inflow","non-commercial",233.68
+"2024-12-31","2024",12,"December","Austria","Net inflow","non-commercial",252.31
+"2024-12-31","2024",12,"December","United Arab Emirates","Net inflow","non-commercial",4682.98
+"2024-12-31","2024",12,"December","USA","Net inflow","non-commercial",26871.61
+"2024-12-31","2024",12,"December","Belgium","Net inflow","non-commercial",874.19
+"2024-12-31","2024",12,"December","Belarus","Net inflow","non-commercial",69.71
+"2024-12-31","2024",12,"December","Bulgaria","Net inflow","non-commercial",17.21
+"2024-12-31","2024",12,"December","Germany","Net inflow","non-commercial",2740.59
+"2024-12-31","2024",12,"December","Denmark","Net inflow","non-commercial",41.64
+"2024-12-31","2024",12,"December","Egypt","Net inflow","non-commercial",-91.5
+"2024-12-31","2024",12,"December","Turkey","Net inflow","non-commercial",48.59
+"2024-12-31","2024",12,"December","Israel","Net inflow","non-commercial",462.51
+"2024-12-31","2024",12,"December","Spain","Net inflow","non-commercial",-1785.26
+"2024-12-31","2024",12,"December","Ireland","Net inflow","non-commercial",692.06
+"2024-12-31","2024",12,"December","Italy","Net inflow","non-commercial",-50.59
+"2024-12-31","2024",12,"December","Iran","Net inflow","non-commercial",16.15
+"2024-12-31","2024",12,"December","Poland","Net inflow","non-commercial",-178.72
+"2024-12-31","2024",12,"December","Latvia","Net inflow","non-commercial",-2.96
+"2024-12-31","2024",12,"December","Luxembourg","Net inflow","non-commercial",33.66
+"2024-12-31","2024",12,"December","Lebanon","Net inflow","non-commercial",74.2
+"2024-12-31","2024",12,"December","Liechtenstein","Net inflow","non-commercial",7.93
+"2024-12-31","2024",12,"December","Lithuania","Net inflow","non-commercial",13.32
+"2024-12-31","2024",12,"December","Canada","Net inflow","non-commercial",-432.77
+"2024-12-31","2024",12,"December","Korea","Net inflow","non-commercial",14.17
+"2024-12-31","2024",12,"December","Cyprus","Net inflow","non-commercial",136.92
+"2024-12-31","2024",12,"December","Hong Kong","Net inflow","non-commercial",-15.15
+"2024-12-31","2024",12,"December","Jordan","Net inflow","non-commercial",104.13
+"2024-12-31","2024",12,"December","Greece","Net inflow","non-commercial",462.59
+"2024-12-31","2024",12,"December","India","Net inflow","non-commercial",-72
+"2024-12-31","2024",12,"December","Kazakhstan","Net inflow","non-commercial",2321.87
+"2024-12-31","2024",12,"December","Kyrgyzstan","Net inflow","non-commercial",38
+"2024-12-31","2024",12,"December","Japan","Net inflow","non-commercial",-27.64
+"2024-12-31","2024",12,"December","United Kingdom of Great Britain and Northern Ireland","Net inflow","non-commercial",222.43
+"2024-12-31","2024",12,"December","Isle of Man","Net inflow","non-commercial",1.7
+"2024-12-31","2024",12,"December","Monaco","Net inflow","non-commercial",0.62
+"2024-12-31","2024",12,"December","Netherlands","Net inflow","non-commercial",276.14
+"2024-12-31","2024",12,"December","Sweden","Net inflow","non-commercial",170.47
+"2024-12-31","2024",12,"December","Switzerland","Net inflow","non-commercial",-188.01
+"2024-12-31","2024",12,"December","Czechia","Net inflow","non-commercial",86.12
+"2024-12-31","2024",12,"December","China","Net inflow","non-commercial",-313.48
+"2024-12-31","2024",12,"December","Portugal","Net inflow","non-commercial",-107.87
+"2024-12-31","2024",12,"December","Russian Federation","Net inflow","non-commercial",29116.41
+"2024-12-31","2024",12,"December","Saudi Arabia","Net inflow","non-commercial",65.55
+"2024-12-31","2024",12,"December","Singapore","Net inflow","non-commercial",83.39
+"2024-12-31","2024",12,"December","Georgia","Net inflow","non-commercial",-496.4
+"2024-12-31","2024",12,"December","Uzbekistan","Net inflow","non-commercial",269.51
+"2024-12-31","2024",12,"December","Ukraine","Net inflow","non-commercial",-698.07
+"2024-12-31","2024",12,"December","Qatar","Net inflow","non-commercial",57.62
+"2024-12-31","2024",12,"December","Kuwait","Net inflow","non-commercial",143.69
+"2024-12-31","2024",12,"December","France","Net inflow","non-commercial",1947.92
+"2024-12-31","2024",12,"December","Others","Net inflow","non-commercial",115.26
+"2024-12-31","2024",12,"December","Total","Net inflow","non-commercial",68306.43
