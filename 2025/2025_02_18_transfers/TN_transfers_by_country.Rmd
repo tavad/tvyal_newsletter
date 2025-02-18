@@ -1,0 +1,843 @@
+---
+title: "Tvyal Newsletter"
+date: "2025-02-18"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+library(tidyverse)
+library(scales)
+library(readxl)
+library(RcppRoll)
+library(hpfilter)
+library(gt)
+library(countrycode)
+library(treemapify)
+library(ggfittext)
+
+# rm(list = ls()); gc()
+
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+
+source("../../initial_setup.R")
+
+```
+
+
+```{r get databases, include=FALSE}
+# # uncomment and run the command below to update the data
+# system("curl https://www.cba.am/stat/stat_data_eng/5_Money_transfers_of_individuals_by_countries-eng.xlsx -o transfers_by_countries.xlsx")
+
+transfers_raw <- read_excel("transfers_by_countries.xlsx")
+
+transfers_forecast <- read_csv("transfers_forecast.csv")
+```
+
+
+```{r data cleaning, include=FALSE}
+
+transfers_clean <-
+  transfers_raw |> 
+  t() |> as_tibble() |>
+  # row_to_names is the function that gives the warning
+  janitor::row_to_names(row_number = 1) |>
+  rename(
+    na = 1,
+    year = 2,
+    month = 3,
+    direction = 4
+  ) |>
+  select(-na) |>
+  mutate(
+    type = case_when(
+      grepl("of which", month) ~ "non-commercial",
+      !grepl("of which", month) & !is.na(month) ~ "total"
+    ),
+    month = ifelse(grepl("of which", month), NA, month),
+  ) |>
+  fill(year, month, type, .direction = "down") |>
+  pivot_longer(
+    -c(year, month, direction, type),
+    names_to = "country", values_to = "K_USD"
+  ) |>
+  mutate(
+    K_USD = as.numeric(K_USD),
+    month_name = month,
+    month = c(1:12)[match(month_name, month.name)],
+    date = ym(paste(year, month)),
+    date = date + months(1) - days(1)
+  ) |>
+  relocate(date, year, month, month_name, country, direction, type, K_USD) |> 
+  filter(!is.na(K_USD))
+
+transfers_clean |>
+  write_excel_csv("transfers_by_countries_clean.csv")
+
+```
+
+
+
+```{r chart_1, include=FALSE}
+max_month <-
+  transfers_clean |>
+  filter(date == max(date)) |>
+  pull(month) |>
+  unique()
+
+transfers_total_chartdata <- 
+  transfers_clean |>
+  filter(
+    # month <= 6,
+    direction %in% c("Inflow"),
+    # type == "non-commercial",
+    type == "total",
+    country != "Total",
+    # year <= 2023
+  ) |>
+  mutate(
+    country = case_when(
+      grepl("Emirates", country) ~ "UAE",
+      grepl("Kingdom", country) ~ "UK",
+      TRUE ~ country
+    ),
+    country = fct_lump_n(
+      country, n = 2, w = K_USD,
+      other_level = "Others"
+    ),
+    country = fct_reorder(country, K_USD, .desc = TRUE),
+    country = fct_relevel(country, "Others", after = Inf)
+  ) |>
+  group_by(year, country, direction, type) |>
+  summarise(K_USD = sum(K_USD), .groups = "drop") |>
+  group_by(year, direction, type) |>
+  mutate(
+    pct = K_USD / sum(K_USD),
+    pct_text = percent(pct, accuracy = 0.1),
+    # pct_text = ifelse(K_USD <= 1e5, "", pct_text)
+  ) |>
+  ungroup()
+
+transfers_total_chart <- 
+  transfers_total_chartdata |> 
+  ggplot(aes(year, K_USD / 1e3)) +
+  geom_col(aes(fill = country), alpha = 1) +
+  geom_text(
+    aes(label = pct_text, fill = country),
+    position = position_stack(vjust = .5),
+    color = "white", family = "GHEA Grapalat"
+  ) +
+  geom_text(
+    data = transfers_total_chartdata |> 
+      group_by(year) |> 
+      summarise(
+        K_USD = sum(K_USD) / 1000,
+        text_USD = number(K_USD, accuracy = 1),
+        .groups = "drop"
+      ),
+    aes(year, 0, label = text_USD),
+    vjust = 2, family = "GHEA Grapalat"
+  ) +
+  # facet_wrap(~direction) +
+  scale_y_continuous(labels = number_format(accuracy = 1), n.breaks = 6) +
+  scale_fill_manual(
+    values = new_palette_colors[c(2,4,6)],
+    labels = c("Ռուսատանի Դաշնություն", "ԱՄՆ", "Այլ պետություններ")
+  ) +
+  labs(
+    x = NULL,
+    y = NULL,
+    fill = NULL,
+    title = "Ինչքա՞ն փող է Հայաստան մտել",
+#     subtitle = "Ֆիզիկական անձանց կողմից դեպի Հայաստան կատարված փոխանցումներ
+# Առաջին կիսամյակ, նորհոսք, միլիոն դոլար",
+    subtitle = "Ֆիզիկական անձանց կողմից դեպի Հայաստան կատարված փոխանցումներ
+2013-2024, նորհոսք, միլիոն դոլար",
+caption = caption_f("CBA")
+  ) +
+  theme(
+     panel.grid.major.x = element_blank(),
+     text = element_text(family = "GHEA Mariam") 
+  )
+
+
+```
+
+```{r charts 2&3, include=FALSE}
+
+transfers_date <-
+  transfers_clean |>
+  filter(
+    direction %in% c("Inflow", "Outflow"),
+    # type == "non-commercial",
+    type == "total",
+    country != "Total",
+  ) |>
+  mutate(
+    country = case_when(
+      grepl("Emirates", country) ~ "UAE",
+      grepl("Kingdom", country) ~ "UK",
+      TRUE ~ country
+    ),
+    country = fct_lump_n(
+      country, n = 10, w = K_USD,
+      other_level = "Others"
+    )
+  ) |>
+  group_by(date, country, direction, type) |>
+  summarise(K_USD = sum(K_USD), .groups = "drop") |>
+  arrange(country, direction, type, date) |>
+  group_by(country, direction, type) |>
+  mutate(K_USD_YOY = roll_sumr(K_USD, 12)) |>
+  ungroup() |>
+  na.omit()
+
+
+chart_2 <- 
+  transfers_date |>
+  mutate(
+    country_arm = countrycode(country, origin = "country.name", destination = "cldr.name.hy"),
+    country_arm = ifelse(is.na(country_arm), "Այլ պետություններ", country_arm),
+    country_arm = fct_reorder(country_arm, K_USD_YOY, .desc = TRUE),
+    country_arm = fct_relevel(country_arm, "Այլ պետություններ", after = Inf),
+    country = fct_reorder(country, K_USD_YOY, .desc = TRUE),
+    country = fct_relevel(country, "Others", after = Inf),
+    direction_arm = ifelse(direction == "Inflow", "Ներհոսք", "Արտահոսք"),
+    direction_arm = fct_rev(direction_arm)
+  ) |> 
+  filter(date >= ymd("2019-12-30")) |>
+  ggplot(aes(date, K_USD_YOY / 1e6, fill = country_arm)) +
+  geom_area() +
+  facet_wrap(~direction_arm) +
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+  scale_y_continuous(breaks = 0:7, labels = number_format(accuracy = 1)) +
+  scale_fill_manual(values = colfunc3(10)) +
+  # scale_fill_brewer(type = "qual", palette = 3) +
+  labs(
+    x = NULL,
+    y = NULL,
+    fill = NULL,
+    title = "Հայաստանի բանկային համակարգի միջոցով կատարված փոխանցումներ*",
+    subtitle = "մլրդ ԱՄՆ դոլար, 12-ամսյա կտրվածքով",
+    caption =paste0("* ֆիզիկական անձանց կողմից\n\n", caption_arm, "   |   Տվյալների աղբյուր՝ CBA.am")
+  )
+
+```
+
+
+```{r, include=FALSE}
+# transfers_clean |>
+#   filter(
+#     direction %in% c("Inflow", "Outflow"),
+#     direction == "Outflow",
+#     type == "total",
+#     country != "Total",
+#     year == 2024
+#   ) |>
+#   mutate(
+#     country = fct_lump_n(country, n = 11, w = K_USD,
+#                          other_level = "Other_countries")
+#   ) |>
+#   group_by(date, country, direction, type) |>
+#   summarise(K_USD = sum(K_USD), .groups = "drop") |>
+#   mutate(country = fct_reorder(country, K_USD)) |>
+#   ggplot(aes(date, K_USD / 1e3, fill = country)) +
+#   geom_area() +
+#   scale_x_date(date_breaks = "2 months", date_labels = "%m %Y") +
+#   scale_y_continuous(labels = number_format(accuracy = 1)) +
+#   scale_fill_brewer(type = "qual", palette = 3) +
+#   labs(
+#     fill = NULL,
+#     title = "Outflow of transfers made through the banking system of Armenia",
+#     subtitle = "From 2022, On Monthly Basis, Millions of USD",
+#     caption =paste0(caption_eng, "   |   Data Source: CBA.am")
+#   )
+#########################################
+
+iso_to_unicode_flag <- function(iso2c) {
+  sapply(iso2c, function(code) {
+    if (is.na(code)) return(NA)
+    paste0(
+      intToUtf8(127462L + which(LETTERS == substr(code, 1, 1)) - 1L),
+      intToUtf8(127462L + which(LETTERS == substr(code, 2, 2)) - 1L)
+    )
+  })
+}
+
+transfers_cleant_reemap_data <- 
+  transfers_clean |>
+  filter(
+    direction == "Outflow",
+    type == "total",
+    country != "Total",
+    year == 2024
+  ) |> 
+  mutate(
+    country = ifelse(K_USD <= 1100 | country == "Australia", "Others", country),
+  ) |> 
+  group_by(country) |> 
+  summarise(K_USD = sum(K_USD)) |> 
+  ungroup() |> 
+  mutate(
+    pct = K_USD / sum(K_USD),
+    pct = percent(pct, accuracy = 0.1),
+    iso2c = countrycode(country, origin = "country.name", destination = "iso2c"),
+    flag_unicode = iso_to_unicode_flag(iso2c),
+    flag_unicode = ifelse(is.na(flag_unicode), "🇺🇳", flag_unicode),
+    continent = countrycode(country, origin = "country.name", destination = "continent"),
+    country = countrycode(country, origin = "country.name", destination = "cldr.short.hy"),
+    country = ifelse(is.na(country), "Այլ պետություններ", country),
+    country = ifelse(grepl("Էմիրություններ", country), "Արաբական Միացյալ\nԷմիրություններ", country)
+  ) |> 
+  arrange(desc(K_USD)) |> 
+  mutate(country = factor(country, levels = c(country[country != "Այլ պետություններ"], "Այլ պետություններ")))
+
+# countrycode::codelist |> select(contains("hy"))
+
+chart_3 <-
+  transfers_cleant_reemap_data |> 
+  ggplot(aes(
+    area = K_USD, fill = continent, 
+    label = paste0(flag_unicode, "\n", country, "\n", pct, " (", dollar(K_USD/1e3, accuracy = 1), ")")
+  )) +
+  geom_treemap(layout = "squarified", start = "topleft") +
+  geom_treemap_text(
+    place = "centre", 
+    start = "topleft",
+    size = 14, 
+    color = "white",
+    reflow = TRUE,
+  ) +
+  theme_tvyal() +
+  scale_fill_manual(
+    values = new_palette_colors[c(8,2,6)],
+    labels = c("Ամերիկա", "Ասիա", "Եվրոպա", "")
+  ) +
+  labs(
+    fill = "Սշխարհամաս`",
+    title = "Ո՞ւր է դուրս գալիս փողը Հայաստանից",
+    subtitle = "Հայաստանից դրամական փոխանցումների արտահոսքը ըստ պետությունների\n(2024թ․, միլիոն դոլար)",
+    caption = caption_f("CBA")
+  ) +
+  guides(fill = guide_legend(override.aes = list(alpha = c(1, 1, 1, 0), color = c(new_palette_colors[c(2,4,6)], NA))))
+
+
+```
+
+```{r, include=FALSE}
+transfers_forecast_plot <- 
+  transfers_forecast %>%
+  filter(
+    type == "total", 
+    # direction == "Net inflow",
+    !grepl("arima|bats", model_name),
+    date >= ym("2019-01"),
+    period == "YoY"
+  ) |> 
+  mutate(
+    across(where(is.numeric), ~.x / 1e6),
+    direction = factor(direction, levels = c("Inflow", "Outflow", "Net inflow"))
+  ) |> 
+  ggplot(aes(date, K_USD, color = model_name, lty = model_name)) +
+  facet_wrap(~direction, scales = "free_y") +
+  geom_line(linewidth = 1) +
+  geom_ribbon(aes(ymin = ribbon_low, ymax = ribbon_high), alpha = .2) +
+  scale_x_date(date_breaks = "2 year", date_labels = "%Y") +
+  scale_y_continuous(labels = number_format(), n.breaks = 7) +
+  scale_color_manual(values = new_palette_colors[c(2,5,7,8,4)]) +
+  scale_linetype_manual(values = c(1, 2, 2, 2, 2)) +
+  labs(
+    x = NULL,
+    y = NULL,
+    color = "Model name",
+    linetype = "Model name",
+    title = "Forecast of Transfers",
+    subtitle = "Year over Year, Billions of USD",
+    caption =paste0(caption_eng, "   |   Data Source: CBA.am")
+  ) +
+  theme(
+    panel.grid.minor.x = element_line(
+      colour = "lightgray", 
+      linetype = "dotted"
+    )
+  )
+
+############
+
+last_date_value <- 
+  transfers_forecast |> 
+  filter(date == max(date)) |> 
+  pull(date) |> 
+  unique() - years(2)
+
+gt_table_transfers <-
+  transfers_forecast |> 
+  filter(
+    month(date) == 12,
+    year(date) != 2025,
+    period == "YoY",
+    type == "total",
+    grepl("stlm|Data", model_name),
+    !c(!grepl("Data", model_name) & date == ymd(last_date_value))
+  ) |> 
+  filter(date != max(date)) |> 
+  arrange(type, direction, date) |>
+  group_by(type, direction) |>
+  mutate(
+    year = year(date),
+    across(matches("ribbon"), ~ifelse(is.na(.x), K_USD, .x)),
+    pct_change = ifelse(
+      ribbon_low == K_USD,
+      ifelse(
+        K_USD / lag(K_USD) < 2,
+        percent(K_USD / lag(K_USD) - 1, accuracy = 0.1),
+        paste(number(K_USD / lag(K_USD), accuracy = 0.01), "անգամ")
+      ),
+      paste0(
+        percent(K_USD / lag(K_USD) - 1, accuracy = 0.1),
+        "\n(", percent(ribbon_low / lag(ribbon_low) - 1, accuracy = 0.1),  "-ից մինչև ",
+        percent(ribbon_high / lag(ribbon_high) - 1, accuracy = 0.1), ")"
+      )
+    ),
+    across(matches("K_USD|ribbon"), ~number(.x/1e6, accuracy = 0.01)),
+    K_USD = ifelse(
+      ribbon_low == K_USD,
+      K_USD,
+      paste0(
+        K_USD, " \n(", ribbon_low, "-ից մինչև ", ribbon_high, ")"
+      )
+    ),
+    year = ifelse(ribbon_low == K_USD, year, paste(year, "\n կանխատեսում"))
+  ) |>
+  ungroup() |>
+  filter(
+    date >= ym("2018-01")
+  ) |>
+  select(year, direction, K_USD, pct_change) |>
+  mutate(
+    direction = factor(direction, levels = c("Inflow", "Outflow", "Net inflow"))
+  ) |>
+  arrange(direction) |>
+  pivot_wider(
+    names_from = direction, values_from = c(K_USD, pct_change),
+    names_vary = "slowest"
+  ) |> 
+  gt() |> 
+  cols_label(
+    year = "տարի",
+    K_USD_Inflow = "մլրդ դոլար",
+    pct_change_Inflow = "աճ %",
+    K_USD_Outflow = "մլրդ դոլար",
+    pct_change_Outflow = "աճ %",
+    `K_USD_Net inflow` = "մլրդ դոլար",
+    `pct_change_Net inflow` = "աճ %"
+  ) |> 
+  tab_spanner(
+    label = "Ներհոսք",
+    columns = contains("_Inflow")
+  ) |>
+  tab_spanner(
+    label = "Արտահոսք",
+    columns = contains("_Outflow")
+  ) |>
+  tab_spanner(
+    label = "Զուտ ներհոսք",
+    columns = contains("Net inflow")
+  ) |> 
+  tab_header(
+    title = "ՀՀ բանկային համակարգով կատարված փոխանցումներ",
+    subtitle = "մլրդ դոլար"
+  ) |> 
+  tab_footnote(
+    footnote = caption_f("CBA")
+  ) |>
+  text_transform(
+    locations = cells_body(),
+    fn = function(x) {
+      str_replace_all(x, "\n", "<br>") |>
+        map(~ htmltools::HTML(.x))
+    }
+  )
+
+```
+
+
+
+```{r russia_transfers, include=FALSE}
+
+russia_transfers_plot <- 
+  russia_transfers <-
+  transfers_clean |>
+  filter(
+    # country == "Total",
+    country == "Russian Federation",
+    direction == "Inflow"
+  ) |>
+  filter(year >= 2019) |> 
+  arrange(country, direction, type, date) |>
+  group_by(country, direction, type) |>
+  mutate(K_USD_YOY = roll_sumr(K_USD, n = 12)) |>
+  ungroup() |>
+  mutate(type = fct_rev(type)) |>
+  ggplot(aes(date, K_USD / 1e3, color = type)) +
+  geom_line(linewidth = 1.2) +
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+  scale_y_continuous(labels = number_format(), n.breaks = 6) +
+  scale_color_manual(
+    values = new_palette_colors[c(2,6)],
+    labels = c("Ընդհանուր", "Ոչ կոմերցիոն")
+  ) +
+  labs(
+    x = NULL,
+    y = NULL,
+    color = NULL,
+    title = "Ռուսատանից ստացված բանկային փոխանցումներ",
+    subtitle = "Ամսական կտրվածքով, միլիոն դոլար",
+    caption = caption_f("CBA")
+  )
+
+```
+
+
+```{r, include=FALSE}
+# Տրանսֆերտնռր ՀՆԱ հարաբերություն
+# non-commercial transfers inflow to GDP
+
+
+GDP <-
+  read_csv("~/R/projects/GDP/GDP_expenditure.csv") |>
+  filter(grepl("Domestic produc", description_eng)) |>
+  transmute(date, gdp_usd = value_usd_yoy) |>
+  filter(!is.na(gdp_usd))
+
+transfers_to_gdp_plot <- 
+  transfers_clean |>
+  filter(
+    country != "Total",
+    direction == "Inflow",
+    type == "non-commercial"
+  ) |>
+  mutate(
+    country = case_when(
+      grepl("Emirates", country) ~ "UAE",
+      grepl("Kingdom", country) ~ "UK",
+      TRUE ~ country
+    ),
+    country = fct_lump_n(
+      country, n = 2, w = K_USD,
+      other_level = "Others"
+    ),
+    country = fct_reorder(country, K_USD)
+  ) |>
+  group_by(date, country, direction, type) |>
+  summarise(K_USD = sum(K_USD), .groups = "drop") |>
+  arrange(country, direction, type, date) |>
+  group_by(country, direction, type) |>
+  mutate(K_USD_YOY = roll_sumr(K_USD, 12)) |>
+  ungroup() |>
+  na.omit() |>
+  right_join(GDP, by = join_by(date)) |>
+  mutate(
+    pct = (K_USD_YOY / 1000) / gdp_usd
+  ) |>
+  ggplot(aes(date, pct)) +
+  geom_area(aes(fill = country)) +
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+  scale_y_continuous(
+    breaks = seq(0, 0.5, 0.02),
+    labels = percent_format(accuracy = 1)
+  ) +
+  scale_fill_manual(
+    values = new_palette_colors[c(8,6,2)],
+    labels = c("Այլ պետություններ", "ԱՄՆ", "Ռուսատանի Դաշնություն")
+  ) +
+  labs(
+    x = NULL,
+    y = NULL,
+    fill = NULL,
+    title = "Տրանսֆերտներ / ՀՆԱ հարաբերություն",
+    subtitle = "Ոչ կոմերցիոն մասնավոր փոխանցումներ / ՀՆԱ հարաբերություն",
+    caption = caption_f()
+  ) +
+  guides(fill = guide_legend(reverse = TRUE))
+
+transfers_to_gdp_plot |> write_rds("plots/transfers_to_gdp_plot.rds")
+
+```
+
+```{r plot_saving, include=FALSE}
+
+# save_dir <- "/home/tavad/Downloads/plots/"
+# 
+# ggsave(
+#   file.path(save_dir, "transfers_2024_12_total.png"), 
+#   transfers_total_chart, width = 12, height = 8
+# )
+# ggsave(
+#   file.path(save_dir, "transfers_2024_12_flow.png"), 
+#   chart_2, width = 12, height = 8
+# )
+# ggsave(
+#   file.path(save_dir, "transfers_2024_12_outflow.png"), 
+#   chart_3, width = 12, height = 8
+# )
+# ggsave(
+#   file.path(save_dir, "transfers_2024_12_russia.png"), 
+#   russia_transfers_plot, width = 12, height = 8
+# )
+# ggsave(
+#   file.path(save_dir, "transfers_2024_12_remittances_to_gdp.png"), 
+#   transfers_to_gdp_plot, width = 12, height = 8
+# )
+
+```
+
+
+***English summary below.***
+
+Հարգելի գործընկեր,
+
+Հուսով եմ՝ լավ եք: 
+Ներկայացնում եմ այս շաբաթվա վերլուծությունները և աշխատանքները.
+
+
+## [💸🔚🏦 Կապիտալի ներհոսքից մինչև արտահոսք. Հայաստանի տնտեսական հրաշքի ներքին խոհանոցը](https://www.tvyal.com/newsletter/2024/2025_02_18)
+
+### **Միջազգային դրամական փոխանցումների վերլուծություն**
+
+2022 թվականն աննախադեպ էր ֆիզիկական անձանցից դեպի հայկական բանկեր փոխանցումների աճի առումով. դրանք աճել են 2,5 անգամ՝ 2,1 մլրդ դոլարից հասնելով 5,2 մլրդ դոլարի։ 2022 թվականին արտարժույթի ներհոսքը բանկային համակարգ աճել է 2,5 անգամ, իսկ արտահոսքը՝ 2.1 անգամ։ Զուտ ներհոսքը 2022 թվականին աճել է գրեթե 3 անգամ՝ 0.9 մլրդ դոլարից մինչև 2.9 մլրդ դոլար։ Այս աճը հիմնականում պայմանավորված է եղել Ռուսաստանից ստացված բանկային փոխանցումներով, որոնք քառապատկվել են՝ 865 մլն դոլարից հասնելով 3,6 մլրդ դոլարի։ Արդյունքում Հայաստան է փոխանցվել զգալի գումար՝ հիմնականում դոլարով, ինչը հանգեցրել է դոլարի առաջարկի աճին, ինչպես նաև նպաստել 2022 թվականի ապրիլ-հունիսին գրանցված դրամի ամրացմանը, երբ դոլարը 480 դրամից դարձավ 405 դրամ։
+
+Կապիտալի այսպիսի մեծ ներհոսքի արդյունքում [Հայաստանի առևտրային բանկերը 2022թ-ին արձանագրել են 255.6 մլրդ դրամի զուտ շահույթ, ինչը շուրջ 3 անգամ ավել է, քան նախորդ տարի: Ամենամեծ շահույթը արձանագրել է Ardshinbank-ը՝ 62.2 մլրդ դրամ](https://modex.am/net-profit-2022/): Այսինքն բանկային համակարգը 2022 թվականին արձանագրել է 0.58 մլրդ դոլարի շահույթ։ Քանի որ Հայաստանում գործում է [եկամտային հարկի վերադարձի օրենքը](https://www.arlis.am/DocumentView.aspx?docID=96164) բանկային համկարգ մտած դրամական միջոցները հիմնականում ներդրվեցին շինարարություն։ Ինչպես մենք ցույց ենք տվել [🐅🌆💸 Հայաստան` Կովկասի վագր, թե՞ թանկ երազանք](https://www.tvyal.com/newsletter/2024/2024_08_26) հետազոտությունում, 2022 թվականի 12.6 տոկոս տնտեսական աճի գրեթե կեսը պայմանավորված է եղել ֆինանսական գործունեությամբ, որը կապիտալի ներհոսքին զուգահեռ փուչիկի պես աճել է, որից հետո՝ կապիտալի ներհոսքի դանդաղման և արտահոսքի արդյունքում, անկում է գրանցել։
+
+Գծապատկեր 1.
+
+```{r plot1, echo=FALSE, fig.width = 12, fig.height = 8}
+transfers_total_chart
+```
+
+Ինչպես երևում է առաջին գծապատկերում, առաջին կիսամյակի կտրվածքով կապիտալի ներհոսքի ամենաբարձր կետը գրանցվել է 2023 թվականին, որից հետո այն անկում է ապրել։ 2024 թվականի առաջին կիսամյակում կապիտալի ներհոսքը կրճատվել է 13.7 տոկոսով, իսկ Ռուսաստանի հետ՝ 23.0 տոկոսով։
+
+2023 թվականի կտրվածքով բանկային փոխանցումները գրանցել են 9.7 տոկոս աճ՝ 2022 թվականի զգալի 2,5 անգամ աճի համեմատ: Տարեկան 9.7 տոկոս աճը առաջին հայացքից վկայում է աճի մասին, սակայն եթե դիտարկենք ամսական կտրվածքը (գծապատկեր 2), ապա հստակ երևում է, որ 12-ամսյա դրամական փոխանցումների պիկային կետը գրանցվել է 2023 թվականի մայիսին՝ 6.4 մլրդ դոլար, որը 11 տոկոսով պակաս է տարեվերջյան 5.7 մլրդ դոլար դրամական ներհոսքի ցուցանիշից։ Բանկային համակարգից դուրս եկած գումարները աճել են 55 տոկոսով՝ հասնելով 4 մլրդ դոլարի։ Զուտ ներհոսքը կրճատվել է 36 տոկոսով՝ 2.6 միլիարդից մինչև 1.6 միլիարդ դոլար։ Կապիտալի ներհոսքի կրճատումը և արտահոսքի աճը գրանցվել է մինչև 2024 թվականի կեսերը։ Այս պահին իրավիճակը կայունացել է։ Ակնկալվում է, որ 2024 թվականին կապիտալի ներհոսքը կազմելու է մոտ 5.4 մլրդ դոլար, որը մոտ 6 տոկոսով պակաս է լինելու նախորդ տարվա ցուցանիշից։
+
+Գծապատկեր 2.
+
+```{r plot2, echo=FALSE, fig.width = 12, fig.height = 8}
+chart_2
+```
+
+Ինչպես երևում է գծապատկերից, կապիտալի ներհոսքը հիմնականում գրանցվել է Ռուսաստանի Դաշնությունից, երկրորդ տեղում է ԱՄՆ-ն։ Կապիտալի արտահոսքը ունի ավելի դիվերսիֆիկացված պատկեր։ Չկա մի հստակ պետություն, որտեղ կապիտալը արտահոսում է Հայաստանից։
+
+Կապիտալի արտահոսքի մեջ նկատվում է Արաբական Միացյալ Էմիրությունների զգալի աճը, որն այս պահին Հայաստանից կապիտալի արտահոսքի տեսանկյունից զբաղեցնում է առաջին հորիզոնականը՝ 17.5 տոկոս մասնաբաժնով (2024 թվականի հունվար-հուլիս դրությամբ 393 միլիոն դոլար)։ Սա համահունչ է նաև այն փաստի հետ, որ այս պահին Հայաստանի արտահանման գրեթե կեսը գնում է ԱՄԷ, որը ոսկու և ադամանդների վերաարտահանումն է Ռուսաստանից դեպի ԱՄԷ ([կարդացեք ավելին՝ 💎🎭🔮️ Ոսկե Պատրանք. Հայաստանի արտահանման իրական պատկերը](https://www.tvyal.com/newsletter/2024/2024_09_02))։ Կարելի է ենթադրել, որ ոսկու վերաարտահանումից ստացված հասույթը դուրս է գալիս նաև ԱՄԷ, որի արդյունքում այս ուղղությամբ ունենք կապիտալի արտահոսքի աճ։ Քանի որ ոսկու վերաարտահանումը ունի ժամանակավոր բնույթ, այս ուղղությամբ դրամական արտահոսքն էլ կարող է ունենալ ժամանակավոր բնույթ։
+
+Ինչպես երևում է երրորդ գծապատկերից, կապիտալը արտահոսում է տարբեր պետություններ, որոնց շարքում են նաև Շվեյցարիան, Մոնակոն, Իսպանիան, Սինգապուրը, Միացյալ Թագավորությունը։
+
+Գծապատկեր 3. 
+
+```{r plot3, echo=FALSE, fig.width = 12, fig.height = 8}
+chart_3
+```
+
+2023 թվականին Հայաստանի բանկային համակարգով ֆիզիկական անձանց կողմից կատարված դրամական փոխանցումների 69,3 տոկոսը (3 946 մլն դոլար) ստացվել է Ռուսաստանի Դաշնությունից, 11,6 տոկոսը՝ ԱՄՆ-ից (663 մլն դոլար): 2023 թվականին Ռուսաստանից ստացված դրամական փոխանցումների 81.4 տոկոսը եղել են ոչ առևտրային նպատակներով։ Դիտարկենք նաև առանձին ՌԴ-ից կատարված բանկային փոխանցումները (գծապատկեր 4)։ Ինչպես երևում է գծապատկերից, մինչև 2022 թվականը փոխանցումների գերակշիռ մասը ոչ կոմերցիոն բնույթի տրանսֆերտներն էին, իսկ 2022 թվականից սկսած փոխանցումների գերակշիռ մասն ունի կոմերցիոն բնույթ։
+
+Փաստացի մինչև 2022 թվականը Ռուսաստանից ստացված փոխանցումների մեծ մասը եղել է արտագնա աշխատանքի արդյունքում կատարված տրանսֆերտները։ 2022 թվականից իրավիճակը փոփոխվել է՝ արդեն փոխանցումների զգալի մասն ունի կոմերցիոն, ներդրումային բնույթ, այսինքն՝ չի ձևավորվում արտագնա աշխատուժի արդյունքում։ Ռուսաստանից կապիտալի ներհոսքի պիկային կետը գրանցվեց 2023 թվականի մարտ ամսին, որից հետո գրանցվել է անկում։ Այս պահին իրավիճակը կայունացած է։
+
+Գծապատկեր 4. 
+
+```{r plot4, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
+russia_transfers_plot
+```
+
+Մեր կողմից գնահատվել է նաև ֆիզիկական անձանց կողմից կատարված տրանսֆերտներ/ՀՆԱ հարաբերությունը, որը ներկայացված է 5-րդ գծապատկերում։ Քանի որ գծապատկերում ներկայացված տվյալները գնահատվել են մեր մեթոդաբանությամբ, դրանք կարող են [չհամապատասխանել պաշտոնական տվյալների հետ, որոնք տրվում են տարեկան կտրվածով և չեն ներառում առանձին պետությունների հաշվարկը](https://data.worldbank.org/indicator/BX.TRF.PWKR.DT.GD.ZS?locations=AM)։ Այս ցուցանիշը ներկայացնում է արտագնա աշխատանքի մասնաբաժինը ՀՆԱ-ի մեջ։ Այսպես, ինչքան այն մեծ է, այնքան ավելի շատ աշխատուժ ենք արտահանում մենք, որն ընդհանուր տնտեսական զարգացման տեսանկյունից դրական չէ, քանի որ մենք «արտահանում» ենք աշխատուժը՝ աշխատատեղեր ստեղծելու փոխարեն։ Այս ցուցանիշը վերջին 15 տարիների ընթացքում, ըստ պաշտոնական տվյալների, ամենաբարձր կետին էր հասել 2013 թվականին՝ 19.7 տոկոս։ Հիմնականում ռուսական ռուբլու արժեզրկմամբ և դրամի ամրացմամբ պայմանավորված վերջին տարիների ընթացքում այս ցուցանիշը զգալի կրճատվել է, որն աշխատուժի արտահոսքի տեսանկյունից դրական է։ 2024 թվականի առաջին կիսամյակում, ըստ մեր գնահատականի, տրանսֆերտներ/ՀՆԱ հարաբերությունը կազմում է մոտ 4 տոկոս, իսկ Ռուսաստանից ստացված տրանսֆերտներ/ՀՆԱ հարաբերությունը՝ 2 տոկոս։
+
+
+Գծապատկեր 5. 
+
+```{r plot5, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
+transfers_to_gdp_plot
+```
+
+[Մեր կողմից ուսումնասիրված տվյալներից շատերի մեջ առկա են տնտեսական հնարավոր անկման նախանշաններ](https://www.tvyal.com/newsletter)։ Այդ ցուցանիշներից մեկն այլ պետություններից ստացվող բանկային համակարգի միջոցով դրամական փոխանցումներն են՝ կատարված ֆիզիկական անձանց կողմից։ 2023 թվականի կեսից սկսված կապիտալի արտահոսքի շարունակությունը ներկայացնում է որոշակի ռիսկ բանկային համակարգի զուտ շահույթի ապահովման և առողջության տեսանկյունից։ Սա, ոսկու վերաարտահանման հետ մեկտեղ, մարտահրավեր է մեր տնտեսության համար, և չպետք է թույլատրել, որ նախորդ 2 տարիներին հիմնականում Ռուսաստանից կապիտալի ներհոսքով ապահովված զգալի տնտեսական աճը մթագնի իրական պատկերը։ Անհրաժեշտ է ռեալ գնահատել մեր տնտեսական հնարավորությունները։
+
+
+<small>\* Նշենք որ որոշակի տերմինաբանական թյուրըմբռնում կա տրանսֆերտներ և բանկային փոխանցումներ եզրույթների միջև։ Բանկային փոխանցումները իրենց մեջ ներառում են բոլոր տիպի փոխանցումները՝ նաև կոմերցոն նպատակով։ Տրանսֆերտները միայն ֆիզիկական անձանց կողմից կատարված ոչ կոմերցիոն փոխացնումներն են, անգլերեն այս եզրույթը անվանում է "remittances"։ Շփոթմունք է առաջացնում այն, որ անգլերեն "transfers" եզրույթը վերաբերում է բոլոր տեսակի կոմերցիոն և ոչ կոմերցիոն փոխանցումներին։ Գծապատկերներում անգլերեն "transfers" եզրույթը ներկայացնում է բոլոր տեսակի կոմերցիոն և ոչ կոմերցիոն դրամական փոխանցումները։  Այս վերլուծության բոլոր տվյալները վերցված են պաշտոնական աղբյուրներից, մասնավորապես՝ [Կենտրոնական բանկի տվյալներից](https://www.cba.am/stat/stat_data_eng/5_Money_transfers_of_individuals_by_countries-eng.xlsx)։ Հաշվարկները և կանխատեսման կոդը ամբողջությամբ հասանելի են github-ում, դրանք կարելի է ստուգել այցելելով [github-ի](https://github.com/tavad/tvyal_newsletter/blob/main/2024/) մեր էջը, որտեղ տրված են տվյալները, հաշվարկների և գծապատկերների կոդը։</small>
+
+
+
+-----
+
+-----
+
+Եթե հնարավոր է, խնդրում եմ այս նյութը ուղարկել նաև այն մարդկանց, ում այն կարծում եք կարող է հետաքրքրել:
+
+**ԱՅՍ ՀՈԴՎԱԾԻ ՀՂՈՒՄԸ**
+
+***Թավադյան, Աղ․Ա․ (2025)․  Կապիտալի ներհոսքից մինչև արտահոսք. Հայաստանի տնտեսական հրաշքի ներքին խոհանոցը [From Capital Inflow to Outflow: The Inner Workings of Armenia's Economic Miracle]․ Tvyal.com հարթակ [Tvyal.com platform], 18-02-2024․ https://www.tvyal.com/newsletter/2024/2025_02_18***
+
+**Արգելվում է այս հարթակի նյութերը արտատպել առանց հղում կատարելու։**    
+
+<small>\* Այս և մեր բոլոր այլ վերլուծությունների տվյալները վերցված են պաշտոնական աղբյուրներից։ Հաշվարկները ամբողջությամբ հասանելի են github-ում, դրանք կարելի է ստուգել` այցելելով [github-ի](https://github.com/tavad/tvyal_newsletter/blob/main/2025/) մեր էջը, որտեղ տրված են տվյալները, հաշվարկների և գծապատկերների կոդը։
+
+</small>
+
+
+-----
+
+# ՀԱՄԱԳՈՐԾԱԿՑՈՒԹՅՈՒՆ
+
+<style>
+.ai-services-banner-tvyal {
+background-color: #0a192f;
+color: #e6f1ff;
+padding: 30px;
+font-family: Arial, sans-serif;
+border-radius: 10px;
+box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+position: relative;
+overflow: hidden;
+min-height: 400px;
+display: flex;
+flex-direction: column;
+justify-content: center;
+}
+.ai-services-banner-tvyal::before {
+content: '';
+position: absolute;
+top: -25%;
+left: -25%;
+right: -25%;
+bottom: -25%;
+background: repeating-radial-gradient(
+circle at 50% 50%,
+rgba(100, 255, 218, 0.1),
+rgba(100, 255, 218, 0.1) 15px,
+transparent 15px,
+transparent 30px
+);
+animation: gaussianWaveTvyal 10s infinite alternate;
+opacity: 0.3;
+z-index: 0;
+}
+@keyframes gaussianWaveTvyal {
+0% {
+transform: scale(1.5) rotate(0deg);
+opacity: 0.2;
+}
+50% {
+transform: scale(2.25) rotate(180deg);
+opacity: 0.5;
+}
+100% {
+transform: scale(1.5) rotate(360deg);
+opacity: 0.2;
+}
+}
+.ai-services-banner-tvyal > * {
+position: relative;
+z-index: 1;
+}
+.ai-services-banner-tvyal h2,
+.ai-services-banner-tvyal h3 {
+margin-bottom: 20px;
+color: #ccd6f6;
+}
+.ai-services-banner-tvyal ul {
+margin-bottom: 30px;
+padding-left: 20px;
+}
+.ai-services-banner-tvyal li {
+margin-bottom: 10px;
+}
+.ai-services-banner-tvyal a {
+color: #64ffda;
+text-decoration: none;
+transition: color 0.3s ease;
+}
+.ai-services-banner-tvyal a:hover {
+color: #ffd700;
+text-decoration: underline;
+}
+</style>
+
+<div class="ai-services-banner-tvyal">
+## [Եթե ուզում եք  AI գործիքներով ձեր տվյալներից օգուտ քաղել` ԴԻՄԵՔ ՄԵԶ](mailto:a@tavadyan.com?subject=Let's Put Data to Work!)
+
+### Մենք առաջարկում ենք
+
+- Extensive databases for finding both international and local leads
+- Exclusive reports on the Future of the Armenian Economy
+- Work and browser automation to streamline operations and reduce staffing needs
+- AI models for forecasting growth and optimizing various aspects of your business
+- Advanced dashboarding and BI solutions
+- Algorithmic trading
+
+### [Let's Put Your Data to Work!](mailto:a@tavadyan.com?subject=Let's Put Data to Work!)
+
+### [ՄԻԱՑԵՔ ՄԵՐ ԹԻՄԻՆ](mailto:a@tavadyan.com?subject=Work application)
+</div>
+
+
+
+-----
+
+## ԶԼՄ հաղորդագրություն
+
+
+
+'1. [Այս նյութը բացել է շատերի աչքերը` տնտեսության իրական պատկերը։ Նյութը արդեն ունի 42 հազար դիտում:](https://youtu.be/eaY8OF-dgr4)
+
+📺  Ոսկու և Ադամանդի Տխուր Հետևանքները. Ինչ Վիճակում է Հայաստանի Տնտեսությունը և Ուր Ենք գնում Իրականում 📺
+
+<a href="https://youtu.be/eaY8OF-dgr4">
+  <img src="https://i3.ytimg.com/vi/eaY8OF-dgr4/hqdefault.jpg" alt="YouTube Video" style="width:60%;">
+</a>
+
+
+'2. [Զրույց փողի մասին։ Փոխարժեք, ՏՏ, արտահանում, ԴՎՔ։](https://youtu.be/ZrBmQQLglXY)
+
+📺  Դրամի արժևորման պատճառով Հայաստանի արտահանումը անկում է ապրում, խնդիրներ ունի ՏՏ ոլորտը 📺
+
+<a href="https://youtu.be/ZrBmQQLglXY">
+  <img src="https://i3.ytimg.com/vi/ZrBmQQLglXY/hqdefault.jpg" alt="YouTube Video" style="width:60%;">
+</a>
+
+
+
+-----
+
+
+## English Summary
+
+### 💸🔚🏦 From Capital Inflow to Outflow: The Inner Workings of Armenia's Economic Miracle
+
+
+This article delves into the intricate dynamics of Armenia's recent economic developments, focusing on the dramatic shifts in capital flows that have shaped the country's financial landscape. It analyzes the unprecedented surge in bank transfers to Armenian banks in 2022, which saw a 2.5-fold increase from \$2.1 billion to \$5.2 billion, largely driven by transfers from Russia. The piece explores how this influx of capital led to significant profits in the banking sector and impacted various aspects of the economy, including currency appreciation and investment in construction.
+
+The analysis then shifts to the evolving nature of these capital flows, highlighting the transition from primarily non-commercial transfers to more investment-oriented transactions. It examines the subsequent slowdown and reversal of capital inflows, with particular attention to the emerging trend of capital outflow to countries like the United Arab Emirates. The article provides a comprehensive overview of these financial movements, their causes, and potential implications for Armenia's economic future, offering readers an in-depth look at the mechanisms behind what has been termed Armenia's "economic miracle.
+
+
+---
+
+
+Հարգանքներով,            
+Աղասի Թավադյան         
+18.02.2024          
+[tvyal.com](https://www.tvyal.com/)      
+[tavadyan.com](https://www.tavadyan.com/)
+
+---
+
+[Was this email forwarded to you? Subscribe here.](https://www.tvyal.com/subscribe)
+
+[Բաժանորդագրվեք](https://www.tvyal.com/subscribe)
+
+       
+---              
+               
+
+
+####### **Ուշադրություն. Ձեր էլ.փոստը մեյլլիսթի մեջ է, որի միջոցով ես կիսվում եմ շաբաթական նյութեր, որոնք հիմնականում ներկայացնում են Հայաստանի տնտեսությունը: Նյութերը ներառում են գծապատկերներ, [տվյալների բազաներ](https://github.com/tavad/tvyal_newsletter), տեսանյութեր, հոդվածներ, [առցանց վահանակներ](https://www.tvyal.com/projects), տնտեսական գործիքներ, կանխատեսումներ և հաշվետվություններ: Եթե ցանկանում եք չեղարկել բաժանորդագրությունը, խնդրում եմ տեղեկացրեք ինձ, և ես կհեռացնեմ ձեր էլ. փոստը ցուցակից: Գրեք նաև եթե ունեք մենկնաբանություններ:**
+
+####### **Important! Your email is part of the mailing list where I share weekly materials primarily focused on the Armenian economy. These materials encompass charts, [databases](https://github.com/tavad/tvyal_newsletter), videos, articles, [online dashboards](https://www.tvyal.com/projects), economic tools, forecasts, and reports. If you wish to unsubscribe, please let me know, and I will remove your email from the list. Please share your comments as well․**
+
+

@@ -118,7 +118,10 @@ if (max_avalable_date_in_dbs != max(dept_clean$date)) {
       set_names(colnames) |> 
       mutate(
         unit_FX = ifelse(
-          is.na(lag(indicator)) | grepl("անվանական արժեքով", lag(indicator)),
+          is.na(lag(indicator)) | grepl(
+            "անվանական արժեքով", lag(indicator)) | 
+            grepl("ՀՀ.+պետական.+պարտք", lead(indicator)
+            ),
           indicator, 
           NA
         )
