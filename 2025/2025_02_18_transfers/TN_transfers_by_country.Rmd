@@ -5,7 +5,26 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(
+  echo = FALSE,          # Don't show code
+  warning = FALSE,       # Don't show warnings
+  message = FALSE,       # Don't show messages
+  error = FALSE,        # Don't show errors
+  fig.align = "center", # Center align figures
+  out.width = "100%",   # Make figures full width
+  dpi = 300,           # High resolution for plots
+  fig.showtext = TRUE,  # Enable showtext for custom fonts
+  dev = "png",         # Use png device for plots
+  cache = TRUE         # Cache results to speed up rendering
+)
+
+# For better figure handling
+options(
+  digits = 2,          # Number of digits to show in numbers
+  scipen = 999,        # Avoid scientific notation
+  knitr.kable.NA = '', # Empty string for NA in tables
+  width = 120          # Console width for output
+)
 
 library(tidyverse)
 library(scales)
