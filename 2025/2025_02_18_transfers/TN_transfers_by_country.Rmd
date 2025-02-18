@@ -228,7 +228,7 @@ plot_inflow_outflow_dynamics <-
   ) |> 
   filter(date >= ymd("2019-12-30")) |>
   ggplot(aes(date, K_USD_YOY / 1e6, fill = country_arm)) +
-  geom_area() +
+  geom_area(alpha = 1) +
   facet_wrap(~direction_arm) +
   scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
   scale_y_continuous(breaks = 0:7, labels = number_format(accuracy = 1)) +
@@ -321,13 +321,13 @@ plot_outflow_countries <-
     area = K_USD, fill = continent, 
     label = paste0(flag_unicode, "\n", country, "\n", pct, " (", dollar(K_USD/1e3, accuracy = 1), ")")
   )) +
-  geom_treemap(layout = "squarified", start = "topleft") +
+  geom_treemap(layout = "squarified", start = "topleft", alpha = 1) +
   geom_treemap_text(
     place = "centre", 
     start = "topleft",
     size = 14, 
     color = "white",
-    reflow = TRUE,
+    reflow = TRUE
   ) +
   theme_tvyal() +
   scale_fill_manual(
@@ -499,7 +499,7 @@ plot_russia_transfers <-
   ungroup() |>
   mutate(type = fct_rev(type)) |>
   ggplot(aes(date, K_USD / 1e3, color = type)) +
-  geom_line(linewidth = 1.2) +
+  geom_line(linewidth = 1.2, alpha = 1) +
   scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
   scale_y_continuous(labels = number_format(), n.breaks = 6) +
   scale_color_manual(
@@ -560,7 +560,7 @@ plot_transfers_to_gdp <-
     pct = (K_USD_YOY / 1000) / gdp_usd
   ) |>
   ggplot(aes(date, pct)) +
-  geom_area(aes(fill = country)) +
+  geom_area(aes(fill = country), alpha = 1) +
   scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
   scale_y_continuous(
     breaks = seq(0, 0.5, 0.02),
