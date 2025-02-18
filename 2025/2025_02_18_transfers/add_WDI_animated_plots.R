@@ -154,3 +154,85 @@ animate(p,
 
 # Save the animation
 anim_save("plots/remittances_animation.gif")
+
+
+####################################
+
+
+# 1. For total transfers and market share analysis
+transfers_total_analysis <- transfers_total_chartdata %>%
+  group_by(year) %>%
+  summarise(
+    total_transfers = sum(K_USD),
+    russia_share = K_USD[country == "Russian Federation"] / total_transfers,
+    usa_share = K_USD[country == "USA"] / total_transfers
+  ) %>%
+  mutate(
+    yoy_growth = (total_transfers / lag(total_transfers) - 1) * 100
+  )
+
+# 2. For inflow/outflow dynamics
+transfers_flow_analysis <- transfers_date %>%
+  group_by(year = year(date), direction) %>%
+  summarise(
+    total_amount = sum(K_USD_YOY) / 1e6,  # Convert to billions
+    .groups = "drop"
+  ) %>%
+  pivot_wider(
+    names_from = direction,
+    values_from = total_amount
+  ) %>%
+  mutate(
+    net_flow = Inflow - Outflow,
+    inflow_yoy = (Inflow / lag(Inflow) - 1) * 100,
+    outflow_yoy = (Outflow / lag(Outflow) - 1) * 100
+  )
+
+# 3. For Russia-specific analysis
+russia_transfers_analysis <- transfers_clean %>%
+  filter(
+    country == "Russian Federation",
+    direction == "Inflow"
+  ) %>%
+  group_by(year, type) %>%
+  summarise(
+    total_amount = sum(K_USD) / 1e6,  # Convert to billions
+    .groups = "drop"
+  )
+
+
+# For H1 analysis
+h1_analysis <- transfers_clean %>%
+  filter(month <= 6) %>%
+  group_by(year) %>%
+  summarise(
+    h1_total = sum(K_USD),
+    russia_h1 = sum(K_USD[country == "Russian Federation"])
+  ) %>%
+  mutate(
+    h1_yoy = (h1_total / lag(h1_total) - 1) * 100,
+    russia_h1_yoy = (russia_h1 / lag(russia_h1) - 1) * 100
+  )
+
+
+# Monthly pattern analysis for Russian transfers
+russia_monthly_analysis <- transfers_clean %>%
+  filter(
+    country == "Russian Federation",
+    direction == "Inflow",
+    year %in% c("2021", "2022", "2023", "2024")
+  ) %>%
+  group_by(year, month) %>%
+  summarise(
+    monthly_total = sum(K_USD) / 1e3 , # Convert to millions,
+  ) |> 
+  ungroup() |> 
+  mutate(month_change = monthly_total - lag(monthly_total)) |> 
+  filter(year %in% c("2022", "2023", "2024"))
+
+# Let's look at the last few months of 2023
+russia_monthly_2023_q4 <- russia_monthly_analysis %>%
+  filter(year == "2022", month >= 10)
+
+# Analysis of the monthly dynamics
+print(russia_monthly_analysis, n = 36)
