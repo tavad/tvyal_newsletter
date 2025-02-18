@@ -16,6 +16,7 @@ library(gt)
 library(countrycode)
 library(treemapify)
 library(ggfittext)
+library(WDI)
 
 # rm(list = ls()); gc()
 
@@ -119,7 +120,7 @@ transfers_total_chartdata <-
   ) |>
   ungroup()
 
-transfers_total_chart <- 
+plot_transfers_total <- 
   transfers_total_chartdata |> 
   ggplot(aes(year, K_USD / 1e3)) +
   geom_col(aes(fill = country), alpha = 1) +
@@ -194,7 +195,7 @@ transfers_date <-
   na.omit()
 
 
-chart_2 <- 
+plot_inflow_outflow_dynamics <- 
   transfers_date |>
   mutate(
     country_arm = countrycode(country, origin = "country.name", destination = "cldr.name.hy"),
@@ -295,7 +296,7 @@ transfers_cleant_reemap_data <-
 
 # countrycode::codelist |> select(contains("hy"))
 
-chart_3 <-
+plot_outflow_countries <-
   transfers_cleant_reemap_data |> 
   ggplot(aes(
     area = K_USD, fill = continent, 
@@ -462,11 +463,9 @@ gt_table_transfers <-
 
 ```
 
-
-
 ```{r russia_transfers, include=FALSE}
 
-russia_transfers_plot <- 
+plot_russia_transfers <- 
   russia_transfers <-
   transfers_clean |>
   filter(
@@ -511,7 +510,7 @@ GDP <-
   transmute(date, gdp_usd = value_usd_yoy) |>
   filter(!is.na(gdp_usd))
 
-transfers_to_gdp_plot <- 
+plot_transfers_to_gdp <- 
   transfers_clean |>
   filter(
     country != "Total",
@@ -562,11 +561,45 @@ transfers_to_gdp_plot <-
   ) +
   guides(fill = guide_legend(reverse = TRUE))
 
-transfers_to_gdp_plot |> write_rds("plots/transfers_to_gdp_plot.rds")
+plot_transfers_to_gdp |> write_rds("plots/plot_transfers_to_gdp.rds")
+# plot_transfers_to_gdp <- read_rds("plots/plot_transfers_to_gdp.rds")
+
+remittances_gdp_db <- 
+  WDI(indicator = "BX.TRF.PWKR.DT.GD.ZS") |> 
+  as_tibble() |> 
+  rename(remittances_gdp = BX.TRF.PWKR.DT.GD.ZS)
+
+remittances_gdp_armenia <- 
+  remittances_gdp_db |> 
+  filter(iso3c == "ARM", !is.na(remittances_gdp), year >= 2013) |> 
+  mutate(
+    remittances_gdp = remittances_gdp / 100,
+    date = ymd(paste(year, "12 31"))
+  )
+
+plot_transfers_to_gdp_2 <- 
+  plot_transfers_to_gdp +
+  geom_line(
+    data = remittances_gdp_armenia,
+    aes(date, remittances_gdp), size = 2, linetype = 2,
+    color = new_palette_colors[1], alpha = 1
+  ) +
+  labs(
+    caption = caption_f(suffix_text = "Կետագծերը ներկայացնում են պաշտոնական տրանսֆերտներ / ՀՆԱ հարաբերությունը")
+  )
 
 ```
 
-```{r plot_saving, include=FALSE}
+```{r save plots, include=FALSE}
+
+ggsave("plots/plot_transfers_total.png", plot_transfers_total, width = 12, height = 8)
+ggsave("plots/plot_inflow_outflow_dynamics.png", plot_inflow_outflow_dynamics, width = 12, height = 8)
+ggsave("plots/plot_outflow_countries.png", plot_outflow_countries, width = 12, height = 8)
+ggsave("plots/plot_russia_transfers.png", plot_russia_transfers, width = 12, height = 8)
+ggsave("plots/plot_transfers_to_gdp.png", plot_transfers_to_gdp, width = 12, height = 8)
+ggsave("plots/plot_transfers_to_gdp_2.png", plot_transfers_to_gdp_2, width = 12, height = 8)
+
+system("cd ../.. | git all")
 
 # save_dir <- "/home/tavad/Downloads/plots/"
 # 
@@ -612,9 +645,7 @@ transfers_to_gdp_plot |> write_rds("plots/transfers_to_gdp_plot.rds")
 
 Գծապատկեր 1.
 
-```{r plot1, echo=FALSE, fig.width = 12, fig.height = 8}
-transfers_total_chart
-```
+![](plots/plot_transfers_total.png)
 
 Ինչպես երևում է առաջին գծապատկերում, առաջին կիսամյակի կտրվածքով կապիտալի ներհոսքի ամենաբարձր կետը գրանցվել է 2023 թվականին, որից հետո այն անկում է ապրել։ 2024 թվականի առաջին կիսամյակում կապիտալի ներհոսքը կրճատվել է 13.7 տոկոսով, իսկ Ռուսաստանի հետ՝ 23.0 տոկոսով։
 
@@ -622,9 +653,7 @@ transfers_total_chart
 
 Գծապատկեր 2.
 
-```{r plot2, echo=FALSE, fig.width = 12, fig.height = 8}
-chart_2
-```
+![](plots/plot_inflow_outflow_dynamics)
 
 Ինչպես երևում է գծապատկերից, կապիտալի ներհոսքը հիմնականում գրանցվել է Ռուսաստանի Դաշնությունից, երկրորդ տեղում է ԱՄՆ-ն։ Կապիտալի արտահոսքը ունի ավելի դիվերսիֆիկացված պատկեր։ Չկա մի հստակ պետություն, որտեղ կապիտալը արտահոսում է Հայաստանից։
 
@@ -634,9 +663,7 @@ chart_2
 
 Գծապատկեր 3. 
 
-```{r plot3, echo=FALSE, fig.width = 12, fig.height = 8}
-chart_3
-```
+![](plots/plot_outflow_countries.png)
 
 2023 թվականին Հայաստանի բանկային համակարգով ֆիզիկական անձանց կողմից կատարված դրամական փոխանցումների 69,3 տոկոսը (3 946 մլն դոլար) ստացվել է Ռուսաստանի Դաշնությունից, 11,6 տոկոսը՝ ԱՄՆ-ից (663 մլն դոլար): 2023 թվականին Ռուսաստանից ստացված դրամական փոխանցումների 81.4 տոկոսը եղել են ոչ առևտրային նպատակներով։ Դիտարկենք նաև առանձին ՌԴ-ից կատարված բանկային փոխանցումները (գծապատկեր 4)։ Ինչպես երևում է գծապատկերից, մինչև 2022 թվականը փոխանցումների գերակշիռ մասը ոչ կոմերցիոն բնույթի տրանսֆերտներն էին, իսկ 2022 թվականից սկսած փոխանցումների գերակշիռ մասն ունի կոմերցիոն բնույթ։
 
@@ -644,18 +671,14 @@ chart_3
 
 Գծապատկեր 4. 
 
-```{r plot4, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
-russia_transfers_plot
-```
+![](plots/plot_russia_transfers.png)
 
 Մեր կողմից գնահատվել է նաև ֆիզիկական անձանց կողմից կատարված տրանսֆերտներ/ՀՆԱ հարաբերությունը, որը ներկայացված է 5-րդ գծապատկերում։ Քանի որ գծապատկերում ներկայացված տվյալները գնահատվել են մեր մեթոդաբանությամբ, դրանք կարող են [չհամապատասխանել պաշտոնական տվյալների հետ, որոնք տրվում են տարեկան կտրվածով և չեն ներառում առանձին պետությունների հաշվարկը](https://data.worldbank.org/indicator/BX.TRF.PWKR.DT.GD.ZS?locations=AM)։ Այս ցուցանիշը ներկայացնում է արտագնա աշխատանքի մասնաբաժինը ՀՆԱ-ի մեջ։ Այսպես, ինչքան այն մեծ է, այնքան ավելի շատ աշխատուժ ենք արտահանում մենք, որն ընդհանուր տնտեսական զարգացման տեսանկյունից դրական չէ, քանի որ մենք «արտահանում» ենք աշխատուժը՝ աշխատատեղեր ստեղծելու փոխարեն։ Այս ցուցանիշը վերջին 15 տարիների ընթացքում, ըստ պաշտոնական տվյալների, ամենաբարձր կետին էր հասել 2013 թվականին՝ 19.7 տոկոս։ Հիմնականում ռուսական ռուբլու արժեզրկմամբ և դրամի ամրացմամբ պայմանավորված վերջին տարիների ընթացքում այս ցուցանիշը զգալի կրճատվել է, որն աշխատուժի արտահոսքի տեսանկյունից դրական է։ 2024 թվականի առաջին կիսամյակում, ըստ մեր գնահատականի, տրանսֆերտներ/ՀՆԱ հարաբերությունը կազմում է մոտ 4 տոկոս, իսկ Ռուսաստանից ստացված տրանսֆերտներ/ՀՆԱ հարաբերությունը՝ 2 տոկոս։
 
 
 Գծապատկեր 5. 
 
-```{r plot5, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
-transfers_to_gdp_plot
-```
+![](plots/plot_transfers_to_gdp_2.png)
 
 [Մեր կողմից ուսումնասիրված տվյալներից շատերի մեջ առկա են տնտեսական հնարավոր անկման նախանշաններ](https://www.tvyal.com/newsletter)։ Այդ ցուցանիշներից մեկն այլ պետություններից ստացվող բանկային համակարգի միջոցով դրամական փոխանցումներն են՝ կատարված ֆիզիկական անձանց կողմից։ 2023 թվականի կեսից սկսված կապիտալի արտահոսքի շարունակությունը ներկայացնում է որոշակի ռիսկ բանկային համակարգի զուտ շահույթի ապահովման և առողջության տեսանկյունից։ Սա, ոսկու վերաարտահանման հետ մեկտեղ, մարտահրավեր է մեր տնտեսության համար, և չպետք է թույլատրել, որ նախորդ 2 տարիներին հիմնականում Ռուսաստանից կապիտալի ներհոսքով ապահովված զգալի տնտեսական աճը մթագնի իրական պատկերը։ Անհրաժեշտ է ռեալ գնահատել մեր տնտեսական հնարավորությունները։
 
