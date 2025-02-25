@@ -5,8 +5,6 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE)
-
 knitr::opts_chunk$set(
   echo = FALSE,          # Don't show code
   warning = FALSE,       # Don't show warnings
@@ -885,20 +883,23 @@ system("cd ../.. | git all")
 
 Աղյուսակ 1.
 
-```{r table1, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 12, fig.height = 8}
-table_1_exports_by_regions
-```
+<!-- ```{r table1, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 12, fig.height = 8} -->
+<!-- table_1_exports_by_regions -->
+<!-- ``` -->
 
-<!-- ![](plots/table_1_exports_by_regions.png) -->
+![](plots/table_1_exports_by_regions.png)
 
 
 Ներկայացված աղյուսակը ցույց է տալիս առևտրային հոսքերի կտրուկ փոփոխությունները: ԵՄ արտահանման չափաբաժինը նվազել է 2021 թվականի 21%-ից մինչև ընդամենը 4.7%։ 2024 թվականին ԵՄ արտահանումը նվազել է 2023 թվականի համեմատ 13.8%-ով: Սա պարզապես չափաբաժինների փոփոխություն չէ, այլ հայեցակարգային փոփոխություն, որն ունի հեռուն գնացող հետևանքներ: նշենք որ 2018-ից սկսած ԵՄ արտահանումը կրճատվել է 9.5%-ով։
 
 Աղյուսակ 2.
 
-```{r table2, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 12, fig.height = 8}
-table_2_exports_by_goods
-```
+<!-- ```{r table2, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 12, fig.height = 8} -->
+<!-- table_2_exports_by_goods -->
+<!-- ``` -->
+
+
+![](plots/table_2_exports_by_goods.png)
 
 Աղյուսակ 2-ը ցույց է տալիս ապրանքախմբերի ըստ արտահանման կտրուկ փոփոխությունները 2021 և 2024 թվականների միջև: Ամենացայտուն փոփոխությունը տեղի է ունեցել թանկարժեք քարերի և մետաղների (ԱՏԳ ԱԱ 71) կատեգորիայում, որն աճել է ապշեցուցիչ 24.6 անգամ՝ 2021թ. 326.3 միլիոն դոլարից հասնելով 2024թ. 8 միլիարդ դոլարի: Սա կազմում է 2024թ. ընդհանուր արտահանման 61.4%-ը, համեմատած 2021թ. ընդամենը 10.8%-ի հետ: Նշանակալի աճ է գրանցվել նաև տրանսպորտի և սարքավորումների (ԱՏԳ ԱԱ 84-89) ոլորտում՝ 15.2 անգամ աճելով՝ 95.4 միլիոն դոլարից հասնելով 1.45 միլիարդ դոլարի:
 
