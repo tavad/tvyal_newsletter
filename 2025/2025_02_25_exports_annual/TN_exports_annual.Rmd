@@ -631,8 +631,8 @@ table_2_exports_by_goods <-
     columns = contains("2024")
   ) |> 
   tab_header(
-    title = "Աղյուսակ 1. Հայաստանի արտահանումը ըստ տարածաշրջանների",
-    subtitle = "Տվյալները տրված են առաջին կիսամյակի կտրվածքով"
+    title = "Աղյուսակ 2. Հայաստանի արտահանումը ըստ տարածաշրջանների",
+    subtitle = "Տարեկան կտրվածքով"
   ) |> 
   tab_footnote(
     footnote = caption_f("Armstat")
