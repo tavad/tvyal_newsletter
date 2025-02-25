@@ -1,6 +1,6 @@
 ---
 title: "Tvyal Newsletter"
-date: "2026-05-25"
+date: "2025-02-25"
 output: html_document
 ---
 
@@ -11,6 +11,7 @@ library(tidyverse)
 library(RcppRoll)
 library(scales)
 library(gt)
+library(webshot2)
 
 # rm(list = ls()); gc()
 
@@ -145,7 +146,8 @@ plot_2_exports_by_country <-
                  "Hong Kong & China", "Total", "The Rest (Other countries)"),
       labels = c("Ռուսաստանի Դաշնություն", "Արաբական Միացյալ Էմիրություններ",
                  "Հոնկոնգ և Չինաստան", "Ընդամենը", "Մնացածը (այլ պետություններ)"),
-    )
+    ),
+    date = date + months(1) - days(1)
   ) |> 
   filter(
     direction != "import_consignment",
@@ -154,7 +156,7 @@ plot_2_exports_by_country <-
   ) |>
   ungroup() |> 
   na.omit() |> 
-  filter(date >= ym("2020-01")) |> 
+  filter(date >= ym("2019-12")) |> 
   ggplot(aes(date, value_yoy / 1e6, color = direction)) +
   geom_line(linewidth = 1.5) +
   facet_wrap(~country, scales = "free") +
@@ -245,8 +247,8 @@ main_table_generator <-
 
 table_1_exports_by_regions <- 
   main_table_generator(
-    arm_trade_country |> filter(month %in% 1:12), year_ = 2018:2024,
-    direction_ = "export", exclude_info_years = c(2018:2022), language = "arm"
+    arm_trade_country |> filter(month %in% 1:12), year_ = c(2018, 2021:2024),
+    direction_ = "export", exclude_info_years = c(2018:2021), language = "arm"
   ) |> 
   gt() |> 
   fmt_number(
@@ -255,7 +257,7 @@ table_1_exports_by_regions <-
     use_seps = TRUE,
   ) |> 
   fmt_number(
-    columns = contains("pct"),
+    columns = contains("pct_part"),
     scale_by = 100,
     decimals = 1,
     pattern = "{x}%"
@@ -263,10 +265,12 @@ table_1_exports_by_regions <-
   cols_label(
     country_region = "", 
     value_2018_export = "մլն․ $", 
-    value_2019_export = "մլն․ $", 
-    value_2020_export = "մլն․ $",
+    # value_2019_export = "մլն․ $", 
+    # value_2020_export = "մլն․ $",
     value_2021_export = "մլն․ $", 
     value_2022_export = "մլն․ $", 
+    pct_growth_2022_export = "% աճ", 
+    pct_part_2022_export = "% ընդ․", 
     value_2023_export = "մլն․ $", 
     pct_growth_2023_export = "% աճ", 
     pct_part_2023_export = "% ընդ․", 
@@ -285,20 +289,33 @@ table_1_exports_by_regions <-
   ) |> 
   text_transform(
     locations = cells_body(columns = matches("pct_growth")),
-    fn = function(x) ifelse(x < 0, paste0("<strong>", x, "</strong>"), x)
+    fn = function(x) {
+      sapply(x, function(val) {
+        val_num <- suppressWarnings(as.numeric(gsub("[^0-9.-]", "", val)))
+        if (is.na(val_num)) {
+          return(as.character(val))  # Return original if conversion fails
+        } else if (val_num < 0) {
+          return(paste0("<strong>", number(val_num * 100, accuracy = 0.1), "%", "</strong>"))
+        } else if (val_num >= 1) {
+          return(sprintf("%.1f անգ.", val_num + 1))
+        } else {
+          return(paste0(number(val_num * 100, accuracy = 0.1), "%"))
+        }
+      })
+    }
   ) |> 
-   tab_spanner(
+  tab_spanner(
     label = "2018",
     columns = contains("2018")
   ) |>
-   tab_spanner(
-    label = "2019",
-    columns = contains("2019")
-  ) |>
-   tab_spanner(
-    label = "2020",
-    columns = contains("2020")
-  ) |>
+  #  tab_spanner(
+  #   label = "2019",
+  #   columns = contains("2019")
+  # ) |>
+  #  tab_spanner(
+  #   label = "2020",
+  #   columns = contains("2020")
+  # ) |>
   tab_spanner(
     label = "2021",
     columns = contains("2021")
@@ -317,11 +334,17 @@ table_1_exports_by_regions <-
   ) |> 
   tab_header(
     title = "Աղյուսակ 1. Հայաստանի արտահանումը ըստ տարածաշրջանների",
-    subtitle = "Տվյալները տրված են առաջին կիսամյակի կտրվածքով"
+    subtitle = "Տարեկան կտրվածքով"
   ) |> 
   tab_footnote(
     footnote = caption_f("Armstat")
   )
+
+gtsave(
+  table_1_exports_by_regions,
+  filename = "plots/table_1_exports_by_regions.png",
+  expand = 10  # Add some padding around the table (in pixels)
+)
 
 arm_trade_country |> 
   select(year, country, export, import_origin) |> 
@@ -521,8 +544,8 @@ main_table_commodity_generator(
 
 #########################################################
 
-
-arm_trade_commodity |> 
+table_2_exports_by_goods <- 
+  arm_trade_commodity |> 
   bind_rows(
     arm_trade_commodity |> 
       mutate(hs2 = 0)
@@ -560,7 +583,7 @@ arm_trade_commodity |>
     use_seps = TRUE,
   ) |> 
   fmt_number(
-    columns = contains("pct"),
+    columns = contains("pct_part"),
     scale_by = 100,
     decimals = 1,
     pattern = "{x}%"
@@ -584,7 +607,20 @@ arm_trade_commodity |>
   ) |> 
   text_transform(
     locations = cells_body(columns = matches("pct_growth")),
-    fn = function(x) ifelse(x < 0, paste0("<strong>", x, "</strong>"), x)
+    fn = function(x) {
+      sapply(x, function(val) {
+        val_num <- suppressWarnings(as.numeric(gsub("[^0-9.-]", "", val)))
+        if (is.na(val_num)) {
+          return(as.character(val))  # Return original if conversion fails
+        } else if (val_num < 0) {
+          return(paste0("<strong>", number(val_num * 100, accuracy = 0.1), "%", "</strong>"))
+        } else if (val_num >= 1) {
+          return(sprintf("%.1f անգ.", val_num + 1))
+        } else {
+          return(paste0(number(val_num * 100, accuracy = 0.1), "%"))
+        }
+      })
+    }
   ) |> 
   tab_spanner(
     label = "2021",
@@ -601,6 +637,12 @@ arm_trade_commodity |>
   tab_footnote(
     footnote = caption_f("Armstat")
   )
+
+gtsave(
+  table_2_exports_by_goods,
+  filename = "plots/table_2_exports_by_goods.png",
+  expand = 10  # Add some padding around the table (in pixels)
+)
 
 
 ```
@@ -729,13 +771,19 @@ plot_4_gold_trade <-
     value = ifelse(direction == "export", value, -value),
     direction = ifelse(direction == "export", "Արտահանում", "Ներմուծում")
   ) |> 
-  mutate(date = date + days(16)) |> 
+  mutate(date = date + days(16)) %>%
   ggplot(aes(date, value)) +
   geom_smooth(
-    aes(color = direction), 
+    data = . %>% filter(direction == "Ներմուծում"),
     se = FALSE, 
     method = "gam",
-    alpha = 0.2
+    color = adjustcolor(new_palette_colors[2], alpha.f = 0.3),
+  ) +
+  geom_smooth(
+    data = . %>% filter(direction == "Արտահանում"),
+    se = FALSE, 
+    method = "gam",
+    color = adjustcolor(new_palette_colors[6], alpha.f = 0.3),
   ) +
   geom_col(aes(fill = direction), alpha = 1) +
   geom_hline(yintercept = 0, color = "gray30") +
@@ -770,6 +818,17 @@ plot_4_gold_trade <-
 ```
 
 
+```{r save plots, include=FALSE}
+
+ggsave("plots/plot_1_arm_trade_by_regions.png", plot_1_arm_trade_by_regions, width = 12, height = 8)
+ggsave("plots/plot_2_exports_by_country.png", plot_2_exports_by_country, width = 12, height = 8)
+ggsave("plots/plot_3_exports_forecast.png", plot_3_exports_forecast, width = 12, height = 8)
+ggsave("plots/plot_4_gold_trade.png", plot_4_gold_trade, width = 12, height = 8)
+
+system("cd ../.. | git all")
+```
+
+
 ***English summary below.***
 
 Հարգելի գործընկեր,
@@ -785,10 +844,7 @@ plot_4_gold_trade <-
 
 Գծապատկեր 1.
 
-```{r plot1, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 12, fig.height = 8}
-plot_1_arm_trade_by_regions
-```
-
+![](plots/plot_1_arm_trade_by_regions.png)
 
 Առաջին գծապատկերը պատկերում է արտահանման կտրուկ փոփոխությունը: Գծապատկերը ցույց է տալիս, որ Հայաստանի արտահանումը դեպի Միջին Արևելք սրընթաց կտրուկ աճել է՝ գերազանցելով նույնիսկ դեպի Եվրասիական տնտեսական միություն (ԵԱՏՄ) արտահանումը: Առաջին հայացքից կարող է թվալ, թե սա տնտեսական դիվերսիֆիկացման հաջողություն է, սակայն իրականությունն այլ է:
 
@@ -802,26 +858,26 @@ plot_1_arm_trade_by_regions
 table_1_exports_by_regions
 ```
 
-<!-- ![](plots/table_1_exports_by_regions.png) -->
+![](plots/table_1_exports_by_regions.png)
 
 
 Ներկայացված աղյուսակը ցույց է տալիս առևտրային հոսքերի կտրուկ փոփոխությունները: ԵՄ արտահանման չափաբաժինը նվազել է 2021 թվականի 21%-ից մինչև ընդամենը 3.6%։ 2024 թվականի առաջին կիսամյակում ԵՄ արտահանումը նվազել է 2023 թվականի նույն ժամանակաշրջանի համեմատ 25.1%-ով: Սա պարզապես չափաբաժինների փոփոխություն չէ, այլ հայեցակարգային փոփոխություն, որն ունի հեռուն գնացող հետևանքներ:
 
 Իսկ ի՞նչ է կատարվում Հայաստանի ավանդական արտահանման հետ: Նշենք, որ մենք գնահատել ենք Հայաստանի իրական վերաարտահանման ծավալները՝ օգտագործելով նոր մեթոդաբանություն, որը մանրամասն ներկայացված է [🚀♻🟨 Ոսկու տենդ. Հայաստանի արտահանման կեսը վերաարտահանում է](https://www.tvyal.com/newsletter/2024/2024_04_12) հոդվածում: Այս վերլուծությունը ցույց է տալիս, որ Հայաստանի «իրական» արտահանումը փաստացի նվազել է: Ըստ մեր գնահատականի՝ 2024 թվականին արտահանման մոտ 75%-ն արդեն վերաարտահանում է, համեմատած 2021 թվականի հետ, երբ այս ցուցանիշը 6% էր: Փաստացի 2024 թվականի առաջին կիսամյակում` առանց վերաարտահանման, իրական արտահանումը կազմել է մոտ 3.2 միլիարդ դոլար, ինչը հազիվ է գերազանցում 2021 թվականի 2.8 միլիարդ դոլարը: Արտահանման թվերը ներառում են նաև վերաարտահանումը։ Այսպես, արտահանումը 2021 թվականի 3 մլրդ ցուցանիշից արդեն իսկ ուռճացվել է մինչև 13 մլրդ դոլարի։ Այսինքն՝ 4.3 անգամ առաջին հայացքից տպավորիչ ուռճացված աճ՝ այս պահին ի հաշիվ ոսկու վերաարտահանման։
 
-Գծապատկեր 2.
+Աղյուսակ 2.
 
-```{r plot2, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 12, fig.height = 8}
-plot_2_exports_by_country
+```{r table2, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 12, fig.height = 8}
+table_2_exports_by_goods
 ```
 
-Երկրորդ գծապատկերը ցույց է տալիս սթափեցնող պատկեր: Մինչ ԱՄԷ և Հոնկոնգ արտահանումը (հիմնականում ոսկի) կտրուկ աճում է, այլ երկրներ, այդ թվում՝ Ռուսաստան արտահանումը նվազում է: Այս [🤒🟨♻️ «ոսկու տենդը»](https://www.tvyal.com/newsletter/2024/2024_05_11) քողարկում է Հայաստանի իրական տնտեսության, առևտրաշրջանառության և ՀՆԱ անկումը։ Այն ուռճացրել է ՀՆԱ-ի ցուցանիշները՝ ստեղծելով տնտեսական աճի պատրանք այնտեղ, որտեղ աճը փոքր է: 2024 թվականի առաջին եռամսյակում Հայաստանի կառավարությունը հպարտացել էր տպավորիչ 9.2% ՀՆԱ-ի աճով: Մեր [գնահատականները ցույց տվեցին](https://www.aravot.am/2024/08/10/1437252/), որ այս աճի ցնցող 4%-ը պայմանավորված էր միայն ոսկու վերաարտահանման «արդյունաբերությամբ» (կարդացեք ավելին՝ [🌿🤨💎 Թանկարժեք էֆեկտ․ 2024 թվականի տնտեսական աճի պատճառները](https://www.tvyal.com/newsletter/2024/2024_03_29)): Այս հրապարակումն անելուց հետո հոկտեմբերի 20-ին այս թիվը վերանայվեց՝ հասնելով 6.6%-ի: Հիմնական վերանայումը եղավ ոսկու վերաարտահանման «արտադրության» իջեցումը ՀՆԱ-ում` 4 տոկոսային կետից մինչև 1.2 տոկոսային կետ: Սա պարզապես վերանայում չէ, այլ հայեցակարգային փոփոխություն: Թվացյալ աճի միտումից Հայաստանն այժմ գտնվում է լճացման ուղղու վրա:
+<!-- ![](plots/table_2_exports_by_goods.png) -->
+
+Մինչ ԱՄԷ և Հոնկոնգ արտահանումը (հիմնականում ոսկի) կտրուկ աճում է, այլ երկրներ, այդ թվում՝ Ռուսաստան արտահանումը նվազում է: Այս [🤒🟨♻️ «ոսկու տենդը»](https://www.tvyal.com/newsletter/2024/2024_05_11) քողարկում է Հայաստանի իրական տնտեսության, առևտրաշրջանառության և ՀՆԱ անկումը։ Այն ուռճացրել է ՀՆԱ-ի ցուցանիշները՝ ստեղծելով տնտեսական աճի պատրանք այնտեղ, որտեղ աճը փոքր է: 2024 թվականի առաջին եռամսյակում Հայաստանի կառավարությունը հպարտացել էր տպավորիչ 9.2% ՀՆԱ-ի աճով: Մեր [գնահատականները ցույց տվեցին](https://www.aravot.am/2024/08/10/1437252/), որ այս աճի ցնցող 4%-ը պայմանավորված էր միայն ոսկու վերաարտահանման «արդյունաբերությամբ» (կարդացեք ավելին՝ [🌿🤨💎 Թանկարժեք էֆեկտ․ 2024 թվականի տնտեսական աճի պատճառները](https://www.tvyal.com/newsletter/2024/2024_03_29)): Այս հրապարակումն անելուց հետո հոկտեմբերի 20-ին այս թիվը վերանայվեց՝ հասնելով 6.6%-ի: Հիմնական վերանայումը եղավ ոսկու վերաարտահանման «արտադրության» իջեցումը ՀՆԱ-ում` 4 տոկոսային կետից մինչև 1.2 տոկոսային կետ: Սա պարզապես վերանայում չէ, այլ հայեցակարգային փոփոխություն: Թվացյալ աճի միտումից Հայաստանն այժմ գտնվում է լճացման ուղղու վրա:
 
 Գծապատկեր 3.
 
-```{r plot3, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 12, fig.height = 8}
-plot_3_exports_forecast
-```
+![](plots/plot_3_exports_forecast.png)
 
 Երրորդ գծապատկերը ցույց է տալիս ոչ դրական կանխատեսում: Մինչ ընդհանուր արտահանումը թվացյալ սլանում է վեր, թանկարժեք մետաղների և քարերի վերաարտահանման հաշվին (ԱՏԳ ԱԱ 71), այլ բոլոր ապրանքների արտահանման կտրվածքով առկա է անկում: Այս տարբերությունը Հայաստանի ներկայիս տնտեսական պատրանքի իրականությունն է: Գծապատկերում կարմիր և կապույտ գծերի միջև մակերեսն արտացոլում է թանկարժեք քարերի և մետաղների մասնաբաժինն ընդհանուր արտահանման մեջ:
 
@@ -829,9 +885,7 @@ plot_3_exports_forecast
 
 Գծապատկեր 4.
 
-```{r plot4, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 12, fig.height = 8}
-plot_4_gold_trade
-```
+![](plots/plot_4_gold_trade.png)
 
 Այս գծապատկերը ցույց է տալիս թանկարժեք մետաղների արտահանման և ներմուծման կտրուկ աճը 2023-ի նոյեմբերից մինչև 2024-ի ապրիլը: Ուշադրություն դարձրեք վերջին երկու ամիսներին, որը կարող է լինել Հայաստանի «ոսկե դարաշրջանի» ավարտի նախանշան:
 
