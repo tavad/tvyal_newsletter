@@ -1,0 +1,1145 @@
+---
+title: "Tvyal Newsletter"
+date: "2024-10-21"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+library(tidyverse)
+library(scales)
+library(RcppRoll)
+library(readxl)
+library(moments)  # for weighted.mean and weighted.sd
+library(cNORM)
+library(ggpattern)
+library(grid)
+
+# rm(list = ls()); gc()
+
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+
+source("../../initial_setup.R")
+
+```
+
+
+```{r get raw data download, include=FALSE}
+
+wages_db_clean <- read_csv("../2024_10_07_wages/wages_db_clean.csv")
+
+# run the code below to update CPI data
+system(
+  paste0(
+    "curl \"", "https://www.cba.am/stat/stat_data_eng/6_CPI_eng.xls", "\"",
+    " -o ", "\"cpi_armenia_eng.xls\""
+  )
+)
+
+inflation_row <- read_excel("cpi_armenia_eng.xls")
+
+inf_cumprod <- 
+  inflation_row |> 
+  rename(date = 1, cpi_m = 2) |> 
+  select(date, cpi_m) |> 
+  mutate(
+    date = ym(date) + months(1) - days(1),
+    cpi_m = as.numeric(cpi_m) / 100,
+    year = year(date)
+  ) |> 
+  filter(date <= max(wages_db_clean$date, na.rm = TRUE)) |>
+  select(-year) |> 
+  arrange(desc(date)) |> 
+  mutate(
+    adj_price = cumprod(cpi_m),
+    adj_price = lag(adj_price),
+    adj_price = ifelse(is.na(adj_price), 1, adj_price)
+  )
+
+rm(inflation_row)
+
+# wages_db_clean |> 
+#   mutate(
+#     nace_2_code = str_replace(nace_2_code, "90.*91", "90-91")
+#   ) |> 
+#   count(nace_2_code) |> 
+#   view()
+# 
+# wages_db_clean |> view()
+```
+
+
+
+```{r deciles function test, include=FALSE}
+
+calculate_weighted_deciles <- function(wages, weights, probs = seq(0.1, 0.9, 0.1), ...) {
+  deciles <- weighted.quantile(x = wages, probs = probs, weights = weights, ...)
+  return(deciles)
+}
+
+
+wage_deciles <- 
+  wages_db_clean %>%
+  filter(
+    !is.na(wages_cumulative) & !is.na(employees),
+    nace_2_code %in% LETTERS,
+  ) %>%
+  group_by(date, type_eng) %>%
+  # summarise(deciles = list(calculate_weighted_deciles(wages_cumulative, employees))) |> 
+  reframe(
+    deciles = paste0("Decile ", 1:9),
+    wages = calculate_weighted_deciles(wages_cumulative, employees)
+  )
+
+wage_deciles |> 
+  pivot_wider(names_from = deciles, values_from = wages)
+
+
+wage_deciles |> 
+  filter(
+    # type_eng == "Public"
+    type_eng == "Total",
+    # type_eng == "Non-public",
+  ) |> 
+  left_join(inf_cumprod, join_by(date)) |> 
+  # filter(!date %in% ymd("2022-12-31", "2024-01-31")) |> 
+  mutate(
+    # wages = wages * adj_price,
+    label_text = ifelse(date == max(date), deciles, NA)
+  ) |>
+  ggplot(aes(date, wages / 1000 , color = deciles, label = label_text)) +
+  geom_line(linewidth = 1, alpha = 1) +
+  geom_text(hjust = -0.2) +
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+  scale_y_continuous(breaks = (1:10)*100) +
+  scale_color_manual(values = rev(colfunc2(9))) +
+  coord_cartesian(clip = "off") +
+  labs(
+    x = NULL,
+    y = NULL,
+    color = NULL,
+    title = "Որքա՞ն է աշխատողների ամսական եկամուտը Հայաստանում",
+    # subtitle = "Աշխատավարձերի փոփոխությունը եկամտային հարկումից առաջ ըստ դեցիլների\nաշխատավարձերը ճշգրտվել են 2024 թվականի օգոստոսի գներով և կշռվել",
+    subtitle = "Աշխատավարձերի փոփոխությունը եկամտային հարկումից առաջ ըստ դեցիլների",
+    caption = caption_arm
+  ) +
+  theme(
+    panel.grid.major.x = element_blank(),
+    legend.position = "none",
+    plot.margin = margin(10, 30, 10, 10)
+  )
+
+```
+
+```{r plot 2 & 3 median wages, include=FALSE}
+
+wage_quantile <- 
+  wages_db_clean |> 
+  filter(
+    !is.na(wages_cumulative) & !is.na(employees),
+    nace_2_code %in% LETTERS,
+  ) |> 
+  group_by(date, type_eng) |> 
+  # summarise(deciles = list(calculate_weighted_deciles(wages_cumulative, employees))) |> 
+  reframe(
+    deciles = c("mean", paste0("Q", 1:3)),
+    wages = c(
+      sum(wages_cumulative * employees) / sum(employees),
+      weighted.quantile(x = wages_cumulative, probs = c(0.25, 0.5, 0.75), weights = employees)
+    )
+  ) |> 
+  mutate(
+    deciles = factor(deciles, levels = c("Q1", "Q2", "mean", "Q3")) |> fct_rev()
+  ) |> 
+  arrange(deciles)
+
+median_wage_plotter <- function(adjusted_prices = FALSE, type = "Total"){
+  
+  tbl <- 
+    wage_quantile |> 
+    filter(
+      type_eng == type
+    ) |> 
+    left_join(inf_cumprod, join_by(date))
+  
+  if (adjusted_prices) {
+    tbl <- tbl |> mutate(wages =  wages * adj_price)
+  }
+  
+  plot <- tbl |> 
+    mutate(
+      deciles_name_arm = case_when(
+        deciles == "Q1" ~ "Միջինից ցածր (Q1)",
+        deciles == "Q2" ~ "Մեդիան աշխատավարձ (Q2)",
+        deciles == "Q3" ~ "Միջինից բարձր (Q3)",
+        deciles == "mean" ~ "Միջին աշխատավարձ",
+        deciles == "P99" ~ "ամենաբարձր 1% շեմ"
+      ),
+      label_text = ifelse(date == max(date), deciles_name_arm, NA),
+      label_text = fct_inorder(label_text)
+    ) |>
+    ggplot(aes(date, wages / 1000, color = deciles, label = label_text)) +
+    geom_line(linewidth = 1.5, alpha = 1) +
+    geom_text(hjust = 0.5, vjust = -1.5) +
+    scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+    scale_y_continuous(n.breaks = 8) +
+    scale_color_manual(values = colfunc2(8)[3:6]) +
+    coord_cartesian(clip = "off") +
+    labs(
+      x = NULL,
+      y = NULL,
+      color = NULL
+    ) +
+    theme(
+      panel.grid.major.x = element_blank(),
+      legend.position = "none",
+      plot.margin = margin(10, 60, 10, 10)
+    )
+  
+  return(plot)
+}
+
+plot_2_median_wage <- 
+  median_wage_plotter(adjusted_prices = FALSE) +
+  labs(
+    title = "Որքա՞ն է աշխատողների ամսական եկամուտը Հայաստանում",
+    subtitle = "Աշխատավարձերի փոփոխությունը եկամտային հարկումից առաջ",
+    caption = caption_arm
+  )
+
+plot_3_median_wage_adjusted <- 
+  median_wage_plotter(adjusted_prices = TRUE) +
+  labs(
+    title = "Որքա՞ն է աշխատողների ամսական եկամուտը Հայաստանում",
+    subtitle = "Աշխատավարձերի փոփոխությունը եկամտային հարկումից առաջ\nԱշխատավարձերը ճշգրտվել են 2024թ․ օգուստոսի գնողունակությամբ",
+    caption = caption_arm
+  )
+
+
+##############################
+
+wage_quantile |> 
+  filter(
+    # type_eng == "Public"
+    type_eng != "Total",
+    # type_eng == "Non-public",
+  ) |> 
+  left_join(inf_cumprod, join_by(date)) |> 
+  # filter(!date %in% ymd("2022-12-31", "2024-01-31")) |> 
+  mutate(
+    # wages = wages * adj_price,
+    
+    deciles_name_arm = case_when(
+      deciles == "Q1" ~ "Միջինից ցածր (Q1)",
+      deciles == "Q2" ~ "Մեդիան աշխատավարձ (Q2)",
+      deciles == "Q3" ~ "Միջինից բարձր (Q3)",
+      deciles == "mean" ~ "Միջին աշխատավարձ",
+    ),
+    label_text = ifelse(date == max(date), deciles_name_arm, NA),
+    label_text = fct_inorder(label_text),
+    deciles_name_arm = fct_inorder(deciles_name_arm),
+    type_eng = case_when(
+      type_eng == "Public" ~ "Պետական",
+      type_eng == "Total" ~ "Ընդհանուր",
+      type_eng == "Non-public" ~ "Մասնավոր"
+    )
+  ) |>
+  ggplot(aes(date, wages / 1000 , color = deciles_name_arm, label = label_text)) +
+  geom_line(linewidth = 1, alpha = 1) +
+  # geom_text(hjust = 0.5, vjust = -1) +
+  facet_wrap(~type_eng) +
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+  scale_y_continuous(n.breaks = 8) +
+  scale_color_manual(values = new_palette_colors[c(2,4,6,8)]) +
+  coord_cartesian(clip = "off") +
+  labs(
+    x = NULL,
+    y = NULL,
+    color = NULL,
+    title = "Որքա՞ն է աշխատողների ամսական եկամուտը Հայաստանում",
+    # subtitle = "Աշխատավարձերի փոփոխությունը եկամտային հարկումից առաջ\nԱշխատավարձերը ճշգրտվել են 2024թ․ օգուստոսի գնողունակությամբ",
+    subtitle = "Աշխատավարձերի փոփոխությունը եկամտային հարկումից առաջ",
+    caption = caption_arm
+  ) +
+  theme(
+    panel.grid.major.x = element_blank(),
+    # legend.position = "none",
+    plot.margin = margin(10, 60, 10, 10)
+  )
+
+```
+
+```{r plot 1 wage change main, include=FALSE}
+
+wage_change <-
+  wages_db_clean |> 
+  filter(
+    !is.na(wages_cumulative) & !is.na(employees),
+    nace_2_code %in% LETTERS,
+  ) |> 
+  group_by(date, type_eng) |> 
+  # summarise(deciles = list(calculate_weighted_deciles(wages_cumulative, employees))) |> 
+  reframe(
+    deciles = c("mean", "D1", paste0("Q", 1:3), "D9"),
+    wages = c(
+      sum(wages_cumulative * employees) / sum(employees),
+      weighted.quantile(
+        x = wages_cumulative, probs = c(0.1, 0.25, 0.5, 0.75, 0.9),
+        weights = employees
+      )
+    )
+  ) |> 
+  mutate(
+    deciles = factor(deciles, levels = c("D1", "Q1", "Q2", "mean", "Q3", "D9")) |> fct_rev()
+  ) |> 
+  left_join(inf_cumprod, join_by(date)) |> 
+  arrange(type_eng, deciles) |> 
+  group_by(type_eng, deciles) |> 
+  mutate(
+    wages_adj = wages * adj_price,
+    wages_adj_change = wages_adj / first(wages_adj) - 1
+  ) |> 
+  filter(
+    # type_eng == "Public"
+    type_eng == "Total",
+    # type_eng == "Non-public",
+  ) |> 
+  mutate(
+    deciles_name_arm = case_when(
+      deciles == "D9" ~ "Բարձր",
+      deciles == "Q3" ~ "Միջինից բարձր",
+      deciles == "Q2" ~ "Մեդիան",
+      deciles == "Q1" ~ "Միջինից ցածր",
+      deciles == "D1" ~ "Ցածր",
+      deciles == "mean" ~ "Միջին",
+    ),
+    deciles_name_arm_2 = case_when(
+      deciles == "D9" ~ "9րդ դեցիլ",
+      deciles == "Q3" ~ "Q3",
+      deciles == "Q2" ~ "Q2",
+      deciles == "Q1" ~ "Q1",
+      deciles == "D1" ~ "1ին դեցիլ",
+      deciles == "mean" ~ "",
+    ),
+    label_text = ifelse(date == max(date), deciles_name_arm, NA),
+    label_text_2 = ifelse(date == max(date), deciles_name_arm_2, NA),
+    label_text = fct_inorder(label_text),
+    label_text_2 = fct_inorder(label_text_2),
+    deciles_name_arm = fct_inorder(deciles_name_arm),
+    type_eng = case_when(
+      type_eng == "Public" ~ "Պետական",
+      type_eng == "Total" ~ "Ընդհանուր",
+      type_eng == "Non-public" ~ "Մասնավոր"
+    ),
+    label_chage = ifelse(
+      date == max(date), 
+      percent(wages_adj_change, accuracy = 0.1, prefix = "+"), 
+      NA
+    ),
+    y_text = case_when(
+      deciles %in% c("Q1", "Q3") ~ wages_adj_change * 1.1,
+      deciles %in% c("Q2") ~ wages_adj_change * 1.2,
+      TRUE ~ wages_adj_change    )
+  )
+
+wage_change_main_plot <- 
+  wage_change |> 
+  filter(deciles != "mean") |> 
+  ggplot(
+    aes(date, wages_adj_change, color = deciles_name_arm)
+  ) +
+  geom_hline(yintercept = 0, color = "gray40") +
+  geom_line(linewidth = 1.5, alpha = 1) +
+  geom_area(aes(fill = deciles_name_arm), position = "identity", alpha = 0.1) +
+  geom_text(
+    aes(date + days(30), y_text, label = label_text),
+    hjust = 0, vjust = 0, fontface = "bold", size = 4.5
+  ) +
+  geom_text(
+    aes(date + days(30), y_text, label = label_text_2),
+    hjust = 0, vjust = 1.5, size = 3
+  ) +
+  geom_text(
+    aes(date + days(30), y_text, label = label_chage),
+    hjust = 0, vjust = 1.7, size = 9
+  ) +
+  geom_text(
+    data = tibble(x = ymd("2018-01-01"), y = 0.81, label = "Իրական աշխատավարձի աճը\nՀայաստանում", color = "d"),
+    aes(x, y, label = label),
+    hjust = 0, size = 7.5,
+    color = new_palette_colors[2], fontface = "bold"
+  ) +
+  geom_text(
+    data = tibble(x = ymd("2018-01-01"), y = 0.73, label = "Ներկայացված եկամտային խմբերով*", color = "d"),
+    aes(x, y, label = label),
+    hjust = 0, size = 4,
+    color = new_palette_colors[5], fontface = "bold"
+  ) +
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+  scale_y_continuous(breaks = seq(-0.1, 0.6, 0.1), labels =  percent_format()) +
+  scale_color_manual(values = colfunc2(11)[3:8]) +
+  scale_fill_manual(values = colfunc2(11)[3:8]) +
+  coord_cartesian(clip = "off") +
+  labs(
+    x = NULL,
+    y = NULL,
+    color = NULL,
+    # title = "Իրական աշխատավարձի\nաճը Հայաստանում",
+    # subtitle = "Աշխատավարձերի փոփոխությունը եկամտային հարկումից առաջ\nԱշխատավարձերը ճշգրտվել են 2024թ․ օգուստոսի գնողունակությամբ",
+    # subtitleC = "ներկայացված եկամտային խմբերով",
+    caption = caption_f(suffix_text = "*Անվանական աշխատավարձերը ճշգրտվել են 2024թ․ օգուստոսի գնողունակությամբ")
+  ) +
+  theme(
+    panel.grid.major.x = element_blank(),
+    panel.grid.major.y = element_line(
+      colour = "gray", linewidth = 0.1,
+      linetype = 1
+    ),
+    legend.position = "none",
+    plot.margin = margin(10, 90, 10, 10)
+  )
+
+wage_change_main_plot
+
+############################
+
+
+wage_change_prepared <- 
+  wage_change |> 
+  filter(
+    date == max(date),
+    deciles != "mean"
+  ) |> 
+  mutate(
+    deciles = factor(deciles, levels = c("D1", "Q1", "Q2", "Q3", "D9")),
+    deciles = as.numeric(deciles),
+    wages_label = number(wages/1000, accuracy = 1, suffix = "К ֏")
+  ) |> 
+  left_join(
+    tibble(
+      deciles = 1:5,
+      image_url = paste0(
+        "https://upload.wikimedia.org/wikipedia/commons/", 
+        c("6/61/1", "5/57/20", "2/24/2", "1/15/5", "5/5c/10"),
+        "000_dram_2018_Obverse.jpg"
+      )
+    ),
+    by = "deciles"
+  ) |> 
+  mutate(
+    deciles = as.character(deciles)
+  )
+
+wage_change_inside_plot <- 
+  ggplot(wage_change_prepared, aes(deciles, wages, color = deciles, fill = deciles, label = wages_label)) +
+  geom_col_pattern(
+    aes(pattern_filename = image_url),
+    pattern = 'image',
+    pattern_type = 'tile',
+    pattern_scale = 0.45,  # Adjust this value to scale the images
+    pattern_aspect_ratio = 1,  # Adjust this value to match the aspect ratio of the banknotes
+    # pattern_angle = 180,  # Rotate the image 90 degrees counter-clockwise
+    linewidth = 1.6,
+    alpha = 0.1,
+    width = 0.8
+  ) +
+  geom_text(vjust = -1, size = 4.5) +
+  scale_pattern_filename_manual(values = unique(wage_change_prepared$image_url)) +
+  scale_color_manual(values = colfunc2(11)[8:3]) +
+  scale_fill_manual(values = colfunc2(11)[8:3]) +
+  coord_cartesian(clip = "off") +
+  labs(x = NULL, y = NULL) +
+  theme(
+    panel.background = element_blank(),
+    plot.background = element_blank(),
+    panel.grid.major.x = element_blank(),
+    panel.grid.major.y = element_blank(),
+    axis.text.y = element_blank(),
+    axis.text.x = element_blank(),
+    legend.position = "none",
+    plot.margin = margin(10, 20, 10, 10)
+  )
+  
+# "Average wages by income group in August 2024"
+
+
+# wage_change_inside_plot
+
+plot_1_wage_change_main <- 
+  wage_change_main_plot +
+  annotation_custom(
+    grob = ggplotGrob(wage_change_inside_plot), 
+    xmin = as.Date("2018-01-01"), xmax = as.Date("2021-06-01"), 
+    ymin = 0.27, ymax = 0.65
+  ) +
+  geom_text(
+    data = tibble(
+      x = as.Date("2019-09-01"), y = 0.27, 
+      label = "Եկամտային խմբերի աշխատավարձը\n2024թ․ օգոստոսին", color = ""
+    ),
+    aes(x, y, label = label, color = color), color = "#002040", size = 3.5
+  )
+
+```
+
+
+```{r wages calculate weighted quantiles, include=FALSE}
+wage_1000 <-
+  wages_db_clean |> 
+  filter(
+    !is.na(wages_cumulative) & !is.na(employees),
+    nace_2_code %in% LETTERS,
+    type_eng != "Total"
+  ) |> 
+  group_by(date) |> 
+  # summarise(deciles = list(calculate_weighted_deciles(wages_cumulative, employees))) |>
+  reframe(
+    deciles = paste0("P", 1:999),
+    wages = calculate_weighted_deciles(wages_cumulative, employees, probs = seq(0.001,0.999,0.001))
+  )
+
+wage_1000 |>
+  filter(date == max(date)) |>
+  ggplot(aes(wages)) +
+  geom_density()
+
+# # wage_group_percentages
+# wage_1000 |> 
+#   mutate(
+#     income_bin = cut(
+#       wages/1000,
+#       breaks = c(0, 110, 125, 150, 200, 250, 300, 400, 1e6),
+#       include.lowest = TRUE
+#     )
+#   ) |>
+#   group_by(date) |>
+#   count(income_bin) |>
+#   pivot_wider(names_from = income_bin, values_from = n) |>
+#   relocate(date, `[0,110]`) |> 
+#   
+#   group_by(date) |> 
+#   # Use employees as weights
+#   count(date, income_bin, wt = employees) |> 
+#   group_by(date) |> 
+#   mutate(
+#     pct = n / sum(n),
+#     lower_cut = as.numeric(sub("\\((.+),.*", "\\1", income_bin)),
+#     upper_cut = as.numeric(sub("[^,]*,([^]]*)\\]", "\\1", income_bin))
+#   ) |> 
+#   mutate(
+#     label = case_when(
+#       lower_cut == 0 ~ paste0(upper_cut, " drams or less"),
+#       upper_cut == Inf ~ paste0(lower_cut, " drams or more"),
+#       TRUE ~ paste0(lower_cut, " to ", upper_cut, " drams")
+#     )
+#   ) |> 
+#   arrange(lower_cut) |> 
+#   mutate(
+#     label = factor(label, levels = unique(label)),
+#     label = fct_rev(label),
+#     # pct_text = ifelse(pct <= 0.01, NA, percent(pct, accuracy = 0.1))
+#   ) |> 
+#   select(date, label, pct)
+# # pivot_wider(names_from = label, values_from = c(pct), names_glue = "{label}_{.value}") |>
+# # view()
+
+
+```
+
+
+```{r plot 4 & 5 lnorm wage groups, include=FALSE}
+
+# Calculate log-normal parameters by date
+lognormal_params_return <- 
+  function(
+    adjusted_prices = FALSE, type = "Total", return_db = "plot",
+    wage_groups = c(0, 100, 125, 150, 200, 250, 300, 400, 500, Inf)*1000
+  ){
+    
+    lognormal_params <- 
+      wages_db_clean |> 
+      filter(
+        !is.na(wages_cumulative) & !is.na(employees) & wages_cumulative > 0,
+        nace_2_code %in% LETTERS,
+        type_eng == type,
+        # type_eng == "Non-public",
+        # type_eng == "Public"
+      ) |> 
+      left_join(inf_cumprod, by = "date") 
+    
+    if (adjusted_prices) {
+      lognormal_params <- lognormal_params |> 
+        mutate(wages_cumulative = wages_cumulative * adj_price)
+    }
+    
+    if (return_db == 1) {
+      return(lognormal_params)
+    }
+    
+    lognormal_params <- lognormal_params |> 
+      mutate(
+        log_wages = log(wages_cumulative)
+      ) |> 
+      rename(weights = employees) |> 
+      group_by(date) |> 
+      summarise(
+        mean = weighted.mean(log_wages, weights),
+        sd = sqrt(weighted.mean((log_wages - mean)^2, weights)),
+        .groups = "drop"
+      )
+    
+    if (return_db == 2) {
+      return(lognormal_params)
+    }
+    
+    group_labels <- sapply(seq_along(wage_groups)[-1], function(i) {
+      lower <- wage_groups[i-1] / 1000
+      upper <- wage_groups[i] / 1000
+      if (is.infinite(upper)) {
+        return(str_glue("{lower}K+       "))
+      } else if (lower == 0) {
+        return(str_glue("<{upper}K       "))
+      } else {
+        return(str_glue("{lower}K-{upper}K"))
+      }
+    })
+    
+    wage_group_probabilities <- 
+      lognormal_params |> 
+      mutate(
+        probabilities = pmap(list(mean, sd), function(m, s) {
+          probs <- diff(plnorm(wage_groups, meanlog = m, sdlog = s))
+          setNames(probs, group_labels)
+        })
+      ) |> 
+      unnest_wider(probabilities)
+    
+    wage_group_probabilities_formatted <- wage_group_probabilities |> 
+      pivot_longer(cols = all_of(group_labels), names_to = "wage_group", values_to = "probability") |> 
+      select(date, wage_group, probability)
+    
+    colfunc_4 <- colorRampPalette(c("#2f4b7c", "gray50", "#f95d6a"))
+    
+    plot <- 
+      wage_group_probabilities_formatted |> 
+      mutate(
+        year = lubridate::year(date),
+        label = factor(wage_group, levels = unique(wage_group)),
+        label = fct_rev(label)
+      ) |> 
+      group_by(year) |> 
+      mutate(
+        formatted_pct = ifelse(
+          probability <= 0.01 | month(date) != 12, 
+          NA, 
+          percent(probability, accuracy = 0.1)
+          ),
+      ) |> 
+      ungroup() |> 
+      mutate(label_text = ifelse(date == max(date), wage_group, NA)) |> 
+      ggplot(aes(date, probability, fill = label)) +
+      geom_area(alpha = 1, color = "gray30") +
+      geom_text(
+        aes(label = formatted_pct), 
+        position = position_stack(vjust = 0.5), size = 3
+      ) +
+      geom_text(
+        aes(label = label_text, color = label), 
+        position = position_stack(vjust = 0.5), hjust = -0.15, size = 4
+      ) +
+      scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+      scale_fill_manual(values = colfunc(9)) +
+      scale_color_manual(values = colfunc_4(9)) +
+      coord_cartesian(clip = "off") +
+      labs(
+        x = NULL,
+        y = NULL,
+        fill = NULL,
+        color = NULL
+      ) +
+      theme(
+        panel.grid.major.x = element_blank(),
+        panel.grid.major.y = element_blank(),
+        axis.text.y = element_blank(),
+        legend.position = "none",
+        plot.margin = margin(10, 55, 10, 10),
+        plot.title = element_text(hjust = 0.13),
+        plot.subtitle = element_text(hjust = 0.13)
+      )
+    
+    return(plot)
+  }
+
+# lognormal_params_return(adjusted_prices = FALSE, return_db = TRUE) |> 
+#   rowwise() |> 
+#   mutate(
+#     deciles = list(setNames(
+#       exp(qnorm(seq(0.1, 0.9, 0.1), mean, sd)),
+#       paste0("D", seq(10, 90, 10))
+#     ))
+#   ) |> 
+#   ungroup() |> 
+#   unnest_wider(deciles)
+
+plot_4_wage_groups <- 
+  lognormal_params_return(adjusted_prices = FALSE) +
+  labs(
+    title = "Ինչքա՞ն աշխատավարձ են ստանում Հայաստանում",
+    subtitle = "Աշխատողների տոկոսը տարբեր աշխատավարձային խմբերում ըստ ամիսների*",
+    caption = caption_f(suffix_text = "* Հաշվարկը հիմնված լոգարիթմական նորմալ բաշխման կշռված գնահատականների վրա")
+  )
+
+plot_5_wage_groups_adjusted <- 
+  lognormal_params_return(adjusted_prices = TRUE) +
+  labs(
+    title = "Ինչքա՞ն աշխատավարձ են ստանում Հայաստանում",
+    subtitle = "Աշխատողների տոկոսը տարբեր աշխատավարձային խմբերում ըստ ամիսների*\nԱշխատավարձերը ճշգրտվել են 2024թ․ օգուստոսի գնողունակությամբ",
+    caption = caption_f(suffix_text = "* Հաշվարկը հիմնված լոգարիթմական նորմալ բաշխման կշռված գնահատականների վրա")
+  )
+
+
+# title = "Wage Distribution in Armenia Over Time",
+# subtitle = "Percentage of employees in different wage groups by year*",
+# caption = caption_f(suffix_text = "Based on log-normal distribution estimates")
+
+
+```
+
+```{r lnorm & weighted quantiles test, include=FALSE}
+# wage_1000 |> 
+#   filter(date == max(date))
+# 
+# last_date_lnorm_params <- 
+#   lognormal_params_return(adjusted_prices = FALSE, return_db = TRUE) |> 
+#   filter(date == max(date))
+# 
+# last_date_lnorm_values <- 
+#   tibble(
+#     wages = qlnorm(seq(0.01,0.99,0.01), last_date_lnorm_params$mean, last_date_lnorm_params$sd)
+#   )
+# 
+# ggplot() +
+#   geom_density(
+#     data = wage_1000 |> filter(date == max(date)),
+#     aes(wages), color = "red"
+#   ) +
+#    geom_density(
+#     data = last_date_lnorm_values,
+#     aes(wages), color = "blue"
+#   ) +
+#   scale_x_continuous(breaks = seq(100, 1000, 100) * 1000, labels = number_format()) +
+#   labs(
+#     title = "wage distrubution calculated on weighted quantiles (red)\nand log-normal dist. asumption with plnorm (blue)",
+#     subtitle = "date == max(date)"
+#   )
+
+```
+
+```{r, central tendances test, include=FALSE}
+
+wages_test <- 
+  wages_db_clean |> 
+  filter(nace_2_code == "A-S", type_eng == "Total") |> 
+  transmute(date, l_wages_cumulative = wages_cumulative)
+
+lognormal_params_return(adjusted_prices = FALSE, return_db = 2)  |> 
+  mutate(
+    l_mean = exp(mean + (sd^2)/2),
+    l_median = exp(mean),
+    l_mode = exp(mean - sd^2)
+  ) |> 
+  left_join(wages_test, by = "date") |> 
+  pivot_longer(
+    contains("l_"), names_to = "central_tendances"
+  ) |> 
+  left_join(inf_cumprod, join_by(date)) |> 
+  # filter(!date %in% ymd("2022-12-31", "2024-01-31")) |> 
+  mutate(
+    # value = value * adj_price
+  ) |> 
+  ggplot(aes(date, value, color = central_tendances)) +
+  geom_line(linewidth = 1, alpha = 1) +
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+  scale_y_continuous(n.breaks = 8) +
+  scale_color_manual(values = new_palette_colors[c(2,4,6,8)]) +
+  coord_cartesian(clip = "off") +
+  labs(
+    x = NULL,
+    y = NULL,
+    color = NULL,
+    title = "central_tendances",
+    subtitle = "Աշխատավարձերի փոփոխությունը եկամտային հարկումից առաջ ըստ դեցիլների\nաշխատավարձերը ճշգրտվել են 2024 թվականի օգոստոսի գներով և կշռվել",
+    caption = caption_arm
+  ) +
+  theme(
+    panel.grid.major.x = element_blank(),
+    # legend.position = "none",
+    plot.margin = margin(10, 60, 10, 10)
+  )
+
+```
+
+
+```{r lolipop plot, include=FALSE}
+
+date_legend <- 
+  tibble(
+    x = 430, y = c(1.5, 2.5), 
+    color = c("#005C4B", "#f95d6a"), 
+    text = c("2024 օգոստոս", "2022 հունվար"),
+  )
+
+# plot_5_it_taxes <- 
+wages_db_clean |>
+  filter(
+    # date %in% c(max(date), max(date) - years(1)),
+    # date %in% c(max(date), min(date)),
+    date %in% c(max(date), ymd("2022-01-31")),
+    type_eng == "Total",
+    nace_2_code %in% LETTERS
+  ) |>  
+  mutate(
+    period = ifelse(date == max(date), "end", "begining"),
+    name_for_plot = paste0(nace_2_code, ". ", str_trunc(name_arm, 25)),
+    across(contains("wages"), ~.x/1000)
+  ) |> 
+  select(period, nace_2_code, name_arm, name_eng, name_for_plot, wages_cumulative) |> 
+  pivot_wider(names_from = period, values_from = wages_cumulative) |> 
+  mutate(
+    name_for_plot = fct_reorder(name_for_plot, end),
+    color = ifelse(begining > end, "#f95d6a", "#005C4B"),
+    percent_change =  end / begining,
+    percent_change = case_when(
+      percent_change > 0.5 & percent_change < 2 ~ percent(percent_change - 1, accuracy = 0.1),
+      percent_change <= 0.5 ~ number(1/percent_change, suffix = " անգամ անկում", accuracy = 0.1),
+      percent_change >= 2 ~ number(percent_change, suffix = " անգամ աճ", accuracy = 0.1)
+    ),
+  ) |> 
+  ggplot() +
+  geom_segment(
+    aes(x = begining, xend = end,  y = name_for_plot, 
+        yend = name_for_plot, group = name_for_plot, color = I(color)),
+    linewidth = 1.2,
+    lineend = 'round', linejoin = 'round',
+    arrow = arrow(length = unit(0.1, "inches"))
+  ) +
+  geom_point(
+    aes(x = begining, y = name_for_plot, color = I("#f95d6a")), size = 3
+  ) +
+  geom_point(aes(x = end, y = name_for_plot, color = I("#005C4B")), size = 3) +
+  geom_text(
+    aes(x = (end+begining)/2, y = name_for_plot,  label = percent_change, vjust = -0.6)
+  ) +
+  geom_point(data = date_legend, aes(x, y, color = I(color)), size = 3) +
+  geom_text(data = date_legend, aes(x, y, label = text), hjust = -0.1) +
+  scale_x_log10(breaks = seq(100, 1000, 100), limits = c(100, NA)) +
+  scale_y_discrete() +
+  labs(
+    x = NULL,
+    y = NULL,
+    color = NULL,
+    title = "Միջին անվանական աշխատավարձի փոփոխոթւյունը*",
+    subtitle = "2022թ․ սկզբից մինչև 2024թ․ օգոստոս, հազար դրամ",
+    caption = caption_f("Armstat")
+  ) +
+  theme(
+    panel.grid.major.y = element_blank(),
+    panel.grid.major.x =  element_line(
+      colour = "gray", 
+      linetype = "dotted"
+    )
+  )
+
+```
+
+```{r save plots, include=FALSE}
+
+ggsave("plots/plot_1_wage_change_main.png", plot_1_wage_change_main, width = 12, height = 8)
+ggsave("plots/plot_2_median_wage.png", plot_2_median_wage, width = 12, height = 8)
+ggsave("plots/plot_3_median_wage_adjusted.png", plot_3_median_wage_adjusted, width = 12, height = 8)
+ggsave("plots/plot_4_wage_groups.png", plot_4_wage_groups, width = 12, height = 8)
+ggsave("plots/plot_5_wage_groups_adjusted.png", plot_5_wage_groups_adjusted, width = 12, height = 8)
+
+
+```
+
+
+***English summary below.***
+
+Հարգելի գործընկեր,
+
+Հուսով եմ՝ լավ եք: 
+Ներկայացնում եմ այս շաբաթվա վերլուծությունները և աշխատանքները.
+
+## [💶📏🔎 Աշխատավարձի միջինից այն կողմ](https://www.tvyal.com/newsletter/2024/2024_10_21)
+
+### **Հայաստանի աշխատավարձերի իրական պատկերը․ մեկ երկիր, երկու տարբեր տնտեսություն**
+
+Երևանի սրտում, նորակառույց գրասենյակային շենքերում տեղակայված են Հայաստանի զարգացող ՏՏ ոլորտի ու ֆինանսական համակարգի ընկերությունները, որտեղ երիտասարդ մասնագետների աշխատավարձերը չեն զիջում Արևմտյան Եվրոպայի աշխատավարձերին։ Սակայն պատկերն այլ է ընդամենը մի քանի տասնյակ կիլոմետր հեռու՝ երկրի գյուղական շրջաններում, ինչպես նաև կրթական և գյուղատնտեսական ոլորտներում։ Մարզային բնակչությունը հազիվ է վաստակում հիմնական կարիքները հոգալու համար բավարար գումար։ Այս ցայտուն հակադրությունը զուտ պատահական օրինակ չէ. սա Հայաստանի՝ գնալով ավելի բևեռացող տնտեսության իրականությունն է, ինչպես ցույց է տալիս աշխատավարձերի վերաբերյալ այս վերլուծությունը։
+
+Գծապատկեր 1.
+
+[![](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_10_21_wages_2/plots/plot_1_wage_change_main.png)](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_10_21_wages_2/plots/plot_1_wage_change_main.png)
+
+
+Թվերը պատմում են մի ուշագրավ պատմություն։ 2018 թվականից սկսած բարձր վարձատրվող աշխատողների (վերին 10 տոկոսը) իրական աշխատավարձերը աճել են տպավորիչ 70.6%-ով։ Միևնույն ժամանակ, տնտեսական սանդղակի ստորին հատվածում գտնվողները (ստորին 10 տոկոսը) արձանագրել են համեստ 14.5% աճ։ Առաջին հայացքից կարող է թվալ, թե ընդհանուր աճը լավ լուր է։ Սակայն ավելի խորը ուսումնասիրությունը բացահայտում է առավել բարդ պատկեր։
+
+Հայաստանի մայրաքաղաքը ոչ միայն երկրի քաղաքական և մշակութային կենտրոնն է, այլև վերածվել է տնտեսական հսկայի՝ ստվերի մեջ թողնելով երկրի մնացած մասը։ Ազգային աշխատավարձային ֆոնդի ապշեցուցիչ 80%-ը կենտրոնացած է Երևանում։ Քաղաքը մագնիսի պես ձգում է բարձր վարձատրվող աշխատատեղերը, հատկապես ֆինանսների և ՏՏ ոլորտներում՝ վերափոխելով երկրի տնտեսությունը։ 
+
+Եկեք հասկանանք, թե ի՞նչ է սա նշանակում միջին վիճակագրական հայ աշխատողի համար։ 
+
+Գծապատկեր 2.
+
+[![](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_10_21_wages_2/plots/plot_2_median_wage.png)](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_10_21_wages_2/plots/plot_2_median_wage.png)
+
+Միջին թվաբանականը և մեդիանը․ տնտեսական իրողությունների դաս։
+
+2024 թվականի օգոստոսի դրությամբ Հայաստանում միջին աշխատավարձը կազմում է 282,568 դրամ։ Տպավորիչ է հնչում, չէ՞։ Բայց իրականությունն ավելի հետաքրքիր է դառնում։ Մեդիան աշխատավարձը շատ ավելի լավ ցուցանիշ է այստեղ, որը ցույց է տալիս, թե ինչ է վաստակում տիպիկ հայը, զգալիորեն ցածր է՝ 223,000 դրամ։ Փաստացի մեդիան աշխատավարձը 21% ավելի ցածր է երկրի միջինից։
+
+Որպեսզի հասկանանք, թե ինչու է սա կարևոր, եկեք մի փոքր խաղ խաղանք։ Պատկերացրեք մի տնտեսություն, որտեղ ընդամենը հինգ մարդ է աշխատում, և նրանք վաստակում են համապատասխանաբար 1, 2, 3, 4 և 10 դրամ։ Միջին աշխատավարձը (միջին թվաբանականը) կլիներ 4 դրամ։ Բայց արդյո՞ք սա իրականում ներկայացնում է այն, ինչ մարդկանց մեծ մասը վաստակում է։ Իհարկե ոչ։ Մեդիանը՝ միջին արժեքը, որը 3 դրամ է, մեզ շատ ավելի հստակ պատկերացում է տալիս միջին աշխատողի իրականության մասին։ Բանն այն է, որ անհավասարաչափ բարձր աշխատավարձերը իրենց վրա են ձգում թվաբանական միջինի արժեքը։
+
+Ավելի պարզ ասած, եթե ուզում եք իմանալ «միջին աշխատավարձը», նայեք միջին թվաբանականին։ Բայց եթե ուզում եք հասկանալ «միջին աշխատողի աշխատավարձը», ապա մեդիանը ձեր ամենահարմար ցուցանիշն է։
+
+Այժմ եկեք ավելացնենք հարկերը։ Հարկերը վճարելուց հետո 223,000 դրամ մեդիան աշխատավարձը նվազում է մինչև 161,750 դրամ։ Միջին աշխատավարձը հարկերից հետո հասնում է 206,426 դրամի։ Բայց թերևս ամենացնցող վիճակագրությունն այն է, որ հայ աշխատողների 25%-ը վաստակում է 175,000 դրամից պակաս (մինչև հարկումը), ինչը նշանակում է, որ նրանց տուն տարվող աշխատավարձը ընդամենը 128,250 դրամ է։
+
+Նշենք, որ դիտարկված են գրանցված աշխատողների աշխատավարձերը։ Այս վերլուծությունը հաշվի չի առնում ընդհանուր զուտ եկամուտները, որոնք կարող են ձևավորվել այլ չգրանցված գործունեությունից։ Եթե ուզում եք իմանալ, թե որքան է Հայաստանի տնային տնտեսությունների իրական եկամուտը, ապա կարդացեք հետևյալ հետազոտությունը՝ [🏠💰📉 Տնային տնտեսությունները աղքատացել են](https://www.tvyal.com/newsletter/2024/2024_01_07)
+
+Գծապատկեր 3.
+
+[![](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_10_21_wages_2/plots/plot_3_median_wage_adjusted.png)](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_10_21_wages_2/plots/plot_3_median_wage_adjusted.png)
+
+
+Երբ հաշվի ենք առնում գնաճը, պատկերն էլ ավելի է բարդանում։ Գծապատկեր 3-ը բացահայտում է մի դաժան ճշմարտություն. ցածր եկամուտ ունեցող խմբերի համար իրական աշխատավարձերը մնացել են գրեթե անփոփոխ։ Այլ կերպ ասած, թեև նրանց անվանական աշխատավարձերը կարող են աճած լինել, նրանց գնողունակությունը չի փոխվել։
+
+Գծապատկեր 4.
+
+[![](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_10_21_wages_2/plots/plot_4_wage_groups.png)](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_10_21_wages_2/plots/plot_4_wage_groups.png)
+
+Մեր վերլուծությունը նաև ուսումնասիրում է, թե ինչպես է աշխատավարձերի բաշխումը փոխվել ժամանակի ընթացքում։ Թեև նկատվում է աստիճանական տեղաշարժ դեպի ավելի բարձր աշխատավարձային խմբեր, ամենաբարձր և ամենացածր վարձատրվողների միջև տարբերությունը մնում է ակնհայտ։ Պետք է հաշվի առնել, որ ի տարբերություն նախորդ գծապատկերների, 4-րդ ու 5-րդ գծապատկերները հաշվարկվել են մեթոդաբանությամբ, որը կարող է լիարժեքորեն չարտացոլել իրական պատկերը (տե՛ս մեթոդաբանություն հատվածը)։
+
+Գծապատկեր 5.
+
+[![](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_10_21_wages_2/plots/plot_5_wage_groups_adjusted.png)](https://raw.githubusercontent.com/tavad/tvyal_newsletter/refs/heads/main/2024/2024_10_21_wages_2/plots/plot_5_wage_groups_adjusted.png)
+
+
+[Մեր նախորդ վերլուծության մեջ 💹💳🧑‍🏭 մենք առաջարկեցինք մի համարձակ ռազմավարություն՝ այս աճող անջրպետը հաղթահարելու համար](https://www.tvyal.com/newsletter/2024/2024_10_07)։ Ներկայացնենք համառոտ ակնարկը․
+
+Միջազգային ներդրողները միշտ էլ փնտրում են հարկային արտոնություններ, և սա կարող է լինել Հայաստանի առավելությունը կապիտալի ներհոսքը կառավարելու համար։ Մենք առաջարկում ենք ներդնել թիրախավորված հարկային արտոնություններ՝ խթանելու մարզերի զարգացումը, ակտիվացնելու արդյունաբերական գործունեությունը և ստեղծելու աշխատատեղեր Երևանից դուրս։
+
+Մեր առաջարկն է այն մարզերում, որտեղ մասնավոր հատվածի աշխատատեղերը կեսից պակաս են պետական հատվածի աշխատատեղերից, առաջարկել արտոնյալ եկամտահարկի դրույքաչափեր՝ 0-10% (կախված արտադրության տեսակից) և շահութահարկի արտոնություններ արդյունաբերական կազմակերպությունների համար։ Այս խթանը կգործի այնքան ժամանակ, մինչև տվյալ մարզում մասնավոր հատվածի աշխատատեղերը երկու անգամ գերազանցեն պետական հատվածի աշխատատեղերը։
+
+Ավելին՝ [💹💳🧑‍🏭 Մասնավոր աշխատատեղերի գրեթե 80 տոկոսը Երևանում է](https://www.tvyal.com/newsletter/2024/2024_10_07)
+
+Երևանը և Կոտայքի մարզը, որտեղ մասնավոր հատվածի աշխատատեղերն արդեն գերակշռում են, հարկային արտոնություններ չեն ստանա։ Սյունիքում և Արարատում, որտեղ մասնավոր և պետական աշխատատեղերի հարաբերակցությունը մոտենում է նպատակային ցուցանիշին, խթանները կարող են աշխատել ընդամենը մեկ-երկու տարի։ Սակայն պակաս զարգացած մարզերում, ինչպիսիք են Տավուշը, Շիրակը, Արագածոտնը և Գեղարքունիքը, որտեղ պետական հատվածի աշխատատեղերը դեռ գերազանցում են մասնավորին, այս խթանները կարող են իսկական փոփոխություն բերել։ Աշխատավարձային ֆոնդի 80%-ն արդեն Երևանում է, այսինքն՝ այս նախաձեռնությունը չի հանգեցնի հարկային կորուստների։ Այս նախաձեռնությունը կարող է իրականում ընդլայնել հարկման բազան՝ խրախուսելով ստվերային տնտեսությունում գործող բիզնեսներին դուրս գալ ստվերից։
+ 
+>
+> Ձեզ կարող են հետաքրքրել նաև հետևյալ նյութերը.
+>
+>1. [👛💨💰 Դատարկ գրպաններ, բարձր աշխատավարձր](https://www.tvyal.com/newsletter/2024/2024_08_12)
+>2. [👨‍👩‍👧‍👦✨ Ամուր ընտանիք․ հարուստ ընտանիք](https://www.tvyal.com/newsletter/2024/2024_01_26)
+>3. [🚨📉🕵 Քողարկված անկում. Ինչո՞վ է ապրում Հայաստանի տնտեսությունը](https://www.tvyal.com/newsletter/2024/2024_09_30)
+>4. [🐅🌆💸 Հայաստան` Կովկասի վագր, թե՞ թանկ երազանք](https://www.tvyal.com/newsletter/2024/2024_08_26)
+>
+
+### Մեթոդաբանություն
+
+*Ուշադրություն․ Այս բաժինը պարունակում է տեխնիկական մանրամասներ և կարող է բաց թողնվել ոչ մասնագիտական ընթերցողների կողմից*
+
+#### Տվյալների աղբյուրներ և մշակում
+- Հիմնական տվյալների աղբյուրը՝ [Հայաստանի Հանրապետության վիճակագրական կոմիտե](https://www.armstat.am/am/?nid=964)
+- Իրականացվել է տվյալների մաքրում և ստանդարտացում․ մաքրված տվյալների շտեմարանը հասանելի է հետևյալ հասցեով՝ [Github of tvyal.com](https://github.com/tavad/tvyal_newsletter/blob/main/2024/2024_10_07_wages/wages_db_clean.csv)
+
+#### Վերլուծական մոտեցումներ
+1. **Կշռված քվանտիլներ**
+   - Կիրառվել է մեդիանի, Q1-ի, Q3-ի և այլ պերցենտիլային արժեքների հաշվարկման համար
+   - Օգտագործվել է Գծապատկերներ 1, 2 և 3-ում
+   - Ապահովում է տվյալների փաստացի բաշխման առավել հավաստի ներկայացում
+
+2. **Կշռված միջին և ստանդարտ շեղում**
+   - Ենթադրվել է աշխատավարձերի լոգնորմալ բաշխում
+   - Կիրառվել է Գծապատկերներ 4 և 5-ում
+   - Նշում․ Այս մոտեցումը կարող է կատարյալ չհամապատասխանել տվյալների փաստացի բաշխմանը և պետք է մեկնաբանվի զգուշությամբ
+
+#### Գնաճի ճշգրտում
+- Գծապատկերներ 1, 3 և 5-ը ճշգրտված են կուտակային գնաճով՝ ժամանակի տարբեր հատվածների համեմատությունը հնարավոր դարձնելու համար
+
+#### Սահմանափակումներ
+- Վերլուծությունը հիմնված է միայն պաշտոնապես հաշվառված աշխատավարձերի վրա․ չի հաշվի առնում ստվերային տնտեսությունը կամ մեկից ավելի աշխատանքներ ունեցողներին
+- Գծապատկերներ 4-ում և 5-ում լոգնորմալ բաշխման ենթադրությունը կարող է չարտացոլել աշխատավարձերի փաստացի բաշխումը
+- Ավելի ճշգրիտ գնահատումների համար կարող է անհրաժեշտ լինել վիճակագրական մոդելների հետագա կատարելագործում
+
+## Նախորդ նյութի ճշգրտում իրավաբանական տեսանկյունից
+
+‼️
+Մենք միշտ ձգտում ենք, որ մեր կողմից հրապարակվող աշխատությունները լինեն հնարավորինս օբյեկտիվ և ապաքաղաքական, որը միշտ չէ, որ հաջողվում է։ Tvyal.com-ի արժեքների հիմքում է ճշմարտությունը և ճշգրտությունը։ Նախորդ նյութը հրապարակելիս [«📢✊🕊️ Թավշյա իրարանցում և կազմակերպական փոփոխություն»](https://www.tvyal.com/newsletter/2024/2024_10_14) առկա է մի կարևոր փաստարկի բացակայություն, որը նյութը գրելու պահին մեզ հասանելի չէր։ [2016թ. դեկտեմբերին վերացվեց «իրավաբանական անձանց միություն» (ԻԱՄ) կազմակերպաիրավական ձևը](https://www.arlis.am/DocumentView.aspx?docid=110836): Սահմանվեց, որ բոլոր նման կազմակերպությունները պետք է մեկ տարվա ընթացքում (մինչև 2017թ. վերջ) վերագրանցվեն որպես հասարակական կազմակերպություն (ՀԿ): Այս փաստարկը որոշակիորեն, սակայն ոչ ամբողջությամբ բացատրում է ՀԿ-ների տարօրինակ աճը 2017թ․ վերջին։ Կարևոր է նշել, որ մինչև 2017թ. վերջ Հայաստանում գրանցված էր 347 ԻԱՄ, որը զգալիորեն փոքր է 2017թ. նոյեմբեր-դեկտեմբեր ամիսներին գրանցված 737 ՀԿ-ների թվից: Սա պահանջում է հետագա հավելյալ հետազոտություն, որը կներառի նաև գրանցված կազմակերպությունների ամբողջական շարքը Հայաստանի երրորդ հանրապետության ձևավորման սկզբից։ [Մանրամասները ավելացվել են տվյալ նյութի վերջում։](https://www.tvyal.com/newsletter/2024/2024_10_14)
+
+
+-----
+
+-----
+
+Եթե հնարավոր է, խնդրում եմ այս նյութը ուղարկել նաև այն մարդկանց, ում այն կարծում եք կարող է հետաքրքրել:
+
+**ԱՅՍ ՀՈԴՎԱԾԻ ՀՂՈՒՄԸ**
+
+***Թավադյան, Աղ․Ա․ (2024) Աշխատավարձի միջինից այն կողմ [Beyond the Average Wage], tvyal.com հարթակ [tvyal.com platform], 21-10-2024․ https://www.tvyal.com/newsletter/2024/2024_10_21***
+
+**Արգելվում է այս հարթակի նյութերը արտատպել առանց հղում կատարելու։**    
+
+<small>\* Այս և մեր բոլոր այլ վերլուծությունների տվյալները վերցված են պաշտոնական աղբյուրներից։ Հաշվարկները ամբողջությամբ հասանելի են github-ում, դրանք կարելի է ստուգել` այցելելով [github-ի](https://github.com/tavad/tvyal_newsletter/blob/main/2024/) մեր էջը, որտեղ տրված են տվյալները, հաշվարկների և գծապատկերների կոդը։
+
+</small>
+
+
+-----
+
+# ՀԱՄԱԳՈՐԾԱԿՑՈՒԹՅՈՒՆ
+
+<style>
+.ai-services-banner-tvyal {
+background-color: #0a192f;
+color: #e6f1ff;
+padding: 30px;
+font-family: Arial, sans-serif;
+border-radius: 10px;
+box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+position: relative;
+overflow: hidden;
+min-height: 400px;
+display: flex;
+flex-direction: column;
+justify-content: center;
+}
+.ai-services-banner-tvyal::before {
+content: '';
+position: absolute;
+top: -25%;
+left: -25%;
+right: -25%;
+bottom: -25%;
+background: repeating-radial-gradient(
+circle at 50% 50%,
+rgba(100, 255, 218, 0.1),
+rgba(100, 255, 218, 0.1) 15px,
+transparent 15px,
+transparent 30px
+);
+animation: gaussianWaveTvyal 10s infinite alternate;
+opacity: 0.3;
+z-index: 0;
+}
+@keyframes gaussianWaveTvyal {
+0% {
+transform: scale(1.5) rotate(0deg);
+opacity: 0.2;
+}
+50% {
+transform: scale(2.25) rotate(180deg);
+opacity: 0.5;
+}
+100% {
+transform: scale(1.5) rotate(360deg);
+opacity: 0.2;
+}
+}
+.ai-services-banner-tvyal > * {
+position: relative;
+z-index: 1;
+}
+.ai-services-banner-tvyal h2,
+.ai-services-banner-tvyal h3 {
+margin-bottom: 20px;
+color: #ccd6f6;
+}
+.ai-services-banner-tvyal ul {
+margin-bottom: 30px;
+padding-left: 20px;
+}
+.ai-services-banner-tvyal li {
+margin-bottom: 10px;
+}
+.ai-services-banner-tvyal a {
+color: #64ffda;
+text-decoration: none;
+transition: color 0.3s ease;
+}
+.ai-services-banner-tvyal a:hover {
+color: #ffd700;
+text-decoration: underline;
+}
+</style>
+
+<div class="ai-services-banner-tvyal">
+## [Եթե ուզում եք  AI գործիքներով ձեր տվյալներից օգուտ քաղել` ԴԻՄԵՔ ՄԵԶ](mailto:a@tavadyan.com?subject=Let's Put Data to Work!)
+
+### Մենք առաջարկում ենք
+
+- Extensive databases for finding both international and local leads
+- Exclusive reports on the Future of the Armenian Economy
+- Work and browser automation to streamline operations and reduce staffing needs
+- AI models for forecasting growth and optimizing various aspects of your business
+- Advanced dashboarding and BI solutions
+- Algorithmic trading
+
+### [Let's Put Your Data to Work!](mailto:a@tavadyan.com?subject=Let's Put Data to Work!)
+
+### [ՄԻԱՑԵՔ ՄԵՐ ԹԻՄԻՆ](mailto:a@tavadyan.com?subject=Work application)
+</div>
+
+
+---
+
+
+## ԶԼՄ հաղորդագրություն
+
+[Դիտեք իմ վերջին հարցազրույցը](https://youtu.be/_9FfQ_oBVYU?t=68)
+
+📺  Մեծ կախվածություն ունենք ԵԱՏՄ-ից. մեր արտադրանքը մրցունակ չէ 📺
+
+<a href="https://youtu.be/_9FfQ_oBVYU?t=68">
+  <img src="https://i3.ytimg.com/vi/_9FfQ_oBVYU/hqdefault.jpg" alt="YouTube Video" style="width:60%;">
+</a>
+
+---
+
+
+## English Summary
+
+### 💶📏🔎 Beyond the Average Wage
+
+**The Real Picture of Wages in Armenia: One Country, Two Different Economies**
+
+The analysis of wages in Armenia reveals a stark economic divide, with Yerevan emerging as the country's economic powerhouse. Nearly 80% of the national wage fund is concentrated in the capital, attracting high-paying jobs particularly in finance and IT sectors. This concentration has led to significant wage disparities: while the top 10% of earners have seen their real wages increase by an impressive 70.6% since 2018, those in the bottom 10% have experienced a modest 14.5% growth. The median wage of 223,000 drams (before taxes) is notably lower than the average wage of 282,568 drams, highlighting the skewed income distribution.
+
+The wage analysis also uncovers concerning trends in purchasing power and regional development. When adjusted for inflation, the real wages for lower-income groups have remained virtually stagnant, indicating that despite nominal wage increases, their purchasing power has not improved. To address this growing economic divide, the newsletter proposes a bold strategy of targeted tax incentives to stimulate development in regions outside Yerevan. This approach aims to encourage industrial activity and job creation in less developed areas, potentially expanding the tax base by incentivizing businesses operating in the shadow economy to formalize their operations.
+
+
+
+---
+
+
+Հարգանքներով,            
+Աղասի Թավադյան         
+21.10.2024          
+[tvyal.com](https://www.tvyal.com/)      
+[tavadyan.com](https://www.tavadyan.com/)
+
+---
+
+[Was this email forwarded to you? Subscribe here.](https://www.tvyal.com/subscribe)
+
+[Բաժանորդագրվեք](https://www.tvyal.com/subscribe)
+
+       
+---              
+               
+
+
+####### **Ուշադրություն. Ձեր էլ.փոստը մեյլլիսթի մեջ է, որի միջոցով ես կիսվում եմ շաբաթական նյութեր, որոնք հիմնականում ներկայացնում են Հայաստանի տնտեսությունը: Նյութերը ներառում են գծապատկերներ, [տվյալների բազաներ](https://github.com/tavad/tvyal_newsletter), տեսանյութեր, հոդվածներ, [առցանց վահանակներ](https://www.tvyal.com/projects), տնտեսական գործիքներ, կանխատեսումներ և հաշվետվություններ: Եթե ցանկանում եք չեղարկել բաժանորդագրությունը, խնդրում եմ տեղեկացրեք ինձ, և ես կհեռացնեմ ձեր էլ. փոստը ցուցակից: Գրեք նաև եթե ունեք մենկնաբանություններ:**
+
+####### **Important! Your email is part of the mailing list where I share weekly materials primarily focused on the Armenian economy. These materials encompass charts, [databases](https://github.com/tavad/tvyal_newsletter), videos, articles, [online dashboards](https://www.tvyal.com/projects), economic tools, forecasts, and reports. If you wish to unsubscribe, please let me know, and I will remove your email from the list. Please share your comments as well․**
+
+
+
+

@@ -120,12 +120,168 @@ money_base_daily |>
   ggplot(aes(date, value / 1000)) +
   geom_line() +
   geom_smooth() +
-  scale_x_date(date_breaks = "1 month", date_labels = "%b") +
+  scale_x_date(date_breaks = "1 month", date_labels = "%b-%y") +
   labs(
     x = NULL, y = NULL,
     title = "Correspondent accounts (in FX)",
-    subtitle = paste("billion AMD, max date:", max_date)
+    subtitle = paste("Billion AMD, max date:", max_date),
+    caption = caption_f(language = "eng")
   )
+
+
+
+
+library(mFilter)  # alternative to hp2()
+
+# First prepare the data
+base_data <- money_base_daily %>%
+  filter(indicator == "Correspondent accounts (in FX)") %>%
+  select(date, value) %>%
+  mutate(value_scaled = value / 1000)  # Convert to billions
+
+# Apply HP filter separately
+# lambda_daily <- 6.25*(365/4)^4  # Ravn-Uhlig rule for daily data as freq
+hp_result <- mFilter::hpfilter(base_data$value_scaled, freq = 12960)
+
+# Combine everything
+money_base_trend <- base_data %>%
+  mutate(
+    trend = as.numeric(hp_result$trend),
+    cycle = as.numeric(hp_result$cycle)
+  ) %>%
+  select(-value) %>%  # Remove unnecessary columns
+  pivot_longer(cols = c(value_scaled, trend, cycle), 
+               names_to = "component",
+               values_to = "value") %>%
+  mutate(
+    facet = if_else(component == "cycle", "Cycle", "Level and Trend"),
+    facet = fct_rev(facet)
+  )
+
+# Create the plot
+ggplot(money_base_trend, aes(date, value, color = component)) +
+  geom_line() +
+  facet_wrap(~facet, nrow = 2, scales = "free_y") +
+  scale_x_date(date_breaks = "1 month", date_labels = "%b-%y") +
+  scale_color_manual(
+    values = c("value_scaled" = "grey70", 
+               "trend" = "blue",
+               "cycle" = "red")
+  ) +
+  labs(
+    x = NULL, y = NULL,
+    title = "Correspondent accounts (in FX) - Trend Decomposition",
+    subtitle = paste("Billion AMD, max date:", max(money_base_trend$date)),
+    caption = "HP filter decomposition"
+  ) +
+  theme_minimal() +
+  theme(
+    legend.position = "top",
+    legend.title = element_blank()
+  )
+
+#######################################
+
+
+library(forecast)
+
+# First prepare the data
+base_data <- money_base_daily %>%
+  filter(indicator == "Correspondent accounts (in FX)") %>%
+  select(date, value) %>%
+  mutate(value_scaled = value / 1000)  # Convert to billions
+
+# Apply HP filter
+hp_result <- mFilter::hpfilter(base_data$value_scaled, freq = 12960)
+
+# Create time series objects
+ts_cycle <- ts(hp_result$cycle, frequency = 365)
+ts_trend <- ts(hp_result$trend, frequency = 365)
+
+# Forecast horizon (30 days)
+h <- 60
+
+# Forecast trend using auto.arima
+trend_model <- auto.arima(ts_trend)
+trend_forecast <- forecast(trend_model, h = h)
+
+# Forecast cycle using auto.arima
+cycle_model <- auto.arima(ts_cycle)
+cycle_forecast <- forecast(cycle_model, h = h)
+
+# Create forecast dates
+forecast_dates <- seq(max(base_data$date) + 1, by = "day", length.out = h)
+
+# Combine historical and forecast data
+forecast_data <- tibble(
+  date = c(base_data$date, forecast_dates),
+  component = "value_scaled",
+  value = c(base_data$value_scaled, 
+            trend_forecast$mean + cycle_forecast$mean),
+  type = c(rep("actual", nrow(base_data)), 
+           rep("forecast", h))
+) %>%
+  bind_rows(
+    tibble(
+      date = c(base_data$date, forecast_dates),
+      component = "trend",
+      value = c(hp_result$trend, trend_forecast$mean),
+      type = c(rep("actual", nrow(base_data)), 
+               rep("forecast", h))
+    )
+  ) %>%
+  bind_rows(
+    tibble(
+      date = c(base_data$date, forecast_dates),
+      component = "cycle",
+      value = c(hp_result$cycle, cycle_forecast$mean),
+      type = c(rep("actual", nrow(base_data)), 
+               rep("forecast", h))
+    )
+  ) %>%
+  mutate(
+    facet = if_else(component == "cycle", "Cycle", "Level and Trend"),
+    facet = fct_rev(facet)
+  )
+
+# Create the plot with forecasts
+ggplot(forecast_data, aes(date, value, color = component, linetype = type)) +
+  geom_line() +
+  facet_wrap(~facet, nrow = 2, scales = "free_y") +
+  scale_color_manual(
+    values = c("value_scaled" = "grey70", 
+               "trend" = "blue",
+               "cycle" = "red")
+  ) +
+  scale_linetype_manual(
+    values = c("actual" = "solid", 
+               "forecast" = "dashed")
+  ) +
+  labs(
+    x = NULL, y = NULL,
+    title = "Correspondent accounts (in FX) - Trend Decomposition with Forecast",
+    subtitle = paste("Billion AMD, Forecast horizon: 30 days"),
+    caption = "HP filter decomposition + ARIMA forecast"
+  ) +
+  theme_minimal() +
+  theme(
+    legend.position = "top",
+    legend.title = element_blank()
+  ) +
+  scale_x_date(date_breaks = "1 month", date_labels = "%b-%y")
+
+
+
+
+
+
+
+
+
+
+
+
+#################################################
 
 money_base_daily |> 
   filter(value != 0) |> 
