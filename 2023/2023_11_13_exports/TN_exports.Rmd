@@ -197,6 +197,63 @@ GDP_plot <-
     caption = "Author: Aghasi Tavadyan   |   tvyal.com   |   tavadyan.com   |   Data Source: World Bank"
   )
 
+
+
+GDP_plot <- 
+  GDP_data %>% 
+  filter(
+    iso3c %in% c("ARM", "GEO", "AZE")
+  ) %>%
+  pivot_longer(contains("GDP"), names_to = "indicator") %>%
+  left_join(GDP_dict, by = join_by(indicator)) %>% 
+  filter(
+    !grepl("PP.CD$", indicator)
+  ) |> 
+  mutate(
+    value = ifelse(
+      grepl("NY.GDP.MKTP", indicator),
+      value / 1e9,
+      value
+    ),
+    name = ifelse(
+      grepl("NY.GDP.MKTP", indicator),
+      str_replace(name, "\\$", "$, Billion"),
+      name
+    ),
+    # Translate country names
+    country = case_when(
+      country == "Armenia" ~ "Հայաստան",
+      country == "Azerbaijan" ~ "Ադրբեջան",
+      country == "Georgia" ~ "Վրաստան",
+      TRUE ~ country
+    ),
+    # Translate facet titles
+    name = case_when(
+      name == "GDP (current US$, Billion)" ~ "ՀՆԱ (ընթացիկ ԱՄՆ $, միլիարդ)",
+      name == "GDP, PPP (current international $, Billion)" ~ "ՀՆԱ, ԳՓՀ (ընթացիկ միջազգային $, միլիարդ)",
+      name == "GDP per capita (current US$)" ~ "Մեկ շնչի հաշվով ՀՆԱ (ընթացիկ ԱՄՆ $)",
+      name == "GDP per capita, PPP (current international $)" ~ "Մեկ շնչի հաշվով ՀՆԱ, ԳՓՀ (ընթացիկ միջազգային $)",
+      TRUE ~ name
+    ),
+    name = fct_inorder(name),
+  ) %>% 
+  ggplot(aes(year, value, color = country)) +
+  geom_line(linewidth = 2) +
+  facet_wrap(~name, scales = "free_y") +
+  scale_x_continuous(breaks = seq(1990, 2030, 5)) +
+  scale_y_continuous(labels = dollar_format()) +
+  scale_color_brewer(type = "qual", palette = 3) +
+  labs(
+    x = NULL,
+    y = NULL,
+    color = NULL,
+    title = "Հարավային Կովկասի երկրների ՀՆԱ-ի համեմատություն",
+    subtitle = "1990-ից մինչև 2023 թվականները",
+    caption = "Հեղինակ՝ Աղասի Թավադյան   |   tvyal.com   |   tavadyan.com   |   Տվյալների աղբյուր՝ Համաշխարհային բանկ"
+  )
+
+ggsave("~/Downloads/plots/coucase_gdp.png", ggplot2::last_plot(), width = 12, height = 8)
+
 ```
 
 
