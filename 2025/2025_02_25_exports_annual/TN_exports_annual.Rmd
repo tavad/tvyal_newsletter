@@ -103,6 +103,21 @@ plot_1_arm_trade_by_regions <-
   ) |> 
   ggplot(aes(date, export_yoy / 1e6, color = country_region_arm)) +
   geom_line(linewidth = 1.5, alpha = 1) +
+    annotate(
+    "label",
+    x = as.Date("2020-03-01"), 
+    y = 5.5,
+    label = "Արևմտյան պատժամիջոցների արդյունքում Հայաստանը\nդարձավ ռուսական արտահանման տարանցիկ\nհանգույց, հատկապես թանկարժեք մետաղների և\nքարերի համար (ԱՏԳ ԱԱ 71)։ 2024-ի 1-ին եռամսյակում\nՌԴ ոսկու արտահանման մոտ 88%-ը անցնում էր\nՀայաստանով դեպի Միջին Արևելք։",
+    hjust = 0,
+    vjust = 0.5,
+    size = 3.8,
+    lineheight = 1.1,
+    family = "DejaVu Sans",
+    color = "black",
+    fill = "white",
+    alpha = 0.8,
+    label.size = 0.5
+  ) +
   scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
   scale_y_continuous(n.breaks = 8, labels = number_format(), limits = c(0,7)) +
   scale_color_manual(values = colfunc2(5)) +
