@@ -665,7 +665,7 @@ table_2_exports_by_goods <-
     columns = contains("2024")
   ) |> 
   tab_header(
-    title = "Աղյուսակ 2. Հայաստանի արտահանումը ըստ տարածաշրջանների",
+    title = "Աղյուսակ 2. Հայաստանի արտահանումը ըստ ապրանքախմբերի",
     subtitle = "Տարեկան կտրվածքով"
   ) |> 
   tab_footnote(

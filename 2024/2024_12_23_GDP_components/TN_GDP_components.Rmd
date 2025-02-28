@@ -416,7 +416,7 @@ GDP_quarter_contribution |>
 
 plot_4_components_2024_Q3 <- 
   groupping_contributions(
-    select_date = "2024-Q3", 
+    select_date = "2024-Q4", 
     groupped_codes_ = c("H","I","M","N","P","Q","R","S","T")
     # groupped_codes_ = c("H","I","L","M","N","P","Q","S","T")
   ) |> 
@@ -560,6 +560,10 @@ plot_5_components_dynamics <-
     title = paste("Քողարկված անկում․ Ինչո՞վ է ապրում Հայաստանի տնտեսությունը")
   )
 
+```
+
+```{r, include=FALSE}
+GDP_annual
 ```
 
 
