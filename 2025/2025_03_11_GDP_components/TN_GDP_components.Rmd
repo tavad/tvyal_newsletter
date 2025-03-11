@@ -1,6 +1,6 @@
 ---
 title: "Tvyal Newsletter"
-date: "2025-02-04"
+date: "2025-02-11"
 output: html_document
 ---
 
@@ -271,7 +271,7 @@ plot_1_growth_revision <-
   ) |> arrange(date) |> 
   ggplot(aes(date, GDP_growth, color = source)) +
   geom_hline(yintercept = 0, color = "gray") +
-  geom_line(size = 1.5) +
+  geom_line(linewidth = 1.5) +
   scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
   scale_y_continuous(labels = percent_format()) +
   scale_color_manual(
@@ -291,12 +291,55 @@ plot_1_growth_revision <-
   
 ```
 
+```{r gdp annual growth barplot, include=FALSE}
+
+plot_gdp_annual_growth <- 
+  GDP_annual_pct |>
+  mutate(GDP_growth = GDP_growth * 100) |> 
+  ggplot(aes(year, GDP_growth, fill = year)) +
+  geom_col(
+    position = position_dodge(width = 0.8),
+    width = 0.9, alpha = 1
+  ) +
+  geom_text(
+    aes(
+      y = GDP_growth + 0.6, label = percent(GDP_growth/100, accuracy = 0.1),
+      color = ifelse(GDP_growth >= 0, "black", "white")
+    ),
+    position = position_dodge(width = 0.8)
+  ) +
+  scale_x_continuous(breaks = 2013:2024) +
+  scale_fill_gradientn(colors = colfunc2(100)[70:10]) +
+  scale_color_manual(values = c("black", "white"), guide = "none") + 
+  labs(
+    x = NULL,
+    y = NULL,
+    fill = NULL,
+    title = "ՀՆԱ-ի աճի տարեկան ցուցանիշը",
+    subtitle = "տոկոսայն աճ",
+    caption = caption_f(source = "Armstat")
+  ) +
+  theme(
+    legend.position = "none",
+    panel.grid.major.x = element_blank(),
+    panel.grid.major.y = element_line(
+      colour = "gray", linewidth = 0.1,
+      linetype = 1
+    ),
+    axis.text.x = element_text(size = 14),
+    axis.text.y = element_blank(),
+    strip.background = element_rect(fill = "#2f4b7c11"),
+    strip.text = element_text(size = 10, face = "bold")
+  )
+```
+
 
 ```{r gdp quarter gowth plot, include=FALSE}
 
-GDP_annual_pct |> 
-  rename(date = year) |> 
-  mutate(date = paste(date, "annual")) |> 
+plot_gdp_quarter_gowth <- 
+  # GDP_annual_pct |> 
+  # rename(date = year) |> 
+  # mutate(date = paste(date, "annual")) |> 
   bind_rows(GDP_quarter_pct) |> 
   mutate(
     quarter = str_extract(date, "\\d$") |> as.numeric(),
@@ -450,7 +493,8 @@ groupping_contributions_annual <- function(select_year, groupped_codes_ = c("H",
 }
 
 
-groupping_contributions_annual(
+plot_gdp_components_2024 <- 
+  groupping_contributions_annual(
   select_year = 2024, 
   groupped_codes_ = c("H","I","M","N","P","Q","R","S","T")
   # groupped_codes_ = c("H","I","L","M","N","P","Q","S","T")
@@ -761,12 +805,10 @@ GDP_annual
 ```{r save plots, include=FALSE}
 
 ggsave("plots/plot_3_gdp_comporation.png", plot_3_gdp_comporation, width = 12, height = 8)
-ggsave("plots/plot_1_growth_revision.png", plot_1_growth_revision, width = 12, height = 8)
-ggsave("plots/plot_2_gdp_quarter_gowth.png", plot_2_gdp_quarter_gowth, width = 12, height = 8)
-ggsave("plots/plot_4_components_2024_Q3.png", plot_4_components_2024_Q3, width = 12, height = 8)
+ggsave("plots/plot_gdp_annual_growth.png", plot_gdp_annual_growth, width = 12, height = 8)
+ggsave("plots/plot_gdp_quarter_gowth.png", plot_gdp_quarter_gowth, width = 12, height = 8)
+ggsave("plots/plot_gdp_components_2024.png", plot_gdp_components_2024, width = 12, height = 8)
 ggsave("plots/plot_5_components_dynamics.png", plot_5_components_dynamics, width = 12, height = 8)
-
-
 
 system("cd ../.. | git all")
 
