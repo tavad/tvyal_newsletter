@@ -70,7 +70,7 @@ fuel_price_plot_0 <-
     y = NULL,
     fill = NULL,
     title = "Բենզինի գները Հայաստանում և այլ պետություններում",
-    subtitle = "Բենզին ԱԻ 95, ՀՀ դրամ 1 լիտրի համար, 2024 մարտի 18 դրությամբ.",
+    subtitle = "Բենզին ԱԻ 95, ՀՀ դրամ 1 լիտրի համար, 2025 սեպտեմբերի 5 դրությամբ.",
     caption = paste0(caption_arm, "   |   տվյալների աղբյուր՝ oilpricez.com")
   ) +
   theme(
@@ -79,7 +79,7 @@ fuel_price_plot_0 <-
     axis.text.x = element_blank()
   )
 
-# save_last_plot("petrol_price_in_the_region")
+ggsave("plots/fuel_price_plot_0.png", fuel_price_plot_0, width = 12, height = 8)
 ```
 
 
@@ -95,23 +95,138 @@ petrol_name_dict <-
   )
 
 
+fuel_price_update <- read_csv("~/R/server_projects/rate_am/rate_am_scrape_new/armenia_petrol_price/petrol_prices.csv")
+
+fuel_price_archive <- read_csv("~/R/server_projects/rate_am/rate_am_scrape_new/armenia_petrol_price/petrol_prices_archived.csv")
+
+fuel_price_update_2 <- 
+  fuel_price_update |> 
+  transmute(
+    date,
+    name = case_when(
+      petrol == "ai-95 պրեմիում" ~ "petrol_premium",
+      petrol == "ai-92 ռեգուլյար" ~ "petrol_regular",
+      petrol == "դիզելային վառելիք" ~ "disel",
+      petrol == "lpg" ~ "liquefied_gas_price",
+      TRUE ~ NA
+    ),
+    value = liter_price
+  ) |> 
+  filter(!is.na(name))
+
+# fuel_price_world <- read_csv("~/R/server_projects/rate_am/rate_am_scrape_new/oilpricez/fuel_price_world.csv")
+# 
+# currency <- 
+#   read_csv("~/R/Gcapatker/2024_03_24_CBA_FX/CBA_FX_data_cleaned.csv") |> 
+#   filter(FX_ISO == "USD")
+# 
+# fuel_price_world_test_data <- 
+#   fuel_price_world |> 
+#   filter(
+#     date > ymd("2024-03-20"),
+#     date < ymd("2024-10-07"),
+#     country == "Armenia"
+#   ) |> 
+#   select(-country, -date_updated) |> 
+#   rename(name = type) |> 
+#   unique() |> 
+#   left_join(currency, by = "date") |> 
+#   mutate(
+#     value = price_in_usd * AMD
+#   ) |> 
+#   select(date, name, value) |> 
+#   group_by(date, name) |> 
+#   slice_head(n = 1) |> 
+#   ungroup() |> 
+#   mutate(
+#     name = case_when(
+#       name == "Diesel" ~ "disel",
+#       name == "Gasoline" ~ "petrol_premium",
+#       TRUE ~ name
+#     ),
+#   ) |> 
+#   pivot_wider() |> 
+#   mutate(petrol_regular = petrol_premium - 20) |> 
+#   pivot_longer(-date)
+  
+  
+# ինչ կա շարունակում ենք մինչև 20-06
+  
+missing_data_approximation <- 
+  fuel_price |>
+   filter(
+    date > ymd("2022-07-01"),
+    date < ymd("2022-08-01"),
+  ) |> 
+  select(-"liquefied_gas_price") |> 
+  mutate(
+    date = date + years(2) - days(15),
+    petrol_regular = petrol_regular - 20,
+    disel = disel - 130
+  ) |> 
+  bind_rows(
+    tribble(
+      ~date, ~petrol_premium, ~petrol_regular, ~disel,
+      "2024-07-25", 510, 470, 510,
+      "2024-08-28", 510, 470, 510,
+      "2024-08-29", 520, 490, 540,
+      "2024-09-18", 520, 490, 540,
+      "2024-09-19", 510, 500, 540,
+    ) |> mutate(date = ymd(date))
+  ) |> 
+  pivot_longer(-date)
+
+fuel_price_archive_2 <- fuel_price_archive |> 
+  filter(date < min(fuel_price$date)) |> 
+  transmute(
+    date, 
+    name = case_when(
+      petrol %in% c("հեղուկ գազ", "lpg") ~ "liquefied_gas_price",
+      petrol %in% c("դիզելային վառելիք", "diesel fuel") ~ "disel",
+      petrol %in% c("բենզին սուպեր", "petrol super", "ai-98 սուպեր") ~ "petrol_super",
+      petrol %in% c("բենզին պրեմիում", "petrol premium", "ai-95 պրեմիում") ~ "petrol_premium",
+      petrol %in% c("բենզին ռեգուլյար", "petrol regular", "ai-92 ռեգուլյար") ~ "petrol_regular",
+      TRUE ~ petrol  
+    ),
+    value = liter_price
+  )
+
+fuel_price_plot_db <- 
+  fuel_price |>
+  pivot_longer(-date) |>
+  bind_rows(missing_data_approximation) |> 
+  bind_rows(fuel_price_update_2) |>
+  bind_rows(fuel_price_archive_2) |> 
+  arrange(date) |> 
+  filter(!name %in% c("liquefied_gas_price", "petrol_super")) |> 
+  left_join(petrol_name_dict, join_by(name))
+
+fuel_price_plot_db |> write_csv("fuel_price_plot_db.csv")
+
+max_date <- max(fuel_price_plot_db$date)
+
+fuel_price_plot_db <- fuel_price_plot_db |> 
+  mutate(
+    date = ifelse(date == min(date), ymd("2020-03-01"), date),
+    date = as.Date(date)
+  ) 
+
 fuel_price_plot_1 <- 
-  fuel_price |> 
-  pivot_longer(-date) |> 
-  filter(name != "liquefied_gas_price") |> 
-  left_join(petrol_name_dict, join_by(name)) |> 
+  fuel_price_plot_db |> 
   mutate(
     name = str_replace_all(name, "_", " "),
     name = str_to_title(name)
   ) |> 
   ggplot(aes(date, value, color = name_arm)) +
-  geom_line(linewidth = 1.5) +
+  geom_step(linewidth = 1.5) +
   scale_x_date(
-    date_breaks = "3 month", date_labels = "%b-%y", 
+    date_breaks = "1 year", date_labels = "%Y", 
+    minor_breaks = seq.Date(ymd("2020-01-01"), max_date + months(1), "3 months"),
     # limits = c(as.Date("2021-12-31"), as.Date("2023-12-01"))
   ) +
   scale_y_continuous(breaks = seq(0, 1000, 50)) +
   scale_color_manual(values = new_palette_colors[c(2,6,8)]) +
+  coord_cartesian(xlim = c(ymd("20200101"), max_date)) +
   labs(
     x = NULL,
     y = NULL,
@@ -119,7 +234,12 @@ fuel_price_plot_1 <-
     title = "Բենզինի և դիզվառելիքի գինը Հայաստանում",
     subtitle = "ՀՀ դրամ 1 լիտրի համար",
     caption = paste0(caption_arm)
+  ) +
+  theme(
+    panel.grid.minor.x = element_line(linewidth = 0.5, linetype = 3, color = "gray90")
   )
+
+ggsave("plots/fuel_price_plot_1_new.png", fuel_price_plot_1, width = 12, height = 8)
 
 ```
 
@@ -136,7 +256,7 @@ petrol_dict <-
                        "Butanes", "Natural gas (in gaseous state)"),
     name_short_arm = c("Բենզին (թեթև նավթամերք)", "Դիզել (ոչ թեթև նավթամերք)",
                        "Հեղուկ գազ (բութան)", "բնական գազ"),
-    density = c(0.737, 0.885, NA, NA) # kg/m3
+    density = c(0.750, 0.885, NA, NA) # kg/m3
   )
 
 fuil_imports <- 
@@ -184,7 +304,7 @@ fuel_price_plot_4 <-
     ),
     mapping = aes(x, y, label = label)
   ) +
-  scale_x_reverse(breaks = 2011:2024) +
+  scale_x_reverse(breaks = 2011:2026) +
   scale_y_continuous(
     breaks = seq(-600, 600, 100),
     labels = function(x) ifelse(x < 0, abs(x), x)
@@ -203,7 +323,8 @@ fuel_price_plot_4 <-
     legend.position = "none"
   )
 
-# save_last_plot("The annual imports of Petrolium fuel to Armenia.png")
+ggsave("plots/fuel_price_plot_4.png", fuel_price_plot_4, width = 12, height = 8)
+
 ```
 
 
@@ -243,11 +364,12 @@ fuel_price_plot_5 <-
     color = NULL,
     title = "Բենզինի և դիզվառելիքի ներմուծման գինը Հայաստանում",
     subtitle = "ՀՀ դրամ, 1 լիտրի համար",
-    caption = "Ներմուծման գինը հաշվարկվում է հետևյալ բանաձևով`\n(ներմուծման արժեք, ԱՄՆ դոլար) / (զուտ քաշ, կգ) / (խտություն, լ/կգ) * USD_AMD փոխարժեք\nԲենզինի խտություն = 0,737, Դիզելի խտություն = 0,885\n\nՀեղինակ` Աղասի Թավադյան   |   tvyal.com   |   tavadyan.com    |    տվյալների աղբյուր՝ Comtrade"
+    caption = "Ներմուծման գինը հաշվարկվում է հետևյալ բանաձևով`\n(ներմուծման արժեք, ԱՄՆ դոլար) / (զուտ քաշ, կգ) / (խտություն, լ/կգ) * USD_AMD փոխարժեք\nԲենզինի խտություն = 0,750, Դիզելի խտություն = 0,885\n\nՀեղինակ` Աղասի Թավադյան   |   tvyal.com   |   tavadyan.com    |    տվյալների աղբյուր՝ Comtrade"
   )
 
 
-# save_last_plot("Import Price of Pertol and Diesel Fuils into Armenia")
+ggsave("plots/fuel_price_plot_5.png", fuel_price_plot_5, width = 12, height = 8)
+
 ```
 
 
@@ -292,7 +414,7 @@ fuel_price_plot_6 <-
   facet_wrap(~name_short_arm) +
   scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
   scale_y_continuous(labels = number_format(accuracy = 1)) +
-  scale_fill_manual(values = colfunc3(7)) +
+  scale_fill_manual(values = colfunc3(9)) +
   labs(
     x = NULL,
     y = NULL,
@@ -302,7 +424,7 @@ fuel_price_plot_6 <-
     caption = paste0(caption_arm, "   |   տվյալների աղբյուր՝ Comtrade")
   )
 
-# save_last_plot("The Annual Imports of Petrolium Fuel to Armenia by country")
+ggsave("plots/fuel_price_plot_6.png", fuel_price_plot_6, width = 12, height = 8)
 
 fuel_price_plot_7 <- 
   fuil_imports |> 
@@ -338,6 +460,8 @@ fuel_price_plot_7 <-
     subtitle = "Dollars for a liter",
     caption = "The import price is calculated using the formula: (trade value in USD) / (nerweight in kg) / (dencity l/kg)\nPetrol density = 0.737, Diesel density = 0.885\n\nAuthor: Aghasi Tavadyan    |    tvyal.com    |    tavadyan.com    |    Data source: Comtrade"
   )
+
+ggsave("plots/fuel_price_plot_7.png", fuel_price_plot_7, width = 12, height = 8)
 
 ```
 
@@ -383,33 +507,33 @@ fuel_price_plot_7 <-
 
 ```{r, include=FALSE}
 # I need the new data for petrol price in Armenia
-
-
-fuel_price_world <- read_csv("~/R/server_projects/rate_am/rate_am_scrape_new/oilpricez/fuel_price_world.csv")
-
-usd_amd <- 
-  read_csv("~/R/Gcapatker/2024_03_24_CBA_FX/CBA_FX_data_cleaned.csv") |> 
-  filter(
-    FX_ISO == "USD",
-    year >= 2024
-  ) |> 
-  transmute(date, usd_amd = AMD)
-
-fuel_price_world |> 
-  filter(country == "Armenia") |> 
-  select(-date) |> 
-  rename(date = date_updated) |> 
-  unique() |> 
-  left_join(usd_amd) |> 
-  mutate(price_in_amd = price_in_usd * usd_amd) |> view()
-  ggplot(aes(date, price_in_amd, color = type)) +
-  geom_line()
-
-
-530; 490 untill "2024-06-20"
-520; 480
-500; 470 untill "2024-08-19"
-510; 
+# 
+# 
+# fuel_price_world <- read_csv("~/R/server_projects/rate_am/rate_am_scrape_new/oilpricez/fuel_price_world.csv")
+# 
+# usd_amd <- 
+#   read_csv("~/R/Gcapatker/2024_03_24_CBA_FX/CBA_FX_data_cleaned.csv") |> 
+#   filter(
+#     FX_ISO == "USD",
+#     year >= 2024
+#   ) |> 
+#   transmute(date, usd_amd = AMD)
+# 
+# fuel_price_world |> 
+#   filter(country == "Armenia") |> 
+#   select(-date) |> 
+#   rename(date = date_updated) |> 
+#   unique() |> 
+#   left_join(usd_amd) |> 
+#   mutate(price_in_amd = price_in_usd * usd_amd) |> view()
+#   ggplot(aes(date, price_in_amd, color = type)) +
+#   geom_line()
+# 
+# 
+# 530; 490 untill "2024-06-20"
+# 520; 480
+# 500; 470 untill "2024-08-19"
+# 510; 
 
 
 ```
@@ -449,6 +573,12 @@ fuel_price_month <-
 last_month_petrol_price <- 
   fuel_price_month |> 
   filter(date == last_inflation_month)
+
+if (nrow(last_month_petrol_price) == 0) {
+  last_month_petrol_price <- 
+    fuel_price_month |> 
+    filter(date == max(date))
+}
 
 fuel_price_plot_8 <- 
   fuel_inflation |> 
@@ -497,7 +627,7 @@ fuel_price_plot_8 <-
     caption = caption_arm
   )
 
-# save_last_plot("Petroleum Imports and the Domestic Price")
+ggsave("plots/fuel_price_plot_8.png", fuel_price_plot_8, width = 12, height = 8)
   
 
 ```

@@ -368,6 +368,54 @@ money_base |>
     caption = paste0(caption_arm, "   |   տվյալների աղբյուր՝ cba.am")
   )
 
+money_base |> 
+  group_by(year) |> 
+  filter(
+    year >= 2006,
+    year <= 2024,
+    month == max(month),
+    indicator_arm %in% c(
+      "ԿԲ-ից դուրս կանխիկ դրամ", "Թղթակցային հաշիվներ դրամով",
+      "Թղթակցային հաշիվներ արտարժութով",
+      "Այլ հաշիվներ"
+    )
+  ) |> 
+  mutate(
+    date = date + months(1) - days(1),
+    value_txt = number(value / 1000, accuracy = 1),
+    value_txt = ifelse(value / 1000 >= 50, value_txt, NA)
+  ) |> 
+  ungroup() |> 
+  mutate(
+    indicator_arm = fct_inorder(indicator_arm),
+    indicator = fct_inorder(indicator)
+  ) |> 
+  ggplot(aes(year, value /1000, fill = indicator, label = value_txt)) +
+  geom_col() +
+  geom_text(position = position_stack(vjust = .5), color = "white") +
+  scale_x_continuous(breaks = seq(2006, 2026, 2)) +
+  scale_y_continuous(labels = number_format()) +
+  scale_fill_manual(values = c("#197070", "#194470", "midnightblue", "#441970", "purple")) +
+  labs(
+    x = NULL,
+    y = NULL,
+    fill = NULL,
+    title = "Measuring the financial stability",
+    subtitle = "Monetary Base in Armenia,\nBillion AMD",
+    caption = "Data Source: https://www.cba.am/stat/stat_data_eng/2_Money%20Base_eng.xlsx"
+  ) +
+  theme(
+    legend.position = "bottom"
+  ) +
+  guides(fill = guide_legend(nrow = 2))
+
+ggsave(
+  "plots/plot_05_Monetary_base.png", ggplot2::last_plot(),
+  width = 8, height = 6
+)
+
+
+
 data1 <- 
   money_base |> 
   filter(

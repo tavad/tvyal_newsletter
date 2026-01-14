@@ -1,5 +1,14 @@
 library(tidyverse)
 
+sysfonts::font_add(
+  "GHEA Mariam",
+  regular = "/usr/share/fonts/all_armenian_fonts/Mariam/GHEAMariamReg.otf",
+  bold    = "/usr/share/fonts/all_armenian_fonts/Mariam/GHEAMariamBld.otf",
+  italic  = "/usr/share/fonts/all_armenian_fonts/Mariam/GHEAMariamRIt.otf",
+  bolditalic = "/usr/share/fonts/all_armenian_fonts/Mariam/GHEAMariamBlit.otf"
+)
+
+
 theme_tvyal <- function(base_size = 12, base_family = "GHEA Mariam")
 {
   colors <- deframe(ggthemes::ggthemes_data[["fivethirtyeight"]])
@@ -29,6 +38,7 @@ theme_tvyal <- function(base_size = 12, base_family = "GHEA Mariam")
         legend.position = "bottom",
         legend.direction = "horizontal",
         legend.box = "vertical",
+        panel.background = element_rect(fill = NA, colour = NA),
         panel.grid = element_line(colour = NULL),
         panel.grid.major.x = element_line(
           colour = colors["Medium Gray"],

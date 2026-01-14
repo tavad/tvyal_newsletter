@@ -1,0 +1,581 @@
+---
+title: "Tvyal Newsletter"
+author: "Aghasi Tavadyan"
+date: "2024-06-17"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(RcppRoll)
+library(scales)
+library(readxl)
+library(rnaturalearth)
+library(rvest)
+
+# rm(list = ls()); gc()
+
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+
+source("../../initial_setup.R")
+
+```
+
+```{r reading data, include=FALSE}
+
+tourism_monthly <- 
+  read_csv("data_monthly.csv") |> 
+  pivot_longer(-year, names_to = "month") |> 
+  mutate(
+    date = ym(paste(year, month)) + months(1) - days(1),
+    value_yoy = roll_sumr(value, 12),
+    month = as.numeric(month)
+  ) |> 
+  relocate(date) |> 
+  filter(!is.na(value))
+
+max_month <- 
+  tourism_monthly |> 
+  filter(date == max(date)) |> 
+  pull(month)
+
+########################
+
+tourism_file_url <- 
+  read_html("https://armstat.am/en/?nid=14") |> 
+  html_element(xpath = '//ul/li/a[contains(., "International tourism (xls)")]') |> 
+  html_attr("href") |> 
+  str_replace("\\.{2}", "https://armstat.am")
+
+system(paste0('curl "', tourism_file_url, '" -o tourism_data_raw.xls'))
+
+tourism_quarter <- 
+  read_excel("tourism_data_raw.xls", skip = 1) |> 
+  rename(arm = 1, rus = 2, eng = 3) %>% 
+  mutate(
+    across(matches("\\d{4}"), ~as.numeric(.x)) 
+  ) %>% 
+  pivot_longer(matches("\\d{4}"), names_to = "date") %>% 
+  mutate(
+    value = ifelse(is.na(value), 0, value),
+    date = yq(date) + months(3) - days(1),
+    value_12 = roll_sumr(value, 4)
+  )
+
+```
+
+
+```{r, include=FALSE}
+
+tourism_change_plot <- function(tbl, max_month_ = max_month){
+  
+  plot <- 
+    tbl |> 
+    mutate(
+      period = ifelse(month <= max_month_, "start_of_the_year", "rest_of_the_year")
+    ) |> 
+    group_by(year, period) |> 
+    summarise(value = sum(value), .groups = "drop") |> 
+    group_by(year) |> 
+    mutate(
+      text = sum(value),
+      text = ifelse(period == "start_of_the_year", value, text),
+      text = ifelse(
+        text >= 1e6,
+        number(text/1e6, accuracy = 0.01, suffix = " M"),
+        number(text/1000, accuracy = 1, suffix = " K")
+      ),
+      text_start = ifelse(
+        period == "start_of_the_year",
+        paste0(text, "*"),
+        NA
+      ),
+      text_rest = ifelse(period == "rest_of_the_year", text, NA),
+    ) |> 
+    ungroup() |> 
+    ggplot() +
+    geom_col(aes(year, value, fill = period), width = 0.3) +
+    geom_text(
+      aes(year + 0.45, y = 0, fill = period, label = text_start), 
+      position = position_dodge(),
+      # size = 2,
+      vjust = - 0.1, color = new_palette_colors[6]
+    ) +
+    geom_text(
+      aes(year, value, fill = period, label = text_rest), 
+      position = "stack", vjust = -0.3, color = new_palette_colors[2]
+    ) +
+    geom_segment(
+      mapping = aes(x = year - 0.15, xend = year + 0.75, y = 0, yend = 0),
+      linetype = 3, color = new_palette_colors[6]
+    ) +
+    scale_x_continuous(breaks = 2018:2025) +
+    scale_y_continuous(breaks = NULL) +
+    scale_fill_manual(
+      values = new_palette_colors[c(2,6)],
+      labels = c("", "* հունվարից մինչև սեպտեմբեր")
+    ) +
+    coord_cartesian(clip = "off") +
+    labs(
+      x = NULL,
+      y = NULL,
+      fill = NULL,
+    ) +
+    guides(fill = guide_legend(override.aes = list(alpha = c(0, 1)))) +
+    theme(
+      panel.grid.major.x = element_blank()
+    )
+  
+  return(plot)
+  
+}
+
+```
+
+
+
+```{r, include=FALSE}
+
+tourism_comparation_plot_1 <- 
+  tourism_monthly |> 
+  tourism_change_plot() +
+  labs(
+    title = "Զբոսաշրջային այցելություններ դեպի Հայաստան",
+    subtitle = "ըստ տարիների",
+    captions = caption_f("mineconomy.am")
+  )
+
+tourism_comparation_plot_2 <- 
+  tourism_quarter |> 
+  mutate(direction = ifelse(grepl("outbonds", eng), "outbonds", "visitors")) |> 
+  select(date, direction, value) |> 
+  pivot_wider(names_from = direction) |> 
+  mutate(
+    value = visitors - outbonds,
+    year = year(date),
+    month = month(date)
+  ) |> 
+  filter(year >= 2020) |> 
+  tourism_change_plot(max_month = 9) +
+  labs(
+    title = "Զուտ զբոսաշրջությունը դեպի Հայաստան",
+    subtitle = "ըստ տարիների, ժամանումների և մեկնումների տարբերությունը",
+    captions =  caption_f("armstat.am")
+  )
+
+tourism_comparation_plot_3 <- 
+  tourism_quarter |> 
+  mutate(direction = ifelse(grepl("outbonds", eng), "outbonds", "visitors")) |> 
+  select(date, direction, value) |> 
+  pivot_wider(names_from = direction) |> 
+  mutate(
+    value = visitors,
+    year = year(date),
+    month = month(date)
+  ) |> 
+  filter(year >= 2019) |> 
+  tourism_change_plot(max_month = 9) +
+  labs(
+    title = "Զբոսաշրջային այցելություններ դեպի Հայաստան",
+    subtitle = "ըստ տարիների",
+    captions =  caption_f("armstat.am")
+  )
+
+ggsave(
+  "plots/tourism_comparation_plot_2.png", tourism_comparation_plot_2,
+  width = 9, height = 6
+)
+
+ggsave(
+  "plots/tourism_comparation_plot_3.png", tourism_comparation_plot_3,
+  width = 9, height = 6
+)
+
+
+```
+
+
+
+
+```{r, include=FALSE}
+
+armenia_map <- ne_countries(country = "Armenia", returnclass = "sf", scale = 10)
+m_data <- read_csv("transport_map_data.csv")
+
+ft = 1.2
+
+tourism_entery_map <- 
+  ggplot() +
+  geom_sf(data = armenia_map, fill = new_palette_colors[7]) +
+  geom_rect(
+    data = tibble(xmin = c(44.9, 45.15), xmax = c(45.05, 45.25), ymin = c(41, 40), ymax = c(41.1, 41)),
+    aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax),
+    fill = new_palette_colors[7], alpha = 1
+  ) +
+  geom_rect(
+    data = tibble(
+      xmin = c(44, 44.5), xmax = c(44, 44.5), 
+      ymin = c(39, 39), ymax = c(39.1, 39.1),
+      fill = c("2023 հունվարից մարտ", "2024 հունվարից մարտ")
+    ),
+    aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, fill = fill),
+  ) +
+  geom_point(data = m_data, aes(x = longitude, y = latitude), color = "black", size = 2) +
+  geom_segment(
+    data = m_data, 
+    aes(x = longitude, xend = long_line_1, y = latitude, yend = lat_line_1),
+    linetype = 3
+  ) +
+  geom_segment(
+    data = m_data, 
+    aes(x = long_line_1, xend = long_line_2, y = lat_line_1, yend = lat_line_2),
+    linetype = 3
+  ) +
+  geom_text(
+    data = m_data, 
+    aes(
+      x = long_line_2, y = lat_line_2,
+      label = paste0(
+        X2023, "%", " | ", X2024, "%", "\n",
+        transportation_emoji, " ", place
+      ),
+      hjust = ifelse(long_line_2 == min(long_line_2), 0, 1)
+    ),
+  ) +
+  geom_rect(
+    data = m_data,
+    aes(
+      xmin = long_line_2 + ifelse(long_line_2 == min(long_line_2), 0*ft, -0.32*ft), 
+      xmax = long_line_2 + ifelse(long_line_2 == min(long_line_2), 0.12*ft, -0.2*ft), 
+      ymin = lat_line_2 + 0.085*ft, 
+      ymax = lat_line_2 + 0.085*ft + X2023 / 200
+    ),
+    fill = new_palette_colors[2], alpha = 1
+  ) +
+  geom_rect(
+    data = m_data,
+    aes(
+      xmin = long_line_2 + ifelse(long_line_2 == min(long_line_2), 0.2*ft, 0*ft), 
+      xmax = long_line_2 + ifelse(long_line_2 == min(long_line_2), 0.32*ft, -0.12*ft), 
+      ymin = lat_line_2 + 0.085*ft, 
+      ymax = lat_line_2 + 0.085*ft + X2024 / 200
+    ),
+    fill = new_palette_colors[6], alpha = 1
+  ) +
+  scale_fill_manual(values =  new_palette_colors[c(2, 6)]) +
+  labs(
+    x = NULL,
+    y = NULL,
+    fill = NULL,
+    title = "Զբոսաշրջային այցելություններ",
+    subtitle = "ըստ պետական սահմանի",
+    captions = caption_f("mineconomy.am")
+  ) +
+  theme(
+    panel.grid.major = element_blank(),
+    axis.text = element_blank(),
+  )
+
+```
+
+
+```{r, include=FALSE}
+
+tourism_quarter_plot <- 
+  tourism_quarter |> 
+  na.omit() |> 
+  filter(date >= as.Date("2007-01-01")) |> 
+  ggplot(aes(date, value / 1000, color = arm)) +
+  geom_line(linewidth = 0.8) +
+  scale_x_date(date_breaks = "2 years", date_labels = "%Y") +
+  scale_y_continuous(labels = number_format()) +
+  scale_color_manual(values = new_palette_colors[c(6, 2)]) +
+  guides(color = guide_legend(nrow = 2)) +
+  labs(
+    x = NULL,
+    y = NULL,
+    color = NULL,
+    title = "Զբոսաշրջիկների ժամանում և մեկնում",
+    subtitle = "հազար մարդ, տարեկան կտրվածքով",
+    captions =  caption_f("armstat.am")
+  )
+
+tourism_forecast <- 
+  tourism_quarter |> 
+  na.omit() |> 
+  filter(date >= as.Date("2007-01-01")) |> 
+  mutate(date = year(date) + month(date)/12) |> 
+  ggplot(aes(date, value_12 / 1000, color = arm)) +
+  geom_segment(
+    aes(
+      # x = ymd("2007-01-01"), xend = ymd("2024-01-01"),
+      x = 2007, xend = 2024,
+      y = 300, yend = 2170
+    ),
+    color = "black", linewidth = 0.1, linetype = "dotted"
+  ) +
+  geom_line(linewidth = 0.8) +
+  forecast::geom_forecast(alpha = 0.5) +
+  scale_x_continuous(breaks = seq(2006,2026,2)) +
+  scale_y_continuous(labels = number_format()) +
+  scale_color_manual(values = new_palette_colors[c(6, 2)]) +
+  guides(color = guide_legend(nrow = 2)) +
+  labs(
+    x = NULL,
+    y = NULL,
+    color = NULL,
+    title = "Զբոսաշրջիկներ ժամանում և մեկնում",
+    subtitle = "հազար մարդ, եռամյակային կտրվածքով",
+    captions =  caption_f("armstat.am")
+  )
+
+
+```
+
+
+
+***English summary below.***
+
+Հարգելի գործընկեր,
+
+Հուսով եմ՝ լավ եք: 
+Ներկայացնում եմ այս շաբաթվա վերլուծությունները և աշխատանքները.
+
+## [🌅🏖🌄 Սահմանից այն կողմ․ Հայաստանի տուրիստական աճը և հնարավոր անկումը](https://www.tvyal.com/newsletter/2024/2024_06_17)
+
+
+
+2021 թվականից ի վեր գրանցված տնտեսական աճի հիմքում է նաև զբոսաշրջության զգալի աճը: Առաջին գծապատկերում պատկերված է Հայաստան զբոսաշրջիկների ժամանումների և մեկնումների դինամիկան\` տարեկան կտրվածքով: Մինչև 2021թ. ժամանող և մեկնող զբոսաշրջիկների թիվը գրեթե հավասար էր: Նույնքան զբոսաշրջիկ էր գալիս Հայաստան, որքան մեկնում էր: Առկա էր զբոսաշրջիկների հոսքի տարեկան միջինը 12 տոկոս կայուն աճ: Առկա է նաև զբոսաշրջիկների որոշակի սեզոնայնություն\` ամռան ամիսներին մոտ 2 անգամ ավելի շատ զբոսաշրջիկ է այցելում, քան ձմռան ամիսներին:\*
+
+**Գծապատկեր 1.**
+
+```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
+tourism_quarter_plot
+```
+
+
+[Ինչպես ցույց է տվել մեր նախորդ հետազոտությունը](https://www.tvyal.com/newsletter/2024/2024_04_26), երկուսուկես տարի վերականգնողական և կտրուկ աճից հետո՝ 2023-ի 4-րդ եռամսյակից գրեթե բոլոր ծառայությունների արտահանումը և ներմուծումը կրճատվել են։ 2023 թվականի չորրորդ եռամսյակի հարաբերակցությունը երրորդ եռամսյակին ցույց է տալիս, որ տուրիստական կամ ճանապարհորդական ծառայությունները կրճատվել են գրեթե 2 անգամ՝ 42.6 տոկոսով, չնայած որ տարեկան կտրվածքով տուրիստական ծառայությունների արտահանումը աճել է 23.3 տոկոսով՝ հասնելով 3 մլրդ դոլարի։ Այսինքն` տուրիստները 2023-ին Հայաստանում գնել են 3 մլրդ դոլարի տուրիստական ծառայություններ։ 2023-ի աճը հիմնականում ձևավորվել էր առաջին 3 եռամսյակների շարունակական աճի հաշվին։ Նշենք նաև, որ 2022 թվականին ծառայությունների արտահանումը աճել է ավելի քան 3 անգամ՝ հիմնականում ի հաշվի հետհամաճարակային վերականգնման աճի, ռուսական տուրիստների և ռելոկատների մեծ քանակությամբ ավելացմամբ։
+
+Առաջին գծապատկերը ցույց է տալիս նաև համավարակի ազդեցությունը զբոսաշրջության հոսքի վրա. արդյունքում 2020 թվականի ապրիլ-օգոստոս ամիսներին Հայաստան մարդ չի այցելել, այսինքն՝ այս ժամանակահատվածում զբոսաշրջիկների թիվը եղել է 0: Այդ տարի սա մեծ հարված է հասցրել նաև տուրիստական արդյունաբերությանը: 2021 թվականից սկսվեց վերականգնողական աճը, որը պայմանավորված էր նաև Ռուսաստանից մեծ քանակությամբ ռելոկանտների ներհոսքով դեպի Հայաստան: Հատկանշական է, որ եթե մինչև 2020 թվականը ժամանող և մեկնող զբոսաշրջիկների քանակությունը գրեթե նույնն էր, ապա 2021 թվականից հետո ժամանող զբոսաշրջիկների քանակությունն ավելի մեծ աճ է արձանագրել, քան մեկնողներինը:
+
+
+**Գծապատկեր 2.** 
+
+```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
+tourism_comparation_plot_1
+```
+
+
+Նշենք, որ մինչև 2019թ. մեկնող և ժամանող զբոսաշրջիկների թիվը գրեթե հավասար էր և ուներ կայուն աճի միտում: 2020թ. համաճարակով պայմանավորված՝ զբոսաշրջիկների թիվը զգալիորեն կրճատվեց: 2021-2023 թվականներին գրանցվել է արագ տեմպերով վերականգնողական աճ: Հատկանշական է, որ ի տարբերություն մինչև 2019թ. գրանցված ցուցանիշների, երբ մեկնողների և ժամանողների թիվը գրեթե հավասար էր, այս ժամանակահատվածում՝ ըստ պաշտոնական տվյալների, 1.5 անգամ ավելի շատ զբոսաշրջիկ է ժամանել Հայաստան, քան մեկնել: Բացարձակ տարբերությունը այս 3 տարիների ընթացքում կազմել է 1.65 մլն մարդ: Այսպիսով՝ 2021-23 թվականների ընթացքում Հայաստան է ժամանել 4.86 մլն զբոսաշրջիկ, իսկ մեկնել է 3.22 մլն զբոսաշրջիկ:
+
+Նշենք, որ 2023-ին ժամանողների թիվը արդեն վերականգնվել է և աճ է արձանագրել մինչհամաճարակային 2019 թվականի մակարդակից, սակայն 2023 թվականին Հայաստանից մեկնել է 1.65 մլն զբոսաշրջիկ, որը դեռևս 12 տոկոսով պակաս է մինչհամաճարակային 2019 թվականի շրջանի 1.87 մլն մեկնող զբոսաշրջիկներից:
+
+**Գծապատկեր 3.**  
+
+```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
+tourism_comparation_plot_2
+```
+
+Մտահոգիչ է նաև զուտ զբոսաշրջության տվյալները (գծապատկեր 3), որոնք ներկայացնում են Հայաստան որպես տուրիստ ժամանածների և մեկնածների տարբերությունը: 2024 թվականի առաջին եռամսյակում ՀՀ զուտ զբոսաշրջության թիվը կազմել է 55 հազար մարդ, սակայն 2023 թվականի առաջին եռամսյակում նույն ցուցանիշը կազմել էր 116 հազար մարդ: Փաստորեն, 2024 թվականի առաջին եռամսյակում զուտ ժամանումների թիվը ավելի քան 2 անգամ պակաս է եղել՝ համեմատած 2023 թվականի նույն ժամանակահատվածի հետ: Նշենք, որ այս ցուցանիշը 2020 թվականի հետհամաճարակային շրջանից սկսած զգալի աճ էր արձանագրում մինչև 2024 թվականի առաջին եռամսյակը:
+
+Նշենք, որ 2023 թվականի առաջին եռամսյակում Հայաստան է այցելել 450 հազար մարդ, որից 50 տոկոսը կամ 225 հազարը եղել են Ռուսաստանի Դաշնությունից: 2024 թվականի առաջին եռամսյակում Հայաստան է այցելել 436 հազար մարդ, որից 42 տոկոսը կամ 184 հազարը եղել են Ռուսաստանից: Փաստորեն, 2020 թվականից հետո առաջին անգամ առկա է Հայաստան ժամանած զբոսաշրջիկների թվի կրճատում: 2024 թվականի առաջին եռամսյակում 3.2 տոկոսով ավելի քիչ զբոսաշրջիկ է այցելել Հայաստան, քան 2023 թվականի նույն ժամանակահատվածում, իսկ Ռուսաստանից եկած զբոսաշրջիկների թիվը նվազել է 18.7 տոկոսով: Նկատվում է նաև Ռուսաստանից եկած զբոսաշրջիկների տեսակարար կշռի կրճատում:\*\*
+
+Եթե համեմատենք 2024 թվականի առաջին եռամսյակը 2023 թվականի նույն ժամանակահատվածի հետ, առկա է նաև տուրիստների անկում ԱՄՆ-ից, Գերմանիայից և Ֆրանսիայից: ԱՄՆ-ից տուրիստական հոսքերը կրճատվել են ավելի քան 2 անգամ (11 հազար այցելուից մինչև 4.9 հազար), Գերմանիայից և Ֆրանսիայից՝ ավելի քան 30 տոկոսով: 2023 թվականի առաջին եռամսյակում այս պետություններից յուրաքանչյուրից ժամանել էր մոտ 5.4 հազար մարդ, իսկ 2024-ի առաջին եռամսյակում արդեն համապատասխանաբար 3.6 ու 3.5 հազար մարդ:
+
+
+**Գծապատկեր 4.**
+
+```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
+tourism_entery_map
+```
+
+Այս պահին զբոսաշրջիկների աճ առկա է Հնդկաստանից, Վրաստանից և Իրանից: Հնդկաստանից ժամանած զբոսաշրջիկների քանակությունը աճել է գրեթե 2 անգամ: 2023 թվականի առաջին եռամսյակում Հայաստան է այցելել 6.7 հազար Հնդկաստանի քաղաքացի (ընդանուր այցելությունների 1.5 տոկոսը), իսկ 2024 թվականի առաջին եռամսյակում՝ արդեն 13.2 հազար հնդիկ (ընդանուր այցելուների 3 տոկոսը): Վրաստանից և Իրանից այցելուների աճը կազմել է համապատասխանաբար 25 և 17 տոկոս: 2024 թվականի առաջին եռամսյակում Վրաստանից ժամանել է 62 հազար մարդ (ընդանուր այցելությունների 14 տոկոսը), իսկ Իրանից՝ 34 հազար մարդ (ընդանուր այցելուների 8 տոկոսը):
+
+Նշենք նաև, որ 2024 թվականի առաջին եռամսյակում Զվարթնոց միջազգային օդանավակայանով կատարված ուղևորությունները նվազել են 4 տոկոսով՝ համեմատած 2023 թվականի նույն ժամանակահատվածի հետ: 2023 թվականի առաջին եռամսյակի ժամանումների 65 տոկոսը կամ 290 հազար մարդ ժամանել է այս օդանավակայանով, իսկ 2024 թվականի առաջին եռամսյակում ժամանումների 64 տոկոսը կամ 279 հազար մարդ է ժամանել այս օդանավակայանով:
+
+
+
+**Գծապատկեր 5.**
+
+```{r, echo=FALSE, warning=FALSE, fig.width = 12, fig.height = 8}
+tourism_forecast
+```
+
+
+Վերջին գծապատկերը ցույց է տալիս Հայաստանից մեկնող և ժամանող զբոսաշրջիկների տարեկան դինամիկան, ինչպես նաև միջակայքային կանխատեսումը: Կետագծերով ներկայացված է մինչև 2019 թվականի ժամանումների և մեկնումների միջին՝ 12 տոկոսանոց տարեկան աճի թրենդային գիծը: Ինչպես երևում է, 2024 թվականի առաջին եռամսյակում ժամանումների տարեկան ցուցանիշը արդեն հասել է տարեկան թրենդային գծին և ունի նվազման միտում, որը կարող է բացասաբար անդրադառնալ տնտեսական ցուցանիշների, ինչպես նաև ընթացիկ հաշվեկշռի վրա: Հայաստանից մեկնող զբոսաշրջիկների թվաքանակը դեռևս ունի աճի միտում:
+
+<small>\* Ըստ ԶՀԿ մեթոդաբանության՝ «ցանկացած անձ, որն իր սովորական միջավայրից տարբերվող վայր է մեկնում 12 ամսից պակաս ժամկետով, և ում ճանապարհորդության հիմնական նպատակն այլ է, քան այցելած վայրից վարձատրվող գործունեության իրականացումը», համարվում է այցելու: Զբոսաշրջիկը այն այցելուն է, ով առնվազն մեկ գիշեր է մնում այցելած վայրի որևէ կացարանում: Փաստացի մեկ անհատ, եթե տարվա ընթացքում 3 անգամ դուրս գա որպես զբոսաշրջիկ պետության տարածքից, ապա մեկնող զբոսաշրջիկների թիվը կավելանա 3-ով:
+
+\*\* 2023 թվականի առաջին եռամսյակի զբոսաշրջային այցելությունների տվյալները ըստ պետությունների մոտարկված են տարեկան տվյալների հիման վրա, քանի որ հասանելի չէ լիարժեք տվյալների բազան:</small>
+
+-----
+
+-----
+
+Եթե հնարավոր է, խնդրում եմ այս նյութը ուղարկել նաև այն մարդկանց, ում այն կարծում եք կարող է հետաքրքրել:
+
+**ԱՅՍ ՀՈԴՎԱԾԻ ՀՂՈՒՄԸ**
+
+***Թավադյան, Աղ․Ա․ (2024)․ Սահմանից այն կողմ․ Հայաստանի տուրիստական աճը և հնարավոր անկումը [Beyond the Border. Growth and Possible Decline of Armenia's tourism]․ Tvyal.com հարթակ [Tvyal.com platform], 17-06-2024․ https://www.tvyal.com/newsletter/2024/2024_06_17***
+
+**Արգելվում է այս հարթակի նյութերը արտատպել առանց հղում կատարելու։**    
+
+<small> Այս և մեր բոլոր այլ վերլուծությունների տվյալները վերցված են պաշտոնական աղբյուրներից։ Հաշվարկները ամբողջությամբ հասանելի են github-ում, դրանք կարելի է ստուգել` այցելելով [github-ի](https://github.com/tavad/tvyal_newsletter/blob/main/2024/) մեր էջը, որտեղ տրված են տվյալները, հաշվարկների և գծապատկերների կոդը։</small>
+
+
+-----
+
+# ՀԱՄԱԳՈՐԾԱԿՑՈՒԹՅՈՒՆ
+
+<style>
+.ai-services-banner-tvyal {
+background-color: #0a192f;
+color: #e6f1ff;
+padding: 30px;
+font-family: Arial, sans-serif;
+border-radius: 10px;
+box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+position: relative;
+overflow: hidden;
+min-height: 400px;
+display: flex;
+flex-direction: column;
+justify-content: center;
+}
+.ai-services-banner-tvyal::before {
+content: '';
+position: absolute;
+top: -25%;
+left: -25%;
+right: -25%;
+bottom: -25%;
+background: repeating-radial-gradient(
+circle at 50% 50%,
+rgba(100, 255, 218, 0.1),
+rgba(100, 255, 218, 0.1) 15px,
+transparent 15px,
+transparent 30px
+);
+animation: gaussianWaveTvyal 10s infinite alternate;
+opacity: 0.3;
+z-index: 0;
+}
+@keyframes gaussianWaveTvyal {
+0% {
+transform: scale(1.5) rotate(0deg);
+opacity: 0.2;
+}
+50% {
+transform: scale(2.25) rotate(180deg);
+opacity: 0.5;
+}
+100% {
+transform: scale(1.5) rotate(360deg);
+opacity: 0.2;
+}
+}
+.ai-services-banner-tvyal > * {
+position: relative;
+z-index: 1;
+}
+.ai-services-banner-tvyal h2,
+.ai-services-banner-tvyal h3 {
+margin-bottom: 20px;
+color: #ccd6f6;
+}
+.ai-services-banner-tvyal ul {
+margin-bottom: 30px;
+padding-left: 20px;
+}
+.ai-services-banner-tvyal li {
+margin-bottom: 10px;
+}
+.ai-services-banner-tvyal a {
+color: #64ffda;
+text-decoration: none;
+transition: color 0.3s ease;
+}
+.ai-services-banner-tvyal a:hover {
+color: #ffd700;
+text-decoration: underline;
+}
+</style>
+
+<div class="ai-services-banner-tvyal">
+## [Եթե ուզում եք ձեր տվյլներից օգուտ քաղել AI գործիքներով` ԴԻՄԵՔ ՄԵԶ](mailto:a@tavadyan.com?subject=Let's Put Data to Work!)
+
+### Մենք առաջարկում ենք
+
+- Extensive databases for finding both international and local leads
+- Exclusive reports on the Future of the Armenian Economy
+- Work and browser automation to streamline operations and reduce staffing needs
+- AI models for forecasting growth and optimizing various aspects of your business
+- Advanced dashboarding and BI solutions
+- Algorithmic trading
+
+### [Let's Put Your Data to Work!](mailto:a@tavadyan.com?subject=Let's Put Data to Work!)
+
+### [ՄԻԱՑԵՔ ՄԵՐ ԹԻՄԻՆ](mailto:a@tavadyan.com?subject=Work application)
+</div>
+
+
+
+-----
+
+>
+> Ձեզ կարող են հետաքրքրել նաև այս նյութերը.
+>
+> * [💼✈🥶️ Հայաստանի հյուրընկալության սառչում](https://www.tvyal.com/newsletter/2024/2024_04_26)։
+> * [💸🔚🏦 Կապիտալի արտահոսք](https://www.tvyal.com/newsletter/2024/2024_03_01)։
+>
+
+
+-----
+
+
+## English Summary
+
+### 🌅🏖🌄 Beyond the Border. Growth and Possible Decline of Armenia's tourism 
+
+Since 2021, Armenia has experienced notable economic growth largely propelled by a surge in tourism. Prior to 2021, the flow of tourists was nearly balanced, with arrivals and departures maintaining equilibrium. However, post-2021, Armenia saw a significant rise in incoming tourists, outpacing departures and indicating a robust growth trend. This growth was bolstered by a seasonal pattern, with summer months attracting twice as many visitors as winter months. Despite challenges such as the pandemic-related disruptions in 2020, Armenia's tourism sector rebounded strongly, fueled by increased visits from Russian relocators and tourists. By 2023, tourism services exports reached $3 billion, underscoring the sector's pivotal role in Armenia's economic recovery and expansion.
+
+However, recent data from early 2024 signals a shift. The number of tourists visiting Armenia has decreased compared to the previous year, marking the first decline since 2020. This downturn is particularly evident among visitors from key markets like Russia, the USA, Germany, and France, where arrivals have notably decreased. Conversely, arrivals from countries like India, Georgia, and Iran have shown growth. Additionally, the number of tourists departing Armenia continues to increase, highlighting a potential imbalance in tourism flows that could impact economic indicators and the country's current account. As Armenia navigates these fluctuations, sustaining and diversifying its tourism appeal remains critical for economic stability and growth in the coming years.
+
+---
+
+Այս վերլուծությունը առկա է նաև [մեր կայքէջում](https://www.tvyal.com/newsletter/2024/2024_06_17), այս վերլուծության կոդը և տվյալները դրված են նաև [Github-ում](https://github.com/tavad/tvyal_newsletter)։       
+
+---    
+
+ 
+
+
+Հարգանքներով,            
+Աղասի Թավադյան         
+17.06.2024          
+[tvyal.com](https://www.tvyal.com/)      
+[tavadyan.com](https://www.tavadyan.com/)
+
+---
+
+[Was this email forwarded to you? Subscribe here.](https://www.tvyal.com/subscribe)
+
+[Բաժանորդագրվեք](https://www.tvyal.com/subscribe)
+
+       
+---              
+               
+
+
+####### **Ուշադրություն. Ձեր էլ.փոստը մեյլլիսթի մեջ է, որի միջոցով ես կիսվում եմ շաբաթական նյութեր, որոնք հիմնականում ներկայացնում են Հայաստանի տնտեսությունը: Նյութերը ներառում են գծապատկերներ, [տվյալների բազաներ](https://github.com/tavad/tvyal_newsletter), տեսանյութեր, հոդվածներ, [առցանց վահանակներ](https://www.tvyal.com/projects), տնտեսական գործիքներ, կանխատեսումներ և հաշվետվություններ: Եթե ցանկանում եք չեղարկել բաժանորդագրությունը, խնդրում եմ տեղեկացրեք ինձ, և ես կհեռացնեմ ձեր էլ. փոստը ցուցակից: Գրեք նաև եթե ունեք մենկնաբանություններ:**
+
+####### **Important! Your email is part of the mailing list where I share weekly materials primarily focused on the Armenian economy. These materials encompass charts, [databases](https://github.com/tavad/tvyal_newsletter), videos, articles, [online dashboards](https://www.tvyal.com/projects), economic tools, forecasts, and reports. If you wish to unsubscribe, please let me know, and I will remove your email from the list. Please share your comments as well․**
+
+
+
+
+
+
+
