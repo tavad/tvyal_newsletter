@@ -1,0 +1,1763 @@
+2026-03-12 10:07:00,497 INFO DRY RUN — nothing written
+2026-03-12 10:07:00,498 INFO 72 issues to scan
+2026-03-12 10:07:00,515 INFO Processing: 2023_09_11_reexports (3 candidate link(s))
+2026-03-12 10:07:00,515 INFO     PATCH: 'իմ ելույթքվ տրված 1in.am-in' -> https://youtu.be/tbmyd2sKWWg
+2026-03-12 10:07:00,517 INFO   patched 1 link(s)
+2026-03-12 10:07:00,540 INFO Processing: 2023_09_18_ellections (3 candidate link(s))
+2026-03-12 10:07:00,541 INFO     PATCH: 'github.com' -> https://github.com/tavad/tvyal_newsletter
+2026-03-12 10:07:00,541 INFO   patched 1 link(s)
+2026-03-12 10:07:00,548 INFO Processing: 2023_09_25_web_scraping_start (5 candidate link(s))
+2026-03-12 10:07:00,548 INFO     PATCH: '168.am/' -> https://168.am/
+2026-03-12 10:07:00,548 INFO     PATCH: 'Արմենպրեսի' -> https://armenpress.am/arm/
+2026-03-12 10:07:00,549 INFO     PATCH: 'այս կայքեջում' -> https://tavad.shinyapps.io/armenpress/
+2026-03-12 10:07:00,549 INFO   patched 3 link(s)
+2026-03-12 10:07:00,558 INFO Processing: 2023_10_02_russian_economy (5 candidate link(s))
+2026-03-12 10:07:00,558 INFO   (no unambiguous matches)
+2026-03-12 10:07:00,568 INFO Processing: 2023_10_09_AMD_FX (8 candidate link(s))
+2026-03-12 10:07:00,569 INFO   (no unambiguous matches)
+2026-03-12 10:07:00,589 INFO Processing: 2023_10_16_transfers (5 candidate link(s))
+2026-03-12 10:07:00,589 INFO     PATCH: 'reuters.com' -> https://www.reuters.com/markets/europe/russian-government-sets-out-capital-control-rules-undisclosed-exporters-2023-10-13/
+2026-03-12 10:07:00,591 INFO   patched 1 link(s)
+2026-03-12 10:07:00,605 INFO Processing: 2023_10_23_russia_balance (5 candidate link(s))
+2026-03-12 10:07:00,606 INFO   (no unambiguous matches)
+2026-03-12 10:07:00,617 INFO Processing: 2023_10_30_dollarization (4 candidate link(s))
+2026-03-12 10:07:00,618 INFO   (no unambiguous matches)
+2026-03-12 10:07:00,632 INFO Processing: 2023_11_06_budget_plan (5 candidate link(s))
+2026-03-12 10:07:00,632 INFO     PATCH: '1in.am հարթակով' -> https://www.1in.am/3344541.html
+2026-03-12 10:07:00,633 INFO   patched 1 link(s)
+2026-03-12 10:07:00,645 INFO Processing: 2023_11_13_exports (3 candidate link(s))
+2026-03-12 10:07:00,646 INFO   (no unambiguous matches)
+2026-03-12 10:07:00,659 INFO Processing: 2023_11_20_petrol_price (6 candidate link(s))
+2026-03-12 10:07:00,660 INFO     PATCH: 'Github-ում' -> https://github.com/tavad/tvyal_newsletter
+2026-03-12 10:07:00,660 INFO     PATCH: 'Factor.tv' -> https://www.youtube.com/watch?v=59NRXzTdMqY
+2026-03-12 10:07:00,661 INFO     PATCH: 'Panorama' -> https://www.panorama.am/am/news/2023/11/17/%D4%B1%D5%B2%D5%A1%D5%BD%D5%AB-%D4%B9%D5%A1%D5%BE%D5%A1%D5%A4%D5%B5%D5%A1%D5%B6/2927178
+2026-03-12 10:07:00,661 INFO   patched 3 link(s)
+2026-03-12 10:07:00,694 INFO Processing: 2023_11_27_petrol_price_forecast (11 candidate link(s))
+2026-03-12 10:07:00,695 INFO     PATCH: 'Github-ում' -> https://github.com/tavad/tvyal_newsletter
+2026-03-12 10:07:00,696 INFO     PATCH: '1in.am' -> https://youtu.be/TVdZ1qmq4uI?t=10
+2026-03-12 10:07:00,697 INFO   patched 2 link(s)
+2026-03-12 10:07:00,708 INFO Processing: 2023_12_04_exports_dashboard (6 candidate link(s))
+2026-03-12 10:07:00,710 INFO     PATCH: 'factor.tv լրատվամիջոցոին' -> https://youtu.be/mKZ7evjPVkY
+2026-03-12 10:07:00,710 INFO   patched 1 link(s)
+2026-03-12 10:07:00,725 INFO Processing: 2023_12_11_electricity_forecast (5 candidate link(s))
+2026-03-12 10:07:00,726 INFO     PATCH: '1in.am լրատվամիջոցին' -> https://youtu.be/RS6Qu_Im4Dw?t=6
+2026-03-12 10:07:00,726 INFO     PATCH: 'RUSARM INFO' -> https://www.youtube.com/watch?v=gMc6O6eAqRA
+2026-03-12 10:07:00,727 INFO   patched 2 link(s)
+2026-03-12 10:07:00,742 INFO Processing: 2023_12_18_GDP_structure (6 candidate link(s))
+2026-03-12 10:07:00,743 INFO     PATCH: 'Panorama.am' -> https://www.youtube.com/watch?v=FV0NqHOHfY4
+2026-03-12 10:07:00,744 INFO   patched 1 link(s)
+2026-03-12 10:07:00,786 INFO Processing: 2023_12_25_christmas_tree (5 candidate link(s))
+2026-03-12 10:07:00,787 INFO     PATCH: 'Github-ում' -> https://github.com/tavad/tvyal_newsletter
+2026-03-12 10:07:00,788 INFO   patched 1 link(s)
+2026-03-12 10:07:00,807 INFO Processing: 2024_01_07_household_income (6 candidate link(s))
+2026-03-12 10:07:00,808 INFO     PATCH: 'տեսանյութում' -> https://youtu.be/Va5q9efWaI4
+2026-03-12 10:07:00,809 INFO     PATCH: 'github-ի' -> https://github.com/tavad/tvyal_newsletter
+2026-03-12 10:07:00,809 INFO   patched 2 link(s)
+2026-03-12 10:07:00,826 INFO Processing: 2024_01_12_apartament_price_comparation (11 candidate link(s))
+2026-03-12 10:07:00,828 INFO     PATCH: 'Github-ում' -> https://github.com/tavad/tvyal_newsletter/2024
+2026-03-12 10:07:00,829 INFO   patched 1 link(s)
+2026-03-12 10:07:00,849 INFO Processing: 2024_01_19_vehicle_reexports (6 candidate link(s))
+2026-03-12 10:07:00,851 INFO   (no unambiguous matches)
+2026-03-12 10:07:00,869 INFO Processing: 2024_01_26_households_structure (4 candidate link(s))
+2026-03-12 10:07:00,870 INFO     PATCH: 'github-ի' -> https://github.com/tavad/tvyal_newsletter/tree/main/2024
+2026-03-12 10:07:00,871 INFO   patched 1 link(s)
+2026-03-12 10:07:00,882 INFO Processing: 2024_02_02_taxes_wildberries (3 candidate link(s))
+2026-03-12 10:07:00,883 INFO   (no unambiguous matches)
+2026-03-12 10:07:00,908 INFO Processing: 2024_02_09_wages (4 candidate link(s))
+2026-03-12 10:07:00,908 INFO     PATCH: 'github-ի' -> https://github.com/tavad/tvyal_newsletter/blob/main/2024/
+2026-03-12 10:07:00,910 INFO   patched 1 link(s)
+2026-03-12 10:07:00,922 INFO Processing: 2024_02_16_exports_1 (6 candidate link(s))
+2026-03-12 10:07:00,923 INFO     PATCH: 'github-ի' -> https://github.com/tavad/tvyal_newsletter/blob/main/2024/
+2026-03-12 10:07:00,924 INFO   patched 1 link(s)
+2026-03-12 10:07:00,954 INFO Processing: 2024_02_23_housing_market_crash_1 (6 candidate link(s))
+2026-03-12 10:07:00,955 INFO     PATCH: 'հաշվետվություններից' -> https://cadastre.am/analyze
+2026-03-12 10:07:00,956 INFO     PATCH: 'github-ի' -> https://github.com/tavad/tvyal_newsletter/blob/main/2024/
+2026-03-12 10:07:00,956 INFO   patched 2 link(s)
+2026-03-12 10:07:00,971 INFO Processing: 2024_03_01_transfers (9 candidate link(s))
+2026-03-12 10:07:00,973 INFO     PATCH: 'github-ի' -> https://github.com/tavad/tvyal_newsletter/blob/main/2024/
+2026-03-12 10:07:00,974 INFO   patched 1 link(s)
+2026-03-12 10:07:00,988 INFO Processing: 2024_03_09_GDP_components (2 candidate link(s))
+2026-03-12 10:07:00,988 INFO   (no unambiguous matches)
+2026-03-12 10:07:01,000 INFO Processing: 2024_03_15_GDP_structure (3 candidate link(s))
+2026-03-12 10:07:01,000 INFO   (no unambiguous matches)
+2026-03-12 10:07:01,015 INFO Processing: 2024_03_22_petrol_price (5 candidate link(s))
+2026-03-12 10:07:01,015 INFO     PATCH: 'github-ի' -> https://github.com/tavad/tvyal_newsletter/blob/main/2024/
+2026-03-12 10:07:01,016 INFO   patched 1 link(s)
+2026-03-12 10:07:01,031 INFO Processing: 2024_03_29_economic_activity (6 candidate link(s))
+2026-03-12 10:07:01,033 INFO   (no unambiguous matches)
+2026-03-12 10:07:01,049 INFO Processing: 2024_04_05_exchange (3 candidate link(s))
+2026-03-12 10:07:01,049 INFO   (no unambiguous matches)
+2026-03-12 10:07:01,063 INFO Processing: 2024_04_12_reexports (3 candidate link(s))
+2026-03-12 10:07:01,063 INFO   (no unambiguous matches)
+2026-03-12 10:07:01,078 INFO Processing: 2024_04_19_population_forecast (5 candidate link(s))
+2026-03-12 10:07:01,079 INFO   (no unambiguous matches)
+2026-03-12 10:07:01,102 INFO Processing: 2024_04_26_services_exports (4 candidate link(s))
+2026-03-12 10:07:01,103 INFO   (no unambiguous matches)
+2026-03-12 10:07:01,133 INFO Processing: 2024_05_03_taxes_mobile_centre (6 candidate link(s))
+2026-03-12 10:07:01,134 INFO   (no unambiguous matches)
+2026-03-12 10:07:01,151 INFO Processing: 2024_05_11_reexports_gold (5 candidate link(s))
+2026-03-12 10:07:01,151 INFO     PATCH: 'github-ի' -> https://github.com/tavad/tvyal_newsletter/blob/main/2024/
+2026-03-12 10:07:01,152 INFO   patched 1 link(s)
+2026-03-12 10:07:01,169 INFO Processing: 2024_05_17_electricity (4 candidate link(s))
+2026-03-12 10:07:01,170 INFO   (no unambiguous matches)
+2026-03-12 10:07:01,188 INFO Processing: 2024_06_07_CB_loans (4 candidate link(s))
+2026-03-12 10:07:01,189 INFO   (no unambiguous matches)
+2026-03-12 10:07:01,204 INFO Processing: 2024_06_17_tourism (3 candidate link(s))
+2026-03-12 10:07:01,205 INFO   (no unambiguous matches)
+2026-03-12 10:07:01,223 INFO Processing: 2024_06_28_public_dept (4 candidate link(s))
+2026-03-12 10:07:01,224 INFO   (no unambiguous matches)
+2026-03-12 10:07:01,240 INFO Processing: 2024_07_05_gold_hub (4 candidate link(s))
+2026-03-12 10:07:01,241 INFO     PATCH: 'github-ի' -> https://github.com/tavad/tvyal_newsletter/blob/main/2024/
+2026-03-12 10:07:01,242 INFO   patched 1 link(s)
+2026-03-12 10:07:01,277 INFO Processing: 2024_07_26_cooperation (7 candidate link(s))
+2026-03-12 10:07:01,278 INFO     PATCH: 'our weekly newsletter' -> https://www.tvyal.com/newsletter
+2026-03-12 10:07:01,279 INFO   patched 1 link(s)
+2026-03-12 10:07:01,296 INFO Processing: 2024_08_02_taxes (8 candidate link(s))
+2026-03-12 10:07:01,298 INFO   (no unambiguous matches)
+2026-03-12 10:07:01,313 INFO Processing: 2024_08_12_numbeo (5 candidate link(s))
+2026-03-12 10:07:01,313 INFO     PATCH: 'github-ի' -> https://github.com/tavad/tvyal_newsletter/blob/main/2024/
+2026-03-12 10:07:01,314 INFO     PATCH: 'Հարկահավաքաքության և տնտեսության այլ առանցքային խնդիրների վերաբերյալ դիտեք այս հարցազրույցը' -> https://youtu.be/W9JM8gnttl0
+2026-03-12 10:07:01,314 INFO   patched 2 link(s)
+2026-03-12 10:07:01,331 INFO Processing: 2024_08_19_IT_secor_jobs (5 candidate link(s))
+2026-03-12 10:07:01,332 INFO   (no unambiguous matches)
+2026-03-12 10:07:01,353 INFO Processing: 2024_08_26_GDP_components (5 candidate link(s))
+2026-03-12 10:07:01,355 INFO   (no unambiguous matches)
+2026-03-12 10:07:01,373 INFO Processing: 2024_09_02_exports_semiannual (8 candidate link(s))
+2026-03-12 10:07:01,375 INFO   (no unambiguous matches)
+2026-03-12 10:07:01,396 INFO Processing: 2024_09_09_electricity (5 candidate link(s))
+2026-03-12 10:07:01,397 INFO   (no unambiguous matches)
+2026-03-12 10:07:01,411 INFO Processing: 2024_09_16_transfers (10 candidate link(s))
+2026-03-12 10:07:01,413 INFO     PATCH: 'github-ի' -> https://github.com/tavad/tvyal_newsletter/blob/main/2024/
+2026-03-12 10:07:01,415 INFO   patched 1 link(s)
+2026-03-12 10:07:01,482 INFO Processing: 2024_09_23_tmp (3 candidate link(s))
+2026-03-12 10:07:01,482 INFO   (no unambiguous matches)
+2026-03-12 10:07:01,493 INFO Processing: 2024_09_30_GDP (3 candidate link(s))
+2026-03-12 10:07:01,493 INFO   (no unambiguous matches)
+2026-03-12 10:07:01,510 INFO Processing: 2024_10_07_wages (5 candidate link(s))
+2026-03-12 10:07:01,511 INFO   (no unambiguous matches)
+2026-03-12 10:07:01,526 INFO Processing: 2024_10_14_number_of_organizations (14 candidate link(s))
+2026-03-12 10:07:01,527 INFO     PATCH: 'Մինչև 01.01.2011թ․' -> https://armstat.am/file/article/sv_12_10a_150.pdf
+2026-03-12 10:07:01,527 INFO     PATCH: '2011թ․' -> https://armstat.am/file/article/sv_12_11a_150.pdf
+2026-03-12 10:07:01,527 INFO     PATCH: '2012թ․' -> https://armstat.am/file/article/sv_12_12a_150.pdf
+2026-03-12 10:07:01,528 INFO     PATCH: '2013թ․' -> https://armstat.am/file/article/sv_12_13a_150.pdf
+2026-03-12 10:07:01,528 INFO     PATCH: '2014թ․' -> https://armstat.am/file/article/sv_12_14a_150.pdf
+2026-03-12 10:07:01,528 INFO     PATCH: '2015թ․' -> https://armstat.am/file/article/sv_12_15a_150.pdf
+2026-03-12 10:07:01,528 INFO     PATCH: '2016թ․' -> https://armstat.am/file/article/sv_12_16a_150.pdf
+2026-03-12 10:07:01,529 INFO   patched 7 link(s)
+2026-03-12 10:07:01,542 INFO Processing: 2024_10_21_wages_2 (6 candidate link(s))
+2026-03-12 10:07:01,544 INFO   (no unambiguous matches)
+2026-03-12 10:07:01,553 INFO Processing: 2024_10_28_brics (8 candidate link(s))
+2026-03-12 10:07:01,555 INFO   (no unambiguous matches)
+2026-03-12 10:07:01,575 INFO Processing: 2024_11_04_population (6 candidate link(s))
+2026-03-12 10:07:01,577 INFO     PATCH: 'github-ի' -> https://github.com/tavad/tvyal_newsletter/blob/main/2024/
+2026-03-12 10:07:01,577 INFO   patched 1 link(s)
+2026-03-12 10:07:01,596 INFO Processing: 2024_11_19_budget_performance (9 candidate link(s))
+2026-03-12 10:07:01,598 INFO     PATCH: 'Դիտեք 1in.am-ին տված հարցազրույցը որը քաննարկում է բյուջեի կատարման, ինչպես նաև Հայաստանի տնտեսության հիվանդությունները' -> https://youtu.be/tNEGkDCOvy4?t=123
+2026-03-12 10:07:01,599 INFO   patched 1 link(s)
+2026-03-12 10:07:01,623 INFO Processing: 2024_12_09_exchange (7 candidate link(s))
+2026-03-12 10:07:01,625 INFO   (no unambiguous matches)
+2026-03-12 10:07:01,642 INFO Processing: 2024_12_17_CB_loans (5 candidate link(s))
+2026-03-12 10:07:01,643 INFO   (no unambiguous matches)
+2026-03-12 10:07:01,671 INFO Processing: 2024_12_23_GDP_components (5 candidate link(s))
+2026-03-12 10:07:01,672 INFO   (no unambiguous matches)
+2026-03-12 10:07:01,690 INFO Processing: 2024_12_30_christmas_tree (5 candidate link(s))
+2026-03-12 10:07:01,690 INFO   (no unambiguous matches)
+2026-03-12 10:07:01,704 INFO Processing: 2024_13_00_petrol_price (5 candidate link(s))
+2026-03-12 10:07:01,704 INFO     PATCH: 'github-ի' -> https://github.com/tavad/tvyal_newsletter/blob/main/2024/
+2026-03-12 10:07:01,705 INFO   patched 1 link(s)
+2026-03-12 10:07:01,726 INFO Processing: 2025_01_14_household_income (7 candidate link(s))
+2026-03-12 10:07:01,726 INFO     PATCH: 'տեսանյութում' -> https://youtu.be/Va5q9efWaI4
+2026-03-12 10:07:01,728 INFO   patched 1 link(s)
+2026-03-12 10:07:01,754 INFO Processing: 2025_01_20_transport_price (20 candidate link(s))
+2026-03-12 10:07:01,755 INFO     PATCH: 'տոմսերի արժեքը կազմելու է' -> https://transport.yerevan.am/
+2026-03-12 10:07:01,755 INFO     PATCH: 'Մեկ տոմս' -> https://housinganywhere.com/Budapest--Hungary/budapest-public-transport
+2026-03-12 10:07:01,755 INFO     PATCH: '30 րոպեանոց տոմս' -> https://pragueclassicalconcerts.com/en/public-transport-tickets
+2026-03-12 10:07:01,756 INFO     PATCH: '20 րոպեանոց տոմս' -> https://community.ricksteves.com/travel-forum/poland/senior-transit-in-warsaw
+2026-03-12 10:07:01,757 INFO     PATCH: 'Մետրոյի մեկ ժետոն' -> https://www.belarus.by/en/travel/transport-in-belarus/minsk-metro
+2026-03-12 10:07:01,758 INFO     PATCH: 'Կանխիկ/բանկային քարտ' -> https://www.uzdaily.uz/en/public-transport-fares-in-tashkent-to-increase-from-1-november/
+2026-03-12 10:07:01,758 INFO     PATCH: 'Numbeo.com' -> https://www.numbeo.com/cost-of-living/in/Yerevan?displayCurrency=USD
+2026-03-12 10:07:01,758 INFO     PATCH: 'github-ի' -> https://github.com/tavad/tvyal_newsletter/blob/main/2025/
+2026-03-12 10:07:01,759 INFO   patched 8 link(s)
+2026-03-12 10:07:01,777 INFO Processing: 2025_02_04_eai (14 candidate link(s))
+2026-03-12 10:07:01,777 INFO     PATCH: '2 անգամ անկում' -> https://www.armstat.am/file/doc/99555268.pdf
+2026-03-12 10:07:01,780 INFO   patched 1 link(s)
+2026-03-12 10:07:01,797 INFO Processing: 2025_02_18_transfers (7 candidate link(s))
+2026-03-12 10:07:01,798 INFO     PATCH: 'github-ի' -> https://github.com/tavad/tvyal_newsletter/blob/main/2024/
+2026-03-12 10:07:01,798 INFO   patched 1 link(s)
+2026-03-12 10:07:01,822 INFO Processing: 2025_02_25_exports_annual (6 candidate link(s))
+2026-03-12 10:07:01,823 INFO   (no unambiguous matches)
+2026-03-12 10:07:01,844 INFO Processing: 2025_03_11_GDP_components (5 candidate link(s))
+2026-03-12 10:07:01,845 INFO   (no unambiguous matches)
+2026-03-12 10:07:01,867 INFO Processing: 2025_03_25_public_dept (6 candidate link(s))
+2026-03-12 10:07:01,869 INFO   (no unambiguous matches)
+2026-03-12 10:07:01,881 INFO Processing: 2025_10_21_wages (6 candidate link(s))
+2026-03-12 10:07:01,882 INFO   (no unambiguous matches)
+2026-03-12 10:07:01,882 INFO 
+2026-03-12 10:07:01,882 INFO ==================================================
+2026-03-12 10:07:01,882 INFO   Issues with text links patched: 32
+2026-03-12 10:07:01,882 INFO   Total links patched:            54
+2026-03-12 10:07:01,882 INFO   (dry run — nothing written)
+2026-03-12 10:07:25,834 INFO DRY RUN — nothing written
+2026-03-12 10:07:25,835 INFO 72 issues to scan
+2026-03-12 10:07:25,845 INFO Processing: 2023_09_11_reexports (3 candidate link(s))
+2026-03-12 10:07:25,845 INFO     PATCH: 'իմ ելույթքվ տրված 1in.am-in' -> https://youtu.be/tbmyd2sKWWg
+2026-03-12 10:07:25,847 INFO   patched 1 link(s)
+2026-03-12 10:07:25,863 INFO Processing: 2023_09_18_ellections (3 candidate link(s))
+2026-03-12 10:07:25,864 INFO     PATCH: 'github.com' -> https://github.com/tavad/tvyal_newsletter
+2026-03-12 10:07:25,864 INFO   patched 1 link(s)
+2026-03-12 10:07:25,869 INFO Processing: 2023_09_25_web_scraping_start (5 candidate link(s))
+2026-03-12 10:07:25,870 INFO     PATCH: '168.am/' -> https://168.am/
+2026-03-12 10:07:25,870 INFO     PATCH: 'Արմենպրեսի' -> https://armenpress.am/arm/
+2026-03-12 10:07:25,870 INFO     PATCH: 'այս կայքեջում' -> https://tavad.shinyapps.io/armenpress/
+2026-03-12 10:07:25,870 INFO   patched 3 link(s)
+2026-03-12 10:07:25,879 INFO Processing: 2023_10_02_russian_economy (5 candidate link(s))
+2026-03-12 10:07:25,880 INFO   (no unambiguous matches)
+2026-03-12 10:07:25,887 INFO Processing: 2023_10_09_AMD_FX (8 candidate link(s))
+2026-03-12 10:07:25,888 INFO   (no unambiguous matches)
+2026-03-12 10:07:25,901 INFO Processing: 2023_10_16_transfers (5 candidate link(s))
+2026-03-12 10:07:25,901 INFO     PATCH: 'reuters.com' -> https://www.reuters.com/markets/europe/russian-government-sets-out-capital-control-rules-undisclosed-exporters-2023-10-13/
+2026-03-12 10:07:25,902 INFO   patched 1 link(s)
+2026-03-12 10:07:25,915 INFO Processing: 2023_10_23_russia_balance (5 candidate link(s))
+2026-03-12 10:07:25,916 INFO   (no unambiguous matches)
+2026-03-12 10:07:25,927 INFO Processing: 2023_10_30_dollarization (4 candidate link(s))
+2026-03-12 10:07:25,927 INFO   (no unambiguous matches)
+2026-03-12 10:07:25,947 INFO Processing: 2023_11_06_budget_plan (5 candidate link(s))
+2026-03-12 10:07:25,948 INFO     PATCH: '1in.am հարթակով' -> https://www.1in.am/3344541.html
+2026-03-12 10:07:25,949 INFO   patched 1 link(s)
+2026-03-12 10:07:25,958 INFO Processing: 2023_11_13_exports (3 candidate link(s))
+2026-03-12 10:07:25,959 INFO   (no unambiguous matches)
+2026-03-12 10:07:25,972 INFO Processing: 2023_11_20_petrol_price (6 candidate link(s))
+2026-03-12 10:07:25,973 INFO     PATCH: 'Github-ում' -> https://github.com/tavad/tvyal_newsletter
+2026-03-12 10:07:25,973 INFO     PATCH: 'Factor.tv' -> https://www.youtube.com/watch?v=59NRXzTdMqY
+2026-03-12 10:07:25,974 INFO     PATCH: 'Panorama' -> https://www.panorama.am/am/news/2023/11/17/%D4%B1%D5%B2%D5%A1%D5%BD%D5%AB-%D4%B9%D5%A1%D5%BE%D5%A1%D5%A4%D5%B5%D5%A1%D5%B6/2927178
+2026-03-12 10:07:25,975 INFO   patched 3 link(s)
+2026-03-12 10:07:26,003 INFO Processing: 2023_11_27_petrol_price_forecast (11 candidate link(s))
+2026-03-12 10:07:26,004 INFO     PATCH: 'Github-ում' -> https://github.com/tavad/tvyal_newsletter
+2026-03-12 10:07:26,006 INFO     PATCH: '1in.am' -> https://youtu.be/TVdZ1qmq4uI?t=10
+2026-03-12 10:07:26,007 INFO   patched 2 link(s)
+2026-03-12 10:07:26,017 INFO Processing: 2023_12_04_exports_dashboard (6 candidate link(s))
+2026-03-12 10:07:26,018 INFO     PATCH: 'factor.tv լրատվամիջոցոին' -> https://youtu.be/mKZ7evjPVkY
+2026-03-12 10:07:26,018 INFO   patched 1 link(s)
+2026-03-12 10:07:26,031 INFO Processing: 2023_12_11_electricity_forecast (5 candidate link(s))
+2026-03-12 10:07:26,032 INFO     PATCH: '1in.am լրատվամիջոցին' -> https://youtu.be/RS6Qu_Im4Dw?t=6
+2026-03-12 10:07:26,032 INFO     PATCH: 'RUSARM INFO' -> https://www.youtube.com/watch?v=gMc6O6eAqRA
+2026-03-12 10:07:26,033 INFO   patched 2 link(s)
+2026-03-12 10:07:26,045 INFO Processing: 2023_12_18_GDP_structure (6 candidate link(s))
+2026-03-12 10:07:26,046 INFO     PATCH: 'Panorama.am' -> https://www.youtube.com/watch?v=FV0NqHOHfY4
+2026-03-12 10:07:26,047 INFO   patched 1 link(s)
+2026-03-12 10:07:26,087 INFO Processing: 2023_12_25_christmas_tree (5 candidate link(s))
+2026-03-12 10:07:26,088 INFO     PATCH: 'Github-ում' -> https://github.com/tavad/tvyal_newsletter
+2026-03-12 10:07:26,089 INFO   patched 1 link(s)
+2026-03-12 10:07:26,105 INFO Processing: 2024_01_07_household_income (6 candidate link(s))
+2026-03-12 10:07:26,105 INFO     PATCH: 'տեսանյութում' -> https://youtu.be/Va5q9efWaI4
+2026-03-12 10:07:26,106 INFO     PATCH: 'github-ի' -> https://github.com/tavad/tvyal_newsletter
+2026-03-12 10:07:26,107 INFO   patched 2 link(s)
+2026-03-12 10:07:26,122 INFO Processing: 2024_01_12_apartament_price_comparation (11 candidate link(s))
+2026-03-12 10:07:26,124 INFO     PATCH: 'Github-ում' -> https://github.com/tavad/tvyal_newsletter/2024
+2026-03-12 10:07:26,125 INFO   patched 1 link(s)
+2026-03-12 10:07:26,143 INFO Processing: 2024_01_19_vehicle_reexports (6 candidate link(s))
+2026-03-12 10:07:26,145 INFO   (no unambiguous matches)
+2026-03-12 10:07:26,164 INFO Processing: 2024_01_26_households_structure (4 candidate link(s))
+2026-03-12 10:07:26,165 INFO     PATCH: 'github-ի' -> https://github.com/tavad/tvyal_newsletter/tree/main/2024
+2026-03-12 10:07:26,165 INFO   patched 1 link(s)
+2026-03-12 10:07:26,176 INFO Processing: 2024_02_02_taxes_wildberries (3 candidate link(s))
+2026-03-12 10:07:26,176 INFO   (no unambiguous matches)
+2026-03-12 10:07:26,190 INFO Processing: 2024_02_09_wages (4 candidate link(s))
+2026-03-12 10:07:26,191 INFO     PATCH: 'github-ի' -> https://github.com/tavad/tvyal_newsletter/blob/main/2024/
+2026-03-12 10:07:26,192 INFO   patched 1 link(s)
+2026-03-12 10:07:26,202 INFO Processing: 2024_02_16_exports_1 (6 candidate link(s))
+2026-03-12 10:07:26,202 INFO     PATCH: 'github-ի' -> https://github.com/tavad/tvyal_newsletter/blob/main/2024/
+2026-03-12 10:07:26,203 INFO   patched 1 link(s)
+2026-03-12 10:07:26,230 INFO Processing: 2024_02_23_housing_market_crash_1 (6 candidate link(s))
+2026-03-12 10:07:26,231 INFO     PATCH: 'հաշվետվություններից' -> https://cadastre.am/analyze
+2026-03-12 10:07:26,231 INFO     PATCH: 'github-ի' -> https://github.com/tavad/tvyal_newsletter/blob/main/2024/
+2026-03-12 10:07:26,232 INFO   patched 2 link(s)
+2026-03-12 10:07:26,249 INFO Processing: 2024_03_01_transfers (9 candidate link(s))
+2026-03-12 10:07:26,251 INFO     PATCH: 'github-ի' -> https://github.com/tavad/tvyal_newsletter/blob/main/2024/
+2026-03-12 10:07:26,251 INFO   patched 1 link(s)
+2026-03-12 10:07:26,264 INFO Processing: 2024_03_09_GDP_components (2 candidate link(s))
+2026-03-12 10:07:26,264 INFO   (no unambiguous matches)
+2026-03-12 10:07:26,276 INFO Processing: 2024_03_15_GDP_structure (3 candidate link(s))
+2026-03-12 10:07:26,277 INFO   (no unambiguous matches)
+2026-03-12 10:07:26,289 INFO Processing: 2024_03_22_petrol_price (5 candidate link(s))
+2026-03-12 10:07:26,290 INFO     PATCH: 'github-ի' -> https://github.com/tavad/tvyal_newsletter/blob/main/2024/
+2026-03-12 10:07:26,291 INFO   patched 1 link(s)
+2026-03-12 10:07:26,305 INFO Processing: 2024_03_29_economic_activity (6 candidate link(s))
+2026-03-12 10:07:26,307 INFO   (no unambiguous matches)
+2026-03-12 10:07:26,320 INFO Processing: 2024_04_05_exchange (3 candidate link(s))
+2026-03-12 10:07:26,320 INFO   (no unambiguous matches)
+2026-03-12 10:07:26,332 INFO Processing: 2024_04_12_reexports (3 candidate link(s))
+2026-03-12 10:07:26,333 INFO   (no unambiguous matches)
+2026-03-12 10:07:26,348 INFO Processing: 2024_04_19_population_forecast (5 candidate link(s))
+2026-03-12 10:07:26,349 INFO   (no unambiguous matches)
+2026-03-12 10:07:26,374 INFO Processing: 2024_04_26_services_exports (4 candidate link(s))
+2026-03-12 10:07:26,375 INFO   (no unambiguous matches)
+2026-03-12 10:07:26,400 INFO Processing: 2024_05_03_taxes_mobile_centre (6 candidate link(s))
+2026-03-12 10:07:26,401 INFO   (no unambiguous matches)
+2026-03-12 10:07:26,416 INFO Processing: 2024_05_11_reexports_gold (5 candidate link(s))
+2026-03-12 10:07:26,416 INFO     PATCH: 'github-ի' -> https://github.com/tavad/tvyal_newsletter/blob/main/2024/
+2026-03-12 10:07:26,417 INFO   patched 1 link(s)
+2026-03-12 10:07:26,433 INFO Processing: 2024_05_17_electricity (4 candidate link(s))
+2026-03-12 10:07:26,433 INFO   (no unambiguous matches)
+2026-03-12 10:07:26,450 INFO Processing: 2024_06_07_CB_loans (4 candidate link(s))
+2026-03-12 10:07:26,451 INFO   (no unambiguous matches)
+2026-03-12 10:07:26,465 INFO Processing: 2024_06_17_tourism (3 candidate link(s))
+2026-03-12 10:07:26,465 INFO   (no unambiguous matches)
+2026-03-12 10:07:26,480 INFO Processing: 2024_06_28_public_dept (4 candidate link(s))
+2026-03-12 10:07:26,481 INFO   (no unambiguous matches)
+2026-03-12 10:07:26,495 INFO Processing: 2024_07_05_gold_hub (4 candidate link(s))
+2026-03-12 10:07:26,496 INFO     PATCH: 'github-ի' -> https://github.com/tavad/tvyal_newsletter/blob/main/2024/
+2026-03-12 10:07:26,496 INFO   patched 1 link(s)
+2026-03-12 10:07:26,530 INFO Processing: 2024_07_26_cooperation (7 candidate link(s))
+2026-03-12 10:07:26,531 INFO     PATCH: 'our weekly newsletter' -> https://www.tvyal.com/newsletter
+2026-03-12 10:07:26,532 INFO   patched 1 link(s)
+2026-03-12 10:07:26,548 INFO Processing: 2024_08_02_taxes (8 candidate link(s))
+2026-03-12 10:07:26,550 INFO   (no unambiguous matches)
+2026-03-12 10:07:26,562 INFO Processing: 2024_08_12_numbeo (5 candidate link(s))
+2026-03-12 10:07:26,563 INFO     PATCH: 'github-ի' -> https://github.com/tavad/tvyal_newsletter/blob/main/2024/
+2026-03-12 10:07:26,563 INFO     PATCH: 'Հարկահավաքաքության և տնտեսության այլ առանցքային խնդիրների վերաբերյալ դիտեք այս հարցազրույցը' -> https://youtu.be/W9JM8gnttl0
+2026-03-12 10:07:26,564 INFO   patched 2 link(s)
+2026-03-12 10:07:26,581 INFO Processing: 2024_08_19_IT_secor_jobs (5 candidate link(s))
+2026-03-12 10:07:26,582 INFO   (no unambiguous matches)
+2026-03-12 10:07:26,600 INFO Processing: 2024_08_26_GDP_components (5 candidate link(s))
+2026-03-12 10:07:26,601 INFO   (no unambiguous matches)
+2026-03-12 10:07:26,617 INFO Processing: 2024_09_02_exports_semiannual (8 candidate link(s))
+2026-03-12 10:07:26,619 INFO   (no unambiguous matches)
+2026-03-12 10:07:26,638 INFO Processing: 2024_09_09_electricity (5 candidate link(s))
+2026-03-12 10:07:26,640 INFO   (no unambiguous matches)
+2026-03-12 10:07:26,653 INFO Processing: 2024_09_16_transfers (10 candidate link(s))
+2026-03-12 10:07:26,654 INFO     PATCH: 'github-ի' -> https://github.com/tavad/tvyal_newsletter/blob/main/2024/
+2026-03-12 10:07:26,656 INFO   patched 1 link(s)
+2026-03-12 10:07:26,717 INFO Processing: 2024_09_23_tmp (3 candidate link(s))
+2026-03-12 10:07:26,717 INFO   (no unambiguous matches)
+2026-03-12 10:07:26,725 INFO Processing: 2024_09_30_GDP (3 candidate link(s))
+2026-03-12 10:07:26,726 INFO   (no unambiguous matches)
+2026-03-12 10:07:26,734 INFO Processing: 2024_10_07_wages (5 candidate link(s))
+2026-03-12 10:07:26,735 INFO   (no unambiguous matches)
+2026-03-12 10:07:26,748 INFO Processing: 2024_10_14_number_of_organizations (14 candidate link(s))
+2026-03-12 10:07:26,749 INFO     PATCH: 'Մինչև 01.01.2011թ․' -> https://armstat.am/file/article/sv_12_10a_150.pdf
+2026-03-12 10:07:26,749 INFO     PATCH: '2011թ․' -> https://armstat.am/file/article/sv_12_11a_150.pdf
+2026-03-12 10:07:26,750 INFO     PATCH: '2012թ․' -> https://armstat.am/file/article/sv_12_12a_150.pdf
+2026-03-12 10:07:26,750 INFO     PATCH: '2013թ․' -> https://armstat.am/file/article/sv_12_13a_150.pdf
+2026-03-12 10:07:26,750 INFO     PATCH: '2014թ․' -> https://armstat.am/file/article/sv_12_14a_150.pdf
+2026-03-12 10:07:26,751 INFO     PATCH: '2015թ․' -> https://armstat.am/file/article/sv_12_15a_150.pdf
+2026-03-12 10:07:26,751 INFO     PATCH: '2016թ․' -> https://armstat.am/file/article/sv_12_16a_150.pdf
+2026-03-12 10:07:26,752 INFO   patched 7 link(s)
+2026-03-12 10:07:26,763 INFO Processing: 2024_10_21_wages_2 (6 candidate link(s))
+2026-03-12 10:07:26,764 INFO   (no unambiguous matches)
+2026-03-12 10:07:26,772 INFO Processing: 2024_10_28_brics (8 candidate link(s))
+2026-03-12 10:07:26,774 INFO   (no unambiguous matches)
+2026-03-12 10:07:26,794 INFO Processing: 2024_11_04_population (6 candidate link(s))
+2026-03-12 10:07:26,795 INFO     PATCH: 'github-ի' -> https://github.com/tavad/tvyal_newsletter/blob/main/2024/
+2026-03-12 10:07:26,796 INFO   patched 1 link(s)
+2026-03-12 10:07:26,815 INFO Processing: 2024_11_19_budget_performance (9 candidate link(s))
+2026-03-12 10:07:26,817 INFO     PATCH: 'Դիտեք 1in.am-ին տված հարցազրույցը որը քաննարկում է բյուջեի կատարման, ինչպես նաև Հայաստանի տնտեսության հիվանդությունները' -> https://youtu.be/tNEGkDCOvy4?t=123
+2026-03-12 10:07:26,818 INFO   patched 1 link(s)
+2026-03-12 10:07:26,836 INFO Processing: 2024_12_09_exchange (7 candidate link(s))
+2026-03-12 10:07:26,837 INFO   (no unambiguous matches)
+2026-03-12 10:07:26,853 INFO Processing: 2024_12_17_CB_loans (5 candidate link(s))
+2026-03-12 10:07:26,854 INFO   (no unambiguous matches)
+2026-03-12 10:07:26,884 INFO Processing: 2024_12_23_GDP_components (5 candidate link(s))
+2026-03-12 10:07:26,885 INFO   (no unambiguous matches)
+2026-03-12 10:07:26,900 INFO Processing: 2024_12_30_christmas_tree (5 candidate link(s))
+2026-03-12 10:07:26,901 INFO   (no unambiguous matches)
+2026-03-12 10:07:26,914 INFO Processing: 2024_13_00_petrol_price (5 candidate link(s))
+2026-03-12 10:07:26,914 INFO     PATCH: 'github-ի' -> https://github.com/tavad/tvyal_newsletter/blob/main/2024/
+2026-03-12 10:07:26,915 INFO   patched 1 link(s)
+2026-03-12 10:07:26,934 INFO Processing: 2025_01_14_household_income (7 candidate link(s))
+2026-03-12 10:07:26,934 INFO     PATCH: 'տեսանյութում' -> https://youtu.be/Va5q9efWaI4
+2026-03-12 10:07:26,936 INFO   patched 1 link(s)
+2026-03-12 10:07:26,960 INFO Processing: 2025_01_20_transport_price (20 candidate link(s))
+2026-03-12 10:07:26,960 INFO     PATCH: 'տոմսերի արժեքը կազմելու է' -> https://transport.yerevan.am/
+2026-03-12 10:07:26,961 INFO     PATCH: 'Մեկ տոմս' -> https://housinganywhere.com/Budapest--Hungary/budapest-public-transport
+2026-03-12 10:07:26,961 INFO     PATCH: '30 րոպեանոց տոմս' -> https://pragueclassicalconcerts.com/en/public-transport-tickets
+2026-03-12 10:07:26,961 INFO     PATCH: '20 րոպեանոց տոմս' -> https://community.ricksteves.com/travel-forum/poland/senior-transit-in-warsaw
+2026-03-12 10:07:26,962 INFO     PATCH: 'Մետրոյի մեկ ժետոն' -> https://www.belarus.by/en/travel/transport-in-belarus/minsk-metro
+2026-03-12 10:07:26,963 INFO     PATCH: 'Կանխիկ/բանկային քարտ' -> https://www.uzdaily.uz/en/public-transport-fares-in-tashkent-to-increase-from-1-november/
+2026-03-12 10:07:26,963 INFO     PATCH: 'Numbeo.com' -> https://www.numbeo.com/cost-of-living/in/Yerevan?displayCurrency=USD
+2026-03-12 10:07:26,963 INFO     PATCH: 'github-ի' -> https://github.com/tavad/tvyal_newsletter/blob/main/2025/
+2026-03-12 10:07:26,964 INFO   patched 8 link(s)
+2026-03-12 10:07:26,981 INFO Processing: 2025_02_04_eai (14 candidate link(s))
+2026-03-12 10:07:26,982 INFO     PATCH: '2 անգամ անկում' -> https://www.armstat.am/file/doc/99555268.pdf
+2026-03-12 10:07:26,984 INFO   patched 1 link(s)
+2026-03-12 10:07:26,999 INFO Processing: 2025_02_18_transfers (7 candidate link(s))
+2026-03-12 10:07:27,000 INFO     PATCH: 'github-ի' -> https://github.com/tavad/tvyal_newsletter/blob/main/2024/
+2026-03-12 10:07:27,000 INFO   patched 1 link(s)
+2026-03-12 10:07:27,023 INFO Processing: 2025_02_25_exports_annual (6 candidate link(s))
+2026-03-12 10:07:27,024 INFO   (no unambiguous matches)
+2026-03-12 10:07:27,043 INFO Processing: 2025_03_11_GDP_components (5 candidate link(s))
+2026-03-12 10:07:27,045 INFO   (no unambiguous matches)
+2026-03-12 10:07:27,067 INFO Processing: 2025_03_25_public_dept (6 candidate link(s))
+2026-03-12 10:07:27,068 INFO   (no unambiguous matches)
+2026-03-12 10:07:27,081 INFO Processing: 2025_10_21_wages (6 candidate link(s))
+2026-03-12 10:07:27,082 INFO   (no unambiguous matches)
+2026-03-12 10:07:27,082 INFO 
+2026-03-12 10:07:27,082 INFO ==================================================
+2026-03-12 10:07:27,082 INFO   Issues with text links patched: 32
+2026-03-12 10:07:27,082 INFO   Total links patched:            54
+2026-03-12 10:07:27,082 INFO   (dry run — nothing written)
+2026-03-12 10:07:36,021 INFO 72 issues to scan
+2026-03-12 10:07:36,030 INFO Processing: 2023_09_11_reexports (3 candidate link(s))
+2026-03-12 10:07:36,030 INFO     PATCH: 'իմ ելույթքվ տրված 1in.am-in' -> https://youtu.be/tbmyd2sKWWg
+2026-03-12 10:07:36,031 INFO   patched 1 link(s)
+2026-03-12 10:07:36,046 INFO Processing: 2023_09_18_ellections (3 candidate link(s))
+2026-03-12 10:07:36,047 INFO     PATCH: 'github.com' -> https://github.com/tavad/tvyal_newsletter
+2026-03-12 10:07:36,047 INFO   patched 1 link(s)
+2026-03-12 10:07:36,052 INFO Processing: 2023_09_25_web_scraping_start (5 candidate link(s))
+2026-03-12 10:07:36,052 INFO     PATCH: '168.am/' -> https://168.am/
+2026-03-12 10:07:36,052 INFO     PATCH: 'Արմենպրեսի' -> https://armenpress.am/arm/
+2026-03-12 10:07:36,053 INFO     PATCH: 'այս կայքեջում' -> https://tavad.shinyapps.io/armenpress/
+2026-03-12 10:07:36,053 INFO   patched 3 link(s)
+2026-03-12 10:07:36,061 INFO Processing: 2023_10_02_russian_economy (5 candidate link(s))
+2026-03-12 10:07:36,062 INFO   (no unambiguous matches)
+2026-03-12 10:07:36,069 INFO Processing: 2023_10_09_AMD_FX (8 candidate link(s))
+2026-03-12 10:07:36,070 INFO   (no unambiguous matches)
+2026-03-12 10:07:36,084 INFO Processing: 2023_10_16_transfers (5 candidate link(s))
+2026-03-12 10:07:36,084 INFO     PATCH: 'reuters.com' -> https://www.reuters.com/markets/europe/russian-government-sets-out-capital-control-rules-undisclosed-exporters-2023-10-13/
+2026-03-12 10:07:36,085 INFO   patched 1 link(s)
+2026-03-12 10:07:36,097 INFO Processing: 2023_10_23_russia_balance (5 candidate link(s))
+2026-03-12 10:07:36,098 INFO   (no unambiguous matches)
+2026-03-12 10:07:36,109 INFO Processing: 2023_10_30_dollarization (4 candidate link(s))
+2026-03-12 10:07:36,110 INFO   (no unambiguous matches)
+2026-03-12 10:07:36,123 INFO Processing: 2023_11_06_budget_plan (5 candidate link(s))
+2026-03-12 10:07:36,124 INFO     PATCH: '1in.am հարթակով' -> https://www.1in.am/3344541.html
+2026-03-12 10:07:36,125 INFO   patched 1 link(s)
+2026-03-12 10:07:36,134 INFO Processing: 2023_11_13_exports (3 candidate link(s))
+2026-03-12 10:07:36,135 INFO   (no unambiguous matches)
+2026-03-12 10:07:36,149 INFO Processing: 2023_11_20_petrol_price (6 candidate link(s))
+2026-03-12 10:07:36,150 INFO     PATCH: 'Github-ում' -> https://github.com/tavad/tvyal_newsletter
+2026-03-12 10:07:36,150 INFO     PATCH: 'Factor.tv' -> https://www.youtube.com/watch?v=59NRXzTdMqY
+2026-03-12 10:07:36,150 INFO     PATCH: 'Panorama' -> https://www.panorama.am/am/news/2023/11/17/%D4%B1%D5%B2%D5%A1%D5%BD%D5%AB-%D4%B9%D5%A1%D5%BE%D5%A1%D5%A4%D5%B5%D5%A1%D5%B6/2927178
+2026-03-12 10:07:36,150 INFO   patched 3 link(s)
+2026-03-12 10:07:36,181 INFO Processing: 2023_11_27_petrol_price_forecast (11 candidate link(s))
+2026-03-12 10:07:36,182 INFO     PATCH: 'Github-ում' -> https://github.com/tavad/tvyal_newsletter
+2026-03-12 10:07:36,183 INFO     PATCH: '1in.am' -> https://youtu.be/TVdZ1qmq4uI?t=10
+2026-03-12 10:07:36,183 INFO   patched 2 link(s)
+2026-03-12 10:07:36,194 INFO Processing: 2023_12_04_exports_dashboard (6 candidate link(s))
+2026-03-12 10:07:36,195 INFO     PATCH: 'factor.tv լրատվամիջոցոին' -> https://youtu.be/mKZ7evjPVkY
+2026-03-12 10:07:36,196 INFO   patched 1 link(s)
+2026-03-12 10:07:36,211 INFO Processing: 2023_12_11_electricity_forecast (5 candidate link(s))
+2026-03-12 10:07:36,211 INFO     PATCH: '1in.am լրատվամիջոցին' -> https://youtu.be/RS6Qu_Im4Dw?t=6
+2026-03-12 10:07:36,211 INFO     PATCH: 'RUSARM INFO' -> https://www.youtube.com/watch?v=gMc6O6eAqRA
+2026-03-12 10:07:36,212 INFO   patched 2 link(s)
+2026-03-12 10:07:36,228 INFO Processing: 2023_12_18_GDP_structure (6 candidate link(s))
+2026-03-12 10:07:36,230 INFO     PATCH: 'Panorama.am' -> https://www.youtube.com/watch?v=FV0NqHOHfY4
+2026-03-12 10:07:36,230 INFO   patched 1 link(s)
+2026-03-12 10:07:36,280 INFO Processing: 2023_12_25_christmas_tree (5 candidate link(s))
+2026-03-12 10:07:36,281 INFO     PATCH: 'Github-ում' -> https://github.com/tavad/tvyal_newsletter
+2026-03-12 10:07:36,282 INFO   patched 1 link(s)
+2026-03-12 10:07:36,299 INFO Processing: 2024_01_07_household_income (6 candidate link(s))
+2026-03-12 10:07:36,300 INFO     PATCH: 'տեսանյութում' -> https://youtu.be/Va5q9efWaI4
+2026-03-12 10:07:36,300 INFO     PATCH: 'github-ի' -> https://github.com/tavad/tvyal_newsletter
+2026-03-12 10:07:36,301 INFO   patched 2 link(s)
+2026-03-12 10:07:36,316 INFO Processing: 2024_01_12_apartament_price_comparation (11 candidate link(s))
+2026-03-12 10:07:36,317 INFO     PATCH: 'Github-ում' -> https://github.com/tavad/tvyal_newsletter/2024
+2026-03-12 10:07:36,318 INFO   patched 1 link(s)
+2026-03-12 10:07:36,336 INFO Processing: 2024_01_19_vehicle_reexports (6 candidate link(s))
+2026-03-12 10:07:36,338 INFO   (no unambiguous matches)
+2026-03-12 10:07:36,359 INFO Processing: 2024_01_26_households_structure (4 candidate link(s))
+2026-03-12 10:07:36,359 INFO     PATCH: 'github-ի' -> https://github.com/tavad/tvyal_newsletter/tree/main/2024
+2026-03-12 10:07:36,360 INFO   patched 1 link(s)
+2026-03-12 10:07:36,368 INFO Processing: 2024_02_02_taxes_wildberries (3 candidate link(s))
+2026-03-12 10:07:36,369 INFO   (no unambiguous matches)
+2026-03-12 10:07:36,384 INFO Processing: 2024_02_09_wages (4 candidate link(s))
+2026-03-12 10:07:36,384 INFO     PATCH: 'github-ի' -> https://github.com/tavad/tvyal_newsletter/blob/main/2024/
+2026-03-12 10:07:36,385 INFO   patched 1 link(s)
+2026-03-12 10:07:36,396 INFO Processing: 2024_02_16_exports_1 (6 candidate link(s))
+2026-03-12 10:07:36,397 INFO     PATCH: 'github-ի' -> https://github.com/tavad/tvyal_newsletter/blob/main/2024/
+2026-03-12 10:07:36,398 INFO   patched 1 link(s)
+2026-03-12 10:07:36,425 INFO Processing: 2024_02_23_housing_market_crash_1 (6 candidate link(s))
+2026-03-12 10:07:36,426 INFO     PATCH: 'հաշվետվություններից' -> https://cadastre.am/analyze
+2026-03-12 10:07:36,426 INFO     PATCH: 'github-ի' -> https://github.com/tavad/tvyal_newsletter/blob/main/2024/
+2026-03-12 10:07:36,427 INFO   patched 2 link(s)
+2026-03-12 10:07:36,443 INFO Processing: 2024_03_01_transfers (9 candidate link(s))
+2026-03-12 10:07:36,445 INFO     PATCH: 'github-ի' -> https://github.com/tavad/tvyal_newsletter/blob/main/2024/
+2026-03-12 10:07:36,446 INFO   patched 1 link(s)
+2026-03-12 10:07:36,458 INFO Processing: 2024_03_09_GDP_components (2 candidate link(s))
+2026-03-12 10:07:36,458 INFO   (no unambiguous matches)
+2026-03-12 10:07:36,468 INFO Processing: 2024_03_15_GDP_structure (3 candidate link(s))
+2026-03-12 10:07:36,469 INFO   (no unambiguous matches)
+2026-03-12 10:07:36,482 INFO Processing: 2024_03_22_petrol_price (5 candidate link(s))
+2026-03-12 10:07:36,482 INFO     PATCH: 'github-ի' -> https://github.com/tavad/tvyal_newsletter/blob/main/2024/
+2026-03-12 10:07:36,483 INFO   patched 1 link(s)
+2026-03-12 10:07:36,499 INFO Processing: 2024_03_29_economic_activity (6 candidate link(s))
+2026-03-12 10:07:36,500 INFO   (no unambiguous matches)
+2026-03-12 10:07:36,514 INFO Processing: 2024_04_05_exchange (3 candidate link(s))
+2026-03-12 10:07:36,514 INFO   (no unambiguous matches)
+2026-03-12 10:07:36,526 INFO Processing: 2024_04_12_reexports (3 candidate link(s))
+2026-03-12 10:07:36,527 INFO   (no unambiguous matches)
+2026-03-12 10:07:36,539 INFO Processing: 2024_04_19_population_forecast (5 candidate link(s))
+2026-03-12 10:07:36,541 INFO   (no unambiguous matches)
+2026-03-12 10:07:36,566 INFO Processing: 2024_04_26_services_exports (4 candidate link(s))
+2026-03-12 10:07:36,567 INFO   (no unambiguous matches)
+2026-03-12 10:07:36,594 INFO Processing: 2024_05_03_taxes_mobile_centre (6 candidate link(s))
+2026-03-12 10:07:36,595 INFO   (no unambiguous matches)
+2026-03-12 10:07:36,609 INFO Processing: 2024_05_11_reexports_gold (5 candidate link(s))
+2026-03-12 10:07:36,610 INFO     PATCH: 'github-ի' -> https://github.com/tavad/tvyal_newsletter/blob/main/2024/
+2026-03-12 10:07:36,611 INFO   patched 1 link(s)
+2026-03-12 10:07:36,627 INFO Processing: 2024_05_17_electricity (4 candidate link(s))
+2026-03-12 10:07:36,627 INFO   (no unambiguous matches)
+2026-03-12 10:07:36,643 INFO Processing: 2024_06_07_CB_loans (4 candidate link(s))
+2026-03-12 10:07:36,644 INFO   (no unambiguous matches)
+2026-03-12 10:07:36,655 INFO Processing: 2024_06_17_tourism (3 candidate link(s))
+2026-03-12 10:07:36,656 INFO   (no unambiguous matches)
+2026-03-12 10:07:36,669 INFO Processing: 2024_06_28_public_dept (4 candidate link(s))
+2026-03-12 10:07:36,670 INFO   (no unambiguous matches)
+2026-03-12 10:07:36,686 INFO Processing: 2024_07_05_gold_hub (4 candidate link(s))
+2026-03-12 10:07:36,686 INFO     PATCH: 'github-ի' -> https://github.com/tavad/tvyal_newsletter/blob/main/2024/
+2026-03-12 10:07:36,687 INFO   patched 1 link(s)
+2026-03-12 10:07:36,721 INFO Processing: 2024_07_26_cooperation (7 candidate link(s))
+2026-03-12 10:07:36,721 INFO     PATCH: 'our weekly newsletter' -> https://www.tvyal.com/newsletter
+2026-03-12 10:07:36,723 INFO   patched 1 link(s)
+2026-03-12 10:07:36,739 INFO Processing: 2024_08_02_taxes (8 candidate link(s))
+2026-03-12 10:07:36,741 INFO   (no unambiguous matches)
+2026-03-12 10:07:36,754 INFO Processing: 2024_08_12_numbeo (5 candidate link(s))
+2026-03-12 10:07:36,754 INFO     PATCH: 'github-ի' -> https://github.com/tavad/tvyal_newsletter/blob/main/2024/
+2026-03-12 10:07:36,755 INFO     PATCH: 'Հարկահավաքաքության և տնտեսության այլ առանցքային խնդիրների վերաբերյալ դիտեք այս հարցազրույցը' -> https://youtu.be/W9JM8gnttl0
+2026-03-12 10:07:36,755 INFO   patched 2 link(s)
+2026-03-12 10:07:36,770 INFO Processing: 2024_08_19_IT_secor_jobs (5 candidate link(s))
+2026-03-12 10:07:36,771 INFO   (no unambiguous matches)
+2026-03-12 10:07:36,796 INFO Processing: 2024_08_26_GDP_components (5 candidate link(s))
+2026-03-12 10:07:36,797 INFO   (no unambiguous matches)
+2026-03-12 10:07:36,813 INFO Processing: 2024_09_02_exports_semiannual (8 candidate link(s))
+2026-03-12 10:07:36,815 INFO   (no unambiguous matches)
+2026-03-12 10:07:36,834 INFO Processing: 2024_09_09_electricity (5 candidate link(s))
+2026-03-12 10:07:36,835 INFO   (no unambiguous matches)
+2026-03-12 10:07:36,850 INFO Processing: 2024_09_16_transfers (10 candidate link(s))
+2026-03-12 10:07:36,851 INFO     PATCH: 'github-ի' -> https://github.com/tavad/tvyal_newsletter/blob/main/2024/
+2026-03-12 10:07:36,852 INFO   patched 1 link(s)
+2026-03-12 10:07:36,912 INFO Processing: 2024_09_23_tmp (3 candidate link(s))
+2026-03-12 10:07:36,912 INFO   (no unambiguous matches)
+2026-03-12 10:07:36,920 INFO Processing: 2024_09_30_GDP (3 candidate link(s))
+2026-03-12 10:07:36,920 INFO   (no unambiguous matches)
+2026-03-12 10:07:36,929 INFO Processing: 2024_10_07_wages (5 candidate link(s))
+2026-03-12 10:07:36,930 INFO   (no unambiguous matches)
+2026-03-12 10:07:36,944 INFO Processing: 2024_10_14_number_of_organizations (14 candidate link(s))
+2026-03-12 10:07:36,945 INFO     PATCH: 'Մինչև 01.01.2011թ․' -> https://armstat.am/file/article/sv_12_10a_150.pdf
+2026-03-12 10:07:36,946 INFO     PATCH: '2011թ․' -> https://armstat.am/file/article/sv_12_11a_150.pdf
+2026-03-12 10:07:36,946 INFO     PATCH: '2012թ․' -> https://armstat.am/file/article/sv_12_12a_150.pdf
+2026-03-12 10:07:36,946 INFO     PATCH: '2013թ․' -> https://armstat.am/file/article/sv_12_13a_150.pdf
+2026-03-12 10:07:36,946 INFO     PATCH: '2014թ․' -> https://armstat.am/file/article/sv_12_14a_150.pdf
+2026-03-12 10:07:36,947 INFO     PATCH: '2015թ․' -> https://armstat.am/file/article/sv_12_15a_150.pdf
+2026-03-12 10:07:36,947 INFO     PATCH: '2016թ․' -> https://armstat.am/file/article/sv_12_16a_150.pdf
+2026-03-12 10:07:36,948 INFO   patched 7 link(s)
+2026-03-12 10:07:36,959 INFO Processing: 2024_10_21_wages_2 (6 candidate link(s))
+2026-03-12 10:07:36,961 INFO   (no unambiguous matches)
+2026-03-12 10:07:36,969 INFO Processing: 2024_10_28_brics (8 candidate link(s))
+2026-03-12 10:07:36,970 INFO   (no unambiguous matches)
+2026-03-12 10:07:36,990 INFO Processing: 2024_11_04_population (6 candidate link(s))
+2026-03-12 10:07:36,991 INFO     PATCH: 'github-ի' -> https://github.com/tavad/tvyal_newsletter/blob/main/2024/
+2026-03-12 10:07:36,992 INFO   patched 1 link(s)
+2026-03-12 10:07:37,009 INFO Processing: 2024_11_19_budget_performance (9 candidate link(s))
+2026-03-12 10:07:37,012 INFO     PATCH: 'Դիտեք 1in.am-ին տված հարցազրույցը որը քաննարկում է բյուջեի կատարման, ինչպես նաև Հայաստանի տնտեսության հիվանդությունները' -> https://youtu.be/tNEGkDCOvy4?t=123
+2026-03-12 10:07:37,014 INFO   patched 1 link(s)
+2026-03-12 10:07:37,032 INFO Processing: 2024_12_09_exchange (7 candidate link(s))
+2026-03-12 10:07:37,033 INFO   (no unambiguous matches)
+2026-03-12 10:07:37,050 INFO Processing: 2024_12_17_CB_loans (5 candidate link(s))
+2026-03-12 10:07:37,051 INFO   (no unambiguous matches)
+2026-03-12 10:07:37,068 INFO Processing: 2024_12_23_GDP_components (5 candidate link(s))
+2026-03-12 10:07:37,069 INFO   (no unambiguous matches)
+2026-03-12 10:07:37,095 INFO Processing: 2024_12_30_christmas_tree (5 candidate link(s))
+2026-03-12 10:07:37,096 INFO   (no unambiguous matches)
+2026-03-12 10:07:37,111 INFO Processing: 2024_13_00_petrol_price (5 candidate link(s))
+2026-03-12 10:07:37,111 INFO     PATCH: 'github-ի' -> https://github.com/tavad/tvyal_newsletter/blob/main/2024/
+2026-03-12 10:07:37,112 INFO   patched 1 link(s)
+2026-03-12 10:07:37,132 INFO Processing: 2025_01_14_household_income (7 candidate link(s))
+2026-03-12 10:07:37,132 INFO     PATCH: 'տեսանյութում' -> https://youtu.be/Va5q9efWaI4
+2026-03-12 10:07:37,133 INFO   patched 1 link(s)
+2026-03-12 10:07:37,155 INFO Processing: 2025_01_20_transport_price (20 candidate link(s))
+2026-03-12 10:07:37,155 INFO     PATCH: 'տոմսերի արժեքը կազմելու է' -> https://transport.yerevan.am/
+2026-03-12 10:07:37,156 INFO     PATCH: 'Մեկ տոմս' -> https://housinganywhere.com/Budapest--Hungary/budapest-public-transport
+2026-03-12 10:07:37,156 INFO     PATCH: '30 րոպեանոց տոմս' -> https://pragueclassicalconcerts.com/en/public-transport-tickets
+2026-03-12 10:07:37,157 INFO     PATCH: '20 րոպեանոց տոմս' -> https://community.ricksteves.com/travel-forum/poland/senior-transit-in-warsaw
+2026-03-12 10:07:37,158 INFO     PATCH: 'Մետրոյի մեկ ժետոն' -> https://www.belarus.by/en/travel/transport-in-belarus/minsk-metro
+2026-03-12 10:07:37,159 INFO     PATCH: 'Կանխիկ/բանկային քարտ' -> https://www.uzdaily.uz/en/public-transport-fares-in-tashkent-to-increase-from-1-november/
+2026-03-12 10:07:37,159 INFO     PATCH: 'Numbeo.com' -> https://www.numbeo.com/cost-of-living/in/Yerevan?displayCurrency=USD
+2026-03-12 10:07:37,159 INFO     PATCH: 'github-ի' -> https://github.com/tavad/tvyal_newsletter/blob/main/2025/
+2026-03-12 10:07:37,160 INFO   patched 8 link(s)
+2026-03-12 10:07:37,177 INFO Processing: 2025_02_04_eai (14 candidate link(s))
+2026-03-12 10:07:37,178 INFO     PATCH: '2 անգամ անկում' -> https://www.armstat.am/file/doc/99555268.pdf
+2026-03-12 10:07:37,180 INFO   patched 1 link(s)
+2026-03-12 10:07:37,196 INFO Processing: 2025_02_18_transfers (7 candidate link(s))
+2026-03-12 10:07:37,196 INFO     PATCH: 'github-ի' -> https://github.com/tavad/tvyal_newsletter/blob/main/2024/
+2026-03-12 10:07:37,197 INFO   patched 1 link(s)
+2026-03-12 10:07:37,218 INFO Processing: 2025_02_25_exports_annual (6 candidate link(s))
+2026-03-12 10:07:37,220 INFO   (no unambiguous matches)
+2026-03-12 10:07:37,237 INFO Processing: 2025_03_11_GDP_components (5 candidate link(s))
+2026-03-12 10:07:37,239 INFO   (no unambiguous matches)
+2026-03-12 10:07:37,261 INFO Processing: 2025_03_25_public_dept (6 candidate link(s))
+2026-03-12 10:07:37,263 INFO   (no unambiguous matches)
+2026-03-12 10:07:37,271 INFO Processing: 2025_10_21_wages (6 candidate link(s))
+2026-03-12 10:07:37,273 INFO   (no unambiguous matches)
+2026-03-12 10:07:37,273 INFO 
+2026-03-12 10:07:37,273 INFO ==================================================
+2026-03-12 10:07:37,273 INFO   Issues with text links patched: 32
+2026-03-12 10:07:37,273 INFO   Total links patched:            54
+2026-03-12 19:36:34,113 INFO DRY RUN — nothing written
+2026-03-12 19:36:34,115 INFO 72 issues to scan
+2026-03-12 19:36:34,122 INFO Processing: 2023_09_11_reexports (3 candidate link(s))
+2026-03-12 19:36:34,123 INFO   (no unambiguous matches)
+2026-03-12 19:36:34,139 INFO Processing: 2023_09_18_ellections (3 candidate link(s))
+2026-03-12 19:36:34,140 INFO     PATCH: 'github.com' -> https://github.com/tavad/tvyal_newsletter
+2026-03-12 19:36:34,141 INFO   patched 1 link(s)
+2026-03-12 19:36:34,147 INFO Processing: 2023_09_25_web_scraping_start (5 candidate link(s))
+2026-03-12 19:36:34,148 INFO     PATCH: '168.am/' -> https://168.am/
+2026-03-12 19:36:34,148 INFO   patched 1 link(s)
+2026-03-12 19:36:34,155 INFO Processing: 2023_10_02_russian_economy (5 candidate link(s))
+2026-03-12 19:36:34,156 INFO   (no unambiguous matches)
+2026-03-12 19:36:34,166 INFO Processing: 2023_10_09_AMD_FX (8 candidate link(s))
+2026-03-12 19:36:34,167 INFO   (no unambiguous matches)
+2026-03-12 19:36:34,182 INFO Processing: 2023_10_16_transfers (5 candidate link(s))
+2026-03-12 19:36:34,183 INFO     PATCH: 'reuters.com' -> https://www.reuters.com/markets/europe/russian-government-sets-out-capital-control-rules-undisclosed-exporters-2023-10-13/
+2026-03-12 19:36:34,184 INFO   patched 1 link(s)
+2026-03-12 19:36:34,195 INFO Processing: 2023_10_23_russia_balance (5 candidate link(s))
+2026-03-12 19:36:34,198 INFO   (no unambiguous matches)
+2026-03-12 19:36:34,208 INFO Processing: 2023_10_30_dollarization (4 candidate link(s))
+2026-03-12 19:36:34,208 INFO   (no unambiguous matches)
+2026-03-12 19:36:34,222 INFO Processing: 2023_11_06_budget_plan (5 candidate link(s))
+2026-03-12 19:36:34,223 INFO   (no unambiguous matches)
+2026-03-12 19:36:34,233 INFO Processing: 2023_11_13_exports (3 candidate link(s))
+2026-03-12 19:36:34,234 INFO   (no unambiguous matches)
+2026-03-12 19:36:34,248 INFO Processing: 2023_11_20_petrol_price (6 candidate link(s))
+2026-03-12 19:36:34,249 INFO   (no unambiguous matches)
+2026-03-12 19:36:34,279 INFO Processing: 2023_11_27_petrol_price_forecast (11 candidate link(s))
+2026-03-12 19:36:34,284 INFO   (no unambiguous matches)
+2026-03-12 19:36:34,296 INFO Processing: 2023_12_04_exports_dashboard (6 candidate link(s))
+2026-03-12 19:36:34,298 INFO   (no unambiguous matches)
+2026-03-12 19:36:34,312 INFO Processing: 2023_12_11_electricity_forecast (5 candidate link(s))
+2026-03-12 19:36:34,313 INFO   (no unambiguous matches)
+2026-03-12 19:36:34,325 INFO Processing: 2023_12_18_GDP_structure (6 candidate link(s))
+2026-03-12 19:36:34,326 INFO   (no unambiguous matches)
+2026-03-12 19:36:34,371 INFO Processing: 2023_12_25_christmas_tree (5 candidate link(s))
+2026-03-12 19:36:34,372 INFO   (no unambiguous matches)
+2026-03-12 19:36:34,389 INFO Processing: 2024_01_07_household_income (6 candidate link(s))
+2026-03-12 19:36:34,390 INFO   (no unambiguous matches)
+2026-03-12 19:36:34,407 INFO Processing: 2024_01_12_apartament_price_comparation (11 candidate link(s))
+2026-03-12 19:36:34,409 INFO   (no unambiguous matches)
+2026-03-12 19:36:34,427 INFO Processing: 2024_01_19_vehicle_reexports (6 candidate link(s))
+2026-03-12 19:36:34,429 INFO   (no unambiguous matches)
+2026-03-12 19:36:34,450 INFO Processing: 2024_01_26_households_structure (4 candidate link(s))
+2026-03-12 19:36:34,451 INFO   (no unambiguous matches)
+2026-03-12 19:36:34,460 INFO Processing: 2024_02_02_taxes_wildberries (3 candidate link(s))
+2026-03-12 19:36:34,461 INFO   (no unambiguous matches)
+2026-03-12 19:36:34,477 INFO Processing: 2024_02_09_wages (4 candidate link(s))
+2026-03-12 19:36:34,478 INFO   (no unambiguous matches)
+2026-03-12 19:36:34,490 INFO Processing: 2024_02_16_exports_1 (6 candidate link(s))
+2026-03-12 19:36:34,491 INFO   (no unambiguous matches)
+2026-03-12 19:36:34,518 INFO Processing: 2024_02_23_housing_market_crash_1 (6 candidate link(s))
+2026-03-12 19:36:34,519 INFO   (no unambiguous matches)
+2026-03-12 19:36:34,540 INFO Processing: 2024_03_01_transfers (9 candidate link(s))
+2026-03-12 19:36:34,542 INFO   (no unambiguous matches)
+2026-03-12 19:36:34,556 INFO Processing: 2024_03_09_GDP_components (2 candidate link(s))
+2026-03-12 19:36:34,556 INFO   (no unambiguous matches)
+2026-03-12 19:36:34,569 INFO Processing: 2024_03_15_GDP_structure (3 candidate link(s))
+2026-03-12 19:36:34,570 INFO   (no unambiguous matches)
+2026-03-12 19:36:34,587 INFO Processing: 2024_03_22_petrol_price (5 candidate link(s))
+2026-03-12 19:36:34,588 INFO   (no unambiguous matches)
+2026-03-12 19:36:34,607 INFO Processing: 2024_03_29_economic_activity (6 candidate link(s))
+2026-03-12 19:36:34,609 INFO   (no unambiguous matches)
+2026-03-12 19:36:34,623 INFO Processing: 2024_04_05_exchange (3 candidate link(s))
+2026-03-12 19:36:34,624 INFO   (no unambiguous matches)
+2026-03-12 19:36:34,637 INFO Processing: 2024_04_12_reexports (3 candidate link(s))
+2026-03-12 19:36:34,639 INFO   (no unambiguous matches)
+2026-03-12 19:36:34,652 INFO Processing: 2024_04_19_population_forecast (5 candidate link(s))
+2026-03-12 19:36:34,653 INFO   (no unambiguous matches)
+2026-03-12 19:36:34,679 INFO Processing: 2024_04_26_services_exports (4 candidate link(s))
+2026-03-12 19:36:34,681 INFO   (no unambiguous matches)
+2026-03-12 19:36:34,708 INFO Processing: 2024_05_03_taxes_mobile_centre (6 candidate link(s))
+2026-03-12 19:36:34,708 INFO   (no unambiguous matches)
+2026-03-12 19:36:34,723 INFO Processing: 2024_05_11_reexports_gold (5 candidate link(s))
+2026-03-12 19:36:34,724 INFO   (no unambiguous matches)
+2026-03-12 19:36:34,741 INFO Processing: 2024_05_17_electricity (4 candidate link(s))
+2026-03-12 19:36:34,742 INFO   (no unambiguous matches)
+2026-03-12 19:36:34,758 INFO Processing: 2024_06_07_CB_loans (4 candidate link(s))
+2026-03-12 19:36:34,758 INFO   (no unambiguous matches)
+2026-03-12 19:36:34,772 INFO Processing: 2024_06_17_tourism (3 candidate link(s))
+2026-03-12 19:36:34,773 INFO   (no unambiguous matches)
+2026-03-12 19:36:34,791 INFO Processing: 2024_06_28_public_dept (4 candidate link(s))
+2026-03-12 19:36:34,792 INFO   (no unambiguous matches)
+2026-03-12 19:36:34,808 INFO Processing: 2024_07_05_gold_hub (4 candidate link(s))
+2026-03-12 19:36:34,809 INFO   (no unambiguous matches)
+2026-03-12 19:36:34,843 INFO Processing: 2024_07_26_cooperation (7 candidate link(s))
+2026-03-12 19:36:34,845 INFO   (no unambiguous matches)
+2026-03-12 19:36:34,862 INFO Processing: 2024_08_02_taxes (8 candidate link(s))
+2026-03-12 19:36:34,865 INFO   (no unambiguous matches)
+2026-03-12 19:36:34,877 INFO Processing: 2024_08_12_numbeo (5 candidate link(s))
+2026-03-12 19:36:34,879 INFO   (no unambiguous matches)
+2026-03-12 19:36:34,898 INFO Processing: 2024_08_19_IT_secor_jobs (5 candidate link(s))
+2026-03-12 19:36:34,899 INFO   (no unambiguous matches)
+2026-03-12 19:36:34,918 INFO Processing: 2024_08_26_GDP_components (5 candidate link(s))
+2026-03-12 19:36:34,919 INFO   (no unambiguous matches)
+2026-03-12 19:36:34,936 INFO Processing: 2024_09_02_exports_semiannual (8 candidate link(s))
+2026-03-12 19:36:34,937 INFO   (no unambiguous matches)
+2026-03-12 19:36:34,957 INFO Processing: 2024_09_09_electricity (5 candidate link(s))
+2026-03-12 19:36:34,958 INFO   (no unambiguous matches)
+2026-03-12 19:36:34,975 INFO Processing: 2024_09_16_transfers (10 candidate link(s))
+2026-03-12 19:36:34,976 INFO   (no unambiguous matches)
+2026-03-12 19:36:35,042 INFO Processing: 2024_09_23_tmp (3 candidate link(s))
+2026-03-12 19:36:35,043 INFO   (no unambiguous matches)
+2026-03-12 19:36:35,053 INFO Processing: 2024_09_30_GDP (3 candidate link(s))
+2026-03-12 19:36:35,053 INFO   (no unambiguous matches)
+2026-03-12 19:36:35,061 INFO Processing: 2024_10_07_wages (5 candidate link(s))
+2026-03-12 19:36:35,063 INFO   (no unambiguous matches)
+2026-03-12 19:36:35,076 INFO Processing: 2024_10_14_number_of_organizations (14 candidate link(s))
+2026-03-12 19:36:35,080 INFO   (no unambiguous matches)
+2026-03-12 19:36:35,090 INFO Processing: 2024_10_21_wages_2 (6 candidate link(s))
+2026-03-12 19:36:35,091 INFO   (no unambiguous matches)
+2026-03-12 19:36:35,103 INFO Processing: 2024_10_28_brics (8 candidate link(s))
+2026-03-12 19:36:35,105 INFO   (no unambiguous matches)
+2026-03-12 19:36:35,125 INFO Processing: 2024_11_04_population (6 candidate link(s))
+2026-03-12 19:36:35,126 INFO   (no unambiguous matches)
+2026-03-12 19:36:35,144 INFO Processing: 2024_11_19_budget_performance (9 candidate link(s))
+2026-03-12 19:36:35,148 INFO   (no unambiguous matches)
+2026-03-12 19:36:35,168 INFO Processing: 2024_12_09_exchange (7 candidate link(s))
+2026-03-12 19:36:35,169 INFO   (no unambiguous matches)
+2026-03-12 19:36:35,185 INFO Processing: 2024_12_17_CB_loans (5 candidate link(s))
+2026-03-12 19:36:35,186 INFO   (no unambiguous matches)
+2026-03-12 19:36:35,204 INFO Processing: 2024_12_23_GDP_components (5 candidate link(s))
+2026-03-12 19:36:35,205 INFO   (no unambiguous matches)
+2026-03-12 19:36:35,230 INFO Processing: 2024_12_30_christmas_tree (5 candidate link(s))
+2026-03-12 19:36:35,231 INFO   (no unambiguous matches)
+2026-03-12 19:36:35,243 INFO Processing: 2024_13_00_petrol_price (5 candidate link(s))
+2026-03-12 19:36:35,244 INFO   (no unambiguous matches)
+2026-03-12 19:36:35,267 INFO Processing: 2025_01_14_household_income (7 candidate link(s))
+2026-03-12 19:36:35,269 INFO   (no unambiguous matches)
+2026-03-12 19:36:35,297 INFO Processing: 2025_01_20_transport_price (20 candidate link(s))
+2026-03-12 19:36:35,301 INFO   (no unambiguous matches)
+2026-03-12 19:36:35,318 INFO Processing: 2025_02_04_eai (14 candidate link(s))
+2026-03-12 19:36:35,320 INFO   (no unambiguous matches)
+2026-03-12 19:36:35,337 INFO Processing: 2025_02_18_transfers (7 candidate link(s))
+2026-03-12 19:36:35,338 INFO   (no unambiguous matches)
+2026-03-12 19:36:35,360 INFO Processing: 2025_02_25_exports_annual (6 candidate link(s))
+2026-03-12 19:36:35,362 INFO   (no unambiguous matches)
+2026-03-12 19:36:35,383 INFO Processing: 2025_03_11_GDP_components (5 candidate link(s))
+2026-03-12 19:36:35,385 INFO   (no unambiguous matches)
+2026-03-12 19:36:35,406 INFO Processing: 2025_03_25_public_dept (6 candidate link(s))
+2026-03-12 19:36:35,408 INFO   (no unambiguous matches)
+2026-03-12 19:36:35,419 INFO Processing: 2025_10_21_wages (6 candidate link(s))
+2026-03-12 19:36:35,420 INFO   (no unambiguous matches)
+2026-03-12 19:36:35,420 INFO 
+2026-03-12 19:36:35,420 INFO ==================================================
+2026-03-12 19:36:35,420 INFO   Issues with text links patched: 3
+2026-03-12 19:36:35,420 INFO   Total links patched:            3
+2026-03-12 19:36:35,420 INFO   (dry run — nothing written)
+2026-03-12 19:36:40,672 INFO DRY RUN — nothing written
+2026-03-12 19:36:40,673 INFO 72 issues to scan
+2026-03-12 19:36:40,682 INFO Processing: 2023_09_11_reexports (3 candidate link(s))
+2026-03-12 19:36:40,683 INFO   (no unambiguous matches)
+2026-03-12 19:36:40,698 INFO Processing: 2023_09_18_ellections (3 candidate link(s))
+2026-03-12 19:36:40,699 INFO     PATCH: 'github.com' -> https://github.com/tavad/tvyal_newsletter
+2026-03-12 19:36:40,701 INFO   patched 1 link(s)
+2026-03-12 19:36:40,706 INFO Processing: 2023_09_25_web_scraping_start (5 candidate link(s))
+2026-03-12 19:36:40,706 INFO     PATCH: '168.am/' -> https://168.am/
+2026-03-12 19:36:40,707 INFO   patched 1 link(s)
+2026-03-12 19:36:40,715 INFO Processing: 2023_10_02_russian_economy (5 candidate link(s))
+2026-03-12 19:36:40,716 INFO   (no unambiguous matches)
+2026-03-12 19:36:40,723 INFO Processing: 2023_10_09_AMD_FX (8 candidate link(s))
+2026-03-12 19:36:40,724 INFO   (no unambiguous matches)
+2026-03-12 19:36:40,741 INFO Processing: 2023_10_16_transfers (5 candidate link(s))
+2026-03-12 19:36:40,741 INFO     PATCH: 'reuters.com' -> https://www.reuters.com/markets/europe/russian-government-sets-out-capital-control-rules-undisclosed-exporters-2023-10-13/
+2026-03-12 19:36:40,742 INFO   patched 1 link(s)
+2026-03-12 19:36:40,755 INFO Processing: 2023_10_23_russia_balance (5 candidate link(s))
+2026-03-12 19:36:40,756 INFO   (no unambiguous matches)
+2026-03-12 19:36:40,768 INFO Processing: 2023_10_30_dollarization (4 candidate link(s))
+2026-03-12 19:36:40,769 INFO   (no unambiguous matches)
+2026-03-12 19:36:40,784 INFO Processing: 2023_11_06_budget_plan (5 candidate link(s))
+2026-03-12 19:36:40,785 INFO   (no unambiguous matches)
+2026-03-12 19:36:40,798 INFO Processing: 2023_11_13_exports (3 candidate link(s))
+2026-03-12 19:36:40,799 INFO   (no unambiguous matches)
+2026-03-12 19:36:40,815 INFO Processing: 2023_11_20_petrol_price (6 candidate link(s))
+2026-03-12 19:36:40,818 INFO   (no unambiguous matches)
+2026-03-12 19:36:40,850 INFO Processing: 2023_11_27_petrol_price_forecast (11 candidate link(s))
+2026-03-12 19:36:40,852 INFO   (no unambiguous matches)
+2026-03-12 19:36:40,860 INFO Processing: 2023_12_04_exports_dashboard (6 candidate link(s))
+2026-03-12 19:36:40,862 INFO   (no unambiguous matches)
+2026-03-12 19:36:40,876 INFO Processing: 2023_12_11_electricity_forecast (5 candidate link(s))
+2026-03-12 19:36:40,877 INFO   (no unambiguous matches)
+2026-03-12 19:36:40,890 INFO Processing: 2023_12_18_GDP_structure (6 candidate link(s))
+2026-03-12 19:36:40,891 INFO   (no unambiguous matches)
+2026-03-12 19:36:40,934 INFO Processing: 2023_12_25_christmas_tree (5 candidate link(s))
+2026-03-12 19:36:40,935 INFO   (no unambiguous matches)
+2026-03-12 19:36:40,954 INFO Processing: 2024_01_07_household_income (6 candidate link(s))
+2026-03-12 19:36:40,955 INFO   (no unambiguous matches)
+2026-03-12 19:36:40,973 INFO Processing: 2024_01_12_apartament_price_comparation (11 candidate link(s))
+2026-03-12 19:36:40,975 INFO   (no unambiguous matches)
+2026-03-12 19:36:40,993 INFO Processing: 2024_01_19_vehicle_reexports (6 candidate link(s))
+2026-03-12 19:36:40,995 INFO   (no unambiguous matches)
+2026-03-12 19:36:41,017 INFO Processing: 2024_01_26_households_structure (4 candidate link(s))
+2026-03-12 19:36:41,018 INFO   (no unambiguous matches)
+2026-03-12 19:36:41,027 INFO Processing: 2024_02_02_taxes_wildberries (3 candidate link(s))
+2026-03-12 19:36:41,028 INFO   (no unambiguous matches)
+2026-03-12 19:36:41,049 INFO Processing: 2024_02_09_wages (4 candidate link(s))
+2026-03-12 19:36:41,049 INFO   (no unambiguous matches)
+2026-03-12 19:36:41,060 INFO Processing: 2024_02_16_exports_1 (6 candidate link(s))
+2026-03-12 19:36:41,061 INFO   (no unambiguous matches)
+2026-03-12 19:36:41,088 INFO Processing: 2024_02_23_housing_market_crash_1 (6 candidate link(s))
+2026-03-12 19:36:41,089 INFO   (no unambiguous matches)
+2026-03-12 19:36:41,107 INFO Processing: 2024_03_01_transfers (9 candidate link(s))
+2026-03-12 19:36:41,109 INFO   (no unambiguous matches)
+2026-03-12 19:36:41,123 INFO Processing: 2024_03_09_GDP_components (2 candidate link(s))
+2026-03-12 19:36:41,124 INFO   (no unambiguous matches)
+2026-03-12 19:36:41,137 INFO Processing: 2024_03_15_GDP_structure (3 candidate link(s))
+2026-03-12 19:36:41,138 INFO   (no unambiguous matches)
+2026-03-12 19:36:41,152 INFO Processing: 2024_03_22_petrol_price (5 candidate link(s))
+2026-03-12 19:36:41,153 INFO   (no unambiguous matches)
+2026-03-12 19:36:41,169 INFO Processing: 2024_03_29_economic_activity (6 candidate link(s))
+2026-03-12 19:36:41,170 INFO   (no unambiguous matches)
+2026-03-12 19:36:41,185 INFO Processing: 2024_04_05_exchange (3 candidate link(s))
+2026-03-12 19:36:41,185 INFO   (no unambiguous matches)
+2026-03-12 19:36:41,199 INFO Processing: 2024_04_12_reexports (3 candidate link(s))
+2026-03-12 19:36:41,200 INFO   (no unambiguous matches)
+2026-03-12 19:36:41,213 INFO Processing: 2024_04_19_population_forecast (5 candidate link(s))
+2026-03-12 19:36:41,215 INFO   (no unambiguous matches)
+2026-03-12 19:36:41,240 INFO Processing: 2024_04_26_services_exports (4 candidate link(s))
+2026-03-12 19:36:41,241 INFO   (no unambiguous matches)
+2026-03-12 19:36:41,269 INFO Processing: 2024_05_03_taxes_mobile_centre (6 candidate link(s))
+2026-03-12 19:36:41,269 INFO   (no unambiguous matches)
+2026-03-12 19:36:41,284 INFO Processing: 2024_05_11_reexports_gold (5 candidate link(s))
+2026-03-12 19:36:41,285 INFO   (no unambiguous matches)
+2026-03-12 19:36:41,306 INFO Processing: 2024_05_17_electricity (4 candidate link(s))
+2026-03-12 19:36:41,307 INFO   (no unambiguous matches)
+2026-03-12 19:36:41,323 INFO Processing: 2024_06_07_CB_loans (4 candidate link(s))
+2026-03-12 19:36:41,324 INFO   (no unambiguous matches)
+2026-03-12 19:36:41,337 INFO Processing: 2024_06_17_tourism (3 candidate link(s))
+2026-03-12 19:36:41,337 INFO   (no unambiguous matches)
+2026-03-12 19:36:41,352 INFO Processing: 2024_06_28_public_dept (4 candidate link(s))
+2026-03-12 19:36:41,353 INFO   (no unambiguous matches)
+2026-03-12 19:36:41,369 INFO Processing: 2024_07_05_gold_hub (4 candidate link(s))
+2026-03-12 19:36:41,370 INFO   (no unambiguous matches)
+2026-03-12 19:36:41,405 INFO Processing: 2024_07_26_cooperation (7 candidate link(s))
+2026-03-12 19:36:41,406 INFO   (no unambiguous matches)
+2026-03-12 19:36:41,422 INFO Processing: 2024_08_02_taxes (8 candidate link(s))
+2026-03-12 19:36:41,424 INFO   (no unambiguous matches)
+2026-03-12 19:36:41,438 INFO Processing: 2024_08_12_numbeo (5 candidate link(s))
+2026-03-12 19:36:41,439 INFO   (no unambiguous matches)
+2026-03-12 19:36:41,459 INFO Processing: 2024_08_19_IT_secor_jobs (5 candidate link(s))
+2026-03-12 19:36:41,459 INFO   (no unambiguous matches)
+2026-03-12 19:36:41,478 INFO Processing: 2024_08_26_GDP_components (5 candidate link(s))
+2026-03-12 19:36:41,481 INFO   (no unambiguous matches)
+2026-03-12 19:36:41,496 INFO Processing: 2024_09_02_exports_semiannual (8 candidate link(s))
+2026-03-12 19:36:41,499 INFO   (no unambiguous matches)
+2026-03-12 19:36:41,519 INFO Processing: 2024_09_09_electricity (5 candidate link(s))
+2026-03-12 19:36:41,520 INFO   (no unambiguous matches)
+2026-03-12 19:36:41,535 INFO Processing: 2024_09_16_transfers (10 candidate link(s))
+2026-03-12 19:36:41,539 INFO   (no unambiguous matches)
+2026-03-12 19:36:41,604 INFO Processing: 2024_09_23_tmp (3 candidate link(s))
+2026-03-12 19:36:41,604 INFO   (no unambiguous matches)
+2026-03-12 19:36:41,613 INFO Processing: 2024_09_30_GDP (3 candidate link(s))
+2026-03-12 19:36:41,614 INFO   (no unambiguous matches)
+2026-03-12 19:36:41,623 INFO Processing: 2024_10_07_wages (5 candidate link(s))
+2026-03-12 19:36:41,624 INFO   (no unambiguous matches)
+2026-03-12 19:36:41,638 INFO Processing: 2024_10_14_number_of_organizations (14 candidate link(s))
+2026-03-12 19:36:41,641 INFO   (no unambiguous matches)
+2026-03-12 19:36:41,653 INFO Processing: 2024_10_21_wages_2 (6 candidate link(s))
+2026-03-12 19:36:41,655 INFO   (no unambiguous matches)
+2026-03-12 19:36:41,670 INFO Processing: 2024_10_28_brics (8 candidate link(s))
+2026-03-12 19:36:41,672 INFO   (no unambiguous matches)
+2026-03-12 19:36:41,692 INFO Processing: 2024_11_04_population (6 candidate link(s))
+2026-03-12 19:36:41,693 INFO   (no unambiguous matches)
+2026-03-12 19:36:41,710 INFO Processing: 2024_11_19_budget_performance (9 candidate link(s))
+2026-03-12 19:36:41,715 INFO   (no unambiguous matches)
+2026-03-12 19:36:41,735 INFO Processing: 2024_12_09_exchange (7 candidate link(s))
+2026-03-12 19:36:41,737 INFO   (no unambiguous matches)
+2026-03-12 19:36:41,752 INFO Processing: 2024_12_17_CB_loans (5 candidate link(s))
+2026-03-12 19:36:41,753 INFO   (no unambiguous matches)
+2026-03-12 19:36:41,774 INFO Processing: 2024_12_23_GDP_components (5 candidate link(s))
+2026-03-12 19:36:41,775 INFO   (no unambiguous matches)
+2026-03-12 19:36:41,803 INFO Processing: 2024_12_30_christmas_tree (5 candidate link(s))
+2026-03-12 19:36:41,804 INFO   (no unambiguous matches)
+2026-03-12 19:36:41,817 INFO Processing: 2024_13_00_petrol_price (5 candidate link(s))
+2026-03-12 19:36:41,818 INFO   (no unambiguous matches)
+2026-03-12 19:36:41,838 INFO Processing: 2025_01_14_household_income (7 candidate link(s))
+2026-03-12 19:36:41,840 INFO   (no unambiguous matches)
+2026-03-12 19:36:41,860 INFO Processing: 2025_01_20_transport_price (20 candidate link(s))
+2026-03-12 19:36:41,864 INFO   (no unambiguous matches)
+2026-03-12 19:36:41,880 INFO Processing: 2025_02_04_eai (14 candidate link(s))
+2026-03-12 19:36:41,883 INFO   (no unambiguous matches)
+2026-03-12 19:36:41,900 INFO Processing: 2025_02_18_transfers (7 candidate link(s))
+2026-03-12 19:36:41,901 INFO   (no unambiguous matches)
+2026-03-12 19:36:41,923 INFO Processing: 2025_02_25_exports_annual (6 candidate link(s))
+2026-03-12 19:36:41,925 INFO   (no unambiguous matches)
+2026-03-12 19:36:41,945 INFO Processing: 2025_03_11_GDP_components (5 candidate link(s))
+2026-03-12 19:36:41,947 INFO   (no unambiguous matches)
+2026-03-12 19:36:41,970 INFO Processing: 2025_03_25_public_dept (6 candidate link(s))
+2026-03-12 19:36:41,972 INFO   (no unambiguous matches)
+2026-03-12 19:36:41,982 INFO Processing: 2025_10_21_wages (6 candidate link(s))
+2026-03-12 19:36:41,983 INFO   (no unambiguous matches)
+2026-03-12 19:36:41,983 INFO 
+2026-03-12 19:36:41,983 INFO ==================================================
+2026-03-12 19:36:41,983 INFO   Issues with text links patched: 3
+2026-03-12 19:36:41,983 INFO   Total links patched:            3
+2026-03-12 19:36:41,983 INFO   (dry run — nothing written)
+2026-03-12 19:36:42,273 INFO DRY RUN — nothing written
+2026-03-12 19:36:42,274 INFO 72 issues to scan
+2026-03-12 19:36:42,283 INFO Processing: 2023_09_11_reexports (3 candidate link(s))
+2026-03-12 19:36:42,284 INFO   (no unambiguous matches)
+2026-03-12 19:36:42,302 INFO Processing: 2023_09_18_ellections (3 candidate link(s))
+2026-03-12 19:36:42,303 INFO     PATCH: 'github.com' -> https://github.com/tavad/tvyal_newsletter
+2026-03-12 19:36:42,304 INFO   patched 1 link(s)
+2026-03-12 19:36:42,309 INFO Processing: 2023_09_25_web_scraping_start (5 candidate link(s))
+2026-03-12 19:36:42,309 INFO     PATCH: '168.am/' -> https://168.am/
+2026-03-12 19:36:42,310 INFO   patched 1 link(s)
+2026-03-12 19:36:42,321 INFO Processing: 2023_10_02_russian_economy (5 candidate link(s))
+2026-03-12 19:36:42,322 INFO   (no unambiguous matches)
+2026-03-12 19:36:42,337 INFO Processing: 2023_10_09_AMD_FX (8 candidate link(s))
+2026-03-12 19:36:42,338 INFO   (no unambiguous matches)
+2026-03-12 19:36:42,352 INFO Processing: 2023_10_16_transfers (5 candidate link(s))
+2026-03-12 19:36:42,352 INFO     PATCH: 'reuters.com' -> https://www.reuters.com/markets/europe/russian-government-sets-out-capital-control-rules-undisclosed-exporters-2023-10-13/
+2026-03-12 19:36:42,353 INFO   patched 1 link(s)
+2026-03-12 19:36:42,366 INFO Processing: 2023_10_23_russia_balance (5 candidate link(s))
+2026-03-12 19:36:42,367 INFO   (no unambiguous matches)
+2026-03-12 19:36:42,377 INFO Processing: 2023_10_30_dollarization (4 candidate link(s))
+2026-03-12 19:36:42,377 INFO   (no unambiguous matches)
+2026-03-12 19:36:42,390 INFO Processing: 2023_11_06_budget_plan (5 candidate link(s))
+2026-03-12 19:36:42,392 INFO   (no unambiguous matches)
+2026-03-12 19:36:42,411 INFO Processing: 2023_11_13_exports (3 candidate link(s))
+2026-03-12 19:36:42,413 INFO   (no unambiguous matches)
+2026-03-12 19:36:42,427 INFO Processing: 2023_11_20_petrol_price (6 candidate link(s))
+2026-03-12 19:36:42,428 INFO   (no unambiguous matches)
+2026-03-12 19:36:42,457 INFO Processing: 2023_11_27_petrol_price_forecast (11 candidate link(s))
+2026-03-12 19:36:42,459 INFO   (no unambiguous matches)
+2026-03-12 19:36:42,473 INFO Processing: 2023_12_04_exports_dashboard (6 candidate link(s))
+2026-03-12 19:36:42,474 INFO   (no unambiguous matches)
+2026-03-12 19:36:42,493 INFO Processing: 2023_12_11_electricity_forecast (5 candidate link(s))
+2026-03-12 19:36:42,495 INFO   (no unambiguous matches)
+2026-03-12 19:36:42,508 INFO Processing: 2023_12_18_GDP_structure (6 candidate link(s))
+2026-03-12 19:36:42,509 INFO   (no unambiguous matches)
+2026-03-12 19:36:42,554 INFO Processing: 2023_12_25_christmas_tree (5 candidate link(s))
+2026-03-12 19:36:42,555 INFO   (no unambiguous matches)
+2026-03-12 19:36:42,573 INFO Processing: 2024_01_07_household_income (6 candidate link(s))
+2026-03-12 19:36:42,574 INFO   (no unambiguous matches)
+2026-03-12 19:36:42,592 INFO Processing: 2024_01_12_apartament_price_comparation (11 candidate link(s))
+2026-03-12 19:36:42,593 INFO   (no unambiguous matches)
+2026-03-12 19:36:42,612 INFO Processing: 2024_01_19_vehicle_reexports (6 candidate link(s))
+2026-03-12 19:36:42,616 INFO   (no unambiguous matches)
+2026-03-12 19:36:42,637 INFO Processing: 2024_01_26_households_structure (4 candidate link(s))
+2026-03-12 19:36:42,638 INFO   (no unambiguous matches)
+2026-03-12 19:36:42,649 INFO Processing: 2024_02_02_taxes_wildberries (3 candidate link(s))
+2026-03-12 19:36:42,650 INFO   (no unambiguous matches)
+2026-03-12 19:36:42,665 INFO Processing: 2024_02_09_wages (4 candidate link(s))
+2026-03-12 19:36:42,665 INFO   (no unambiguous matches)
+2026-03-12 19:36:42,676 INFO Processing: 2024_02_16_exports_1 (6 candidate link(s))
+2026-03-12 19:36:42,677 INFO   (no unambiguous matches)
+2026-03-12 19:36:42,705 INFO Processing: 2024_02_23_housing_market_crash_1 (6 candidate link(s))
+2026-03-12 19:36:42,706 INFO   (no unambiguous matches)
+2026-03-12 19:36:42,722 INFO Processing: 2024_03_01_transfers (9 candidate link(s))
+2026-03-12 19:36:42,724 INFO   (no unambiguous matches)
+2026-03-12 19:36:42,739 INFO Processing: 2024_03_09_GDP_components (2 candidate link(s))
+2026-03-12 19:36:42,739 INFO   (no unambiguous matches)
+2026-03-12 19:36:42,751 INFO Processing: 2024_03_15_GDP_structure (3 candidate link(s))
+2026-03-12 19:36:42,752 INFO   (no unambiguous matches)
+2026-03-12 19:36:42,765 INFO Processing: 2024_03_22_petrol_price (5 candidate link(s))
+2026-03-12 19:36:42,766 INFO   (no unambiguous matches)
+2026-03-12 19:36:42,781 INFO Processing: 2024_03_29_economic_activity (6 candidate link(s))
+2026-03-12 19:36:42,783 INFO   (no unambiguous matches)
+2026-03-12 19:36:42,802 INFO Processing: 2024_04_05_exchange (3 candidate link(s))
+2026-03-12 19:36:42,802 INFO   (no unambiguous matches)
+2026-03-12 19:36:42,814 INFO Processing: 2024_04_12_reexports (3 candidate link(s))
+2026-03-12 19:36:42,815 INFO   (no unambiguous matches)
+2026-03-12 19:36:42,827 INFO Processing: 2024_04_19_population_forecast (5 candidate link(s))
+2026-03-12 19:36:42,829 INFO   (no unambiguous matches)
+2026-03-12 19:36:42,854 INFO Processing: 2024_04_26_services_exports (4 candidate link(s))
+2026-03-12 19:36:42,855 INFO   (no unambiguous matches)
+2026-03-12 19:36:42,883 INFO Processing: 2024_05_03_taxes_mobile_centre (6 candidate link(s))
+2026-03-12 19:36:42,884 INFO   (no unambiguous matches)
+2026-03-12 19:36:42,899 INFO Processing: 2024_05_11_reexports_gold (5 candidate link(s))
+2026-03-12 19:36:42,901 INFO   (no unambiguous matches)
+2026-03-12 19:36:42,918 INFO Processing: 2024_05_17_electricity (4 candidate link(s))
+2026-03-12 19:36:42,918 INFO   (no unambiguous matches)
+2026-03-12 19:36:42,935 INFO Processing: 2024_06_07_CB_loans (4 candidate link(s))
+2026-03-12 19:36:42,936 INFO   (no unambiguous matches)
+2026-03-12 19:36:42,949 INFO Processing: 2024_06_17_tourism (3 candidate link(s))
+2026-03-12 19:36:42,950 INFO   (no unambiguous matches)
+2026-03-12 19:36:42,965 INFO Processing: 2024_06_28_public_dept (4 candidate link(s))
+2026-03-12 19:36:42,966 INFO   (no unambiguous matches)
+2026-03-12 19:36:42,981 INFO Processing: 2024_07_05_gold_hub (4 candidate link(s))
+2026-03-12 19:36:42,983 INFO   (no unambiguous matches)
+2026-03-12 19:36:43,018 INFO Processing: 2024_07_26_cooperation (7 candidate link(s))
+2026-03-12 19:36:43,019 INFO   (no unambiguous matches)
+2026-03-12 19:36:43,039 INFO Processing: 2024_08_02_taxes (8 candidate link(s))
+2026-03-12 19:36:43,042 INFO   (no unambiguous matches)
+2026-03-12 19:36:43,055 INFO Processing: 2024_08_12_numbeo (5 candidate link(s))
+2026-03-12 19:36:43,056 INFO   (no unambiguous matches)
+2026-03-12 19:36:43,074 INFO Processing: 2024_08_19_IT_secor_jobs (5 candidate link(s))
+2026-03-12 19:36:43,075 INFO   (no unambiguous matches)
+2026-03-12 19:36:43,092 INFO Processing: 2024_08_26_GDP_components (5 candidate link(s))
+2026-03-12 19:36:43,094 INFO   (no unambiguous matches)
+2026-03-12 19:36:43,112 INFO Processing: 2024_09_02_exports_semiannual (8 candidate link(s))
+2026-03-12 19:36:43,114 INFO   (no unambiguous matches)
+2026-03-12 19:36:43,135 INFO Processing: 2024_09_09_electricity (5 candidate link(s))
+2026-03-12 19:36:43,136 INFO   (no unambiguous matches)
+2026-03-12 19:36:43,150 INFO Processing: 2024_09_16_transfers (10 candidate link(s))
+2026-03-12 19:36:43,152 INFO   (no unambiguous matches)
+2026-03-12 19:36:43,211 INFO Processing: 2024_09_23_tmp (3 candidate link(s))
+2026-03-12 19:36:43,212 INFO   (no unambiguous matches)
+2026-03-12 19:36:43,222 INFO Processing: 2024_09_30_GDP (3 candidate link(s))
+2026-03-12 19:36:43,222 INFO   (no unambiguous matches)
+2026-03-12 19:36:43,233 INFO Processing: 2024_10_07_wages (5 candidate link(s))
+2026-03-12 19:36:43,234 INFO   (no unambiguous matches)
+2026-03-12 19:36:43,246 INFO Processing: 2024_10_14_number_of_organizations (14 candidate link(s))
+2026-03-12 19:36:43,250 INFO   (no unambiguous matches)
+2026-03-12 19:36:43,259 INFO Processing: 2024_10_21_wages_2 (6 candidate link(s))
+2026-03-12 19:36:43,260 INFO   (no unambiguous matches)
+2026-03-12 19:36:43,272 INFO Processing: 2024_10_28_brics (8 candidate link(s))
+2026-03-12 19:36:43,273 INFO   (no unambiguous matches)
+2026-03-12 19:36:43,295 INFO Processing: 2024_11_04_population (6 candidate link(s))
+2026-03-12 19:36:43,297 INFO   (no unambiguous matches)
+2026-03-12 19:36:43,316 INFO Processing: 2024_11_19_budget_performance (9 candidate link(s))
+2026-03-12 19:36:43,319 INFO   (no unambiguous matches)
+2026-03-12 19:36:43,337 INFO Processing: 2024_12_09_exchange (7 candidate link(s))
+2026-03-12 19:36:43,338 INFO   (no unambiguous matches)
+2026-03-12 19:36:43,353 INFO Processing: 2024_12_17_CB_loans (5 candidate link(s))
+2026-03-12 19:36:43,354 INFO   (no unambiguous matches)
+2026-03-12 19:36:43,371 INFO Processing: 2024_12_23_GDP_components (5 candidate link(s))
+2026-03-12 19:36:43,372 INFO   (no unambiguous matches)
+2026-03-12 19:36:43,399 INFO Processing: 2024_12_30_christmas_tree (5 candidate link(s))
+2026-03-12 19:36:43,400 INFO   (no unambiguous matches)
+2026-03-12 19:36:43,413 INFO Processing: 2024_13_00_petrol_price (5 candidate link(s))
+2026-03-12 19:36:43,414 INFO   (no unambiguous matches)
+2026-03-12 19:36:43,435 INFO Processing: 2025_01_14_household_income (7 candidate link(s))
+2026-03-12 19:36:43,437 INFO   (no unambiguous matches)
+2026-03-12 19:36:43,457 INFO Processing: 2025_01_20_transport_price (20 candidate link(s))
+2026-03-12 19:36:43,461 INFO   (no unambiguous matches)
+2026-03-12 19:36:43,479 INFO Processing: 2025_02_04_eai (14 candidate link(s))
+2026-03-12 19:36:43,482 INFO   (no unambiguous matches)
+2026-03-12 19:36:43,499 INFO Processing: 2025_02_18_transfers (7 candidate link(s))
+2026-03-12 19:36:43,500 INFO   (no unambiguous matches)
+2026-03-12 19:36:43,522 INFO Processing: 2025_02_25_exports_annual (6 candidate link(s))
+2026-03-12 19:36:43,523 INFO   (no unambiguous matches)
+2026-03-12 19:36:43,552 INFO Processing: 2025_03_11_GDP_components (5 candidate link(s))
+2026-03-12 19:36:43,554 INFO   (no unambiguous matches)
+2026-03-12 19:36:43,575 INFO Processing: 2025_03_25_public_dept (6 candidate link(s))
+2026-03-12 19:36:43,577 INFO   (no unambiguous matches)
+2026-03-12 19:36:43,589 INFO Processing: 2025_10_21_wages (6 candidate link(s))
+2026-03-12 19:36:43,590 INFO   (no unambiguous matches)
+2026-03-12 19:36:43,590 INFO 
+2026-03-12 19:36:43,590 INFO ==================================================
+2026-03-12 19:36:43,590 INFO   Issues with text links patched: 3
+2026-03-12 19:36:43,590 INFO   Total links patched:            3
+2026-03-12 19:36:43,591 INFO   (dry run — nothing written)
+2026-03-12 19:56:46,996 INFO DRY RUN — nothing written
+2026-03-12 19:56:46,996 INFO 1 issues to scan
+2026-03-12 19:56:47,067 INFO Processing: 2024_09_23_tmp (3 candidate link(s))
+2026-03-12 19:56:47,067 INFO     PATCH (multi-line): 'նախորդ վերլուծություններին' -> https://www.tvyal.com/newsletter
+2026-03-12 19:56:47,069 INFO   patched 1 link(s)
+2026-03-12 19:56:47,069 INFO 
+2026-03-12 19:56:47,069 INFO ==================================================
+2026-03-12 19:56:47,069 INFO   Issues with text links patched: 1
+2026-03-12 19:56:47,070 INFO   Total links patched:            1
+2026-03-12 19:56:47,070 INFO   (dry run — nothing written)
+2026-03-12 20:05:42,444 INFO 72 issues to scan
+2026-03-12 20:05:42,453 INFO Processing: 2023_09_11_reexports (3 candidate link(s))
+2026-03-12 20:05:42,455 INFO   (no unambiguous matches)
+2026-03-12 20:05:42,471 INFO Processing: 2023_09_18_ellections (3 candidate link(s))
+2026-03-12 20:05:42,472 INFO     PATCH (multi-line): 'Քվեարկության արդյունքներն ըստ տեղամասերի' -> https://res.elections.am/images/forGenerals/Yerevan/06/resultarm17․09․23_18-09-2023.xlsx
+2026-03-12 20:05:42,472 INFO     PATCH (inline): 'github.com' -> https://github.com/tavad/tvyal_newsletter
+2026-03-12 20:05:42,473 INFO   patched 2 link(s)
+2026-03-12 20:05:42,480 INFO Processing: 2023_09_25_web_scraping_start (5 candidate link(s))
+2026-03-12 20:05:42,480 INFO     PATCH (inline): '168.am/' -> https://168.am/
+2026-03-12 20:05:42,481 INFO   patched 1 link(s)
+2026-03-12 20:05:42,490 INFO Processing: 2023_10_02_russian_economy (5 candidate link(s))
+2026-03-12 20:05:42,491 INFO     PATCH (multi-line): 'խխոշոր տնտեսությունների գնաճի հետ' -> https://tradingeconomics.com/country-list/inflation-rate-?continent=g20
+2026-03-12 20:05:42,491 INFO     PATCH (multi-line): 'անժամկետ արգելք է դրել նավթամթերքի արտահանման վրա' -> https://www.kommersant.ru/doc/6237192
+2026-03-12 20:05:42,492 INFO   patched 2 link(s)
+2026-03-12 20:05:42,499 INFO Processing: 2023_10_09_AMD_FX (8 candidate link(s))
+2026-03-12 20:05:42,500 INFO     PATCH (multi-line): 'Փոխարժեքի սպեկուլյացիայի և Արցախի կրստի տնտեսական հետևանքնեի մասին հարցազրույց տված Նվեր Մնացականյանին' -> https://www.youtube.com/watch?v=GEtpB2g827Q
+2026-03-12 20:05:42,500 INFO     PATCH (multi-line): 'Արցախի կորուստը նաև տնտեսական շոկ է, կարող են ավելի մեծ շոկեր լինել' -> https://www.youtube.com/watch?v=aIbXrVjvvm0
+2026-03-12 20:05:42,500 INFO     PATCH (multi-line): 'Դրամի 10-15% արժեզրկում` մի քանի օրում․ ի՞նչ է կատարվում փոխարժեքի շուկայում' -> https://hy.armradio.am/2023/10/04/%d5%ab%d5%9e%d5%b6%d5%b9-%d5%a7-%d5%af%d5%a1%d5%bf%d5%a1%d6%80%d5%be%d5%b8%d6%82%d5%b4-%d6%83%d5%b8%d5%ad%d5%a1%d6%80%d5%aa%d5%a5%d6%84%d5%ab-%d5%b7%d5%b8%d6%82%d5%af%d5%a1%d5%b5%d5%b8%d6%82%d5%b4/
+2026-03-12 20:05:42,501 INFO     PATCH (multi-line): '«Դոլարի փոխարժեքն իջնում է․ պահողները տանուլ են տվել»' -> https://www.youtube.com/watch?v=qTSSkNtr5sI
+2026-03-12 20:05:42,501 INFO     PATCH (multi-line): '«Գազի գինը կարող է բարձրանալ»' -> https://www.youtube.com/watch?v=4vvVgNZaUM4
+2026-03-12 20:05:42,501 INFO     PATCH (multi-line): 'կանխատեսում, որ այդ օրվա վերջ դոլարը լինելու է 410-420' -> https://www.facebook.com/a.tavadyan/posts/7023628730989920
+2026-03-12 20:05:42,502 INFO   patched 6 link(s)
+2026-03-12 20:05:42,516 INFO Processing: 2023_10_16_transfers (5 candidate link(s))
+2026-03-12 20:05:42,516 INFO     PATCH (inline): 'reuters.com' -> https://www.reuters.com/markets/europe/russian-government-sets-out-capital-control-rules-undisclosed-exporters-2023-10-13/
+2026-03-12 20:05:42,517 INFO     PATCH (multi-line): 'Ավելին իմ կայքում' -> https://www.tvyal.com/newsletter/2023_10_03
+2026-03-12 20:05:42,517 INFO     PATCH (multi-line): 'Կարդացեք իմ նոր հարցազրույցը' -> https://www.panorama.am/am/news/2023/10/10/%D4%B1%D5%B2%D5%A1%D5%BD%D5%AB-%D4%B9%D5%A1%D5%BE%D5%A1%D5%A4%D5%B5%D5%A1%D5%B6/2909640
+2026-03-12 20:05:42,518 INFO   patched 3 link(s)
+2026-03-12 20:05:42,530 INFO Processing: 2023_10_23_russia_balance (5 candidate link(s))
+2026-03-12 20:05:42,531 INFO     PATCH (multi-line): 'Ռուսաստանի տնտեսության վիճակը և դրա հնարավոր ազդեցությունը տարածաշրջանի վրա' -> https://www.tvyal.com/newsletter/2023_10_03
+2026-03-12 20:05:42,532 INFO     PATCH (multi-line): 'Այս խնդրի մասին ավելին տեղեկանալու համար դիտեք հարցազրույցը' -> https://www.youtube.com/watch?v=9w7Sfg73fxI
+2026-03-12 20:05:42,533 INFO   patched 2 link(s)
+2026-03-12 20:05:42,546 INFO Processing: 2023_10_30_dollarization (4 candidate link(s))
+2026-03-12 20:05:42,546 INFO     PATCH (multi-line): 'Tvyal Newsletter. Միջազգային դրամական փոխանցումների վերլուծություն' -> https://www.tvyal.com/newsletter/2023_10_16
+2026-03-12 20:05:42,547 INFO     PATCH (multi-line): 'Ավելին՝ կարդացեք նյութը' -> https://hetq.am/hy/article/161508
+2026-03-12 20:05:42,547 INFO   patched 2 link(s)
+2026-03-12 20:05:42,561 INFO Processing: 2023_11_06_budget_plan (5 candidate link(s))
+2026-03-12 20:05:42,562 INFO     PATCH (multi-line): '2024 թվականի պետական բյուջեի նախագիծը և ծրագրային փոփոխությունները' -> https://www.minfin.am/hy/page/petakan_byuje_2024t
+2026-03-12 20:05:42,563 INFO     PATCH (multi-line): 'Միջազգային դրամական փոխանցումների վերլուծություն' -> https://www.tvyal.com/newsletter/2023_10_16
+2026-03-12 20:05:42,564 INFO   patched 2 link(s)
+2026-03-12 20:05:42,575 INFO Processing: 2023_11_13_exports (3 candidate link(s))
+2026-03-12 20:05:42,576 INFO     PATCH (multi-line): 'Tvyal Newsletter - 2023-09-11' -> https://www.tvyal.com/newsletter/week-32
+2026-03-12 20:05:42,577 INFO   patched 1 link(s)
+2026-03-12 20:05:42,593 INFO Processing: 2023_11_20_petrol_price (6 candidate link(s))
+2026-03-12 20:05:42,594 INFO     PATCH (multi-line): '1in.am Յութուբյան ալիքի տեսանյութերի նկարներից' -> https://img.youtube.com/vi/tV15O3Ilrc8/maxresdefault.jpg
+2026-03-12 20:05:42,594 INFO     PATCH (multi-line): 'ՍԳԻ սկսած 2017թ․' -> https://www.armstat.am/am/?nid=82&id=2611
+2026-03-12 20:05:42,596 INFO   patched 2 link(s)
+2026-03-12 20:05:42,623 INFO Processing: 2023_11_27_petrol_price_forecast (11 candidate link(s))
+2026-03-12 20:05:42,624 INFO     PATCH (multi-line): 'Թե ինչպե՞ս և ո՞վ է ձևավորում բենզինի գինը ներքին շուկայում, կարդացեք նախորդ վերլուծությունը' -> https://www.tvyal.com/newsletter/2023_11_20
+2026-03-12 20:05:42,624 INFO     PATCH (multi-line): 'Իմ նախկին կանխատեսումներից որոնք իրականացել են. ռուբլին արժևորվելու է մինչև 88-82 ռուբլի 1 դոլարի համար' -> https://www.tvyal.com/newsletter/2023_10_16
+2026-03-12 20:05:42,626 INFO     PATCH (multi-line): 'OPEC+ postpones policy meeting to Nov 30, oil falls' -> https://www.reuters.com/business/energy/opec-postpones-policy-meeting-nov-30-oil-falls-2023-11-22/
+2026-03-12 20:05:42,626 INFO     PATCH (multi-line): 'Запрет на экспорт летнего дизельного топлива отменен' -> https://oilcapital.ru/news/2023-11-22/zapret-na-eksport-letnego-dizelnogo-topliva-otmenen-3107276
+2026-03-12 20:05:42,627 INFO     PATCH (multi-line): 'Правительство отменило временный запрет на экспорт бензина' -> https://www.rbc.ru/business/17/11/2023/655790e59a7947bd46054cbc
+2026-03-12 20:05:42,627 INFO     PATCH (multi-line): 'Оптовые цены на бензин в России рухнули до минимума' -> https://lenta.ru/news/2023/09/21/benz/
+2026-03-12 20:05:42,628 INFO     PATCH (multi-line): 'մասնակցել իմ սթրիմին' -> https://www.facebook.com/events/1061901551905269/
+2026-03-12 20:05:42,629 INFO   patched 7 link(s)
+2026-03-12 20:05:42,641 INFO Processing: 2023_12_04_exports_dashboard (6 candidate link(s))
+2026-03-12 20:05:42,642 INFO     PATCH (multi-line): 'Մեր կողմից ատեղծվել է առցանց կառավարման վահանակ, որը կայքի տեսքով արտացոլում է 4 մեթոդաբանությամբ կատարված ավելի քան 2000 կանխատեսում Հայաստանի հիմնական արտահանման ԱՏԳ ԱԱ երկնիշ և քառանիշ ապրանքների հիմնական գործընկեր ուղղություններով:' -> https://tavad.shinyapps.io/exports_forecast/
+2026-03-12 20:05:42,643 INFO     PATCH (multi-line): 'Այս աճը հիմնականում պայմանավորված է Ռուսատանից դեպի Միացյալ Արաբական Էմիրություններ ոսկու և ադամանդների վերաարտահանմամբ' -> https://www.tvyal.com/newsletter/2023_11_13
+2026-03-12 20:05:42,644 INFO     PATCH (multi-line): 'Ռուսաստանի տնտեսությունը Հայաստանից ավելի մեծ կախման մեջ է' -> https://www.tvyal.com/newsletter/week-32
+2026-03-12 20:05:42,645 INFO   patched 3 link(s)
+2026-03-12 20:05:42,659 INFO Processing: 2023_12_11_electricity_forecast (5 candidate link(s))
+2026-03-12 20:05:42,661 INFO     PATCH (multi-line): '2023թ հուլիսից վիճակագրական կոմիտեում տեղադրված էլեկտրաէներգիայի արտադրության ծավալներում' -> https://www.armstat.am/file/article/sv_07_23a_121.pdf
+2026-03-12 20:05:42,661 INFO   patched 1 link(s)
+2026-03-12 20:05:42,674 INFO Processing: 2023_12_18_GDP_structure (6 candidate link(s))
+2026-03-12 20:05:42,674 INFO     PATCH (multi-line): '2023թ հուլիսից վիճակագրական կոմիտեում տեղադրված էլեկտրաէներգիայի արտադրության ծավալներում' -> https://www.armstat.am/file/article/sv_07_23a_121.pdf
+2026-03-12 20:05:42,675 INFO     PATCH (multi-line): 'Սեղմեք այս հղումը ճշգրտված տարբերակին անցնելու համար' -> https://www.tvyal.com/newsletter/2023_12_11
+2026-03-12 20:05:42,676 INFO     PATCH (multi-line): 'Հին տարբերակը չի ջնջվի և լինելու է այս հղման տակ' -> https://www.tvyal.com/newsletter/2023_12_11_old
+2026-03-12 20:05:42,677 INFO   patched 3 link(s)
+2026-03-12 20:05:42,714 INFO Processing: 2023_12_25_christmas_tree (5 candidate link(s))
+2026-03-12 20:05:42,714 INFO     PATCH (multi-line): 'Հարցումը կարճ է:' -> https://forms.gle/C7ouBuBafxquDiRN9
+2026-03-12 20:05:42,715 INFO     PATCH (multi-line): 'Դիտեք Նվեր Մնացականյանին տված իմ վերջին հարցազրույցը, որտեղ ամփոփում եմ 2023-ը։' -> https://www.youtube.com/watch?v=YbMAqFJkfeU
+2026-03-12 20:05:42,716 INFO     PATCH (multi-line): 'մեր կայքէջում' -> https://www.tvyal.com/newsletter
+2026-03-12 20:05:42,717 INFO   patched 3 link(s)
+2026-03-12 20:05:42,734 INFO Processing: 2024_01_07_household_income (6 candidate link(s))
+2026-03-12 20:05:42,735 INFO     PATCH (multi-line): 'տնային տնտեսությունների կենսամակարդակի (կենսապայմանների) ամբողջացված հետազոտության անվանազերծված միկրոտվյալների բազա (ըստ տնային տնտեսությունների)' -> https://www.armstat.am/en/?nid=205
+2026-03-12 20:05:42,735 INFO     PATCH (multi-line): 'Հայաստանի սպառողական գների ամսական ինդեքսը' -> https://www.cba.am/stat/stat_data_arm/6_CPI_arm.xls
+2026-03-12 20:05:42,736 INFO     PATCH (multi-line): 'Սոս Խաչիկյանի' -> https://www.linkedin.com/in/sos-khachikyan-46a51b3a/
+2026-03-12 20:05:42,738 INFO   patched 3 link(s)
+2026-03-12 20:05:42,752 INFO Processing: 2024_01_12_apartament_price_comparation (11 candidate link(s))
+2026-03-12 20:05:42,753 INFO     PATCH (multi-line): 'Երևանում ապրելն ավելի թանկ է, քան նույնիսկ Մոսկվայում' -> https://www.numbeo.com/cost-of-living/compare_cities.jsp?country1=Russia&city1=Moscow&country2=Armenia&city2=Yerevan&displayCurrency=USD
+2026-03-12 20:05:42,754 INFO     PATCH (multi-line): 'Տես՝ Rankings, History and Analysis' -> https://www.numbeo.com/cost-of-living/in/Yerevan
+2026-03-12 20:05:42,755 INFO     PATCH (multi-line): 'երևում է տվյալներով (տես՝ Գծապատկեր 2 և 3, Հայաստան կատարված դրամական փոխանցումներ)' -> https://www.tvyal.com/newsletter/2023_10_16
+2026-03-12 20:05:42,756 INFO     PATCH (multi-line): 'որի նախանշանները արդեն առկա են' -> https://www.tvyal.com/newsletter/2023_10_23
+2026-03-12 20:05:42,757 INFO     PATCH (multi-line): 'Երևանում հարուստները ավելի են հարստացել, աղքատները՝ ավելի աղքատացել, մարզերում հիմնականում աղքատացել են' -> https://youtu.be/D0CsyhYC9Zo
+2026-03-12 20:05:42,758 INFO     PATCH (multi-line): 'youtube short-ը' -> https://www.youtube.com/shorts/11oDLyh4ukw
+2026-03-12 20:05:42,758 INFO   patched 6 link(s)
+2026-03-12 20:05:42,785 INFO Processing: 2024_01_19_vehicle_reexports (6 candidate link(s))
+2026-03-12 20:05:42,787 INFO     PATCH (multi-line): 'Մինչև 2022 թվականը ԱՄՆ-ի հետ մեր առևտրաշրջանառությունը մոտ 4 տոկոս էր, իսկ 2022-ին, պայմանավորված հիմնականում ավտոմեքենաների ներմուծմամբ, այդ ցուցանիշը էական աճ է գրանցել' -> https://www.1in.am/3253116.html
+2026-03-12 20:05:42,788 INFO     PATCH (multi-line): 'յուրաքանչյուր 8-րդ մեքենան ներմուծվել է “գորշ” ներմուծմամբ' -> https://carsweek.ru/news/News_in_the_world/1277489/
+2026-03-12 20:05:42,790 INFO     PATCH (multi-line): 'ճապոնական (4,4 հազար հատ, 34 տոկոս), կորեական (3,1 հազար հատ, 24 տոկոս) և գերմանական (2,7 հազար հատ, 20 տոկոս) ավտոմեքենաներ։ Չինական արտասահմանյան մեքենաների մասնաբաժինը նույնպես դրական դինամիկա է ցույց տալիս՝ օգոստոսի 7%-ից սեպտեմբերին հասնելով 12%-ի' -> https://www.autonews.ru/news/6501a9ec9a794705e42162ba
+2026-03-12 20:05:42,791 INFO     PATCH (multi-line): 'Կարդացեք իմ վերջին հարցազրույցը, տրված jam-news կայքին' -> https://jam-news.net/am/%d5%b0%d5%b0-%d5%b6-%d5%af%d5%a8%d5%b6%d5%af%d5%b6%d5%ab%d5%9e-%d5%a1%d5%b4%d5%b6-%d5%ba%d5%a1%d5%bf%d5%aa%d5%a1%d5%b4%d5%ab%d5%bb%d5%b8%d6%81%d5%b6%d5%a5%d6%80%d5%ab-%d5%bf%d5%a1%d5%af/
+2026-03-12 20:05:42,792 INFO   patched 4 link(s)
+2026-03-12 20:05:42,812 INFO Processing: 2024_01_26_households_structure (4 candidate link(s))
+2026-03-12 20:05:42,812 INFO     PATCH (multi-line): 'տնային տնտեսությունների կենսամակարդակի (կենսապայմանների) ամբողջացված հետազոտության անվանազերծված միկրոտվյալների բազա (ըստ տնային տնտեսությունների)' -> https://www.armstat.am/en/?nid=205
+2026-03-12 20:05:42,813 INFO   patched 1 link(s)
+2026-03-12 20:05:42,823 INFO Processing: 2024_02_02_taxes_wildberries (3 candidate link(s))
+2026-03-12 20:05:42,824 INFO   (no unambiguous matches)
+2026-03-12 20:05:42,842 INFO Processing: 2024_02_09_wages (4 candidate link(s))
+2026-03-12 20:05:42,843 INFO     PATCH (multi-line): 'Հայաստանի սպառողական գների ամսական ինդեքսը' -> https://www.cba.am/stat/stat_data_arm/6_CPI_arm.xls
+2026-03-12 20:05:42,844 INFO   patched 1 link(s)
+2026-03-12 20:05:42,864 INFO Processing: 2024_02_16_exports_1 (6 candidate link(s))
+2026-03-12 20:05:42,865 INFO     PATCH (multi-line): 'արտաքին առևտրի տվյալների բազաից' -> https://armstat.am/am/?nid=717
+2026-03-12 20:05:42,866 INFO   patched 1 link(s)
+2026-03-12 20:05:42,890 INFO Processing: 2024_02_23_housing_market_crash_1 (6 candidate link(s))
+2026-03-12 20:05:42,891 INFO     PATCH (multi-line): '400 շուկայի վերլուծությունները' -> https://www.cadastre.am/analyze
+2026-03-12 20:05:42,892 INFO     PATCH (multi-line): 'արտահանման կանխատեսումներ համար' -> https://tavad.shinyapps.io/exports_forecast/
+2026-03-12 20:05:42,893 INFO   patched 2 link(s)
+2026-03-12 20:05:42,910 INFO Processing: 2024_03_01_transfers (9 candidate link(s))
+2026-03-12 20:05:42,911 INFO     PATCH (multi-line): 'Հայաստանի առևտրային բանկերը 2022թ-ին արձանագրել են 255.6 մլրդ դրամի զուտ շահույթ, ինչը շուրջ 3 անգամ ավել է, քան նախորդ տարի: Ամենամեծ շահույթը արձանագրել է Ardshinbank-ը՝ 62.2 մլրդ դրամ' -> https://modex.am/net-profit-2022/
+2026-03-12 20:05:42,912 INFO     PATCH (multi-line): 'եկամտային հարկի վերադարձի օրենքը' -> https://www.arlis.am/DocumentView.aspx?docID=96164
+2026-03-12 20:05:42,912 INFO     PATCH (multi-line): 'բանկային համակարգ մտած դրամական միջոցների կրճատում' -> https://www.tvyal.com/newsletter/2023_10_16
+2026-03-12 20:05:42,913 INFO     PATCH (multi-line): 'զուտ շահույթը կրճատվել է 9 տոկոսով՝ դառնալով շուրջ 230 մլրդ դրամ' -> https://modex.am/arevtrayin-bankeri-zut-shahuyt-2023/
+2026-03-12 20:05:42,913 INFO     PATCH (multi-line): 'Համաշխարհային բանկը 2024-ին կանխատեսում է գլոբալ տնտեսության հակառեկորդ, ըստ որի համաշխարհային տնտեսության աճն այս տասնամյակի առաջին կեսում կարող է ամենաթույլը լինել վերջին 30 տարիների ընթացքում' -> https://www.civilnet.am/news/761511/%d5%b0%d5%a1%d5%b4%d5%a1%d5%b7%d5%ad%d5%a1%d6%80%d5%b0%d5%a1%d5%b5%d5%ab%d5%b6-%d5%a2%d5%a1%d5%b6%d5%af%d5%a8-2024-%d5%ab%d5%b6-%d5%af%d5%a1%d5%b6%d5%ad%d5%a1%d5%bf%d5%a5%d5%bd%d5%b8%d6%82%d5%b4-%d5%a7-%d5%a3%d5%ac%d5%b8%d5%a2%d5%a1%d5%ac-%d5%bf%d5%b6%d5%bf%d5%a5%d5%bd%d5%b8%d6%82%d5%a9%d5%b5%d5%a1%d5%b6-%d5%b0%d5%a1%d5%af%d5%a1%d5%bc%d5%a5%d5%af%d5%b8%d6%80%d5%a4/
+2026-03-12 20:05:42,914 INFO     PATCH (multi-line): 'Կենտրոնական բանկի տվյալներից' -> https://www.cba.am/stat/stat_data_eng/5_Money_transfers_of_individuals_by_countries-eng.xlsx
+2026-03-12 20:05:42,916 INFO   patched 6 link(s)
+2026-03-12 20:05:42,935 INFO Processing: 2024_03_09_GDP_components (2 candidate link(s))
+2026-03-12 20:05:42,935 INFO   (no unambiguous matches)
+2026-03-12 20:05:42,948 INFO Processing: 2024_03_15_GDP_structure (3 candidate link(s))
+2026-03-12 20:05:42,949 INFO     PATCH (multi-line): 'Դիտեք Նվեր Մնացականյանին տված իմ վերջին հարցազրույցը, որտեղ խոսում եմ 2024 թվականի տնտեսական մարտահրավերների մասին։' -> https://www.youtube.com/watch?v=4ZI-fFFxr7k
+2026-03-12 20:05:42,950 INFO   patched 1 link(s)
+2026-03-12 20:05:42,963 INFO Processing: 2024_03_22_petrol_price (5 candidate link(s))
+2026-03-12 20:05:42,963 INFO     PATCH (multi-line): 'ինչպես կանխատեսել էինք 2023 թվականի նոյեմբերին, երբ գրանցվել էր այդ տարվա ամենաբարձր բենզինի գինը' -> https://www.tvyal.com/newsletter/2023_11_27
+2026-03-12 20:05:42,964 INFO     PATCH (multi-line): 'ՍԳԻ սկսած 2017թ․' -> https://www.armstat.am/am/?nid=82&id=2611
+2026-03-12 20:05:42,965 INFO   patched 2 link(s)
+2026-03-12 20:05:42,980 INFO Processing: 2024_03_29_economic_activity (6 candidate link(s))
+2026-03-12 20:05:42,981 INFO     PATCH (multi-line): 'Հայաստանի սոցիալ-տնտեսական վիճակը բնութագրող ընթացիկ-օպերատիվ մակրոտնտեսական ցուցանիշների մեջ' -> https://armstat.am/file/doc/99511688.pdf
+2026-03-12 20:05:42,982 INFO     PATCH (multi-line): '2019 թվականից ի վեր գյուղատնտեսության ամսական տվյալները անտեսվել են' -> https://armstat.am/file/doc/99517378.pdf
+2026-03-12 20:05:42,982 INFO     PATCH (multi-line): 'Բենզինի գները Հայաստանում. Ինչպե՞ս է ձևավորվում, ինչպե՞ս կփոխվի' -> https://www.youtube.com/watch?v=TYcZsKjxzfY
+2026-03-12 20:05:42,983 INFO     PATCH (multi-line): 'Դիտեք 1in.am-ին տված իմ վերջին հարցազրույցը, որտեղ խոսում եմ 2024 թվականի տնտեսական մարտահրավերների մասին։' -> https://youtu.be/wk07vyuAnnU?t=222
+2026-03-12 20:05:42,984 INFO   patched 4 link(s)
+2026-03-12 20:05:43,002 INFO Processing: 2024_04_05_exchange (3 candidate link(s))
+2026-03-12 20:05:43,003 INFO     PATCH (multi-line): 'Բարձր տնտեսական ակտիվությունը Հայաստանում․ Ինչի՞ հաշվին' -> https://www.youtube.com/watch?v=0dnlgdqfMrM
+2026-03-12 20:05:43,005 INFO   patched 1 link(s)
+2026-03-12 20:05:43,018 INFO Processing: 2024_04_12_reexports (3 candidate link(s))
+2026-03-12 20:05:43,020 INFO     PATCH (multi-line): 'Դրամի դրաման. Ինչի՞ց է կախված դրամ/դոլար փոխարժեքը և ինչպես կփոփոխվի առաջիկայում' -> https://www.youtube.com/watch?v=4PPzVKfwUko
+2026-03-12 20:05:43,021 INFO   patched 1 link(s)
+2026-03-12 20:05:43,034 INFO Processing: 2024_04_19_population_forecast (5 candidate link(s))
+2026-03-12 20:05:43,035 INFO     PATCH (multi-line): 'աշխարհի բնակչության հեռանկարները' -> https://www.un.org/development/desa/pd/news/world-population-prospects-2019-0
+2026-03-12 20:05:43,039 INFO     PATCH (multi-line): 'Նշենք, որ այս հետազոտության հիման վրա մեր կողմից ստեղծվել է նաև առցանց վահանակ: Վահանակը տրամադրում է բնակչության կանխատեսումներ և ինտերակտիվ գծապատկերներ տարբեր երկրների և տարածաշրջանների համար: Այն մշակված է R և Python ծրագրավորման լեզուների համակցմամբ և Shiny հավելվածներով՝ այս գործիքը ձեզ հնարավորություն կտա ուսումնասիրել բնակչության միտումները տարբեր գծապատկերների միջոցով: Այս ինտերակտիվ հարթակը թույլ է տալիս նաև փոփոխել գծապատկերների ժամանակաշրջանը: Վահանակը ինտերակտիվ է, գծապատկերի տարբեր հատվածներ ցույց են տալիս հավելյալ տվյալներ:' -> https://tavad.shinyapps.io/population_projection/
+2026-03-12 20:05:43,040 INFO     PATCH (multi-line): 'Ոսկու տենդը. Ի՞նչ է իրականում թաքնված Հայաստանի արտահանման բարձր ցուցանիշի հետևում' -> https://www.youtube.com/watch?v=tmLzBVw4bAc
+2026-03-12 20:05:43,041 INFO   patched 3 link(s)
+2026-03-12 20:05:43,066 INFO Processing: 2024_04_26_services_exports (4 candidate link(s))
+2026-03-12 20:05:43,067 INFO     PATCH (multi-line): 'Ինչքա՞ն հայ կունենանք Հայաստանում 2100 թվականին' -> https://www.youtube.com/watch?v=-IOVtoBD5gE
+2026-03-12 20:05:43,067 INFO     PATCH (multi-line): 'Դիտեք Civilnet-ին տված իմ վերջին հարցազրույցը, որտեղ խոսում եմ 2024 թվականի տնտեսական մարտահրավերների մասին։' -> https://youtu.be/3HyOvSfikwo
+2026-03-12 20:05:43,068 INFO   patched 2 link(s)
+2026-03-12 20:05:43,098 INFO Processing: 2024_05_03_taxes_mobile_centre (6 candidate link(s))
+2026-03-12 20:05:43,099 INFO     PATCH (multi-line): 'Դիտեք 1in.am լրատվամիջոցին տված իմ վերջին հարցազրույցը, որտեղ խոսում եմ տնտեսական մարտահրավերների մասին։' -> https://youtu.be/Dp___1wRZQQ
+2026-03-12 20:05:43,100 INFO   patched 1 link(s)
+2026-03-12 20:05:43,117 INFO Processing: 2024_05_11_reexports_gold (5 candidate link(s))
+2026-03-12 20:05:43,118 INFO     PATCH (multi-line): '📱📍🖥 Mobile Centre-ը, ԶՄՊԿ-ն, Vesta-ն, Wildberries-ը և Հայաստանի մյուս խոշոր հարկատուները' -> https://www.youtube.com/watch?v=7dOYuroAsnQ
+2026-03-12 20:05:43,118 INFO   patched 1 link(s)
+2026-03-12 20:05:43,137 INFO Processing: 2024_05_17_electricity (4 candidate link(s))
+2026-03-12 20:05:43,139 INFO   (no unambiguous matches)
+2026-03-12 20:05:43,157 INFO Processing: 2024_06_07_CB_loans (4 candidate link(s))
+2026-03-12 20:05:43,158 INFO   (no unambiguous matches)
+2026-03-12 20:05:43,169 INFO Processing: 2024_06_17_tourism (3 candidate link(s))
+2026-03-12 20:05:43,170 INFO   (no unambiguous matches)
+2026-03-12 20:05:43,185 INFO Processing: 2024_06_28_public_dept (4 candidate link(s))
+2026-03-12 20:05:43,186 INFO   (no unambiguous matches)
+2026-03-12 20:05:43,200 INFO Processing: 2024_07_05_gold_hub (4 candidate link(s))
+2026-03-12 20:05:43,201 INFO     PATCH (multi-line): 'Ոսկու ներմուծման գնի անհամապատասխանություններ' -> https://www.armstat.am/am/?nid=148&thid%5B%5D=7108&year%5B%5D=2024&year%5B%5D=2023&monid%5B%5D=1&monid%5B%5D=2&monid%5B%5D=3&monid%5B%5D=4&monid%5B%5D=5&monid%5B%5D=6&monid%5B%5D=7&monid%5B%5D=8&monid%5B%5D=9&monid%5B%5D=10&monid%5B%5D=11&monid%5B%5D=12&submit=%D5%93%D5%B6%D5%BF%D6%80%D5%A5%D5%AC
+2026-03-12 20:05:43,203 INFO   patched 1 link(s)
+2026-03-12 20:05:43,240 INFO Processing: 2024_07_26_cooperation (7 candidate link(s))
+2026-03-12 20:05:43,241 INFO     PATCH (multi-line): 'Using advanced programming techniques for data scraping, mining, manipulation, and forecasting' -> https://github.com/tavad/tvyal_newsletter
+2026-03-12 20:05:43,242 INFO     PATCH (multi-line): 'A recommendation model providing daily predictions for customer purchases and optimal pricing' -> https://tavad.shinyapps.io/demo_customer/
+2026-03-12 20:05:43,243 INFO     PATCH (multi-line): 'Multiple interactive dashboards' -> https://www.tvyal.com/projects
+2026-03-12 20:05:43,244 INFO     PATCH (multi-line): 'Watch my interview given to 1in.am where I talk about economic challenges and potental changes in exchange rate and exonomic volatility.' -> https://youtu.be/EROKFOixiTA
+2026-03-12 20:05:43,244 INFO     PATCH (multi-line): 'Watch my interview titled “Yerevan became the most expensive city in the region: Dram”defeated” the dollar”' -> https://youtu.be/tLL3mn6unl4
+2026-03-12 20:05:43,245 INFO   patched 5 link(s)
+2026-03-12 20:05:43,262 INFO Processing: 2024_08_02_taxes (8 candidate link(s))
+2026-03-12 20:05:43,263 INFO     PATCH (multi-line): '“Հայաստանի կառավարությունը հարկահավաքությունը դարձրել է KPI (Key Performance Indicator, հիմնական արդյունավետության ինդիկատոր), որով կառավարությունը գնահատում է իր գործունեությունը”' -> https://oragir.news/hy/material/2024/07/31/125121
+2026-03-12 20:05:43,263 INFO     PATCH (multi-line): 'Այս տուրքի արդյունքում ԶՊՄԿ ստիպված ընծայեց կառավարությանը իր բաժնետոմսերի 21.8 տոկոսը, որից հետո միայն այս տուքը հանվեց' -> https://www.hetq.am/hy/article/147597
+2026-03-12 20:05:43,264 INFO     PATCH (multi-line): 'Ըստ «Հետք»-ի հրապարակման, “Հիփոթեքային վարկից քաղաքացիներին վերադարձվող եկամտային հարկը եկամուտ համարելու և հարկելու մասին քննարկումներ են սկսվել' -> https://hetq.am/hy/article/168467
+2026-03-12 20:05:43,265 INFO     PATCH (multi-line): 'Լաֆֆերի կորի գաղափարը' -> https://en.wikipedia.org/wiki/Laffer_curve
+2026-03-12 20:05:43,266 INFO   patched 4 link(s)
+2026-03-12 20:05:43,281 INFO Processing: 2024_08_12_numbeo (5 candidate link(s))
+2026-03-12 20:05:43,282 INFO     PATCH (multi-line): 'Այժմ այս ցուցանիշները որոշակի փոփոխություն են գրանցել։ Երևանում անհրաժեշտ է 3,735.0 դոլար, իսկ Մոսկվայում` 3,573.5 դոլար։ Սպառողական գները արդեն 11.1%-ով բարձր են, քան Մոսկվայում, իսկ վարձակալության գները՝ 4.5%-ով' -> https://www.numbeo.com/cost-of-living/compare_cities.jsp?country1=Russia&city1=Moscow&country2=Armenia&city2=Yerevan&displayCurrency=USD
+2026-03-12 20:05:43,283 INFO   patched 1 link(s)
+2026-03-12 20:05:43,300 INFO Processing: 2024_08_19_IT_secor_jobs (5 candidate link(s))
+2026-03-12 20:05:43,301 INFO     PATCH (multi-line): 'Synopsys Armenia-ն առաջատարն է՝ ապահովելով վճարված շահութահարկի 12%-ը (1.1 մլրդ դրամ)' -> https://modex.am/tt-khoshor-harkatunery-2024-h1/
+2026-03-12 20:05:43,302 INFO   patched 1 link(s)
+2026-03-12 20:05:43,323 INFO Processing: 2024_08_26_GDP_components (5 candidate link(s))
+2026-03-12 20:05:43,325 INFO     PATCH (multi-line): 'հրապարակեցինք հաղորդագրություն, որտեղ նշվում էր, որ ոսկու վերաարտահանումից ստացված հավելյալ արժեքի 4%-ը, որը վիճելի ճանապարհով վճարվել է պետական բյուջե, ապահովել է 2024թ․ առաջին եռամսյակի 9.2% աճի 4 տոկոսային կետը։ Մտահոգիչ է, որ ոսկու վերաարտահանման «արդյունաբերությունը» 4% նպաստում է ունեցել, առևտուրը՝ 3%, ֆինանսական ծառայությունները՝ 1.1%, մինչդեռ տնտեսության մնացած հատվածները -0.1% անկում են գրանցել։' -> https://www.aravot.am/2024/08/10/1437252/
+2026-03-12 20:05:43,326 INFO     PATCH (multi-line): 'Այն ներառում է «Սեփականատերերի կողմից զբաղեցրած բնակարանների համար ենթադրյալ վարձավճարի արժեքը»' -> https://ec.europa.eu/eurostat/web/products-manuals-and-guidelines/-/ks-ra-07-015
+2026-03-12 20:05:43,327 INFO   patched 2 link(s)
+2026-03-12 20:05:43,344 INFO Processing: 2024_09_02_exports_semiannual (8 candidate link(s))
+2026-03-12 20:05:43,344 INFO     PATCH (multi-line): 'գնահատականները ցույց տվեցին' -> https://www.aravot.am/2024/08/10/1437252/
+2026-03-12 20:05:43,345 INFO     PATCH (multi-line): 'վերացվեց ոսկու արտահանման մաքսատուրքը' -> https://www.finam.ru/publications/item/otmena-eksportnoy-poshliny-na-zoloto-podderzhit-nastroeniya-na-rynke-20240417-1230/
+2026-03-12 20:05:43,348 INFO   patched 2 link(s)
+2026-03-12 20:05:43,367 INFO Processing: 2024_09_09_electricity (5 candidate link(s))
+2026-03-12 20:05:43,370 INFO   (no unambiguous matches)
+2026-03-12 20:05:43,385 INFO Processing: 2024_09_16_transfers (10 candidate link(s))
+2026-03-12 20:05:43,386 INFO     PATCH (multi-line): 'Հայաստանի առևտրային բանկերը 2022թ-ին արձանագրել են 255.6 մլրդ դրամի զուտ շահույթ, ինչը շուրջ 3 անգամ ավել է, քան նախորդ տարի: Ամենամեծ շահույթը արձանագրել է Ardshinbank-ը՝ 62.2 մլրդ դրամ' -> https://modex.am/net-profit-2022/
+2026-03-12 20:05:43,386 INFO     PATCH (multi-line): 'եկամտային հարկի վերադարձի օրենքը' -> https://www.arlis.am/DocumentView.aspx?docID=96164
+2026-03-12 20:05:43,388 INFO     PATCH (multi-line): 'չհամապատասխանել պաշտոնական տվյալների հետ, որոնք տրվում են տարեկան կտրվածով և չեն ներառում առանձին պետությունների հաշվարկը' -> https://data.worldbank.org/indicator/BX.TRF.PWKR.DT.GD.ZS?locations=AM
+2026-03-12 20:05:43,389 INFO     PATCH (multi-line): 'Մեր կողմից ուսումնասիրված տվյալներից շատերի մեջ առկա են տնտեսական հնարավոր անկման նախանշաններ' -> https://www.tvyal.com/newsletter
+2026-03-12 20:05:43,390 INFO     PATCH (multi-line): 'Կենտրոնական բանկի տվյալներից' -> https://www.cba.am/stat/stat_data_eng/5_Money_transfers_of_individuals_by_countries-eng.xlsx
+2026-03-12 20:05:43,392 INFO   patched 5 link(s)
+2026-03-12 20:05:43,455 INFO Processing: 2024_09_23_tmp (3 candidate link(s))
+2026-03-12 20:05:43,456 INFO     PATCH (multi-line): 'նախորդ վերլուծություններին' -> https://www.tvyal.com/newsletter
+2026-03-12 20:05:43,456 INFO   patched 1 link(s)
+2026-03-12 20:05:43,466 INFO Processing: 2024_09_30_GDP (3 candidate link(s))
+2026-03-12 20:05:43,466 INFO   (no unambiguous matches)
+2026-03-12 20:05:43,478 INFO Processing: 2024_10_07_wages (5 candidate link(s))
+2026-03-12 20:05:43,479 INFO     PATCH (multi-line): 'եկամտահարկի վերադարձի մասին օրենքը' -> https://www.arlis.am/DocumentView.aspx?docID=96164
+2026-03-12 20:05:43,480 INFO   patched 1 link(s)
+2026-03-12 20:05:43,493 INFO Processing: 2024_10_14_number_of_organizations (14 candidate link(s))
+2026-03-12 20:05:43,494 INFO     PATCH (multi-line): 'ավելի շատ հասարակական կազմակերպություն (ՀԿ) է գրանցվել, քան ՍՊԸ' -> https://armstat.am/file/article/sv_12_17a_150.pdf
+2026-03-12 20:05:43,495 INFO     PATCH (multi-line): '2016թ. դեկտեմբերին վերացվեց «իրավաբանական անձանց միություն» (ԻԱՄ) կազմակերպաիրավական ձևը:' -> https://www.arlis.am/DocumentView.aspx?docid=110836
+2026-03-12 20:05:43,495 INFO     PATCH (multi-line): '2023թ. հունիսի դրությամբ դեռևս գրանցվում են ԻԱՄ-ներ:' -> https://armstat.am/file/article/sv_06_23a_150_.pdf
+2026-03-12 20:05:43,498 INFO   patched 3 link(s)
+2026-03-12 20:05:43,511 INFO Processing: 2024_10_21_wages_2 (6 candidate link(s))
+2026-03-12 20:05:43,512 INFO     PATCH (multi-line): 'Հայաստանի Հանրապետության վիճակագրական կոմիտե' -> https://www.armstat.am/am/?nid=964
+2026-03-12 20:05:43,513 INFO     PATCH (multi-line): '2016թ. դեկտեմբերին վերացվեց «իրավաբանական անձանց միություն» (ԻԱՄ) կազմակերպաիրավական ձևը' -> https://www.arlis.am/DocumentView.aspx?docid=110836
+2026-03-12 20:05:43,514 INFO   patched 2 link(s)
+2026-03-12 20:05:43,525 INFO Processing: 2024_10_28_brics (8 candidate link(s))
+2026-03-12 20:05:43,526 INFO     PATCH (multi-line): 'Ռուսաստանը դարձել է աշխարհի չորրորդ խոշորագույն տնտեսությունը' -> https://www.imf.org/en/Publications/WEO/Issues/2024/10/22/world-economic-outlook-october-2024
+2026-03-12 20:05:43,527 INFO     PATCH (multi-line): 'Այս բլոկչեյնի վրա հիմնված վճարային համակարգը նպատակ ունի դյուրացնել տեղական արժույթներով գործարքները՝ պոտենցիալ կերպով նվազեցնելով ԲՐԻՔՍ+ անդամ պետությունների կախվածությունը SWIFT-ից' -> https://www.financial-news.co.uk/brics-summit-unveils-groundbreaking-payment-system-xi-jinpings-vision/
+2026-03-12 20:05:43,528 INFO     PATCH (multi-line): 'ԲՐԻՔՍ+ և ԵԱՏՄ անդամների միջև գոյություն ունեցող արտոնյալ և զրոյական մաքսատուրքերով առևտրի պայմանավորվածությունները Հայաստանին առաջարկում են կոնկրետ ուղիներ՝ իրանական առևտրային ուղիների միջոցով արտահանման շուկաները դիվերսիֆիկացնելու համար' -> https://eec.eaeunion.org/hy/news/eaes-i-iran-sozdayut-polnoformatnuyu-zonu-svobodnoy-torgovli/
+2026-03-12 20:05:43,529 INFO     PATCH (multi-line): 'Այս բորսան, որը «կնպաստի ապրանքների և հումքի համար արդար և կանխատեսելի գնային ցուցիչների ձևավորմանը», նախատեսված է որպես ավելի լայն ապրանքային և ռեսուրսային բորսայի համակարգի նախադրյալ' -> https://www.reuters.com/markets/commodities/russias-putin-outlines-brics-grain-exchange-proposal-2024-10-23/
+2026-03-12 20:05:43,530 INFO   patched 4 link(s)
+2026-03-12 20:05:43,550 INFO Processing: 2024_11_04_population (6 candidate link(s))
+2026-03-12 20:05:43,551 INFO     PATCH (multi-line): 'Ըստ նախկին էկոնոմիկայի նախարարի, ռելոկանտների մոտ մեկ երրորդ մասը արդեն 6 ամիս առաջ լքել էր Հայաստանը' -> https://arm.sputniknews.ru/20240203/inchu-en-relvokantnery-heranum-hhic-pattsharneri-masin-khvosum-en-henc-irenq-ev-pvordzagetnery-71585615.html
+2026-03-12 20:05:43,552 INFO     PATCH (multi-line): 'Նշենք, որ այս հետազոտության հիման վրա մեր կողմից ստեղծվել է նաև առցանց վահանակ: Վահանակը տրամադրում է բնակչության կանխատեսումներ և ինտերակտիվ գծապատկերներ տարբեր երկրների և տարածաշրջանների համար: Այն մշակված է R և Python ծրագրավորման լեզուների համակցմամբ և Shiny հավելվածներով՝ այս գործիքը ձեզ հնարավորություն կտա ուսումնասիրել բնակչության միտումները տարբեր գծապատկերների միջոցով: Այս ինտերակտիվ հարթակը թույլ է տալիս նաև փոփոխել գծապատկերների ժամանակաշրջանը: Վահանակը ինտերակտիվ է, գծապատկերի տարբեր հատվածներ ցույց են տալիս հավելյալ տվյալներ:' -> https://tavad.shinyapps.io/population_projection/
+2026-03-12 20:05:43,554 INFO   patched 2 link(s)
+2026-03-12 20:05:43,572 INFO Processing: 2024_11_19_budget_performance (9 candidate link(s))
+2026-03-12 20:05:43,574 INFO     PATCH (multi-line): 'պաշտոնական հղումը' -> https://minfin.am/hy/page/petakan_byujei_hashvetvutyun/
+2026-03-12 20:05:43,575 INFO     PATCH (multi-line): '2024թ․ առաջին 9 ամիսների ՀՀ պետական բյուջեի կատարման պաշտոնական վերլուծությունը' -> https://minfin.am/website/images/files/2.%20_2024_9%20.docx
+2026-03-12 20:05:43,580 INFO   patched 2 link(s)
+2026-03-12 20:05:43,600 INFO Processing: 2024_12_09_exchange (7 candidate link(s))
+2026-03-12 20:05:43,601 INFO     PATCH (multi-line): 'ԱՄՆ Գանձապետարանը պատժամիջոցներ է կիրառել Գազպրոմբանկի նկատմամբ և լրացուցիչ քայլեր է ձեռնարկել՝ սահմանափակելու Ռուսաստանի միջազգային ֆինանսական համակարգի օգտագործումը' -> https://home.treasury.gov/news/press-releases/jy2725
+2026-03-12 20:05:43,601 INFO     PATCH (multi-line): '1 դոլարը արդեն 99 ռուբլի է' -> https://www.google.com/finance/quote/USD-RUB?window=1M
+2026-03-12 20:05:43,604 INFO   patched 2 link(s)
+2026-03-12 20:05:43,621 INFO Processing: 2024_12_17_CB_loans (5 candidate link(s))
+2026-03-12 20:05:43,624 INFO   (no unambiguous matches)
+2026-03-12 20:05:43,650 INFO Processing: 2024_12_23_GDP_components (5 candidate link(s))
+2026-03-12 20:05:43,651 INFO     PATCH (multi-line): 'հրապարակեցինք հաղորդագրություն, որտեղ նշվում էր, որ ոսկու վերաարտահանումից ստացված հավելյալ արժեքի 4%-ը, որը վիճելի ճանապարհով վճարվել է պետական բյուջե, ապահովել է 2024թ․ առաջին եռամսյակի 9.2% աճի 4 տոկոսային կետը։ Մտահոգիչ է, որ ոսկու վերաարտահանման «արդյունաբերությունը» 4% նպաստում է ունեցել, առևտուրը՝ 3%, ֆինանսական ծառայությունները՝ 1.1%, մինչդեռ տնտեսության մնացած հատվածները -0.1% անկում են գրանցել։' -> https://www.aravot.am/2024/08/10/1437252/
+2026-03-12 20:05:43,652 INFO     PATCH (multi-line): 'Այն ներառում է «Սեփականատերերի կողմից զբաղեցրած բնակարանների համար ենթադրյալ վարձավճարի արժեքը»' -> https://ec.europa.eu/eurostat/web/products-manuals-and-guidelines/-/ks-ra-07-015
+2026-03-12 20:05:43,654 INFO   patched 2 link(s)
+2026-03-12 20:05:43,667 INFO Processing: 2024_12_30_christmas_tree (5 candidate link(s))
+2026-03-12 20:05:43,668 INFO     PATCH (multi-line): 'ավելի քան 45 վերլուծություն' -> https://www.tvyal.com/newsletter
+2026-03-12 20:05:43,668 INFO     PATCH (multi-line): 'ավելի քան 16 հազար տող կոդ' -> https://github.com/tavad/tvyal_newsletter/tree/main/2024
+2026-03-12 20:05:43,669 INFO     PATCH (multi-line): 'Դիտեք 1in.am-ին տված իմ վերջին հարցազրույցը, որտեղ ամփոփում եմ 2024-ը։' -> https://www.youtube.com/watch?v=FqSxs6Hypp4&t=11s
+2026-03-12 20:05:43,670 INFO   patched 3 link(s)
+2026-03-12 20:05:43,684 INFO Processing: 2024_13_00_petrol_price (5 candidate link(s))
+2026-03-12 20:05:43,684 INFO     PATCH (multi-line): 'ինչպես կանխատեսել էինք 2023 թվականի նոյեմբերին, երբ գրանցվել էր այդ տարվա ամենաբարձր բենզինի գինը' -> https://www.tvyal.com/newsletter/2023_11_27
+2026-03-12 20:05:43,684 INFO     PATCH (multi-line): 'ՍԳԻ սկսած 2017թ․' -> https://www.armstat.am/am/?nid=82&id=2611
+2026-03-12 20:05:43,685 INFO   patched 2 link(s)
+2026-03-12 20:05:43,710 INFO Processing: 2025_01_14_household_income (7 candidate link(s))
+2026-03-12 20:05:43,710 INFO     PATCH (multi-line): 'տնային տնտեսությունների կենսամակարդակի (կենսապայմանների) ամբողջացված հետազոտության անվանազերծված միկրոտվյալների բազա' -> https://www.armstat.am/en/?nid=205
+2026-03-12 20:05:43,711 INFO     PATCH (multi-line): 'Հայաստանի սպառողական գների ամսական ինդեքսը' -> https://www.cba.am/stat/stat_data_arm/6_CPI_arm.xls
+2026-03-12 20:05:43,712 INFO   patched 2 link(s)
+2026-03-12 20:05:43,732 INFO Processing: 2025_01_20_transport_price (20 candidate link(s))
+2026-03-12 20:05:43,737 INFO   (no unambiguous matches)
+2026-03-12 20:05:43,755 INFO Processing: 2025_02_04_eai (14 candidate link(s))
+2026-03-12 20:05:43,757 INFO     PATCH (multi-line): '2024թ․ տարեսկզբից' -> https://www.armstat.am/file/article/sv_03_24a_121.pdf
+2026-03-12 20:05:43,758 INFO     PATCH (multi-line): 'ՏԱՑ 2024թ․ հաշվետվություն' -> https://www.armstat.am/file/doc/99555148.pdf
+2026-03-12 20:05:43,758 INFO     PATCH (multi-line): 'ՏԱՑ 2023թ․ դեկտեմբեր' -> https://www.armstat.am/file/doc/99544198.pdf
+2026-03-12 20:05:43,759 INFO     PATCH (multi-line): 'ՏԱՑ 2023թ․ տարեկան' -> https://www.armstat.am/file/doc/99544153.pdf
+2026-03-12 20:05:43,759 INFO     PATCH (multi-line): 'ՏԱՑ 2023թ․ հաշվետվություն' -> https://www.armstat.am/file/doc/99544118.pdf
+2026-03-12 20:05:43,761 INFO   patched 5 link(s)
+2026-03-12 20:05:43,779 INFO Processing: 2025_02_18_transfers (7 candidate link(s))
+2026-03-12 20:05:43,780 INFO     PATCH (multi-line): 'շահույթը գրեթե եռապատկվեց՝ հասնելով 255.6 մլրդ դրամի' -> https://modex.am/net-profit-2022/
+2026-03-12 20:05:43,780 INFO     PATCH (multi-line): 'Մեր վերլուծություններում տեսնում ենք տնտեսական հնարավոր անկման նախանշաններ' -> https://www.tvyal.com/newsletter
+2026-03-12 20:05:43,780 INFO     PATCH (multi-line): 'Կենտրոնական բանկի տվյալներից' -> https://www.cba.am/stat/stat_data_eng/5_Money_transfers_of_individuals_by_countries-eng.xlsx
+2026-03-12 20:05:43,781 INFO   patched 3 link(s)
+2026-03-12 20:05:43,804 INFO Processing: 2025_02_25_exports_annual (6 candidate link(s))
+2026-03-12 20:05:43,805 INFO     PATCH (multi-line): 'գնահատականները ցույց տվեցին' -> https://www.aravot.am/2024/08/10/1437252/
+2026-03-12 20:05:43,806 INFO     PATCH (multi-line): 'վերացվեց ոսկու արտահանման մաքսատուրքը' -> https://www.finam.ru/publications/item/otmena-eksportnoy-poshliny-na-zoloto-podderzhit-nastroeniya-na-rynke-20240417-1230/
+2026-03-12 20:05:43,809 INFO   patched 2 link(s)
+2026-03-12 20:05:43,828 INFO Processing: 2025_03_11_GDP_components (5 candidate link(s))
+2026-03-12 20:05:43,829 INFO     PATCH (multi-line): 'նախկին հետազոտության մեջ նշել ենք, որ ոսկու վերաարտահանման «արդյունաբերությունը» մոտ 4 տոկոսային կետի ներդրում է ունեցել, առևտուրը՝ 3 տոկոսային կետ, ֆինանսական ծառայությունները՝ 1.1 տոկոսային կետ, մինչդեռ տնտեսության մնացած ճյուղերը միասին արձանագրել են -0.1% անկում։' -> https://www.aravot.am/2024/08/10/1437252/
+2026-03-12 20:05:43,829 INFO     PATCH (multi-line): 'Այն ներառում է «Սեփականատերերի կողմից զբաղեցրած բնակարանների համար ենթադրյալ վարձավճարի արժեքը»' -> https://ec.europa.eu/eurostat/web/products-manuals-and-guidelines/-/ks-ra-07-015
+2026-03-12 20:05:43,830 INFO   patched 2 link(s)
+2026-03-12 20:05:43,853 INFO Processing: 2025_03_25_public_dept (6 candidate link(s))
+2026-03-12 20:05:43,854 INFO     PATCH (multi-line): 'պատկերացում պետական պարքի մասին' -> https://hetq.am/hy/article/172659
+2026-03-12 20:05:43,855 INFO     PATCH (multi-line): 'գերազանցելով նույնիսկ կենսաթոշակային ապահովագրության ծախսերը' -> https://www.panorama.am/am/news/2025/03/14/%D4%B1%D6%80%D5%A9%D5%B8%D6%82%D6%80-%D4%B4%D5%A1%D5%B6%D5%AB%D5%A5%D5%AC%D5%B5%D5%A1%D5%B6/3125811
+2026-03-12 20:05:43,856 INFO     PATCH (multi-line): '«սև կարապ» իրադարձություններով' -> https://www.karapp.am/book/sev-karap-the-black-swan
+2026-03-12 20:05:43,858 INFO   patched 3 link(s)
+2026-03-12 20:05:43,867 INFO Processing: 2025_10_21_wages (6 candidate link(s))
+2026-03-12 20:05:43,867 INFO     PATCH (multi-line): 'Հայաստանի Հանրապետության վիճակագրական կոմիտե' -> https://www.armstat.am/am/?nid=964
+2026-03-12 20:05:43,868 INFO     PATCH (multi-line): '2016թ. դեկտեմբերին վերացվեց «իրավաբանական անձանց միություն» (ԻԱՄ) կազմակերպաիրավական ձևը' -> https://www.arlis.am/DocumentView.aspx?docid=110836
+2026-03-12 20:05:43,869 INFO   patched 2 link(s)
+2026-03-12 20:05:43,870 INFO 
+2026-03-12 20:05:43,870 INFO ==================================================
+2026-03-12 20:05:43,870 INFO   Issues with text links patched: 58
+2026-03-12 20:05:43,870 INFO   Total links patched:            144
+2026-03-12 20:58:54,196 INFO DRY RUN — nothing written
+2026-03-12 20:58:54,197 INFO 1 issues to scan
+2026-03-12 20:58:54,220 INFO Processing: 2025_02_04_eai (25 candidate link(s))
+2026-03-12 20:58:54,222 INFO     PATCH (multi-line): 'Սա մենք կանխատեսել էինք' -> https://www.tvyal.com/newsletter/2024/2024_09_02
+2026-03-12 20:58:54,223 INFO     PATCH (multi-line): '2024թ․ առաջին կիսամյակում' -> https://www.tvyal.com/newsletter/2024/2024_09_02
+2026-03-12 20:58:54,224 INFO     PATCH (multi-line): 'տարեկան ցուցանիշները' -> https://www.armstat.am/file/doc/99555273.pdf
+2026-03-12 20:58:54,224 INFO     PATCH (multi-line): 'տվել էինք վաղ նախազգուշացման ազդակներ' -> https://www.tvyal.com/newsletter/2024/2024_03_29
+2026-03-12 20:58:54,225 INFO     PATCH (multi-line): '💎🎭🔮️ Ոսկե Պատրանք. Հայաստանի արտահանման իրական պատկերը' -> https://www.tvyal.com/newsletter/2024/2024_09_02
+2026-03-12 20:58:54,226 INFO     PATCH (multi-line): '🐅🌆💸 Հայաստան` Կովկասի վագր, թե՞ թանկ երազանք' -> https://www.tvyal.com/newsletter/2024/2024_08_26
+2026-03-12 20:58:54,227 INFO     PATCH (multi-line): '🤒🟨♻️ Ոսկու տենդի շարունակություն. Հայաստանի արտահանման 75%-ը ոսկի և ադամանդ է' -> https://www.tvyal.com/newsletter/2024/2024_05_11
+2026-03-12 20:58:54,227 INFO     PATCH (multi-line): '🌿🤨💎 Թանկարժեք էֆեկտ․ 2024 թվականի տնտեսական աճի պատճառները, հրապարակվել է 9 ամիս առաջ' -> https://www.tvyal.com/newsletter/2024/2024_03_29
+2026-03-12 20:58:54,228 INFO     PATCH (multi-line): 'Մեր վերլուծությունների ամբողջական ցանկը' -> https://www.tvyal.com/newsletter
+2026-03-12 20:58:54,228 INFO     PATCH (multi-line): 'ՏԱՑ 2024թ․ դեկտեմբեր' -> https://www.armstat.am/file/doc/99555268.pdf
+2026-03-12 20:58:54,228 INFO     PATCH (multi-line): 'ՏԱՑ 2024թ․ տարեկան' -> https://www.armstat.am/file/doc/99555273.pdf
+2026-03-12 20:58:54,235 INFO   patched 11 link(s)
+2026-03-12 20:58:54,235 INFO 
+2026-03-12 20:58:54,235 INFO ==================================================
+2026-03-12 20:58:54,235 INFO   Issues with text links patched: 1
+2026-03-12 20:58:54,235 INFO   Total links patched:            11
+2026-03-12 20:58:54,235 INFO   (dry run — nothing written)
+2026-03-12 20:58:58,949 INFO DRY RUN — nothing written
+2026-03-12 20:58:58,950 INFO 1 issues to scan
+2026-03-12 20:58:58,975 INFO Processing: 2025_02_04_eai (25 candidate link(s))
+2026-03-12 20:58:58,976 INFO     PATCH (multi-line): 'Սա մենք կանխատեսել էինք' -> https://www.tvyal.com/newsletter/2024/2024_09_02
+2026-03-12 20:58:58,977 INFO     PATCH (multi-line): '2024թ․ առաջին կիսամյակում' -> https://www.tvyal.com/newsletter/2024/2024_09_02
+2026-03-12 20:58:58,977 INFO     PATCH (multi-line): 'տարեկան ցուցանիշները' -> https://www.armstat.am/file/doc/99555273.pdf
+2026-03-12 20:58:58,978 INFO     PATCH (multi-line): 'տվել էինք վաղ նախազգուշացման ազդակներ' -> https://www.tvyal.com/newsletter/2024/2024_03_29
+2026-03-12 20:58:58,978 INFO     PATCH (multi-line): '💎🎭🔮️ Ոսկե Պատրանք. Հայաստանի արտահանման իրական պատկերը' -> https://www.tvyal.com/newsletter/2024/2024_09_02
+2026-03-12 20:58:58,979 INFO     PATCH (multi-line): '🐅🌆💸 Հայաստան` Կովկասի վագր, թե՞ թանկ երազանք' -> https://www.tvyal.com/newsletter/2024/2024_08_26
+2026-03-12 20:58:58,979 INFO     PATCH (multi-line): '🤒🟨♻️ Ոսկու տենդի շարունակություն. Հայաստանի արտահանման 75%-ը ոսկի և ադամանդ է' -> https://www.tvyal.com/newsletter/2024/2024_05_11
+2026-03-12 20:58:58,980 INFO     PATCH (multi-line): '🌿🤨💎 Թանկարժեք էֆեկտ․ 2024 թվականի տնտեսական աճի պատճառները, հրապարակվել է 9 ամիս առաջ' -> https://www.tvyal.com/newsletter/2024/2024_03_29
+2026-03-12 20:58:58,980 INFO     PATCH (multi-line): 'Մեր վերլուծությունների ամբողջական ցանկը' -> https://www.tvyal.com/newsletter
+2026-03-12 20:58:58,981 INFO     PATCH (multi-line): 'ՏԱՑ 2024թ․ դեկտեմբեր' -> https://www.armstat.am/file/doc/99555268.pdf
+2026-03-12 20:58:58,981 INFO     PATCH (multi-line): 'ՏԱՑ 2024թ․ տարեկան' -> https://www.armstat.am/file/doc/99555273.pdf
+2026-03-12 20:58:58,989 INFO   patched 11 link(s)
+2026-03-12 20:58:58,989 INFO 
+2026-03-12 20:58:58,989 INFO ==================================================
+2026-03-12 20:58:58,989 INFO   Issues with text links patched: 1
+2026-03-12 20:58:58,989 INFO   Total links patched:            11
+2026-03-12 20:58:58,989 INFO   (dry run — nothing written)
+2026-03-12 20:59:06,790 INFO 72 issues to scan
+2026-03-12 20:59:06,799 INFO Processing: 2023_09_11_reexports (3 candidate link(s))
+2026-03-12 20:59:06,800 INFO   (no unambiguous matches)
+2026-03-12 20:59:06,815 INFO Processing: 2023_09_18_ellections (4 candidate link(s))
+2026-03-12 20:59:06,817 INFO   (no unambiguous matches)
+2026-03-12 20:59:06,825 INFO Processing: 2023_09_25_web_scraping_start (7 candidate link(s))
+2026-03-12 20:59:06,826 INFO     PATCH (inline): 'ինտերակտիվ կայքը' -> https://tavad.shinyapps.io/armenpress/
+2026-03-12 20:59:06,827 INFO   patched 1 link(s)
+2026-03-12 20:59:06,833 INFO Processing: 2023_10_02_russian_economy (6 candidate link(s))
+2026-03-12 20:59:06,835 INFO   (no unambiguous matches)
+2026-03-12 20:59:06,844 INFO Processing: 2023_10_09_AMD_FX (9 candidate link(s))
+2026-03-12 20:59:06,846 INFO   (no unambiguous matches)
+2026-03-12 20:59:06,861 INFO Processing: 2023_10_16_transfers (7 candidate link(s))
+2026-03-12 20:59:06,863 INFO     PATCH (multi-line): 'Այս խնդրի մասին ավելին տեղեկանալու համար կարդացեք հարցազրույցը' -> https://www.panorama.am/am/news/2023/10/10/%D4%B1%D5%B2%D5%A1%D5%BD%D5%AB-%D4%B9%D5%A1%D5%BE%D5%A1%D5%A4%D5%B5%D5%A1%D5%B6/2909640
+2026-03-12 20:59:06,864 INFO   patched 1 link(s)
+2026-03-12 20:59:06,877 INFO Processing: 2023_10_23_russia_balance (7 candidate link(s))
+2026-03-12 20:59:06,879 INFO     PATCH (inline): 'Ավելին՝ 2.' -> https://www.tvyal.com/newsletter/2023_10_16
+2026-03-12 20:59:06,880 INFO   patched 1 link(s)
+2026-03-12 20:59:06,892 INFO Processing: 2023_10_30_dollarization (5 candidate link(s))
+2026-03-12 20:59:06,894 INFO   (no unambiguous matches)
+2026-03-12 20:59:06,907 INFO Processing: 2023_11_06_budget_plan (6 candidate link(s))
+2026-03-12 20:59:06,910 INFO   (no unambiguous matches)
+2026-03-12 20:59:06,918 INFO Processing: 2023_11_13_exports (4 candidate link(s))
+2026-03-12 20:59:06,920 INFO   (no unambiguous matches)
+2026-03-12 20:59:06,933 INFO Processing: 2023_11_20_petrol_price (7 candidate link(s))
+2026-03-12 20:59:06,936 INFO     PATCH (inline): 'տվյալների բազաներ' -> https://github.com/tavad/tvyal_newsletter
+2026-03-12 20:59:06,937 INFO   patched 1 link(s)
+2026-03-12 20:59:06,967 INFO Processing: 2023_11_27_petrol_price_forecast (12 candidate link(s))
+2026-03-12 20:59:06,974 INFO     PATCH (inline): 'տվյալների բազաներ' -> https://github.com/tavad/tvyal_newsletter
+2026-03-12 20:59:06,975 INFO   patched 1 link(s)
+2026-03-12 20:59:06,983 INFO Processing: 2023_12_04_exports_dashboard (10 candidate link(s))
+2026-03-12 20:59:06,989 INFO     PATCH (multi-line): 'Ստորև, գծապատկերներում ներկայացված է կանխատեսված արդյունքների հիման վրա ստացված առցանց ինտերակտիվ վահանակի տեսքը: Վահանակը բաղկացած է վեց ընտրության դաշտից, երեք լեզվով ավտոմատ գեներացվող տեքստից, ինչպես նաև երկու ինտերակտիվ գծապատկերներից, որոնք ներկայացնում են ընտրված ապրանք-տարածաշրջան համակցության արտահանման դինամիկան և 2 տարի կանխատեսման հորիզոնը` կատարված 2 մոդելով:' -> https://tavad.shinyapps.io/exports_forecast/
+2026-03-12 20:59:06,990 INFO     PATCH (multi-line): 'Հայաստանի արտահանման այլընտրանքային ուղղություններ' -> https://www.tvyal.com/newsletter/2023_11_13
+2026-03-12 20:59:06,991 INFO     PATCH (multi-line): 'this link' -> https://tavad.shinyapps.io/exports_forecast/
+2026-03-12 20:59:06,992 INFO   patched 3 link(s)
+2026-03-12 20:59:07,005 INFO Processing: 2023_12_11_electricity_forecast (6 candidate link(s))
+2026-03-12 20:59:07,007 INFO   (no unambiguous matches)
+2026-03-12 20:59:07,018 INFO Processing: 2023_12_18_GDP_structure (7 candidate link(s))
+2026-03-12 20:59:07,022 INFO   (no unambiguous matches)
+2026-03-12 20:59:07,063 INFO Processing: 2023_12_25_christmas_tree (6 candidate link(s))
+2026-03-12 20:59:07,066 INFO   (no unambiguous matches)
+2026-03-12 20:59:07,083 INFO Processing: 2024_01_07_household_income (9 candidate link(s))
+2026-03-12 20:59:07,085 INFO     PATCH (inline): 'Ամանորյա հարցազրույցը' -> https://youtu.be/Va5q9efWaI4
+2026-03-12 20:59:07,087 INFO   patched 1 link(s)
+2026-03-12 20:59:07,103 INFO Processing: 2024_01_12_apartament_price_comparation (14 candidate link(s))
+2026-03-12 20:59:07,105 INFO     PATCH (multi-line): '3,246,3 դոլար (1,312,852.0 դրամ) Երևանում, իսկ Մոսկվայում՝ 2,909,4 դոլար (260,000.0 ռուբլի)' -> https://www.numbeo.com/cost-of-living/compare_cities.jsp?country1=Russia&city1=Moscow&country2=Armenia&city2=Yerevan&displayCurrency=USD
+2026-03-12 20:59:07,107 INFO     PATCH (multi-line): 'անցած շաբաթվա հետազոտությունները' -> https://www.tvyal.com/newsletter/2024/2024_01_07
+2026-03-12 20:59:07,109 INFO     PATCH (inline): 'տվյալների բազաներ' -> https://github.com/tavad/tvyal_newsletter
+2026-03-12 20:59:07,109 INFO   patched 3 link(s)
+2026-03-12 20:59:07,128 INFO Processing: 2024_01_19_vehicle_reexports (7 candidate link(s))
+2026-03-12 20:59:07,132 INFO   (no unambiguous matches)
+2026-03-12 20:59:07,151 INFO Processing: 2024_01_26_households_structure (6 candidate link(s))
+2026-03-12 20:59:07,151 INFO     PATCH (multi-line): '🏠💰 📉 Տնային տնտեսությունները աղքատացել են' -> https://www.tvyal.com/newsletter/2024/2024_01_07
+2026-03-12 20:59:07,154 INFO   patched 1 link(s)
+2026-03-12 20:59:07,165 INFO Processing: 2024_02_02_taxes_wildberries (4 candidate link(s))
+2026-03-12 20:59:07,165 INFO     PATCH (multi-line): 'Ավելի քան 2000 կանխատեսում. Հայաստանի արտահանումը' -> https://tavad.shinyapps.io/exports_forecast/
+2026-03-12 20:59:07,166 INFO   patched 1 link(s)
+2026-03-12 20:59:07,181 INFO Processing: 2024_02_09_wages (8 candidate link(s))
+2026-03-12 20:59:07,182 INFO     PATCH (multi-line): '🏠💰📉 Տնային տնտեսությունները աղքատացել են' -> https://www.tvyal.com/newsletter/2024/2024_01_07
+2026-03-12 20:59:07,182 INFO     PATCH (multi-line): '👨\u200d👩\u200d👧\u200d👦✨ Ամուր ընտանիք․ հարուստ ընտանիք' -> https://www.tvyal.com/newsletter/2024/2024_01_26
+2026-03-12 20:59:07,183 INFO     PATCH (multi-line): 'Մեր երկրորդ ուսումնասիրությունը ցույց տվեց' -> https://www.tvyal.com/newsletter/2024/2024_01_26
+2026-03-12 20:59:07,185 INFO   patched 3 link(s)
+2026-03-12 20:59:07,198 INFO Processing: 2024_02_16_exports_1 (8 candidate link(s))
+2026-03-12 20:59:07,199 INFO     PATCH (multi-line): 'Արտահանման այլընտրանքային ուղղություններ' -> https://www.tvyal.com/newsletter/2023_11_13
+2026-03-12 20:59:07,199 INFO     PATCH (multi-line): '🚗💨 Հայաստանի “ավտոարտադրության” մահը' -> https://www.tvyal.com/newsletter/2024/2024_01_19
+2026-03-12 20:59:07,201 INFO   patched 2 link(s)
+2026-03-12 20:59:07,228 INFO Processing: 2024_02_23_housing_market_crash_1 (9 candidate link(s))
+2026-03-12 20:59:07,229 INFO     PATCH (multi-line): '💲🏙️ Երևանը Մոսկվայից ավելի թանկ է' -> https://www.tvyal.com/newsletter/2024/2024_01_12
+2026-03-12 20:59:07,231 INFO     PATCH (multi-line): '🏠💰 📉 Տնային տնտեսությունները աղքատացել են' -> https://www.tvyal.com/newsletter/2024/2024_01_07
+2026-03-12 20:59:07,232 INFO   patched 2 link(s)
+2026-03-12 20:59:07,247 INFO Processing: 2024_03_01_transfers (12 candidate link(s))
+2026-03-12 20:59:07,250 INFO     PATCH (multi-line): '🏠🔄🤔 Անշարժ գույքի գների 13.5% աճ, գործարքների 40.9% անկում' -> https://www.tvyal.com/newsletter/2024/2024_02_23
+2026-03-12 20:59:07,252 INFO     PATCH (multi-line): 'շինարարության վրա' -> https://www.tvyal.com/newsletter/2024/2024_02_23
+2026-03-12 20:59:07,256 INFO   patched 2 link(s)
+2026-03-12 20:59:07,268 INFO Processing: 2024_03_09_GDP_components (4 candidate link(s))
+2026-03-12 20:59:07,268 INFO     PATCH (multi-line): '💸🔚🏦 Կապիտալի արտահոսք' -> https://www.tvyal.com/newsletter/2024/2024_03_01
+2026-03-12 20:59:07,269 INFO   patched 1 link(s)
+2026-03-12 20:59:07,280 INFO Processing: 2024_03_15_GDP_structure (6 candidate link(s))
+2026-03-12 20:59:07,281 INFO     PATCH (multi-line): '🇦🇲📊🏗️ Հայաստանի 2023թ․ 8.7% տնտեսական աճի հիմնական պատճառները' -> https://www.tvyal.com/newsletter/2024/2024_03_09
+2026-03-12 20:59:07,281 INFO     PATCH (multi-line): '💸🔚🏦 Կապիտալի արտահոսք' -> https://www.tvyal.com/newsletter/2024/2024_03_01
+2026-03-12 20:59:07,283 INFO   patched 2 link(s)
+2026-03-12 20:59:07,297 INFO Processing: 2024_03_22_petrol_price (6 candidate link(s))
+2026-03-12 20:59:07,299 INFO   (no unambiguous matches)
+2026-03-12 20:59:07,314 INFO Processing: 2024_03_29_economic_activity (13 candidate link(s))
+2026-03-12 20:59:07,315 INFO     PATCH (multi-line): 'Ըդհանուր առմամբ արտահանման 28.5 տոկոսը եղել է ոսկու և ադամանդնարի վերաարտահանում Ռուսատանից դեպի Արաբական Միացյալ Էմիրություններ և Հոնկոնգ' -> https://www.tvyal.com/newsletter/2024/2024_02_16
+2026-03-12 20:59:07,315 INFO     PATCH (multi-line): '🇦🇲📊🏗️ Հայաստանի 2023թ․ 8.7% տնտեսական աճի հիմնական պատճառները' -> https://www.tvyal.com/newsletter/2024/2024_03_09
+2026-03-12 20:59:07,316 INFO     PATCH (multi-line): 'նկատվում է ապրանքների տարբեր կատեգորիաների արտահանման կրճատում' -> https://www.tvyal.com/newsletter/2024/2024_02_16
+2026-03-12 20:59:07,317 INFO     PATCH (multi-line): '🚜🌾📉 10 տարվա գյուղատնտեսության կոլափսը' -> https://www.tvyal.com/newsletter/2024/2024_03_15
+2026-03-12 20:59:07,318 INFO     PATCH (multi-line): '💸🔚🏦 Կապիտալի արտահոսք' -> https://www.tvyal.com/newsletter/2024/2024_03_01
+2026-03-12 20:59:07,319 INFO     PATCH (multi-line): '⛽🚗🏷️Բենզինի գինը թա՞փ է հավաքում' -> https://www.tvyal.com/newsletter/2024/2024_03_22
+2026-03-12 20:59:07,323 INFO   patched 6 link(s)
+2026-03-12 20:59:07,338 INFO Processing: 2024_04_05_exchange (8 candidate link(s))
+2026-03-12 20:59:07,338 INFO     PATCH (multi-line): '💸🔚🏦 Կապիտալի արտահոսք' -> https://www.tvyal.com/newsletter/2024/2024_03_01
+2026-03-12 20:59:07,339 INFO     PATCH (multi-line): '📈📉❓ Արտահանման 55.3 տոկոս աճ թե՞ -12.2 տոկոս անկում' -> https://www.tvyal.com/newsletter/2024/2024_02_16
+2026-03-12 20:59:07,340 INFO     PATCH (multi-line): 'Այժմ գրանցվում է բանկային կապիտալի արտահոսք և ներհոսքի դանդաղում' -> https://www.tvyal.com/newsletter/2024/2024_03_01
+2026-03-12 20:59:07,341 INFO     PATCH (multi-line): '🌿🤨💎 Թանկարժեք էֆեկտ․ 2024 թվականի տնտեսական աճի պատճառները' -> https://www.tvyal.com/newsletter/2024/2024_03_29
+2026-03-12 20:59:07,342 INFO   patched 4 link(s)
+2026-03-12 20:59:07,354 INFO Processing: 2024_04_12_reexports (7 candidate link(s))
+2026-03-12 20:59:07,355 INFO     PATCH (multi-line): '📈📉❓ Արտահանման 55.3 տոկոս աճ թե՞ -12.2 տոկոս անկում' -> https://www.tvyal.com/newsletter/2024/2024_02_16
+2026-03-12 20:59:07,356 INFO     PATCH (multi-line): '🌿🤨💎 Թանկարժեք էֆեկտ․ 2024 թվականի տնտեսական աճի պատճառները' -> https://www.tvyal.com/newsletter/2024/2024_03_29
+2026-03-12 20:59:07,359 INFO     PATCH (multi-line): '💵🪙🎭 Դրամի դրամա․ Ինչո՞ւ է արժեզրկվում և արժևորվում դրամը' -> https://www.tvyal.com/newsletter/2024/2024_04_05
+2026-03-12 20:59:07,360 INFO   patched 3 link(s)
+2026-03-12 20:59:07,373 INFO Processing: 2024_04_19_population_forecast (11 candidate link(s))
+2026-03-12 20:59:07,375 INFO     PATCH (multi-line): '💹💳 Մասնավոր աշխատատեղերի 76 տոկոսը Երևանում է' -> https://www.tvyal.com/newsletter/2024/2024_02_09
+2026-03-12 20:59:07,375 INFO     PATCH (multi-line): 'Մեր նախկին հետազոտությունը ցույց է տվել' -> https://www.tvyal.com/newsletter/2024/2024_01_26
+2026-03-12 20:59:07,376 INFO     PATCH (multi-line): '👨\u200d👩\u200d👧\u200d👦✨ Ամուր ընտանիք․ հարուստ ընտանիք' -> https://www.tvyal.com/newsletter/2024/2024_01_26
+2026-03-12 20:59:07,380 INFO     PATCH (multi-line): '🚀♻🟨 Ոսկու տենդ. Հայաստանի արտահանման կեսը վերաարտահանում է' -> https://www.tvyal.com/newsletter/2024/2024_04_12
+2026-03-12 20:59:07,383 INFO   patched 4 link(s)
+2026-03-12 20:59:07,410 INFO Processing: 2024_04_26_services_exports (8 candidate link(s))
+2026-03-12 20:59:07,411 INFO     PATCH (multi-line): '💹🚀♻🟨 Ոսկու տենդ. Հայաստանի ապրանքների արտահանման կեսը վերաարտահանում է' -> https://www.tvyal.com/newsletter/2024/2024_02_12
+2026-03-12 20:59:07,411 INFO     PATCH (multi-line): '💸🔚🏦 Կապիտալի արտահոսք' -> https://www.tvyal.com/newsletter/2024/2024_03_01
+2026-03-12 20:59:07,412 INFO     PATCH (multi-line): '👫🧭💀 Հայաստանում 2 մլն հայ 2100 թվականին' -> https://www.tvyal.com/newsletter/2024/2024_04_19
+2026-03-12 20:59:07,425 INFO   patched 3 link(s)
+2026-03-12 20:59:07,441 INFO Processing: 2024_05_03_taxes_mobile_centre (9 candidate link(s))
+2026-03-12 20:59:07,442 INFO     PATCH (multi-line): 'Ավելի քան 2000 կանխատեսում. Հայաստանի արտահանումը' -> https://tavad.shinyapps.io/exports_forecast/
+2026-03-12 20:59:07,442 INFO     PATCH (multi-line): '🚀♻🟨 Ոսկու տենդ. Հայաստանի արտահանման կեսը վերաարտահանում է' -> https://www.tvyal.com/newsletter/2024/2024_04_12
+2026-03-12 20:59:07,442 INFO     PATCH (multi-line): '🍇🚀 Wildberries-ը աճել է 35 անգամ 1 տարվա ընթացքում' -> https://www.tvyal.com/newsletter/2024/2024_02_02
+2026-03-12 20:59:07,445 INFO   patched 3 link(s)
+2026-03-12 20:59:07,460 INFO Processing: 2024_05_11_reexports_gold (10 candidate link(s))
+2026-03-12 20:59:07,461 INFO     PATCH (multi-line): '🚀♻🟨 Ոսկու տենդ. Հայաստանի արտահանման կեսը վերաարտահանում է' -> https://www.tvyal.com/newsletter/2024/2024_04_12
+2026-03-12 20:59:07,462 INFO     PATCH (multi-line): 'Վերաարտահանման մեթոդաբանությունը ներկայացված է այս հղումով' -> https://www.tvyal.com/newsletter/2024/2024_04_12
+2026-03-12 20:59:07,462 INFO     PATCH (multi-line): 'Ավելի քան 2000 կանխատեսում. Հայաստանի արտահանումը' -> https://tavad.shinyapps.io/exports_forecast/
+2026-03-12 20:59:07,462 INFO     PATCH (multi-line): '📈📉❓ Արտահանման 55.3 տոկոս աճ թե՞ -12.2 տոկոս անկում' -> https://www.tvyal.com/newsletter/2024/2024_02_16
+2026-03-12 20:59:07,463 INFO     PATCH (multi-line): '📱📍🖥 Mobile Centre-ը Հայաստանի ամենախոշոր հարկատուն է' -> https://www.tvyal.com/newsletter/2024/2024_05_03
+2026-03-12 20:59:07,464 INFO   patched 5 link(s)
+2026-03-12 20:59:07,481 INFO Processing: 2024_05_17_electricity (8 candidate link(s))
+2026-03-12 20:59:07,482 INFO     PATCH (multi-line): 'Այս պահին գրանցվում է կապիտալի արտահոսք' -> https://www.tvyal.com/newsletter/2024/2024_03_01
+2026-03-12 20:59:07,482 INFO     PATCH (multi-line): '💸🔚🏦 Կապիտալի արտահոսք' -> https://www.tvyal.com/newsletter/2024/2024_03_01
+2026-03-12 20:59:07,483 INFO     PATCH (multi-line): '🤒🟨♻️ Ոսկու տենդի շարունակություն. Հայաստանի արտահանման 75%-ը ոսկի և ադամանդ է' -> https://www.tvyal.com/newsletter/2024/2024_05_11
+2026-03-12 20:59:07,486 INFO   patched 3 link(s)
+2026-03-12 20:59:07,502 INFO Processing: 2024_06_07_CB_loans (15 candidate link(s))
+2026-03-12 20:59:07,503 INFO     PATCH (multi-line): 'տնային տնտեսությունները իրականում աղքատացել են վերջին շրջանում' -> https://www.tvyal.com/newsletter/2024/2024_01_07
+2026-03-12 20:59:07,504 INFO     PATCH (multi-line): 'ապրուստի տեսանկյունից Երևանը նույնիսկ Մոսկվայից թանկ է' -> https://www.tvyal.com/newsletter/2024/2024_01_12
+2026-03-12 20:59:07,505 INFO     PATCH (multi-line): 'այս պահին առկա է կապիտալի արտահոսք' -> https://www.tvyal.com/newsletter/2024/2024_03_01
+2026-03-12 20:59:07,506 INFO     PATCH (multi-line): 'ՀՀ արտահանման 75 տոկոսը ոսկու և ադամանդների վերաարտահանում է' -> https://www.tvyal.com/newsletter/2024/2024_05_11
+2026-03-12 20:59:07,507 INFO     PATCH (multi-line): 'վերջինը միակ ուղղությունն է որը ապահովում է արտահանման աճը' -> https://www.tvyal.com/newsletter/2024/2024_05_11
+2026-03-12 20:59:07,507 INFO     PATCH (multi-line): 'ինչպես նաև ՀՆԱ-ի աճը իրական տնտեսության ու արտահանման անկման ֆոնին' -> https://www.tvyal.com/newsletter/2024/2024_03_29
+2026-03-12 20:59:07,508 INFO     PATCH (multi-line): 'էլեկտրականության արտադրությունը ու արտահանումն է անկել' -> https://www.tvyal.com/newsletter/2024/2024_05_17
+2026-03-12 20:59:07,508 INFO     PATCH (multi-line): 'առկա է տուրիստական և ՏՏ ծառայությունների անկման միտում' -> https://www.tvyal.com/newsletter/2024/2024_04_26
+2026-03-12 20:59:07,509 INFO     PATCH (multi-line): 'մոտ 16-18 մլրդ դոլար' -> https://www.tvyal.com/newsletter/2024/2024_05_11
+2026-03-12 20:59:07,511 INFO   patched 9 link(s)
+2026-03-12 20:59:07,525 INFO Processing: 2024_06_17_tourism (7 candidate link(s))
+2026-03-12 20:59:07,525 INFO     PATCH (multi-line): 'Ինչպես ցույց է տվել մեր նախորդ հետազոտությունը' -> https://www.tvyal.com/newsletter/2024/2024_04_26
+2026-03-12 20:59:07,527 INFO   patched 1 link(s)
+2026-03-12 20:59:07,542 INFO Processing: 2024_06_28_public_dept (9 candidate link(s))
+2026-03-12 20:59:07,544 INFO     PATCH (multi-line): 'Հարկ է նշել, որ հայկական դրամը 2020 թվականից փոխարկելի արժույթներից ամենաարժևորվածն է, որը բացասաբար է անդրադառնում իրական արտահանման, ինչպես նաև տուրիզմի և ՏՏ ոլորտի վրա։ Սա որոշակի ճնշում է գործադրում փաստացի դոլարին փափուկ կցված դրամի վրա' -> https://www.tvyal.com/newsletter/2024/2024_04_05
+2026-03-12 20:59:07,545 INFO     PATCH (multi-line): 'Ներկայումս տնտեսությունում առկա են առանցքային խնդիրներ' -> https://www.tvyal.com/newsletter/2024/2024_06_07
+2026-03-12 20:59:07,547 INFO   patched 2 link(s)
+2026-03-12 20:59:07,563 INFO Processing: 2024_07_05_gold_hub (10 candidate link(s))
+2026-03-12 20:59:07,563 INFO     PATCH (multi-line): 'Ինչպես նշված է մեր նախորդ վերլուծության մեջ' -> https://www.tvyal.com/newsletter/2024/2024_04_12
+2026-03-12 20:59:07,564 INFO     PATCH (multi-line): 'Ինչպես գրել ենք մեր 2024 թվականի մայիսի 11-ի տեղեկագրում' -> https://www.tvyal.com/newsletter/2024/2024_05_11
+2026-03-12 20:59:07,565 INFO     PATCH (multi-line): 'Մեր նախորդ վերլուծությունը ցույց է տվել, որ ավանդական ապրանքների արտահանումը փաստացի նվազել է' -> https://www.tvyal.com/newsletter/2024/2024_05_11
+2026-03-12 20:59:07,566 INFO     PATCH (multi-line): '🚀♻🟨 Ոսկու տենդ. Հայաստանի արտահանման կեսը վերաարտահանում է' -> https://www.tvyal.com/newsletter/2024/2024_04_12
+2026-03-12 20:59:07,567 INFO     PATCH (multi-line): '🤒🟨♻️ Ոսկու տենդի շարունակություն. Հայաստանի արտահանման 75%-ը ոսկի և ադամանդ է' -> https://www.tvyal.com/newsletter/2024/2024_05_11
+2026-03-12 20:59:07,569 INFO   patched 5 link(s)
+2026-03-12 20:59:07,608 INFO Processing: 2024_07_26_cooperation (20 candidate link(s))
+2026-03-12 20:59:07,611 INFO     PATCH (multi-line): '💸🔚🏦 Capital outflow' -> https://www.tvyal.com/newsletter/2024/2024_03_01
+2026-03-12 20:59:07,611 INFO     PATCH (multi-line): '🤒🟨♻️ Gold Rush 2: Gold and Diamonds are 75% of Armenia’s Exports' -> https://www.tvyal.com/newsletter/2024/2024_05_11
+2026-03-12 20:59:07,612 INFO     PATCH (multi-line): '🌿🤨💎 Expensive Effect: Unraveling the Economic Growth of 2024”' -> https://www.tvyal.com/newsletter/2024/2024_03_29
+2026-03-12 20:59:07,613 INFO     PATCH (multi-line): '🔌⚡🇦🇲 Electric Armenia: Reduction in Electricity Production and Exports' -> https://www.tvyal.com/newsletter/2024/2024_05_17
+2026-03-12 20:59:07,613 INFO     PATCH (multi-line): '💼✈🥶️ Armenia’s Warm Welcome Runs Cold: Study of Export of Services' -> https://www.tvyal.com/newsletter/2024/2024_04_26
+2026-03-12 20:59:07,614 INFO     PATCH (multi-line): '💵🪙🎭 The Drama of Dram. Why Does the Dram Depreciate and Appreciate?' -> https://www.tvyal.com/newsletter/2024/2024_04_05
+2026-03-12 20:59:07,615 INFO     PATCH (multi-line): '🇷🇺💰🇦🇲 Armenia: Russia’s Gold Hub - In 2024 88 percent of Russian gold exports passed through Armenia' -> https://www.tvyal.com/newsletter/2024/2024_07_05
+2026-03-12 20:59:07,615 INFO     PATCH (multi-line): '💰🚧⚖ The Pendulum of Public Debt: For the First Time, Domestic Debt Exceeds External Debt' -> https://www.tvyal.com/newsletter/2024/2024_06_28
+2026-03-12 20:59:07,618 INFO   patched 8 link(s)
+2026-03-12 20:59:07,636 INFO Processing: 2024_08_02_taxes (13 candidate link(s))
+2026-03-12 20:59:07,640 INFO     PATCH (multi-line): 'Եթե համեմատենք նախորդ տարվա հետ, ապա անուղղակի հարկերը բավականին կրճատվել են, հավաքագրվող հիմնական հարկատեսակների մեջ այս պահին միայն եկամտահարկը չի կրճատվել։ Մյուս հարկերը՝ շահութահարկը, շրջանառության հարկը, ավելացված արժեքի հարկը, մաքսատուրքը կրճատվում են' -> https://oragir.news/hy/material/2024/07/31/125121
+2026-03-12 20:59:07,640 INFO     PATCH (multi-line): 'Հայաստանն այս պահին ունի կապիտալի արտահոսք և ներհոսքի կրճատում' -> https://www.tvyal.com/newsletter/2024/2024_03_01
+2026-03-12 20:59:07,642 INFO     PATCH (multi-line): 'Ըստ մեր գնահատկանի 2024 թվականի առաջին 3 ամիսների կտռվածով Ռուսատանից ոսկու արտահանման 88.4% անցնում էր Հայաստանով: Այս ժամանակահատվածում Հայաստանի ընդհանուր արտահանման 76%-ը կազմել են թանկարժեք և կիսաթանկարժեք քարերն ու մետաղները:' -> https://www.tvyal.com/newsletter/2024/2024_07_05
+2026-03-12 20:59:07,644 INFO     PATCH (multi-line): '«Այստեղ խնդիրը նաև այն է, որ ոսկու մեծ քանակությունը՝ միլիարդավոր դոլարների հասնող, որը 2023-ի դեկտեմբերից մինչև 2024-ի մայիս անցավ Հայաստանի տարածքով և ապահովեց վերջին շրջանի տնտեսական աճը, արդեն դադարում է, իսկ պետությունը նույնպես որոշակի եկամուտներ ուներ։ Սա ևս մտահոգիչ է»' -> https://oragir.news/hy/material/2024/07/31/125121
+2026-03-12 20:59:07,644 INFO     PATCH (multi-line): 'Ավանդական արտահանման ապրանքների ծավալները փաստացի նվազել են' -> https://www.tvyal.com/newsletter/2024/2024_05_11
+2026-03-12 20:59:07,647 INFO   patched 5 link(s)
+2026-03-12 20:59:07,661 INFO Processing: 2024_08_12_numbeo (8 candidate link(s))
+2026-03-12 20:59:07,662 INFO     PATCH (multi-line): '2023 թվականին Երևանը դարձել է ամենաթանկ քաղաքը տարածաշրջանում՝ գերազանցելով նույնիսկ Մոսկվային' -> https://www.tvyal.com/newsletter/2024/2024_01_12
+2026-03-12 20:59:07,664 INFO     PATCH (multi-line): 'Երևանը Մոսկվայից թանկ է' -> https://www.tvyal.com/newsletter/2024/2024_01_12
+2026-03-12 20:59:07,665 INFO     PATCH (multi-line): 'Հայաստանում մասնավոր հատվածի աշխատատեղերի 76%-ը կենտրոնացված է Երևանում, ինչը ընդգծում է քաղաքային և գյուղական տարածքների միջև զգալի անհավասարությունը' -> https://www.tvyal.com/newsletter/2024/2024_02_09
+2026-03-12 20:59:07,666 INFO   patched 3 link(s)
+2026-03-12 20:59:07,682 INFO Processing: 2024_08_19_IT_secor_jobs (12 candidate link(s))
+2026-03-12 20:59:07,683 INFO     PATCH (multi-line): '👛💨💰 Դատարկ գրպաններ, բարձր աշխատավարձեր' -> https://www.tvyal.com/newsletter/2024/2024_08_12
+2026-03-12 20:59:07,684 INFO     PATCH (multi-line): '💵🪙🎭 Դրամի դրամա․ Ինչո՞ւ է արժեզրկվում և արժևորվում դրամը' -> https://www.tvyal.com/newsletter/2024/2024_04_05
+2026-03-12 20:59:07,684 INFO     PATCH (multi-line): '🧮⏳🎲 Հայաստանում հարկահավաքությունը դարձել է ինքնանպատակ' -> https://www.tvyal.com/newsletter/2024/2024_08_02
+2026-03-12 20:59:07,684 INFO     PATCH (multi-line): '💲🏙️ Երևանը Մոսկվայից ավելի թանկ է' -> https://www.tvyal.com/newsletter/2024/2024_01_12
+2026-03-12 20:59:07,685 INFO     PATCH (multi-line): '💸🔚🏦 Կապիտալի արտահոսք' -> https://www.tvyal.com/newsletter/2024/2024_03_01
+2026-03-12 20:59:07,686 INFO     PATCH (multi-line): '🧮⏳🎲 Հայաստանը հարկում է ժամանակը․ Խաղ տնտեսական աճի հետ :' -> https://www.tvyal.com/newsletter/2024/2024_08_02
+2026-03-12 20:59:07,687 INFO     PATCH (multi-line): '💹💳 Մասնավոր աշխատատեղերի 76 տոկոսը Երևանում է' -> https://www.tvyal.com/newsletter/2024/2024_02_09
+2026-03-12 20:59:07,689 INFO   patched 7 link(s)
+2026-03-12 20:59:07,707 INFO Processing: 2024_08_26_GDP_components (13 candidate link(s))
+2026-03-12 20:59:07,710 INFO     PATCH (multi-line): 'որ տնտեսական աճը կկազմի մոտ 7%' -> https://www.tvyal.com/newsletter/2024/2024_03_09
+2026-03-12 20:59:07,711 INFO     PATCH (multi-line): '🆘🇦🇲🧑🏼\u200d💻 SOS ՀՀ ՏՏ․ Հայաստանի ՏՏ ոլորտը, ռազմավարական առաջնահերթությունից մինչև հնարավոր անկում' -> https://www.tvyal.com/newsletter/2024/2024_08_19
+2026-03-12 20:59:07,712 INFO     PATCH (multi-line): 'Կարդացեք ավելին՝ 💸🔚🏦 Կապիտալի արտահոսք' -> https://www.tvyal.com/newsletter/2024/2024_03_01
+2026-03-12 20:59:07,713 INFO     PATCH (multi-line): '🇷🇺💰🇦🇲 Հայաստան` ռուսական ոսկու հանգրվան' -> https://www.tvyal.com/newsletter/2024/2024_07_05
+2026-03-12 20:59:07,714 INFO     PATCH (multi-line): '🌅🏖🌄 Սահմանից այն կողմ․ Հայաստանի տուրիստական աճը և հնարավոր անկումը' -> https://www.tvyal.com/newsletter/2024/2024_06_17
+2026-03-12 20:59:07,715 INFO     PATCH (multi-line): 'Կարդացեք ավելին՝ 🧮⏳🎲 Հայաստանը հարկում է ժամանակը․ Խաղ տնտեսական աճի հետ' -> https://www.tvyal.com/newsletter/2024/2024_08_02
+2026-03-12 20:59:07,715 INFO     PATCH (multi-line): '💰🚧⚖️ Պետական պարտքի ճոճանակ․ Առաջին անգամ ներքին պարտքը գերազանցում է արտաքինը' -> https://www.tvyal.com/newsletter/2024/2024_06_28
+2026-03-12 20:59:07,716 INFO     PATCH (multi-line): '🌿🤨💎 Թանկարժեք էֆեկտ․ 2024 թվականի տնտեսական աճի պատճառները' -> https://www.tvyal.com/newsletter/2024/2024_03_29
+2026-03-12 20:59:07,717 INFO   patched 8 link(s)
+2026-03-12 20:59:07,733 INFO Processing: 2024_09_02_exports_semiannual (13 candidate link(s))
+2026-03-12 20:59:07,734 INFO     PATCH (multi-line): 'Կարդալ ավելին՝ 🇷🇺💰🇦🇲 Հայաստան` ռուսական ոսկու հանգրվան' -> https://www.tvyal.com/newsletter/2024/2024_07_05
+2026-03-12 20:59:07,734 INFO     PATCH (multi-line): '🚀♻🟨 Ոսկու տենդ. Հայաստանի արտահանման կեսը վերաարտահանում է' -> https://www.tvyal.com/newsletter/2024/2024_04_12
+2026-03-12 20:59:07,735 INFO     PATCH (multi-line): '🤒🟨♻️ «ոսկու տենդը»' -> https://www.tvyal.com/newsletter/2024/2024_05_11
+2026-03-12 20:59:07,736 INFO     PATCH (multi-line): '🌿🤨💎 Թանկարժեք էֆեկտ․ 2024 թվականի տնտեսական աճի պատճառները' -> https://www.tvyal.com/newsletter/2024/2024_03_29
+2026-03-12 20:59:07,738 INFO     PATCH (multi-line): '🧮⏳🎲 արդյունավետ հարկային դաշտի ձևավորում' -> https://www.tvyal.com/newsletter/2024/2024_08_02
+2026-03-12 20:59:07,741 INFO   patched 5 link(s)
+2026-03-12 20:59:07,761 INFO Processing: 2024_09_09_electricity (10 candidate link(s))
+2026-03-12 20:59:07,762 INFO     PATCH (multi-line): '💎🎭🔮️ Ոսկե Պատրանք. Հայաստանի արտահանման իրական պատկերը' -> https://www.tvyal.com/newsletter/2024/2024_09_02
+2026-03-12 20:59:07,763 INFO     PATCH (multi-line): '🆘🇦🇲🧑🏼\u200d💻 SOS ՀՀ ՏՏ․ ռազմավարական առաջնահերթությունից մինչև հնարավոր անկում' -> https://www.tvyal.com/newsletter/2024/2024_08_19
+2026-03-12 20:59:07,763 INFO     PATCH (multi-line): '👛💨💰 Դատարկ գրպաններ, բարձր աշխատավարձր' -> https://www.tvyal.com/newsletter/2024/2024_08_12
+2026-03-12 20:59:07,764 INFO     PATCH (multi-line): '🧮⏳🎲 Հայաստանը հարկում է ժամանակը․ Խաղ տնտեսական աճի հետ' -> https://www.tvyal.com/newsletter/2024/2024_08_02
+2026-03-12 20:59:07,766 INFO   patched 4 link(s)
+2026-03-12 20:59:07,781 INFO Processing: 2024_09_16_transfers (12 candidate link(s))
+2026-03-12 20:59:07,782 INFO     PATCH (multi-line): '🐅🌆💸 Հայաստան` Կովկասի վագր, թե՞ թանկ երազանք' -> https://www.tvyal.com/newsletter/2024/2024_08_26
+2026-03-12 20:59:07,783 INFO     PATCH (multi-line): 'կարդացեք ավելին՝ 💎🎭🔮️ Ոսկե Պատրանք. Հայաստանի արտահանման իրական պատկերը' -> https://www.tvyal.com/newsletter/2024/2024_09_02
+2026-03-12 20:59:07,789 INFO   patched 2 link(s)
+2026-03-12 20:59:07,850 INFO Processing: 2024_09_23_tmp (24 candidate link(s))
+2026-03-12 20:59:07,851 INFO     PATCH (multi-line): '💸🔚🏦 Կապիտալի ներհոսքից մինչև արտահոսք. Հայաստանի տնտեսական հրաշքի ներքին խոհանոցը' -> https://www.tvyal.com/newsletter/2024/2024_09_16
+2026-03-12 20:59:07,852 INFO     PATCH (multi-line): '🔌⚡🇦🇲 էլեկտրիկ Հայաստան․ Ցանցի խոցելիությունից մինչև արևային հեռանկարներ' -> https://www.tvyal.com/newsletter/2024/2024_09_09
+2026-03-12 20:59:07,852 INFO     PATCH (multi-line): '💎🎭🔮️ Ոսկե Պատրանք. Հայաստանի արտահանման իրական պատկերը' -> https://www.tvyal.com/newsletter/2024/2024_09_02
+2026-03-12 20:59:07,853 INFO     PATCH (multi-line): '🐅🌆💸 Հայաստան` Կովկասի վագր, թե՞ թանկ երազանք' -> https://www.tvyal.com/newsletter/2024/2024_08_26
+2026-03-12 20:59:07,854 INFO     PATCH (multi-line): '🆘🇦🇲🧑🏼\u200d💻 SOS ՀՀ ՏՏ․ Վայրիվերում ոլորտում' -> https://www.tvyal.com/newsletter/2024/2024_08_19
+2026-03-12 20:59:07,854 INFO     PATCH (multi-line): '👛💨💰 Դատարկ գրպաններ, բարձր աշխատավարձր' -> https://www.tvyal.com/newsletter/2024/2024_08_12
+2026-03-12 20:59:07,855 INFO     PATCH (multi-line): '🧮⏳🎲 Հայաստանը հարկում է ժամանակը․ Խաղ տնտեսական աճի հետ' -> https://www.tvyal.com/newsletter/2024/2024_08_02
+2026-03-12 20:59:07,855 INFO     PATCH (multi-line): '🇷🇺💰🇦🇲 Հայաստան` ռուսական ոսկու հանգրվան' -> https://www.tvyal.com/newsletter/2024/2024_07_05
+2026-03-12 20:59:07,856 INFO     PATCH (multi-line): '💰🚧⚖️ Պետական պարտքի ճոճանակ․ Առաջին անգամ ներքին պարտքը գերազանցում է արտաքինը' -> https://www.tvyal.com/newsletter/2024/2024_06_28
+2026-03-12 20:59:07,856 INFO     PATCH (multi-line): '🌅🏖🌄 Սահմանից այն կողմ․ Հայաստանի տուրիստական աճը և հնարավոր անկումը' -> https://www.tvyal.com/newsletter/2024/2024_06_17
+2026-03-12 20:59:07,857 INFO     PATCH (multi-line): '💹🎏🏦 Վարկի տակ․ Վարկավորման միտումները ըստ ճյուղերի' -> https://www.tvyal.com/newsletter/2024/2024_06_07
+2026-03-12 20:59:07,857 INFO     PATCH (multi-line): '🤒🟨♻️ Ոսկու տենդի շարունակություն. Հայաստանի արտահանման 75%-ը ոսկի և ադամանդ է' -> https://www.tvyal.com/newsletter/2024/2024_05_11
+2026-03-12 20:59:07,858 INFO     PATCH (multi-line): '💼✈🥶️ Հայաստանի հյուրընկալության սառչում․ Ծառայությունների արտահանման ուսումնասիրություն' -> https://www.tvyal.com/newsletter/2024/2024_04_26
+2026-03-12 20:59:07,858 INFO     PATCH (multi-line): '👫🧭💀 Հայաստանում 2 մլն հայ 2100 թվականին' -> https://www.tvyal.com/newsletter/2024/2024_04_19
+2026-03-12 20:59:07,858 INFO     PATCH (multi-line): '💵🪙🎭 Դրամի դրամա․ Ինչո՞ւ է արժեզրկվում և արժևորվում դրամը' -> https://www.tvyal.com/newsletter/2024/2024_04_05
+2026-03-12 20:59:07,858 INFO     PATCH (multi-line): '🚜🌾📉 10 տարվա գյուղատնտեսության կոլափսը' -> https://www.tvyal.com/newsletter/2024/2024_03_15
+2026-03-12 20:59:07,859 INFO     PATCH (multi-line): '💹💳 Մասնավոր աշխատատեղերի 76 տոկոսը Երևանում է' -> https://www.tvyal.com/newsletter/2024/2024_02_09
+2026-03-12 20:59:07,859 INFO     PATCH (multi-line): '👨\u200d👩\u200d👧\u200d👦✨ Ամուր ընտանիք․ հարուստ ընտանիք' -> https://www.tvyal.com/newsletter/2024/2024_01_26
+2026-03-12 20:59:07,859 INFO     PATCH (multi-line): '🚗💨 Հայաստանի “ավտոարտադրության” մահը' -> https://www.tvyal.com/newsletter/2024/2024_01_19
+2026-03-12 20:59:07,859 INFO     PATCH (multi-line): '💲🏙️ Երևանը Մոսկվայից ավելի թանկ է' -> https://www.tvyal.com/newsletter/2024/2024_01_12
+2026-03-12 20:59:07,859 INFO     PATCH (multi-line): '🏠💰📉 Տնային տնտեսությունները աղքատացել են' -> https://www.tvyal.com/newsletter/2024/2024_01_07
+2026-03-12 20:59:07,861 INFO   patched 21 link(s)
+2026-03-12 20:59:07,869 INFO Processing: 2024_09_30_GDP (10 candidate link(s))
+2026-03-12 20:59:07,870 INFO     PATCH (multi-line): '🌿🤨💎 Թանկարժեք էֆեկտ․ 2024 թվականի տնտեսական աճի պատճառները' -> https://www.tvyal.com/newsletter/2024/2024_03_29
+2026-03-12 20:59:07,871 INFO     PATCH (multi-line): '💸🔚🏦 Ռուսաստանից կապիտալի մեծ քանակության' -> https://www.tvyal.com/newsletter/2024/2024_09_16
+2026-03-12 20:59:07,872 INFO     PATCH (multi-line): '🆘🇦🇲🧑🏼\u200d💻 ՏՏ ոլորտի աշխատողների ներհոսքով' -> https://www.tvyal.com/newsletter/2024/2024_08_19
+2026-03-12 20:59:07,872 INFO     PATCH (multi-line): '💸🔚🏦 Կապիտալի ներհոսքից մինչև արտահոսք. Հայաստանի տնտեսական հրաշքի ներքին խոհանոցը' -> https://www.tvyal.com/newsletter/2024/2024_09_16
+2026-03-12 20:59:07,872 INFO     PATCH (multi-line): '🇷🇺💰🇦🇲 Հայաստան` ռուսական ոսկու հանգրվան' -> https://www.tvyal.com/newsletter/2024/2024_07_05
+2026-03-12 20:59:07,872 INFO     PATCH (multi-line): '🧮⏳🎲 Հայաստանը հարկում է ժամանակը․ Խաղ տնտեսական աճի հետ' -> https://www.tvyal.com/newsletter/2024/2024_08_02
+2026-03-12 20:59:07,873 INFO     PATCH (multi-line): '🐅🌆💸 Հայաստան` Կովկասի վագր, թե՞ թանկ երազանք հոդվածի' -> https://www.tvyal.com/newsletter/2024/2024_08_26
+2026-03-12 20:59:07,874 INFO   patched 7 link(s)
+2026-03-12 20:59:07,882 INFO Processing: 2024_10_07_wages (6 candidate link(s))
+2026-03-12 20:59:07,884 INFO   (no unambiguous matches)
+2026-03-12 20:59:07,897 INFO Processing: 2024_10_14_number_of_organizations (18 candidate link(s))
+2026-03-12 20:59:07,897 INFO     PATCH (multi-line): '💸🔚🏦 Կապիտալի ներհոսքից մինչև արտահոսք. Հայաստանի տնտեսական հրաշքի ներքին խոհանոցը' -> https://www.tvyal.com/newsletter/2024/2024_09_16
+2026-03-12 20:59:07,898 INFO     PATCH (multi-line): '🧮⏳🎲 Հայաստանը հարկում է ժամանակը․ Խաղ տնտեսական աճի հետ' -> https://www.tvyal.com/newsletter/2024/2024_08_02
+2026-03-12 20:59:07,899 INFO     PATCH (inline): '2017 թվականի դեկտեմբերին' -> https://armstat.am/file/article/sv_12_17a_150.pdf
+2026-03-12 20:59:07,902 INFO     PATCH (inline): '2017թ․' -> https://armstat.am/file/article/sv_12_17a_150.pdf
+2026-03-12 20:59:07,905 INFO   patched 4 link(s)
+2026-03-12 20:59:07,914 INFO Processing: 2024_10_21_wages_2 (15 candidate link(s))
+2026-03-12 20:59:07,914 INFO     PATCH (multi-line): '🏠💰📉 Տնային տնտեսությունները աղքատացել են' -> https://www.tvyal.com/newsletter/2024/2024_01_07
+2026-03-12 20:59:07,915 INFO     PATCH (multi-line): 'Մեր նախորդ վերլուծության մեջ 💹💳🧑\u200d🏭 մենք առաջարկեցինք մի համարձակ ռազմավարություն՝ այս աճող անջրպետը հաղթահարելու համար' -> https://www.tvyal.com/newsletter/2024/2024_10_07
+2026-03-12 20:59:07,916 INFO     PATCH (multi-line): '💹💳🧑\u200d🏭 Մասնավոր աշխատատեղերի գրեթե 80 տոկոսը Երևանում է' -> https://www.tvyal.com/newsletter/2024/2024_10_07
+2026-03-12 20:59:07,916 INFO     PATCH (multi-line): '👛💨💰 Դատարկ գրպաններ, բարձր աշխատավարձր' -> https://www.tvyal.com/newsletter/2024/2024_08_12
+2026-03-12 20:59:07,916 INFO     PATCH (multi-line): '👨\u200d👩\u200d👧\u200d👦✨ Ամուր ընտանիք․ հարուստ ընտանիք' -> https://www.tvyal.com/newsletter/2024/2024_01_26
+2026-03-12 20:59:07,917 INFO     PATCH (multi-line): '🚨📉🕵 Քողարկված անկում. Ինչո՞վ է ապրում Հայաստանի տնտեսությունը' -> https://www.tvyal.com/newsletter/2024/2024_09_30
+2026-03-12 20:59:07,917 INFO     PATCH (multi-line): '🐅🌆💸 Հայաստան` Կովկասի վագր, թե՞ թանկ երազանք' -> https://www.tvyal.com/newsletter/2024/2024_08_26
+2026-03-12 20:59:07,919 INFO     PATCH (multi-line): '«📢✊🕊️ Թավշյա իրարանցում և կազմակերպական փոփոխություն»' -> https://www.tvyal.com/newsletter/2024/2024_10_14
+2026-03-12 20:59:07,922 INFO     PATCH (multi-line): 'Մանրամասները ավելացվել են տվյալ նյութի վերջում։' -> https://www.tvyal.com/newsletter/2024/2024_10_14
+2026-03-12 20:59:07,924 INFO   patched 9 link(s)
+2026-03-12 20:59:07,933 INFO Processing: 2024_10_28_brics (12 candidate link(s))
+2026-03-12 20:59:07,939 INFO     PATCH (multi-line): '👛💨💰 Դատարկ գրպաններ, բարձր աշխատավարձեր' -> https://www.tvyal.com/newsletter/2024/2024_08_12
+2026-03-12 20:59:07,940 INFO     PATCH (multi-line): '🔌⚡🇦🇲 էլեկտրիկ Հայաստան․ Ցանցի խոցելիությունից մինչև արևային հեռանկարներ' -> https://www.tvyal.com/newsletter/2024/2024_09_09
+2026-03-12 20:59:07,940 INFO     PATCH (multi-line): '🚨📉🕵 Քողարկված անկում․ Ինչո՞վ է ապրում Հայաստանի տնտեսությունը' -> https://www.tvyal.com/newsletter/2024/2024_09_30
+2026-03-12 20:59:07,941 INFO     PATCH (multi-line): '🆘🇦🇲🧑🏼\u200d💻 SOS ՀՀ ՏՏ․ ռազմավարական առաջնահերթությունից մինչև հնարավոր անկում' -> https://www.tvyal.com/newsletter/2024/2024_08_19
+2026-03-12 20:59:07,941 INFO     PATCH (multi-line): 'Վերլուծությունների ամբողջական ցանկը այստեղ' -> https://www.tvyal.com/newsletter
+2026-03-12 20:59:07,942 INFO   patched 5 link(s)
+2026-03-12 20:59:07,961 INFO Processing: 2024_11_04_population (10 candidate link(s))
+2026-03-12 20:59:07,962 INFO     PATCH (multi-line): '🔌⚡🇦🇲 էլեկտրիկ Հայաստան․ Ցանցի խոցելիությունից մինչև արևային հեռանկարներ' -> https://www.tvyal.com/newsletter/2024/2024_09_09
+2026-03-12 20:59:07,963 INFO     PATCH (multi-line): '👨\u200d👩\u200d👧\u200d👦✨ Ամուր ընտանիք․ հարուստ ընտանիք' -> https://www.tvyal.com/newsletter/2024/2024_01_26
+2026-03-12 20:59:07,964 INFO     PATCH (multi-line): '👛💨💰 Դատարկ գրպաններ, բարձր աշխատավարձեր' -> https://www.tvyal.com/newsletter/2024/2024_08_12
+2026-03-12 20:59:07,964 INFO     PATCH (multi-line): '🆘🇦🇲🧑🏼\u200d💻 SOS ՀՀ ՏՏ․ ռազմավարական առաջնահերթությունից մինչև հնարավոր անկում' -> https://www.tvyal.com/newsletter/2024/2024_08_19
+2026-03-12 20:59:07,964 INFO     PATCH (multi-line): 'Վերլուծությունների ամբողջական ցանկը այստեղ' -> https://www.tvyal.com/newsletter
+2026-03-12 20:59:07,966 INFO   patched 5 link(s)
+2026-03-12 20:59:07,983 INFO Processing: 2024_11_19_budget_performance (24 candidate link(s))
+2026-03-12 20:59:07,996 INFO     PATCH (multi-line): 'իրական արտահանման ծավալների նվազումը' -> https://www.tvyal.com/newsletter/2024/2024_09_02
+2026-03-12 20:59:07,996 INFO     PATCH (multi-line): 'տնտեսական աճի կախվածությունը Ռուսաստանից ոսկու վերաարտահանումից' -> https://www.tvyal.com/newsletter/2024/2024_09_02
+2026-03-12 20:59:07,997 INFO     PATCH (multi-line): 'գրանցված կազմակերպությունների քանակի կրճատումը' -> https://www.tvyal.com/newsletter/2024/2024_10_14
+2026-03-12 20:59:07,998 INFO     PATCH (multi-line): 'կապիտալի զգալի արտահոսքը' -> https://www.tvyal.com/newsletter/2024/2024_09_16
+2026-03-12 20:59:07,999 INFO     PATCH (multi-line): 'զբոսաշրջության ոլորտի անկումը' -> https://www.tvyal.com/newsletter/2024/2024_06_17
+2026-03-12 20:59:08,000 INFO     PATCH (multi-line): 'ՏՏ ոլորտում նկատվող բացասական միտումները' -> https://www.tvyal.com/newsletter/2024/2024_08_19
+2026-03-12 20:59:08,001 INFO     PATCH (multi-line): 'հարկահավաքության ծավալների կրճատումը' -> https://www.tvyal.com/newsletter/2024/2024_08_02
+2026-03-12 20:59:08,002 INFO     PATCH (multi-line): '72 տոկոս է կազմել թանկարժեք քարերի և մետաղների վերաարտահանումը' -> https://www.tvyal.com/newsletter/2024/2024_07_05
+2026-03-12 20:59:08,003 INFO     PATCH (multi-line): '🚨📉🕵 Քողարկված անկում. Ինչո՞վ է ապրում Հայաստանի տնտեսությունը' -> https://www.tvyal.com/newsletter/2024/2024_09_30
+2026-03-12 20:59:08,005 INFO     PATCH (multi-line): '💸🔚🏦 Կապիտալի ներհոսքից մինչև արտահոսք' -> https://www.tvyal.com/newsletter/2024/2024_09_16
+2026-03-12 20:59:08,006 INFO     PATCH (multi-line): '🧮⏳🎲 Հայաստանը հարկում է ժամանակը. Խաղ տնտեսական աճի հետ' -> https://www.tvyal.com/newsletter/2024/2024_08_02
+2026-03-12 20:59:08,007 INFO     PATCH (multi-line): '💰🚧⚖️ Պետական պարտքի ճոճանակ․ Առաջին անգամ ներքին պարտքը գերազանցում է արտաքինը' -> https://www.tvyal.com/newsletter/2024/2024_06_28
+2026-03-12 20:59:08,008 INFO     PATCH (multi-line): '🆘🇦🇲🧑🏼\u200d💻 SOS ՀՀ ՏՏ. ռազմավարական առաջնահերթությունից մինչև հնարավոր անկում' -> https://www.tvyal.com/newsletter/2024/2024_08_19
+2026-03-12 20:59:08,009 INFO     PATCH (multi-line): 'Վերլուծությունների ամբողջական ցանկը այստեղ' -> https://www.tvyal.com/newsletter
+2026-03-12 20:59:08,010 INFO     PATCH (multi-line): '🆘🇦🇲🧑🏼\u200d💻 SSOS ՀՀ ՏՏ. ռազմավարական առաջնահերթությունից մինչև հնարավոր անկում' -> https://www.tvyal.com/newsletter/2024/2024_08_19
+2026-03-12 20:59:08,014 INFO     PATCH (multi-line): 'Հարցազրույցն ամբողջությամբ՝ կցված տեսանյութում։' -> https://youtu.be/Qnylq8qqEQQ
+2026-03-12 20:59:08,017 INFO   patched 16 link(s)
+2026-03-12 20:59:08,036 INFO Processing: 2024_12_09_exchange (10 candidate link(s))
+2026-03-12 20:59:08,039 INFO     PATCH (multi-line): 'շուրջ 23 հազար պատժամիջոց' -> https://www.tvyal.com/newsletter/2024/2024_10_28
+2026-03-12 20:59:08,039 INFO     PATCH (multi-line): '💸🔚🏦 Կապիտալի ներհոսքից մինչև արտահոսք. Հայաստանի տնտեսական հրաշքի ներքին խոհանոցը' -> https://www.tvyal.com/newsletter/2024/2024_09_16
+2026-03-12 20:59:08,040 INFO     PATCH (multi-line): '💎🎭🔮️ Ոսկե Պատրանք. Հայաստանի արտահանման իրական պատկերը' -> https://www.tvyal.com/newsletter/2024/2024_09_02
+2026-03-12 20:59:08,042 INFO   patched 3 link(s)
+2026-03-12 20:59:08,060 INFO Processing: 2024_12_17_CB_loans (13 candidate link(s))
+2026-03-12 20:59:08,060 INFO     PATCH (multi-line): 'Թերի հարկաբյուջետային քաղաքականության' -> https://www.tvyal.com/newsletter/2024/2024_11_19
+2026-03-12 20:59:08,061 INFO     PATCH (multi-line): 'նախորդ վերլուծություններում' -> https://www.tvyal.com/newsletter/2024/2024_09_30
+2026-03-12 20:59:08,061 INFO     PATCH (multi-line): 'հարկերի թերհավաքագրումը' -> https://www.tvyal.com/newsletter/2024/2024_11_19
+2026-03-12 20:59:08,062 INFO     PATCH (inline): 'կրճատումը' -> https://www.tvyal.com/newsletter/2024/2024_09_02
+2026-03-12 20:59:08,062 INFO     PATCH (multi-line): '💹🎏🏦 Վարկի տակ․ Վարկավորման միտումները ըստ ճյուղերի' -> https://www.tvyal.com/newsletter/2024/2024_06_07
+2026-03-12 20:59:08,062 INFO     PATCH (multi-line): '💎🎭🔮️ Ոսկե Պատրանք. Հայաստանի արտահանման իրական պատկերը' -> https://www.tvyal.com/newsletter/2024/2024_09_02
+2026-03-12 20:59:08,063 INFO     PATCH (multi-line): '🎭🇦🇲💸️ Վտանգավոր թվեր․ Հայաստանի տնտեսական «հրաշքի» մութ կողմ' -> https://www.tvyal.com/newsletter/2024/2024_11_19
+2026-03-12 20:59:08,063 INFO     PATCH (multi-line): '🚨📉🕵 Քողարկված անկում. Ինչո՞վ է ապրում Հայաստանի տնտեսությունը' -> https://www.tvyal.com/newsletter/2024/2024_09_30
+2026-03-12 20:59:08,065 INFO   patched 8 link(s)
+2026-03-12 20:59:08,083 INFO Processing: 2024_12_23_GDP_components (14 candidate link(s))
+2026-03-12 20:59:08,083 INFO     PATCH (inline): '🐅🌆💸 Հայաստան` Կովկասի վագր, թե՞ թանկ երազանք' -> https://www.tvyal.com/newsletter/2024/2024_08_26
+2026-03-12 20:59:08,084 INFO     PATCH (multi-line): 'որ տնտեսական աճը կկազմի մոտ 7%' -> https://www.tvyal.com/newsletter/2024/2024_03_09
+2026-03-12 20:59:08,084 INFO     PATCH (multi-line): '🆘🇦🇲🧑🏼\u200d💻 SOS ՀՀ ՏՏ․ Հայաստանի ՏՏ ոլորտը, ռազմավարական առաջնահերթությունից մինչև հնարավոր անկում' -> https://www.tvyal.com/newsletter/2024/2024_08_19
+2026-03-12 20:59:08,085 INFO     PATCH (multi-line): 'Կարդացեք ավելին՝ 💸🔚🏦 Կապիտալի արտահոսք' -> https://www.tvyal.com/newsletter/2024/2024_03_01
+2026-03-12 20:59:08,086 INFO     PATCH (multi-line): '🇷🇺💰🇦🇲 Հայաստան` ռուսական ոսկու հանգրվան' -> https://www.tvyal.com/newsletter/2024/2024_07_05
+2026-03-12 20:59:08,086 INFO     PATCH (multi-line): '🌅🏖🌄 Սահմանից այն կողմ․ Հայաստանի տուրիստական աճը և հնարավոր անկումը' -> https://www.tvyal.com/newsletter/2024/2024_06_17
+2026-03-12 20:59:08,087 INFO     PATCH (multi-line): 'Կարդացեք ավելին՝ 🧮⏳🎲 Հայաստանը հարկում է ժամանակը․ Խաղ տնտեսական աճի հետ' -> https://www.tvyal.com/newsletter/2024/2024_08_02
+2026-03-12 20:59:08,088 INFO     PATCH (multi-line): '💰🚧⚖️ Պետական պարտքի ճոճանակ․ Առաջին անգամ ներքին պարտքը գերազանցում է արտաքինը' -> https://www.tvyal.com/newsletter/2024/2024_06_28
+2026-03-12 20:59:08,088 INFO     PATCH (multi-line): '🌿🤨💎 Թանկարժեք էֆեկտ․ 2024 թվականի տնտեսական աճի պատճառները' -> https://www.tvyal.com/newsletter/2024/2024_03_29
+2026-03-12 20:59:08,090 INFO   patched 9 link(s)
+2026-03-12 20:59:08,106 INFO Processing: 2024_12_30_christmas_tree (7 candidate link(s))
+2026-03-12 20:59:08,107 INFO     PATCH (inline): 'more than 45 analyses' -> https://www.tvyal.com/newsletter
+2026-03-12 20:59:08,107 INFO     PATCH (multi-line): 'more than 16 thousand lines of code' -> https://github.com/tavad/tvyal_newsletter/tree/main/2024
+2026-03-12 20:59:08,108 INFO   patched 2 link(s)
+2026-03-12 20:59:08,122 INFO Processing: 2024_13_00_petrol_price (7 candidate link(s))
+2026-03-12 20:59:08,124 INFO   (no unambiguous matches)
+2026-03-12 20:59:08,144 INFO Processing: 2025_01_14_household_income (7 candidate link(s))
+2026-03-12 20:59:08,146 INFO   (no unambiguous matches)
+2026-03-12 20:59:08,170 INFO Processing: 2025_01_20_transport_price (23 candidate link(s))
+2026-03-12 20:59:08,175 INFO     PATCH (multi-line): 'ավելի ցածր սակագներ' -> https://www.worldofmetro.com/tbilisi-metro/
+2026-03-12 20:59:08,176 INFO     PATCH (multi-line): 'Բաքուն վերջերս բարձրացրել է' -> https://turan.az/en/social/subway-and-bus-fares-have-increased-in-azerbaijan-782016
+2026-03-12 20:59:08,176 INFO     PATCH (inline): 'Մոսկվան' -> https://weheart.moscow/publictransport/
+2026-03-12 20:59:08,177 INFO   patched 3 link(s)
+2026-03-12 20:59:08,194 INFO Processing: 2025_02_04_eai (25 candidate link(s))
+2026-03-12 20:59:08,195 INFO     PATCH (multi-line): 'Սա մենք կանխատեսել էինք' -> https://www.tvyal.com/newsletter/2024/2024_09_02
+2026-03-12 20:59:08,196 INFO     PATCH (multi-line): '2024թ․ առաջին կիսամյակում' -> https://www.tvyal.com/newsletter/2024/2024_09_02
+2026-03-12 20:59:08,197 INFO     PATCH (multi-line): 'տարեկան ցուցանիշները' -> https://www.armstat.am/file/doc/99555273.pdf
+2026-03-12 20:59:08,197 INFO     PATCH (multi-line): 'տվել էինք վաղ նախազգուշացման ազդակներ' -> https://www.tvyal.com/newsletter/2024/2024_03_29
+2026-03-12 20:59:08,198 INFO     PATCH (multi-line): '💎🎭🔮️ Ոսկե Պատրանք. Հայաստանի արտահանման իրական պատկերը' -> https://www.tvyal.com/newsletter/2024/2024_09_02
+2026-03-12 20:59:08,198 INFO     PATCH (multi-line): '🐅🌆💸 Հայաստան` Կովկասի վագր, թե՞ թանկ երազանք' -> https://www.tvyal.com/newsletter/2024/2024_08_26
+2026-03-12 20:59:08,198 INFO     PATCH (multi-line): '🤒🟨♻️ Ոսկու տենդի շարունակություն. Հայաստանի արտահանման 75%-ը ոսկի և ադամանդ է' -> https://www.tvyal.com/newsletter/2024/2024_05_11
+2026-03-12 20:59:08,199 INFO     PATCH (multi-line): '🌿🤨💎 Թանկարժեք էֆեկտ․ 2024 թվականի տնտեսական աճի պատճառները, հրապարակվել է 9 ամիս առաջ' -> https://www.tvyal.com/newsletter/2024/2024_03_29
+2026-03-12 20:59:08,199 INFO     PATCH (multi-line): 'Մեր վերլուծությունների ամբողջական ցանկը' -> https://www.tvyal.com/newsletter
+2026-03-12 20:59:08,200 INFO     PATCH (multi-line): 'ՏԱՑ 2024թ․ դեկտեմբեր' -> https://www.armstat.am/file/doc/99555268.pdf
+2026-03-12 20:59:08,200 INFO     PATCH (multi-line): 'ՏԱՑ 2024թ․ տարեկան' -> https://www.armstat.am/file/doc/99555273.pdf
+2026-03-12 20:59:08,206 INFO   patched 11 link(s)
+2026-03-12 20:59:08,223 INFO Processing: 2025_02_18_transfers (8 candidate link(s))
+2026-03-12 20:59:08,225 INFO     PATCH (multi-line): 'այստեղ է գնում Հայաստանի արտահանման գրեթե կեսը' -> https://www.tvyal.com/newsletter/2024/2024_09_02
+2026-03-12 20:59:08,226 INFO   patched 1 link(s)
+2026-03-12 20:59:08,249 INFO Processing: 2025_02_25_exports_annual (11 candidate link(s))
+2026-03-12 20:59:08,250 INFO     PATCH (multi-line): 'Կարդալ ավելին՝ 🇷🇺💰🇦🇲 Հայաստան` ռուսական ոսկու հանգրվան' -> https://www.tvyal.com/newsletter/2024/2024_07_05
+2026-03-12 20:59:08,251 INFO     PATCH (multi-line): '🚀♻🟨 ️Ոսկու տենդ. Հայաստանի արտահանման կեսը վերաարտահանում է' -> https://www.tvyal.com/newsletter/2024/2024_04_12
+2026-03-12 20:59:08,251 INFO     PATCH (multi-line): '🤒🟨♻️ «ոսկու տենդը»' -> https://www.tvyal.com/newsletter/2024/2024_05_11
+2026-03-12 20:59:08,253 INFO     PATCH (multi-line): '🌿🤨💎 Թանկարժեք էֆեկտ․ 2024 թվականի տնտեսական աճի պատճառները' -> https://www.tvyal.com/newsletter/2024/2024_03_29
+2026-03-12 20:59:08,254 INFO     PATCH (multi-line): '🧮⏳🎲 արդյունավետ հարկային դաշտի ձևավորում' -> https://www.tvyal.com/newsletter/2024/2024_08_02
+2026-03-12 20:59:08,257 INFO   patched 5 link(s)
+2026-03-12 20:59:08,276 INFO Processing: 2025_03_11_GDP_components (11 candidate link(s))
+2026-03-12 20:59:08,279 INFO     PATCH (multi-line): 'Ինչպես արտացոլված է մեր նախորդ վերլուծության մեջ՝ այս ոսկե վերաարտահանման գործունեությունը կազմում է արտահանման մոտ 61.4%-ը' -> https://www.tvyal.com/newsletter/2025/2025_02_25
+2026-03-12 20:59:08,279 INFO     PATCH (multi-line): 'Սակայն փաստերն ցույց են տալիս, որ սա անցողիկ բնույթ ունի և ամուր հիմքեր չունի' -> https://www.tvyal.com/newsletter/2025/2025_02_25
+2026-03-12 20:59:08,280 INFO     PATCH (multi-line): 'Կարդացեք ավելին՝ 💸🔚🏦 Կապիտալի արտահոսք' -> https://www.tvyal.com/newsletter/2024/2024_03_01
+2026-03-12 20:59:08,280 INFO     PATCH (multi-line): '🇷🇺💰🇦🇲 Հայաստան` ռուսական ոսկու հանգրվան' -> https://www.tvyal.com/newsletter/2024/2024_07_05
+2026-03-12 20:59:08,281 INFO     PATCH (multi-line): '🌅🏖🌄 Սահմանից այն կողմ․ Հայաստանի տուրիստական աճը և հնարավոր անկումը' -> https://www.tvyal.com/newsletter/2024/2024_06_17
+2026-03-12 20:59:08,281 INFO     PATCH (multi-line): 'Կարդացեք ավելին՝ 🧮⏳🎲 Հայաստանը հարկում է ժամանակը․ Խաղ տնտեսական աճի հետ' -> https://www.tvyal.com/newsletter/2024/2024_08_02
+2026-03-12 20:59:08,282 INFO   patched 6 link(s)
+2026-03-12 20:59:08,307 INFO Processing: 2025_03_25_public_dept (14 candidate link(s))
+2026-03-12 20:59:08,309 INFO     PATCH (multi-line): 'արտահանման 61.4%-ը կազմել է Ռուսաստանից Հայաստանի միջոցով այլ երկրներ վերաարտահանված ոսկին' -> https://www.tvyal.com/newsletter/2025/2025_02_25
+2026-03-12 20:59:08,310 INFO     PATCH (multi-line): 'գները ընկել են թե՛ վարձակալության, թե՛ առքուվաճառքի պարագայում' -> https://www.tvyal.com/newsletter/2025/2025_03_11
+2026-03-12 20:59:08,311 INFO     PATCH (multi-line): 'Հարկ է նշել, որ հայկական դրամը 2020 թվականից փոխարկելի արժույթներից ամենաարժևորվածն է, որը բացասաբար է անդրադառնում իրական արտահանման, ինչպես նաև տուրիզմի և ՏՏ ոլորտի վրա։ Սա որոշակի ճնշում է գործադրում փաստացի դոլարին փափուկ կցված դրամի վրա' -> https://www.tvyal.com/newsletter/2024/2024_12_09
+2026-03-12 20:59:08,315 INFO   patched 3 link(s)
+2026-03-12 20:59:08,327 INFO Processing: 2025_10_21_wages (16 candidate link(s))
+2026-03-12 20:59:08,328 INFO     PATCH (inline): '💶📏🔎 Աշխատավարձի միջինից այն կողմ' -> https://www.tvyal.com/newsletter/2024/2024_10_21
+2026-03-12 20:59:08,328 INFO     PATCH (multi-line): '🏠💰📉 Տնային տնտեսությունները աղքատացել են' -> https://www.tvyal.com/newsletter/2024/2024_01_07
+2026-03-12 20:59:08,328 INFO     PATCH (multi-line): 'Մեր նախորդ վերլուծության մեջ 💹💳🧑\u200d🏭 մենք առաջարկեցինք մի համարձակ ռազմավարություն՝ այս աճող անջրպետը հաղթահարելու համար' -> https://www.tvyal.com/newsletter/2024/2024_10_07
+2026-03-12 20:59:08,329 INFO     PATCH (multi-line): '💹💳🧑\u200d🏭 Մասնավոր աշխատատեղերի գրեթե 80 տոկոսը Երևանում է' -> https://www.tvyal.com/newsletter/2024/2024_10_07
+2026-03-12 20:59:08,329 INFO     PATCH (multi-line): '👛💨💰 Դատարկ գրպաններ, բարձր աշխատավարձր' -> https://www.tvyal.com/newsletter/2024/2024_08_12
+2026-03-12 20:59:08,329 INFO     PATCH (multi-line): '👨\u200d👩\u200d👧\u200d👦✨ Ամուր ընտանիք․ հարուստ ընտանիք' -> https://www.tvyal.com/newsletter/2024/2024_01_26
+2026-03-12 20:59:08,330 INFO     PATCH (multi-line): '🚨📉🕵 Քողարկված անկում. Ինչո՞վ է ապրում Հայաստանի տնտեսությունը' -> https://www.tvyal.com/newsletter/2024/2024_09_30
+2026-03-12 20:59:08,330 INFO     PATCH (multi-line): '🐅🌆💸 Հայաստան` Կովկասի վագր, թե՞ թանկ երազանք' -> https://www.tvyal.com/newsletter/2024/2024_08_26
+2026-03-12 20:59:08,331 INFO     PATCH (multi-line): '«📢✊🕊️ Թավշյա իրարանցում և կազմակերպական փոփոխություն»' -> https://www.tvyal.com/newsletter/2024/2024_10_14
+2026-03-12 20:59:08,331 INFO     PATCH (multi-line): 'Մանրամասները ավելացվել են տվյալ նյութի վերջում։' -> https://www.tvyal.com/newsletter/2024/2024_10_14
+2026-03-12 20:59:08,333 INFO   patched 10 link(s)
+2026-03-12 20:59:08,333 INFO 
+2026-03-12 20:59:08,333 INFO ==================================================
+2026-03-12 20:59:08,333 INFO   Issues with text links patched: 54
+2026-03-12 20:59:08,333 INFO   Total links patched:            244
